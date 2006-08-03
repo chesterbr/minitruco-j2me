@@ -1,0 +1,11 @@
+O menu Jogar Online conecta você ao servidor do MiniTruco.
+
+Ao conectar você verá a lista de salas, podendo espiar quem está lá ou entrar.
+
+O jogo começa quando houverem pelo menos duas pessoas na sala, e quando todas elas selecionarem a opção "quero jogar" (a cor do texto muda para sinalizar isto).
+
+Caso haja menos de quatro jogadores e todo mundo der "quero jogar", as posições vazias serão preenchidas com robôs.
+
+O primeiro jogador a entrar na sala torna-se o "gerente". Ele pode trocar os outros jogadores de lugar, expulsar jogadores, bem como mudar as regras de baralho e manilha da sala.
+
+Caso a conexão não funcione, experimente atualizar o jogo, abrindo o endereço m.chester.inf.br no navegador do seu celular. Você também pode tentar se conectar a um servidor diferente do padrão informando seus dados no menu Opções.

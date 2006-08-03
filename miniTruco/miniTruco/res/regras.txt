@@ -1,0 +1,45 @@
+* Introdução *
+
+O jogo de Truco é disputado entre duas duplas, com os parceiros frente a frente. Uma distribuição de carta compõe uma "mão". Cada jogador recebe três cartas, o que divide a mão em até três "rodadas".
+
+Um jogador abre a rodada (jogando uma carta aberta na mesa), e a vez passa para o jogador seguinte, no sentido anti-horário, até a vez voltar para quem abriu.
+
+Nesta hora a rodada termina, sendo vencida ("feita") pela dupla cujo membro jogou a maior carta. Este membro abre a rodada seguinte.
+
+A dupla que vencer duas rodadas vence a mão. Se uma rodada empatar, vence a mão quem tiver feito a rodada anterior (ou a seguinte, se for a primeira rodada ou a anterior empatar). Caso as três empatem, ninguém vence a mão.
+
+A mão seguinte é aberta pelo jogador seguitne ao que abriu a primeira, mas no sentido horário (oposto ao do jogo).
+
+Cada mão vencida dá um ponto ("tento") para a dupla. Vence o jogo a dupla que fizer 12 tentos. 
+
+* "Truco" *
+
+Se um jogador tem cartas boas (ou deseja blefar), ele pode pedir "truco". Caso um dos adversários aceite (dizendo "desce"), a mão passa a valer três tentos. Se ambos "correrem", a mão é encerrada, e a dupla que pediu truco ganha um tento.
+
+Qualquer jogador da dupla que aceitou o truco pode, na sua vez, pedir "seis", que funciona da mesma forma: se a outra dupla aceitar, a mão passa a valer seis tentos, caso contrário, quem pediu seis ganha a mão (que já valia três).
+
+O movimento se repete com pedidos de "nove" e "doze", sempre feitos pela dupla que aceitou o pedido anterior.
+
+* Mão de 11 *
+
+Caso apenas uma das duplas faça 11 tentos, a regra muda um pouco: o jogo passa a valer três (e ninguém pode pedir seis), ajudando a dupla que está perdendo.
+
+Em compensação, os membros da dupla que tem 11 podem ver as cartas do parceiro e decidir se querem jogar ou não. Caso não queiram, perdem apenas um tento.
+
+Se ambas as duplas tiverem 11, o jogo é normal (mas sem pedidos de truco, já que a mão vai decidir a partida de qualquer forma).
+
+* Valor das Cartas / Manilhas *
+
+Um dos grandes diferenciais do truco é a ordem das cartas: os 8, 9, 10 e coringas não são usados. O 4 é a menor carta, seguido do 5, 6, 7, Q, J, K, A e 2, sendo o 3 é a maior carta.
+
+Este conjunto de cartas é chamado de "baralho sujo". Alguns jogadores preferem jogar com o "baralho limpo", que só tem o Q, J, K, A, 2 e 3.
+
+No início de cada mão, uma carta extra é sorteada. As cartas seguintes a esta são chamadas de "manilhas". Ex.: se a carta virada foi o "5", as manilhas são os quatro "6" do baralho.
+
+Durante a mão, as manilhas valem mais que todas as cartas. Se duas manilhas forem jogadas não há empate: a de maior naipe ganha.
+
+Paus é o maior, seguido por copas, espadas e ouros. Os veteranos chamam a manilha de paus de "zap", a de copas de "escopeta", a de espadas de "espadilha" e a de ouros de "pica-fumo".
+
+Esta regra de escolha das manilhas é chamada de "manilha nova". Algumas pessoas preferem a "manilha velha", onde não há vira, e as manilhas são sempre as mesmas cartas: o zap é o 4 de paus, a escopeta é o 7 de copas, a espadilha é o A de espadas e o pica-fumo é o 7 de ouros.
+
+
