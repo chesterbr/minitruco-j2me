@@ -1,9 +1,0 @@
-Copyright © 2006 Carlos Duarte do Nascimento (Chester) - cd@pobox.com
-
-Estratégia da CPU (EstrategiaWillian):  Copyright © 2006 Willian Gigliotti - wgigliotti@gmail.com
-
-Este programa é um software livre; você pode redistribui-lo e/ou modifica-lo dentro dos termos da Licença Pública Geral GNU como publicada pela Fundação do Software Livre (FSF); na versão 2 da Licença, ou (na sua opnião) qualquer versão.
-
-Este programa é distribuido na esperança que possa ser util, mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÇÃO a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença Pública Geral GNU para maiores detalhes.
-
-Para obter uma cópia da Licença Pública Geral GNU escreva para a Fundação do Software Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
