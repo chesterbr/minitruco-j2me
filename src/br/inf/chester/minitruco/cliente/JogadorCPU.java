@@ -31,14 +31,7 @@ import java.util.Vector;
  * @see Estrategia
  * 
  */
-public class JogadorCPU extends Jogador implements Runnable {
-
-	/**
-	 * Os pedidos de truco, seis, etc., são feitos em uma nova thread, logo...
-	 */
-	public void run() {
-		jogo.aumentaAposta(this);
-	}
+public class JogadorCPU extends Jogador {
 
 	/**
 	 * Estrategia que está controlando este jogador
@@ -77,9 +70,17 @@ public class JogadorCPU extends Jogador implements Runnable {
 	}
 
 	private static Random random = new Random();
-
+	
 	public void vez(Jogador j, boolean podeFechada) {
 
+		// O truco é pedido numa nova thread, para os jogadores "pensarem" em paralelo
+		class ThreadPedeTruco extends Thread {
+			public Jogador solicitante;
+			public void run() {
+				jogo.aumentaAposta(solicitante);
+			}
+		}
+		
 		if (this.equals(j)) {
 
 			// Dá um tempinho, pra fingir que está "pensando"
@@ -92,30 +93,28 @@ public class JogadorCPU extends Jogador implements Runnable {
 			// Atualiza a situação do jogo (incluindo as cartas na mão)
 			atualizaSituacaoJogo();
 			situacaoJogo.podeFechada = podeFechada;
-
+		
 			// Solicita que o estrategia jogue
 			int posCarta = estrategia.joga(situacaoJogo);
 
 			// Se houve truco, processa, e, após tudo resolvido, repete a jogada
 			if (posCarta == -1) {
+
 				// Faz a solicitação de truco numa nova thread
-				Thread t = new Thread(this);
 				aceitaramTruco = false;
 				numRespostasAguardando = 2;
+				ThreadPedeTruco t = new ThreadPedeTruco();
+				t.solicitante = this;
 				t.start();
 				// Aguarda pelas respostas
 				while (numRespostasAguardando > 0) {
-					try {
-						Thread.sleep(50);
-					} catch (InterruptedException e) {
-						// Nada, apenas timing...
-					}
+						Thread.yield();
 				}
 				// Se não aceitaram, desencana...
 				if (!aceitaramTruco)
 					return;
 				// ...caso contrário, vamos seguir o jogo
-				atualizaSituacaoJogo();
+				//atualizaSituacaoJogo();
 				situacaoJogo.valorProximaAposta = 0;
 				posCarta = estrategia.joga(situacaoJogo);
 			}
@@ -125,10 +124,12 @@ public class JogadorCPU extends Jogador implements Runnable {
 			if (isFechada) {
 				posCarta -= 10;
 			}
+
 			Carta c = (Carta) cartasRestantes.elementAt(posCarta);
 			c.setFechada(isFechada && podeFechada);
 			cartasRestantes.removeElement(c);
 			jogo.jogaCarta(this, c);
+		
 		}
 	}
 
@@ -205,9 +206,11 @@ public class JogadorCPU extends Jogador implements Runnable {
 		// Notifica o estrategia
 		estrategia.recusouAumentoAposta(j.getPosicao());
 
-		// Se estivermos aguardando resposta, contabiliza
-		if (numRespostasAguardando > 0)
+		// Se estivermos aguardando resposta, contabiliza (e deixa o adversário perceber)
+		if (numRespostasAguardando > 0) {
 			numRespostasAguardando--;
+			Thread.yield();
+		}
 
 	}
 

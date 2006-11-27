@@ -528,15 +528,34 @@ public class JogoLocal extends Jogo {
 		class ThreadNotifica extends Thread {
 			public int numNotificado;
 
+			public Jogador jogadorDaVez;
+
+			public boolean podeFechada;
+
 			public void run() {
-				getJogador(numNotificado).vez(getJogadorDaVez(),
-						isPodeFechada());
+				getJogador(numNotificado).vez(jogadorDaVez, podeFechada);
 			}
 		}
 
+		// Esses dados têm que ser coletados *antes* de chamar as Threads.
+		// Motivo: se uma delas resolver jogar, a informação para as outras pode
+		// ficar destaualizada. Isso causou um/ bug *muito* hardcore de
+		// encontrar nos Nokia Series 40, que provavelmente possuem uma
+		// implementação minimalista de Threads
+		Jogador j = getJogadorDaVez();
+		boolean pf = isPodeFechada();
+
 		for (int i = 1; i <= 4; i++) {
+			// Isso é uma otimização: os JogadorCPU ignoram notificação de vez
+			// que não sejam da sua própria, então podemos pular essas, evitando
+			// abrir uma thread à toa.
+			if ((getJogador(i) instanceof JogadorCPU) && (i != j.getPosicao())) {
+				continue;
+			}
 			ThreadNotifica tn = new ThreadNotifica();
 			tn.numNotificado = i;
+			tn.jogadorDaVez = j;
+			tn.podeFechada = pf;
 			tn.start();
 		}
 
