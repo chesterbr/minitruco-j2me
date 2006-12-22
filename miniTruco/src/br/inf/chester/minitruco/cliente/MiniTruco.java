@@ -22,6 +22,7 @@ package br.inf.chester.minitruco.cliente;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Random;
 
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
@@ -40,10 +41,50 @@ import javax.microedition.midlet.MIDlet;
 
 /**
  * Ponto de entrada da aplicação no celular (MIDLet).
+ * 
  * @author Chester
- *
+ * 
  */
 public class MiniTruco extends MIDlet implements CommandListener {
+
+	/**
+	 * Jogo atual (caso haja um em andamento)
+	 */
+	private Jogo jogo;
+
+	/**
+	 * Mesa onde está sendo exibido o jogo atual (caso haja um em andamento) ou
+	 * a animação/tela de abertura
+	 */
+	public Mesa mesa;
+
+	/**
+	 * Jogador que está interagindo com o celular
+	 */
+	private JogadorHumano jogadorHumano;
+
+	/**
+	 * Servidor Em que estamos conectados
+	 */
+	private Servidor servidor;
+
+	/**
+	 * Formulário de configuração do jogo
+	 */
+	private Form formOpcoes;
+
+	/**
+	 * Sub-menu que permite selecionar um item da ajuda
+	 */
+	private List listAjuda;
+
+	/**
+	 * Estratégias a utilizar para os jogadores CPU. Os índices de 0 a 3
+	 * correspondem aos jogadores de 2 a 4 (o 1 é o humano).
+	 */
+	private String[] estrategias;
+
+	// Elementos de interação (menus, comandos, etc.) e constantes relacionadas
 
 	private static final String[] OPCOES_AJUDA = { "Instru\u00E7\u00F5es",
 			"Jogo Online", "Regras do Truco", "Sobre o miniTruco", "Voltar" };
@@ -107,11 +148,42 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	public static Command naoSairPartidaCommand = new Command("N\u00E3o",
 			Command.CANCEL, 2);
 
-	public Mesa mesa;
+	// Elementos do formulario de opções
 
-	private Form formOpcoes;
+	private static final String[] OPCOES_ESTRATEGIAS = { "Sellani", "Willian",
+			"Sortear" };
 
-	private List listAjuda;
+	private static final String[] OPCOES_VISUAL = { "cartas grandes",
+			"cartas animadas" };
+
+	private static final String[] OPCOES_REGRAS = { "baralho limpo",
+			"manilha velha" };
+
+	private static final Image[] IMAGENS_VISUAL = { null, null };
+
+	private static final Image[] IMAGENS_REGRAS = { null, null };
+
+	private static final Image[] IMAGENS_ESTRATEGIAS = { null, null, null };
+
+	ChoiceGroup cgParceiro = new ChoiceGroup("Parceiro", Choice.EXCLUSIVE,
+			OPCOES_ESTRATEGIAS, IMAGENS_ESTRATEGIAS);
+
+	ChoiceGroup cgAdversarioEsq = new ChoiceGroup(
+			"Advers\u00E1rio \u00E0 esquerda", Choice.EXCLUSIVE,
+			OPCOES_ESTRATEGIAS, IMAGENS_ESTRATEGIAS);
+
+	ChoiceGroup cgAdversarioDir = new ChoiceGroup(
+			"Advers\u00E1rio \u00E0 direita", Choice.EXCLUSIVE,
+			OPCOES_ESTRATEGIAS, IMAGENS_ESTRATEGIAS);
+
+	ChoiceGroup cgVisual = new ChoiceGroup("Visual", Choice.MULTIPLE,
+			OPCOES_VISUAL, IMAGENS_VISUAL);
+
+	ChoiceGroup cgRegras = new ChoiceGroup("Regras", Choice.MULTIPLE,
+			OPCOES_REGRAS, IMAGENS_REGRAS);
+
+	TextField tfServidor = new TextField("Servidor (host:porta)", null, 80,
+			TextField.URL);
 
 	public MiniTruco() {
 
@@ -121,28 +193,34 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		// Carrega as configurações da memória do celular
 		// (ou as default, se não houver nada na memória)
 		Configuracoes conf = Configuracoes.getConfiguracoes();
-		nivel = conf.nivel;
+		estrategias = conf.estrategias;
 		Animador.setAnimacaoLigada(conf.animacaoLigada);
 		cgRegras.setSelectedIndex(0, conf.baralhoLimpo);
 		cgRegras.setSelectedIndex(1, conf.manilhaVelha);
 		tfServidor.setString(conf.servidor);
-		if (!conf.isDefault()) {
-			// Só seta o tamanho se for carregado (o default é deixar a mesa
-			// auto-configurar isso). E remonta o bralho do cenário se setar.
-			Carta.setCartasGrandes(conf.cartasGrandes);
-			mesa.montaBaralhoCenario();
-		}
+		Carta.setCartasGrandes(conf.cartasGrandes);
+		mesa.montaBaralhoCenario();
 
 		// Inicializa os "displayables" da aplicação (menos os do
 		// multiplayer, que são responsabilidade da classe Servidor)
 		formOpcoes = new Form("Op\u00E7\u00F5es");
-		formOpcoes.append(cgDificuldade);
+		// formOpcoes.append(cgDificuldade);
 		formOpcoes.append(cgVisual);
 		formOpcoes.append(cgRegras);
+		formOpcoes.append(cgParceiro);
+		formOpcoes.append(cgAdversarioEsq);
+		formOpcoes.append(cgAdversarioDir);
 		formOpcoes.append(tfServidor);
 		formOpcoes.addCommand(okOpcoesCommand);
 		formOpcoes.setCommandListener(this);
-		cgDificuldade.setSelectedIndex(nivel, true);
+		for (int i = 0; i < OPCOES_ESTRATEGIAS.length; i++) {
+			cgAdversarioDir.setSelectedIndex(i, OPCOES_ESTRATEGIAS[i]
+					.equals(estrategias[0]));
+			cgParceiro.setSelectedIndex(i, OPCOES_ESTRATEGIAS[i]
+					.equals(estrategias[1]));
+			cgAdversarioEsq.setSelectedIndex(i, OPCOES_ESTRATEGIAS[i]
+					.equals(estrategias[2]));
+		}
 		cgVisual.setSelectedIndex(0, Carta.isCartasGrandes());
 		cgVisual.setSelectedIndex(1, Animador.isAnimacaoLigada());
 
@@ -253,26 +331,6 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		mesa.isAppRodando = false;
 	}
 
-	/**
-	 * Jogo sendo jogado no momento
-	 */
-	private Jogo jogo;
-
-	/**
-	 * Jogador que está interagindo com o celular
-	 */
-	private JogadorHumano jogadorHumano;
-
-	/**
-	 * Servidor Em que estamos conectados
-	 */
-	private Servidor servidor;
-
-	/**
-	 * Nível de dificuldade: 0=fácil, 1=médio, 2=difícil
-	 */
-	private int nivel;
-
 	public void commandAction(Command cmd, Displayable disp) {
 		if (cmd == iniciarCommand) {
 			// Inicializa novo jogo e adiciona o jogador humano
@@ -280,25 +338,17 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			jogadorHumano = new JogadorHumano(Display.getDisplay(this),
 					(Mesa) mesa);
 			jogo.adiciona(jogadorHumano);
-			// jogo.adiciona(new JogadorCPU(new EstrategiaJohhnyWalker()));
-			// Escolhe os outros jogadores de acordo com o nível
-			switch (nivel) {
-			case 0:
-				// Parceiro bom, adversários bêbados
-				jogo.adiciona(new JogadorCPU(new EstrategiaJohhnyWalker()));
-				jogo.adiciona(new JogadorCPU(new EstrategiaWillian()));
-				jogo.adiciona(new JogadorCPU(new EstrategiaJohhnyWalker()));
-				break;
-			case 1:
-				// Todo mundo bom
-				jogo.adiciona(new JogadorCPU(new EstrategiaWillian()));
-				jogo.adiciona(new JogadorCPU(new EstrategiaWillian()));
-				jogo.adiciona(new JogadorCPU(new EstrategiaWillian()));
-			case 2:
-				// Parceiro ruim, adversários bons
-				jogo.adiciona(new JogadorCPU(new EstrategiaWillian()));
-				jogo.adiciona(new JogadorCPU(new EstrategiaJohhnyWalker()));
-				jogo.adiciona(new JogadorCPU(new EstrategiaWillian()));
+			// Adiciona os jogadores CPU com as estratégias escolhidas
+			Random r = new Random();
+			for (int i = 0; i <= 2; i++) {
+				String nome = estrategias[i];
+				while (nome.equals("Sortear")) {
+					nome = OPCOES_ESTRATEGIAS[(r.nextInt() >>> 1)
+							% (OPCOES_ESTRATEGIAS.length)];
+				}
+				jogo.adiciona(new JogadorCPU(criaEstrategiaPeloNome(nome)));
+				Logger.debug("Jogador " + (i + 2) + " usando estrategia "
+						+ nome);
 			}
 			// Inicia o novo jogo
 			mesa.removeComandoAposta();
@@ -364,7 +414,11 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		} else if (cmd == okOpcoesCommand) {
 			// Seta as opções escolhidas no form (menos as regras,
 			// que ficam guardadas no choiceGroup mesmo)
-			nivel = cgDificuldade.getSelectedIndex();
+			estrategias[0] = OPCOES_ESTRATEGIAS[cgAdversarioDir
+					.getSelectedIndex()];
+			estrategias[1] = OPCOES_ESTRATEGIAS[cgParceiro.getSelectedIndex()];
+			estrategias[2] = OPCOES_ESTRATEGIAS[cgAdversarioEsq
+					.getSelectedIndex()];
 			Carta.setCartasGrandes(cgVisual.isSelected(0));
 			Animador.setAnimacaoLigada(cgVisual.isSelected(1));
 
@@ -393,7 +447,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				}
 				// Guarda as opções na memória do celular
 				Configuracoes conf = Configuracoes.getConfiguracoes();
-				conf.nivel = nivel;
+				conf.estrategias = estrategias;
 				conf.cartasGrandes = Carta.isCartasGrandes();
 				conf.animacaoLigada = Animador.isAnimacaoLigada();
 				conf.baralhoLimpo = cgRegras.isSelected(0);
@@ -410,33 +464,6 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 	}
 
-	private static final String[] OPCOES_DIFICULDADE = { "f\u00E1cil",
-			"m\u00E9dio", "dif\u00EDcil" };
-
-	private static final String[] OPCOES_VISUAL = { "cartas grandes",
-			"cartas animadas" };
-
-	private static final String[] OPCOES_REGRAS = { "baralho limpo",
-			"manilha velha" };
-
-	private static final Image[] IMAGENS_DIFICULDADE = { null, null, null };
-
-	private static final Image[] IMAGENS_VISUAL = { null, null };
-
-	private static final Image[] IMAGENS_REGRAS = { null, null };
-
-	ChoiceGroup cgDificuldade = new ChoiceGroup("Dificuldade",
-			Choice.EXCLUSIVE, OPCOES_DIFICULDADE, IMAGENS_DIFICULDADE);
-
-	ChoiceGroup cgVisual = new ChoiceGroup("Visual", Choice.MULTIPLE,
-			OPCOES_VISUAL, IMAGENS_VISUAL);
-
-	ChoiceGroup cgRegras = new ChoiceGroup("Regras", Choice.MULTIPLE,
-			OPCOES_REGRAS, IMAGENS_REGRAS);
-
-	TextField tfServidor = new TextField("Servidor (host:porta)", null, 80,
-			TextField.URL);
-
 	public void alerta(String titulo, String texto) {
 		Alert a = new Alert(titulo);
 		a.setString(texto);
@@ -452,6 +479,17 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		f.addCommand(naoSairPartidaCommand);
 		f.setCommandListener(this);
 		Display.getDisplay(this).setCurrent(f);
+	}
+
+	public Estrategia criaEstrategiaPeloNome(String nome) {
+		if (nome.equals("Sellani")) {
+			return new EstrategiaSellani();
+		} else if (nome.equals("Willian")) {
+			return new EstrategiaWillian();
+		} else {
+			alerta("Erro interno", "Estrategia invalida:" + nome);
+			return null;
+		}
 	}
 
 }
