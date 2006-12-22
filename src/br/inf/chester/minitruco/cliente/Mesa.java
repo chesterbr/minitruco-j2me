@@ -100,14 +100,6 @@ public class Mesa extends Canvas {
 
 	public static final String TEXTO_DOZE = "DOZE!!!";
 
-	/**
-	 * O tamanho das cartas é definido de acordo com o tamanho da tela do
-	 * celular por esta classe (que tem acesso a esta altura). Esta flag permite
-	 * que este ajuste seja feito apenas na 1a. vez, evitando sobrescrever a
-	 * opção do usuário a esse respeito.
-	 */
-	public static boolean fezAutoAjusteCartas = false;
-
 	// Variáveis ligadas à abertura
 	private boolean aberturaVisivel = true;
 
@@ -131,13 +123,6 @@ public class Mesa extends Canvas {
 		// Cria um animador para esta mesa
 		animador = new Animador(this);
 		animador.start();
-
-		// Ajusta as cartas de acordo com o tamanho do display
-		// (só na primeira vez em que entra)
-		if (!fezAutoAjusteCartas) {
-			Carta.setCartasGrandes(getWidth() >= 99 && getHeight() >= 140);
-			fezAutoAjusteCartas = true;
-		}
 
 		montaBaralhoCenario();
 

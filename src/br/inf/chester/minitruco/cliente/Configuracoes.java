@@ -25,13 +25,15 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Graphics;
 import javax.microedition.rms.RecordEnumeration;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 
 /**
- * Recupera e salva as opções do usuário (regras, aspectos visuais,
- * nome do multiplayer, servidor default, etc.)
+ * Recupera e salva as opções do usuário (regras, aspectos visuais, nome do
+ * multiplayer, servidor default, etc.)
  * 
  * @author Chester
  * 
@@ -44,6 +46,13 @@ public class Configuracoes {
 	 * A especificação MIDP diz que os números começam no 1, vou acreditar
 	 */
 	private static final int REGISTRO_INEXISTENTE = -1;
+
+	/**
+	 * Identifica a versão da configuração. Quando novas versões do miniTruco
+	 * quebrarem a compatibilidade, basta incrementar este número para garantir
+	 * que antigos registros sejam descartados
+	 */
+	private static final int VERSAO_ID = 103;
 
 	/**
 	 * Identificador do registro das configurações no RecordStore
@@ -59,9 +68,9 @@ public class Configuracoes {
 	 * Configurações do menu opções, nos seus valores default (vide MiniTruco
 	 * para detalhes)
 	 */
-	public int nivel = 1;
+	public String[] estrategias = { "Sortear", "Sortear", "Sortear" };
 
-	public boolean cartasGrandes;
+	public boolean cartasGrandes = isTelaGrande();
 
 	public boolean animacaoLigada = true;
 
@@ -93,7 +102,13 @@ public class Configuracoes {
 				DataInputStream disDados = new DataInputStream(
 						new ByteArrayInputStream(registro));
 				try {
-					c.nivel = disDados.readInt();
+					if (disDados.readInt() != VERSAO_ID) {
+						// Configuração velha, manda pro lixo
+						throw new IOException();
+					}
+					c.estrategias[0] = disDados.readUTF();
+					c.estrategias[1] = disDados.readUTF();
+					c.estrategias[2] = disDados.readUTF();
 					c.cartasGrandes = disDados.readBoolean();
 					c.animacaoLigada = disDados.readBoolean();
 					c.baralhoLimpo = disDados.readBoolean();
@@ -142,7 +157,10 @@ public class Configuracoes {
 			DataOutputStream dosDados = new DataOutputStream(baosDados);
 
 			// Compõe o registro com as propriedades de configuração
-			dosDados.writeInt(nivel);
+			dosDados.writeInt(VERSAO_ID);
+			dosDados.writeUTF(estrategias[0]);
+			dosDados.writeUTF(estrategias[1]);
+			dosDados.writeUTF(estrategias[2]);
 			dosDados.writeBoolean(cartasGrandes);
 			dosDados.writeBoolean(animacaoLigada);
 			dosDados.writeBoolean(baralhoLimpo);
@@ -188,5 +206,28 @@ public class Configuracoes {
 	public boolean isDefault() {
 		return this.recordId == REGISTRO_INEXISTENTE;
 	}
+
+	private static Boolean telaGrande = null;
+
+	/**
+	 * Determina se este celular tem uma tela suficientemente grande para
+	 * mostrar as "cartas grandes"
+	 * 
+	 * @return
+	 */
+	private static boolean isTelaGrande() {
+		// Classe dummy usada para medir a tela
+		class CanvasParaMedir extends Canvas {
+			protected void paint(Graphics arg0) {
+			}
+		}
+		// Se ainda não fez, mede a tela e toma a decisão (fiz assim por não
+		// saber o custo de instanciar um Canvas a cada chamada)
+		if (telaGrande == null) {
+			Canvas c = new CanvasParaMedir();
+			telaGrande = new Boolean(c.getWidth() >= 99 && c.getHeight() >= 140);
+		}
+		return telaGrande.booleanValue();
+		}
 
 }
