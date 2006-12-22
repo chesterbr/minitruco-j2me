@@ -52,17 +52,12 @@ public class Configuracoes {
 	 * quebrarem a compatibilidade, basta incrementar este número para garantir
 	 * que antigos registros sejam descartados
 	 */
-	private static final int VERSAO_ID = 103;
+	private static final int VERSAO_ID = 104;
 
 	/**
 	 * Identificador do registro das configurações no RecordStore
 	 */
 	private int recordId = REGISTRO_INEXISTENTE;
-
-	/**
-	 * Nome do jogador (usado no multiplayer)
-	 */
-	public String nomeJogador;
 
 	/*
 	 * Configurações do menu opções, nos seus valores default (vide MiniTruco
@@ -77,8 +72,6 @@ public class Configuracoes {
 	public boolean baralhoLimpo = false;
 
 	public boolean manilhaVelha = false;
-
-	public String servidor = Servidor.SERVIDOR_DEFAULT;
 
 	/**
 	 * Carrega as configurações da memória do celular
@@ -113,8 +106,6 @@ public class Configuracoes {
 					c.animacaoLigada = disDados.readBoolean();
 					c.baralhoLimpo = disDados.readBoolean();
 					c.manilhaVelha = disDados.readBoolean();
-					c.nomeJogador = disDados.readUTF();
-					c.servidor = disDados.readUTF();
 				} catch (IOException e) {
 					// Se der erro na leitura, retorna um objeto default, mas
 					// com o ID deste (para que a próxima gravação o
@@ -165,8 +156,6 @@ public class Configuracoes {
 			dosDados.writeBoolean(animacaoLigada);
 			dosDados.writeBoolean(baralhoLimpo);
 			dosDados.writeBoolean(manilhaVelha);
-			dosDados.writeUTF(nomeJogador == null ? "" : nomeJogador);
-			dosDados.writeUTF(servidor == null ? "" : servidor);
 
 			// Atualiza o recordstore
 			byte[] dados = baosDados.toByteArray();

@@ -36,7 +36,6 @@ import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.StringItem;
-import javax.microedition.lcdui.TextField;
 import javax.microedition.midlet.MIDlet;
 
 /**
@@ -64,11 +63,6 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	private JogadorHumano jogadorHumano;
 
 	/**
-	 * Servidor Em que estamos conectados
-	 */
-	private Servidor servidor;
-
-	/**
 	 * Formulário de configuração do jogo
 	 */
 	private Form formOpcoes;
@@ -87,16 +81,13 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	// Elementos de interação (menus, comandos, etc.) e constantes relacionadas
 
 	private static final String[] OPCOES_AJUDA = { "Instru\u00E7\u00F5es",
-			"Jogo Online", "Regras do Truco", "Sobre o miniTruco", "Voltar" };
+			"Regras do Truco", "Sobre o miniTruco", "Voltar" };
 
 	private static final String[] ARQUIVOS_AJUDA = { "/instrucoes.txt",
-			"/online.txt", "/regras.txt", "/sobre.txt" };
+			"/regras.txt", "/sobre.txt" };
 
 	public static Command iniciarCommand = new Command("Iniciar",
 			Command.SCREEN, 1);
-
-	public static Command multiplayerCommand = new Command("Jogar Online",
-			Command.SCREEN, 2);
 
 	public static Command ajudaCommand = new Command("Ajuda", Command.SCREEN, 3);
 
@@ -182,9 +173,6 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	ChoiceGroup cgRegras = new ChoiceGroup("Regras", Choice.MULTIPLE,
 			OPCOES_REGRAS, IMAGENS_REGRAS);
 
-	TextField tfServidor = new TextField("Servidor (host:porta)", null, 80,
-			TextField.URL);
-
 	public MiniTruco() {
 
 		// Cria uma nova mesa, pronta pra animar
@@ -197,20 +185,17 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		Animador.setAnimacaoLigada(conf.animacaoLigada);
 		cgRegras.setSelectedIndex(0, conf.baralhoLimpo);
 		cgRegras.setSelectedIndex(1, conf.manilhaVelha);
-		tfServidor.setString(conf.servidor);
 		Carta.setCartasGrandes(conf.cartasGrandes);
 		mesa.montaBaralhoCenario();
 
 		// Inicializa os "displayables" da aplicação (menos os do
 		// multiplayer, que são responsabilidade da classe Servidor)
 		formOpcoes = new Form("Op\u00E7\u00F5es");
-		// formOpcoes.append(cgDificuldade);
 		formOpcoes.append(cgVisual);
 		formOpcoes.append(cgRegras);
 		formOpcoes.append(cgParceiro);
 		formOpcoes.append(cgAdversarioEsq);
 		formOpcoes.append(cgAdversarioDir);
-		formOpcoes.append(tfServidor);
 		formOpcoes.addCommand(okOpcoesCommand);
 		formOpcoes.setCommandListener(this);
 		for (int i = 0; i < OPCOES_ESTRATEGIAS.length; i++) {
@@ -248,7 +233,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	}
 
 	/**
-	 * Versão da midlet (é usada pelo servidor)
+	 * Versão da midlet (é usada no "about...")
 	 */
 	public static String versaoMidlet;
 
@@ -302,9 +287,8 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	void mostraMenuAbertura(boolean visivel) {
 		if (visivel) {
 			mesa.addCommand(iniciarCommand);
-			mesa.addCommand(multiplayerCommand);
-			mesa.addCommand(ajudaCommand);
 			mesa.addCommand(opcoesCommand);
+			mesa.addCommand(ajudaCommand);
 			mesa.addCommand(sairProgramaCommand);
 			mesa.removeComandoAposta();
 			mesa.removeOpcoesAceite();
@@ -313,9 +297,8 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		} else {
 			mesa.removeCommand(sairProgramaCommand);
 			mesa.removeCommand(iniciarCommand);
-			mesa.removeCommand(multiplayerCommand);
-			mesa.removeCommand(ajudaCommand);
 			mesa.removeCommand(opcoesCommand);
+			mesa.removeCommand(ajudaCommand);
 		}
 
 	}
@@ -356,9 +339,6 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			mesa.addCommand(sairPartidaCommand);
 			Thread t = new Thread(jogo);
 			t.start();
-		} else if (cmd == multiplayerCommand) {
-			mostraMenuAbertura(false);
-			servidor = new Servidor(tfServidor.getString(), this);
 		} else if (cmd == sairPartidaCommand) {
 			confirmaSairPartida();
 		} else if (cmd == naoSairPartidaCommand) {
@@ -371,16 +351,6 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				jogadorHumano = null;
 				novaMesa(false);
 				Display.getDisplay(this).setCurrent(mesa);
-			} else if (servidor != null) {
-				if (cmd == sairPartidaSemPerguntarCommand) {
-					// Fim de jogo normal
-					servidor.enviaComando("I");
-					Display.getDisplay(this).setCurrent(servidor);
-				} else {
-					// Jogador abortou espontaneamente
-					servidor.abortaJogoAtual();
-				}
-				novaMesa(false);
 			} else {
 				// Isso teoricamente nao acontece, mas...
 				alerta("Erro inesperado", "Nao ha jogo em andamento");
@@ -427,24 +397,6 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				alerta("Conflito", "A manilha velha (fixa) exige baralho sujo.");
 				cgRegras.setSelectedIndex(0, false);
 			} else {
-				// Se o servidor estiver vazio, reverte ao default
-				if (tfServidor.getString() == null
-						|| tfServidor.getString().equals("")) {
-					tfServidor.setString(Servidor.SERVIDOR_DEFAULT);
-				}
-				// Corrige problemas comuns no servidor (prefixo inválido, falta
-				// de porta, case)
-				tfServidor.setString(tfServidor.getString().toLowerCase());
-				if (tfServidor.getString().startsWith("http://")) {
-					tfServidor.setString(tfServidor.getString().substring(7));
-				}
-				if (tfServidor.getString().startsWith("www.")) {
-					tfServidor.setString(tfServidor.getString().substring(4));
-				}
-				if (tfServidor.getString().indexOf(':') == -1) {
-					tfServidor.setString(tfServidor.getString() + ':'
-							+ Servidor.PORTA_DEFAULT);
-				}
 				// Guarda as opções na memória do celular
 				Configuracoes conf = Configuracoes.getConfiguracoes();
 				conf.estrategias = estrategias;
@@ -452,7 +404,6 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				conf.animacaoLigada = Animador.isAnimacaoLigada();
 				conf.baralhoLimpo = cgRegras.isSelected(0);
 				conf.manilhaVelha = cgRegras.isSelected(1);
-				conf.servidor = tfServidor.getString();
 				conf.salva();
 
 				// Volta pra tela anterior

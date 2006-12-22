@@ -30,7 +30,6 @@ import java.io.PrintStream;
  * não terão ciência de onde o jogo está se passando.
  * 
  * @see JogoLocal
- * @see JogoRemoto
  * @author Chester
  * 
  */
