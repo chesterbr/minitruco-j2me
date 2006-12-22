@@ -22,8 +22,8 @@ package br.inf.chester.minitruco.cliente;
 /**
  * Base para as estratégias "plugáveis" que um jogador CPU pode utilizar.
  * <p>
- * Para criar uma nova estratégia, basta criar um descendente desta classe que
- * implemente os métodos abstratos (que o jogo chamará quando for a hora).
+ * Para criar uma nova estratégia, basta criar uma classe que implemente os
+ * métodos definidos aqui (que o jogo chamará quando for a hora).
  * <p>
  * Eses métodos recebem uma "fotografia" do jogo (SituacaoJogo) no momento em
  * que a ação deles (jogar, decidir se aceita um truco, etc). é demandada. Se
@@ -31,8 +31,8 @@ package br.inf.chester.minitruco.cliente;
  * <code>Jogo</code>, ou seja, o estado (não-<code>static</code>)
  * persistirá ao longo de uma partida, mas não entre partidas.
  * <p>
- * Para testar, substitua as referências a EstrategiaWillian por referências à
- * sua clase.
+ * Para testar, adicione sua estratégia ao array OPCOES_ESTRATEGIAS (e o null
+ * corespondente no IMAGENS_ESTRATEGIAS) dentro da classe MiniTruco
  * <p>
  * Aviso do Chester: se o seu jogador ficar bom, eu ficaria agradecido se você
  * me mandasse ele no cd@pobox.com. Assim que eu tiver mais de uma Estrategia (o
@@ -45,6 +45,7 @@ package br.inf.chester.minitruco.cliente;
  * conversar...
  * 
  * @author Chester
+ * @see MiniTruco#OPCOES_ESTRATEGIAS
  */
 public interface Estrategia {
 

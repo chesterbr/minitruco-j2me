@@ -20,7 +20,7 @@ package br.inf.chester.minitruco.cliente;
  */
 
 /**
- * Jogo rodando no celular ou no servidor.
+ * Jogo rodando no celular.
  * <p>
  * Um jogador só passa a fazer parte do jogo se for adicionado a ele pelo método
  * <code>adiciona()</code>.

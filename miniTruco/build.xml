@@ -29,28 +29,9 @@
 		</java>
 		<delete dir="${BIN}" />
 	</target>
-	<target name="gera_tudo" depends="dist,jar_server,limpeza" description="Monta todos os arquivos do cliente (.jar./.jad do celular, .zip dos fontes, javadoc em docs/javadoc/ e .jar do servidor)" />
+	<target name="gera_tudo" depends="dist,limpeza" description="Monta todos os arquivos do cliente (.jar./.jad do celular, .zip dos fontes, javadoc em docs/javadoc/)" />
 
 	<!-- Tasks de apoio -->
-
-	<target name="jar_server" depends="dist">
-		<delete file="${DEPLOY}/miniTrucoServer.jar" />
-		<delete dir="${DEPLOY}/tmpsrc" />
-		<mkdir dir="${DEPLOY}/tmpsrc" />
-		<copy todir="${DEPLOY}/tmpsrc">
-			<fileset dir="src" />
-			<fileset dir="../miniTrucoServer/src" />
-		</copy>
-		<javac target="1.5" classpath="${wtk.midpapi}" source="1.5" destdir="${BIN}" srcdir="${DEPLOY}/tmpsrc" debug="true" debuglevel="lines,vars,source" />
-		<jar basedir="${BIN}" destfile="${DEPLOY}/miniTrucoServer.jar">
-			<manifest>
-				<attribute name="Main-Class" value="br.inf.chester.minitruco.servidor.MiniTrucoServer" />
-			</manifest>
-			<fileset dir="../miniTrucoServer/res" includes="*.html,*.jar" />
-			<fileset dir="${DEPLOY}/" includes="miniTruco.jar" />
-		</jar>
-		<delete dir="${DEPLOY}/tmpsrc" />
-	</target>
 
 	<target name="compilar_sem_wtk">
 		<delete dir="${BIN}" />
@@ -127,9 +108,9 @@
 		</java>
 		<!-- Codigo-fonte -->
 		<delete file="${DEPLOY}/${NOME_APP}_src.zip" />
-		<zip destfile="${DEPLOY}/${NOME_APP}_src.zip" includes="miniTruco/**,miniTrucoServer/**" excludes="**/*.zip,**/*.class,**/*.jar,**/lib,**/deploy/**" basedir=".." />
+		<zip destfile="${DEPLOY}/${NOME_APP}_src.zip" includes="miniTruco/**" excludes="**/*.zip,**/*.class,**/*.jar,**/lib,**/deploy/**" basedir=".." />
 		<!-- Javadoc -->
-		<javadoc overview="docs/overview_javadoc.html" access="public" author="true" classpath="lib/midp.jar" destdir="docs/javadoc" doctitle="miniTruco 2 - Javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="br.inf.chester.minitruco.servidor,br.inf.chester.minitruco.cliente" source="1.5" sourcepath="src:../miniTrucoServer/src" splitindex="true" use="true" version="true" />
+		<javadoc overview="docs/overview_javadoc.html" access="public" author="true" classpath="lib/midp.jar" destdir="docs/javadoc" doctitle="miniTruco 2 - Javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="br.inf.chester.minitruco.servidor,br.inf.chester.minitruco.cliente" source="1.5" sourcepath="src" splitindex="true" use="true" version="true" />
 	</target>
 
 	<target name="limpeza">

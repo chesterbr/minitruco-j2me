@@ -1,145 +1,313 @@
 <html>
-<body>
-<center>
-<h1>miniTruco - Documentação do Desenvolvedor</h1>
-<i>Carlos Duarte do Nascimento (Chester), 2006</i>
-</center>
+	<head>
+		<link rel="stylesheet" href="http://chester.blog.br/estilo.css"
+			type="text/css" />
+		<link rel="stylesheet" href="http://chester.blog.br/styles-site.css"
+			type="text/css" />
+	</head>
+	<body>
+		<center>
+			<h1>
+				miniTruco - Documentação do Desenvolvedor
+			</h1>
+			<i>Carlos Duarte do Nascimento (Chester), 2006</i>
+		</center>
 
-<h2>Introdução</h2>
+		<h2>
+			Introdução
+		</h2>
 
-<p>
-O miniTruco é um jogo de Truco feito para dispositivos móveis que
-possuam J2ME (CLDC) implementando MIDP 1.0 ou superior (em português, "celulares com Java"), cujo código-fonte está disponível através da <a href="http://www.gnu.org/licenses/gpl.txt">General Public License (GPL)</a>.</p>
-<p>
-O objetivo deste documento é ajudar desenvolvedores Java a baixar, instalar, entender e eventualmente aprimorar o código-fonte do do jogo - código este que é oferecido para o uso de terceiros sob a licença GPL (GNU Public License), sem prejuízo dos direitos de autor originais (conforme esclarecido em  <a href=http://www.gnu.org/licenses/gpl-faq.pt.html"">http://www.gnu.org/licenses/gpl-faq.pt.html</a>).
-</p>
-<p>
-O jogo, seu código fonte e outras informações de autoria podem ser obtidos na <a href="http://www.stoneagescanners.com/chester/">página do Chester</a>.</p>
+		<p>
+			O miniTruco é um jogo de Truco feito para dispositivos móveis que
+			possuam J2ME (CLDC) implementando MIDP 1.0 ou superior (em português,
+			"celulares com Java"), cujo código-fonte está disponível através da
+			<a href="http://www.gnu.org/licenses/gpl.txt">General Public
+				License (GPL)</a>.
+		</p>
+		<p>
+			O objetivo deste documento é ajudar desenvolvedores Java a baixar,
+			instalar, entender e eventualmente aprimorar o código-fonte do do
+			jogo - código este que é oferecido para o uso de terceiros sob a
+			licença GPL (GNU Public License), sem prejuízo dos direitos de autor
+			originais (conforme esclarecido em
+			<a href=http://www.gnu.org/licenses/gpl-faq.pt.html"">http://www.gnu.org/licenses/gpl-faq.pt.html</a>).
+		</p>
+		<p>
+			O jogo, seu código fonte e outras informações de autoria podem ser
+			obtidos na
+			<a href="http://www.stoneagescanners.com/chester/">página do
+				Chester</a>.
+		</p>
 
-<h2>Preparação do Ambiente</h2>
+		<h2>
+			Preparação do Ambiente
+		</h2>
 
-<h3>Pré-Requisitos</h3>
-Você vai precisar baixar os seguintes itens (caso não os tenha):
-<ul>
-  <li><a href="http://chester.inf.br/minitruco/miniTruco_src.zip">Código-fonte do miniTruco</a>;</li>
-  <li><a href="http://java.sun.com">JDK 5.0</a> - apenas o JDK, não precisa do NetBeans não (aliás, ninguém precisa daquele monstrinho);</li>
-  <li>midp.jar - contém a definição das classes J2ME necessárias para a compilação. Pode ser obtido em:
-    <ul>
-      <li>Win32/Linux: <a href="http://java.sun.com/products/sjwtoolkit/download-2_2.html">J2ME Wireless Toolkit</a></li>
-      <li>Mac OS X: <a href="http://mpowers.net/midp-osx/">MIDP for OS X</a> </li>
-    </ul>
-  </li>
-  <li><a href="http://sourceforge.net/projects/microemulator/">Microemulator</a> - Emulador de celular Java, para testar a aplicação no próprio PC;</li>
-  <li><a href="http://antenna.sourceforge.net/">Antenna</a> - Um canivete suíço para coisas de J2ME. Ajuda um bocado em tarefas chatas, tais como manter o .jad atualizado;</li>
-  <li><a href="http://proguard.sourceforge.net/">Proguard</a> - Efetua a ofuscação (e redução) das classes. Embora o código do miniTruco seja aberto, este passo reduz o tamanho da aplicação final, o que é bom;</li>
-  <li><a href="http://java.sun.com/products/midp4palm/download.html">MIDP for Palm OS</a> - Usado para gerar o arquivo .PRC, já que o Palm não suporta ler .jar diretamente (é, tosqueira, mas uma produção conjunta Sun+Palm, vocês queriam o quê?);</li>
-</ul>
-Item opcional (mas <b>fortemente</b> recomendado):
-<ul>
-<li><a href="http://www.eclipse.org/downloads/">Eclipse <b>3.2</b></a></li>
-</ul>
-No restante destas instruções, irei assumir o uso do Eclipse (os masoquistas podem se virar sem - basta o editor respeitar o encoding ISO-8859-1 e chamar o <a href="http://ant.apache.org/">Ant</a> manualmente).
+		<h3>
+			Pré-Requisitos
+		</h3>
+		<p>
+			Você vai precisar baixar os seguintes itens (caso não os tenha):
+		</p>
+		<ul>
+			<li>
+				<a href="http://java.sun.com">JDK 5.0</a> - apenas o JDK, não
+				precisa do NetBeans não (aliás, ninguém precisa daquele monstrinho);
+			</li>
+			<li>
+				midp.jar - contém a definição das classes J2ME necessárias para a
+				compilação. Pode ser obtido em:
+				<ul>
+					<li>
+						Win32/Linux:
+						<a
+							href="http://java.sun.com/products/sjwtoolkit/download-2_2.html">J2ME
+							Wireless Toolkit</a>
+					</li>
+					<li>
+						Mac OS X:
+						<a href="http://mpowers.net/midp-osx/">MIDP for OS X</a>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<a href="http://sourceforge.net/projects/microemulator/">Microemulator</a>
+				- Emulador de celular Java, para testar a aplicação no próprio PC;
+			</li>
+			<li>
+				<a href="http://antenna.sourceforge.net/">Antenna</a> - Um canivete
+				suíço para coisas de J2ME. Ajuda um bocado em tarefas chatas, tais
+				como manter o .jad atualizado;
+			</li>
+			<li>
+				<a href="http://proguard.sourceforge.net/">Proguard</a> - Efetua a
+				ofuscação (e redução) das classes. Embora o código do miniTruco seja
+				aberto, este passo reduz o tamanho da aplicação final, o que é bom;
+			</li>
+			<li>
+				<a href="http://java.sun.com/products/midp4palm/download.html">MIDP
+					for Palm OS</a> - Usado para gerar o arquivo .PRC, já que o Palm não
+				suporta ler .jar diretamente (é, tosqueira, mas uma produção
+				conjunta Sun+Palm, vocês queriam o quê?);
+			</li>
+		</ul>
+		<p>
+			Item opcional (mas
+			<b>fortemente</b> recomendado):
+		</p>
+		<ul>
+			<li>
+				<a href="http://www.eclipse.org/downloads/">Eclipse <b>3.2</b> </a>
+				com o plugin
+				<a href="http://subclipse.tigris.org/">Subclipse</a>;
+			</li>
+		</ul>
+		<p>
+			No restante destas instruções, irei assumir o uso do Eclipse (os
+			masoquistas podem se virar sem - basta o editor respeitar o encoding
+			ISO-8859-1 e chamar o
+			<a href="http://ant.apache.org/">Ant</a> manualmente). Um outro
+			opcional é um emulador de Palm, como o POSE. Atualmente, o suporte a
+			Palm desse jogo é muito básico - não que eu não queira, mas a Palm
+			tem dois runtimes de MIDP: um grátis, mas tosco (roda emulando a CPU
+			Dragonball nos Palms modernos, mudanças nos menus fazem a tela
+			piscar, etc.), e outro que é razoável, mas pago. Caramba, cobrar JVM
+			é o fim da picada...
+		</p>
+		<h3>
+			Configurando o ambiente
+		</h3>
 
-Um outro opcional é um emulador de Palm, como o POSE. Atualmente, o suporte a Palm desse jogo é muito básico - não que eu não queira, mas a Palm tem dois runtimes de MIDP: um grátis, mas tosco (roda emulando a CPU Dragonball nos Palms modernos, mudanças nos menus fazem a tela piscar, etc.), e outro que é razoável, mas pago. Caramba, cobrar JVM é o fim da picada...
+		<ol>
+			<li>
+				Instale o JDK, se necessário;
+			</li>
+			<li>
+				Instale o Eclipse (e rode pelo menos uma vez), se necessário;
+			</li>
+			<li>
+				Instale o Subclipse (não é preciso baixar, basta seguir as
+				<a href="http://subclipse.tigris.org/install.html">instruções</a>);
+			</li>
+			<li>
+				Na perspectiva
+				<i>SVN Repository Explorer</i>, configure o repositório do Subclipse
+				no Google Code (a URL é https://minitruco.googlecode.com/svn para
+				quem já tem cadastro no Google Code, caso contrário use apenas
+				http://. Mais detalhes na
+				<a href="http://code.google.com/p/minitruco/">página do projeto
+					no Google Code</a>);
+			</li>
+			<li>
+				Abra a pasta tags, dê um clique com o botão direito sobre a pasta
+				com a versão desejada (normalmente a última), e faça um checkout
+				<br />
+				(se preferir, baixe a última versão em desenvolvimento de
+				trunk/miniTruco, mas essa não é garantidaemnte estável);
+				<br />
+				<br />
+				Seguindo até este ponto, você terá os fontes no seu Eclipse. Agora
+				faltam as bibliotecas (que eu não inclui por não ter tido tempo de
+				ler as licenças e ver se todas elas permitem - se alguém pudesse
+				conferir isso, eu poderia deixar esse passo facilitado)
+				<br />
+				<br />
+			</li>
 
-<h3>Configurando o ambiente</h3>
+			<li>
+				Crie o diretório miniTruco/lib, e coloque nele os arquivos:
+				<ul>
+					<li>
+						antenna-bin-(no.da.versão).jar (vindo do Antenna);
+					</li>
+					<li>
+						proguard.jar (vindo do ProGuard);
+					</li>
+					<li>
+						me-app.jar (vindo do Microemulator);
+					</li>
+					<li>
+						midp.jar (renomeie se tiver outro nome - esse é o nome no Mac OS X
+						- ou atualize a referência no classpath do projeto);
+					</li>
+					<li>
+						Converter.jar (vindo do MIDP for Palm OS);
+					</li>
+				</ul>
+			</li>
+		</ol>
 
-<ol>
-<li>Instale o JDK, se necessário;</li>
-<li>Instale o Eclipse (e rode pelo menos uma vez), se necessário.;</li>
-<li>Feche o Eclipse;</li>
-<li>No diretório de workspace do Eclipse (geralmente ~/workspace ou a pasta workspace em "Meus Documentos"), descompacte os fontes. São dois projects (diretórios), miniTruco e miniTrucoServer</li>
-<li>
-  Crie o diretório miniTruco/lib, e coloque nele os arquivos:
-  <ul>
-    <li>antenna-bin-(no.da.versão).jar (vindo do Antenna);</li>
-    <li>proguard.jar (vindo do ProGuard);</li>
-    <li>me-app.jar (vindo do Microemulator);</li>
-    <li>Converter.jar (vindo do MIDP for Palm OS);</li>
-  </ul>
-</li>
-<li>
-  No diretório miniTrucoServer/res (que já deve existir), coloque os arquivos:
-  <ul>
-    <li>me-app.jar (vindo do Microemulator);</li>
-    <li>large.dev.jar (vindo do Microemulator);</li>
-  </ul>
-</li>
-<li>Abra o Eclipse</li>
-<li>Crie um novo projeto (File, New, Project e escolha "Project" dentro de "General") com o nome miniTruco - ele vai utilizar os fontes que você descompactou;</li>
-<li>Repita o passo anterior, mas com o nome miniTrucoServer.</li>
-</ol>
+		<h3>
+			Verificando a instalação
+		</h3>
 
-<h3>Verificando a instalação</h3>
+		<p>
+			Se tudo deu certo, você vai ter os dois projects, e dentro do
+			miniTruco, vai ter um build.xml. Neste arquivo, a opção "Run as Ant
+			Build" (ou a janela Ant) permitem acionar o target "roda_cliente",
+			que compila a aplicação e chama o Microemulator rodando o jogo.
+		</p>
 
-<p>Se tudo deu certo, você vai ter os dois projects, e dentro do miniTruco, vai ter um build.xml. Neste arquivo, a opção "Run as Ant Build" (ou a janela Ant) permitem acionar o target "roda_cliente", que compila a aplicação e chama o Microemulator rodando o jogo.</p>
+		<h2>
+			Arquitetura da Aplicação
+		</h2>
+		<p>
+			<font color=red>TODO (falar das classes, do cliente servidor e
+				inserir o protocolo.txt)</font>
+		</p>
+		<p>
+			Vale a pena consultar o
+			<a href="javadoc/index.html">Javadoc</a>, que descreve todas as
+			classes e praticamente todos os métodos e atributos.
+		</p>
+		<h2>
+			Perguntas Freqüentes (FAQ)
+		</h2>
 
-<p>Para testar a exceução do servidor, basta executar a classe br.inf.chester.minitruco.servidor.MiniTrucoServer. Você pode conectar o emulador neste servidor trocando o endereço (em Opções) para <i>localhost</i> (ele adiciona a porta sozinho)</p>
+		<p>
+			<i>Cadê o servidor</i>
+			<br />
+			Desencanei dele (é difícil achar um celular que consiga conectar
+			direto num servidor não-http). No trunk você só vai encontrar o
+			cliente. Optei por orientar o projeto na direção do Bluetooth.
+			<br />
+			<br />
+			Se alguém quiser assumir essa bola (o desenvolvimento e manter um
+			servidor no ar), basta pegar as tags serverV1.0 e v2.02.00 (último
+			cliente com suporte a client-server via GPRS).
+		</p>
+		<p>
+			<i>Qual versão do Java devo usar?</i>
+			<br />
+			Eu usei Java 1.5 (Java 5), mas J2ME pressupõe 1.1, então não devem
+			haver problemas em usar o 1.4 ou 1.6 (Java 6).
+		</p>
 
-<h2>Arquitetura da Aplicação</h2>
+		<p>
+			<i>E o Eclipse 3.1?</i>
+			<br />
+			<strike>Eu desenvolvi 99% do projeto no 3.1, mas atualizei
+				para o 3.2 recentemente. O site do Eclipse diz que não rola abrir o
+				workspace do 3.2 no 3.1, mas vale tentar se você não puder atualizar
+				(mas os refactorings do 3.2 são muito bacanas).</strike> Resposta curta: não.
+		</p>
 
-<font color=red>TODO (falar das classes, do cliente servidor e inserir o protocolo.txt)</font>
-<p>
-Vale a pena consultar o <a href="javadoc/index.html">Javadoc</a>, que descreve todas as classes e praticamente todos os métodos e atributos.
-</p>
-<h2>Perguntas Freqüentes (FAQ)</h2>
+		<p>
+			<i>As classes são confusas. Não tem como rolar um diagrama UML?</i>
+			<br />
+			<strike>Estou louco pra fazer isso, mas minha ferramenta
+				predileta, o Jude, não suporta Java 1.5. Eu tenho o MyEclipse (que é
+				pago, mas vale cada centavo), só que justamente este feature (UML)
+				ele não suporta no Mac</strike> Essa desculpa acabou, preciso arrumar outra
+			ou tomar vergonha e resolver isso.
+		</p>
 
-<p>
-<i>Posso usar Java 1.4?</i><br/>
-No cliente até rola, o servidor já usa annotations e generics. Deve dar pra fazer downgrade, mas não achei prioridade.
-</p>
+		<p>
+			<i>Porque você usa esse bando de tralha (Antenna, Proguard, etc.)
+				se o J2ME Wireless Toolkit tem tudo isso?</i>
+			<br />
+			Porque o kit em questão só roda em Win32/Linux (belo exemplo de
+			aplicação 100% Pure Java, Sun), e eu uso Mac. Além disso, as
+			ferramentas abertas em questão são, a meu ver, mais focadas e
+			eficientes.
+		</p>
 
-<p>
-<i>E o Eclipse 3.1?</i><br/>
-Eu desenvolvi 99% do projeto no 3.1, mas atualizei para o 3.2 recentemente. O site do Eclipse diz que não rola abrir o workspace do 3.2 no 3.1, mas vale tentar se você não puder atualizar (mas os refactorings do 3.2 são muito bacanas).
-</p>
-
-<p>
-<i>As classes são confusas. Não tem como rolar um diagrama UML?</i><br/>
-Estou louco pra fazer isso, mas minha ferramenta predileta, o Jude, não suporta Java 1.5. Eu tenho o MyEclipse (que é pago, mas vale cada centavo), só que justamente este feature (UML) ele não suporta no Mac.
-</p><p>O EclipseUML me pareceu a salvação, até que eu li as letras miúdas no programa de instalação:
-</p>
-<blockquote>Exchanging of java projects created while using EclipseUML Free Edition among developers is prohibited</blockquote>
-<p>Aí fica pequeno. Se alguém souber de alguma alternativa, sou todo ouvidos. Senão, vai ficar pro dia em que eu tiver tempo de montar sem engenharia reversa.</p>
-
-
-<p>
-<i>Porque você usa esse bando de tralha (Antenna, Proguard, etc.) se o J2ME Wireless Toolkit tem tudo isso?</i><br/>
-Porque o kit em questão só roda em Win32/Linux (belo exemplo de aplicação 100% Pure Java, Sun), e eu uso Mac. Além disso, as ferramentas abertas em questão são, a meu ver, mais focadas e eficientes.
-</p>
-
-<p>
-<i>Freqüentes tem acento?</i><br/>
-Sim, segundo o <a href="http://www.sualingua.com.br/03/03_trema.htm">Prof. Moreno</a>.
-</p>
+		<p>
+			<i>Freqüentes tem acento?</i>
+			<br />
+			Sim, segundo o
+			<a href="http://www.sualingua.com.br/03/03_trema.htm">Prof.
+				Moreno</a>.
+		</p>
 
 
-TODO
+		<h2>
+			Dicas
+		</h2>
 
-<h2>Dicas</h2>
+		<p>
+			Você pode rodar o jogo diretamente (aproveitando a compilação que o
+			Eclipse faz em /bin), configurando o menu "Run" para chamar a classe
+			com.barteo.emulator.app.Main e passando em Arguments a string
+			"br.inf.chester.minitruco.cliente.MiniTruco"
+		</p>
 
-<p>Você pode rodar o jogo diretamente (aproveitando a compilação que o Eclipse faz em /bin), configurando o menu "Run" para chamar a classe com.barteo.emulator.app.Main e passando em Arguments a string "br.inf.chester.minitruco.cliente.MiniTruco"</p>
+		<p>
+			Para saber a versão dos fontes baixados, abra o arquivo
+			jad/miniTruco.jad e consulte a propriedade MIDlet-Version. A última
+			versão você pega na página do Chester (vide acima).
+		</p>
 
-<p>Para saber a versão dos fontes baixados, abra o arquivo jad/miniTruco.jad e consulte a propriedade MIDlet-Version. A última versão você pega na página do Chester (vide acima).</p>
+		<h2>
+			Avisos Legais
+		</h2>
+		<p>
+			Copyright © 2006 Carlos Duarte do Nascimento (Chester) - cd@pobox.com
+			<br />
+			Estratégia da CPU (EstrategiaWillian): Copyright © 2006 Willian
+			Gigliotti - wgigliotti@gmail.com
+			<br />
+			Estratégia da CPU (EstrategiaSellani): Copyright © 2006 Leonardo
+			Sellani
+		</p>
+		<p>
+			Este programa é um software livre; você pode redistribui-lo e/ou
+			modifica-lo dentro dos termos da Licença Pública Geral GNU como
+			publicada pela Fundação do Software Livre (FSF); na versão 2 da
+			Licença, ou (na sua opnião) qualquer versão.
+		</p>
+		<p>
+			Este programa é distribuido na esperança que possa ser util, mas SEM
+			NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÇÂO a qualquer
+			MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença Pública Geral GNU
+			para maiores detalhes.
+		</p>
+		<p>
+			Você deve ter recebido uma cópia da Licença Pública Geral GNU junto
+			com este programa, se não, escreva para a Fundação do Software
+			Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
+			USA
+		</p>
 
-<h2>Avisos Legais</h2>
-<p>
-Copyright © 2006 Carlos Duarte do Nascimento (Chester) - cd@pobox.com<br/>Estratégia da CPU (EstrategiaWillian): Copyright © 2006 Willian Gigliotti - wgigliotti@gmail.com
-</p><p>
-Este programa é um software livre; você pode redistribui-lo e/ou 
-modifica-lo dentro dos termos da Licença Pública Geral GNU como 
-publicada pela Fundação do Software Livre (FSF); na versão 2 da 
-Licença, ou (na sua opnião) qualquer versão.
-</p><p>
-Este programa é distribuido na esperança que possa ser util, 
-mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÇÂO
-a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença
-Pública Geral GNU para maiores detalhes.
-</p><p>
-Você deve ter recebido uma cópia da Licença Pública Geral GNU
-junto com este programa, se não, escreva para a Fundação do Software
-Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-</p>
-
-</body>
+	</body>
 </html>
