@@ -2,7 +2,20 @@ package br.inf.chester.minitruco.cliente;
 
 /*
  * Copyright © 2006 Leonardo Sellani
+ *   
+ * Este código fonte é um "software livre", podendo ser copiado,
+ * distribuído ou mesmo modificado.
+ *
+ * Esta classe faz parte no software MiniTruco, minha intenção
+ * é auxiliar a quem esteja interessado em implementar novos
+ * jogadores a fim de criarmos um jogo mais rico e inteligente.
+ * Mesmo sem conhecer muito a linguagem Java você terá facilidade
+ * em criar um novo jogador, basta utilizar a estrutura e os
+ * métodos existentes e apenas modificar ou aprimorar a
+ * "inteligência" do jogador.
  * 
+ * ------
+ *
  * Este programa é um software livre; você pode redistribui-lo e/ou 
  * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
  * publicada pela Fundação do Software Livre (FSF); na versão 2 da 
