@@ -2,6 +2,9 @@ package br.inf.chester.minitruco.cliente;
 
 import javax.bluetooth.BluetoothStateException;
 import javax.bluetooth.LocalDevice;
+import javax.bluetooth.UUID;
+import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -28,6 +31,12 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 
 	protected static final Command voltarCommand = new Command("Voltar",
 			Command.STOP, 999);
+
+	/**
+	 * Identificador único Bluetooth do "serviço miniTruco"
+	 */
+	public static final UUID UUID_BT = new UUID(
+			"102030405060708090A0B0C0D0E0F010", false);
 
 	/**
 	 * Referência ao jogo em execução
@@ -108,6 +117,42 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 			estaVivo = false;
 			midlet.novaMesa(false);
 			midlet.startApp();
+		}
+	}
+
+	/**
+	 * Exibe um alerta e aguarda o "ok"
+	 * 
+	 * @param titulo Título da janela
+	 * @param texto Texto do alerta
+	 */
+	public void alerta(String titulo, String texto) {
+		alerta(titulo, texto, false);
+	}
+
+	/**
+	 * Exibe um alerta
+	 * 
+	 * @param titulo Título da janela
+	 * @param texto Texto do alerta
+	 * @param bloqueia
+	 *            true para bloquear até o usuário dar o "ok", false para exibir
+	 *            e continuar rodando
+	 */
+	public void alerta(String titulo, String texto, boolean bloqueia) {
+		Alert a = new Alert(titulo);
+		a.setString(texto);
+		a.setType(AlertType.INFO);
+		a.setTimeout(Alert.FOREVER);
+		display.setCurrent(a);
+		if (bloqueia) {
+			do {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// Nevermind, apenas aguardando...
+				}
+			} while (display.getCurrent().equals(a));
 		}
 	}
 
