@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import javax.bluetooth.DiscoveryAgent;
 import javax.bluetooth.RemoteDevice;
-import javax.bluetooth.UUID;
 import javax.microedition.io.Connection;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnectionNotifier;
@@ -19,13 +18,6 @@ import javax.microedition.lcdui.Graphics;
  * 
  */
 public class ServidorBT extends TelaBT {
-
-	/**
-	 * Identificador único Bluetooth do "serviço miniTruco"
-	 */
-	// TODO: mudar, está igual à do bluechat
-	public static final UUID UUID_BT = new UUID(
-			"102030405060708090A0B0C0D0E0F010", false);
 
 	/**
 	 * Notificador do servidor (através do qual vamos aceitar as conexões)
@@ -65,7 +57,9 @@ public class ServidorBT extends TelaBT {
 				Logger.debug("Cliente conectou. endereco: "
 						+ rdev.getBluetoothAddress() + " nome="
 						+ rdev.getFriendlyName(true));
-				// TODO: adicionar o cliente à lista
+				// TODO: adicionar o cliente à lista, criar uma thread para
+				// processar seu I/O
+				// ou criar logo o objeto Jogador para ele
 			} catch (IOException e) {
 				e.printStackTrace();
 				if (c != null)
