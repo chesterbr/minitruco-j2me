@@ -343,12 +343,12 @@ public class Mesa extends Canvas {
 						+ 6, getHeight() / 2 + 1, imgLogoCartas.getWidth(),
 						hCarta);
 			}
-			// m.chester.inf.br
+			// Endereço para download
 			if (aberturaUrlVisivel) {
 				g.setColor(0x000000FF);
 				g.setFont(Font.getFont(Font.FACE_PROPORTIONAL,
 						Font.STYLE_UNDERLINED, Font.SIZE_SMALL));
-				g.drawString("m.chester.inf.br", getWidth() / 2,
+				g.drawString("m.chester.blog.br", getWidth() / 2,
 						getHeight() - 2, Graphics.HCENTER | Graphics.BOTTOM);
 			}
 		}

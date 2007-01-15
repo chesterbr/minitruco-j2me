@@ -89,7 +89,13 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	public static Command iniciarCommand = new Command("Iniciar",
 			Command.SCREEN, 1);
 
-	public static Command ajudaCommand = new Command("Ajuda", Command.SCREEN, 3);
+	public static Command btServerCommand = new Command("Servidor BT",
+			Command.SCREEN, 2);
+
+	public static Command btClientCommand = new Command("Cliente BT",
+			Command.SCREEN, 3);
+
+	public static Command ajudaCommand = new Command("Ajuda", Command.SCREEN, 4);
 
 	public static Command opcoesCommand = new Command("Op\u00E7\u00F5es",
 			Command.SCREEN, 5);
@@ -172,6 +178,11 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 	ChoiceGroup cgRegras = new ChoiceGroup("Regras", Choice.MULTIPLE,
 			OPCOES_REGRAS, IMAGENS_REGRAS);
+
+	/**
+	 * Tela do opção de Bluetooth (cliente ou servidor) em exibição
+	 */
+	public TelaBT telaBT;
 
 	public MiniTruco() {
 
@@ -287,8 +298,10 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	void mostraMenuAbertura(boolean visivel) {
 		if (visivel) {
 			mesa.addCommand(iniciarCommand);
-			mesa.addCommand(opcoesCommand);
+			mesa.addCommand(btServerCommand);
+			mesa.addCommand(btClientCommand);
 			mesa.addCommand(ajudaCommand);
+			mesa.addCommand(opcoesCommand);
 			mesa.addCommand(sairProgramaCommand);
 			mesa.removeComandoAposta();
 			mesa.removeOpcoesAceite();
@@ -297,8 +310,10 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		} else {
 			mesa.removeCommand(sairProgramaCommand);
 			mesa.removeCommand(iniciarCommand);
-			mesa.removeCommand(opcoesCommand);
+			mesa.removeCommand(btServerCommand);
+			mesa.removeCommand(btClientCommand);
 			mesa.removeCommand(ajudaCommand);
+			mesa.removeCommand(opcoesCommand);
 		}
 
 	}
@@ -339,6 +354,10 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			mesa.addCommand(sairPartidaCommand);
 			Thread t = new Thread(jogo);
 			t.start();
+		} else if (cmd == btServerCommand) {
+			telaBT = new ServidorBT(this);
+		} else if (cmd == btClientCommand) {
+			telaBT = new ClienteBT(this);
 		} else if (cmd == sairPartidaCommand) {
 			confirmaSairPartida();
 		} else if (cmd == naoSairPartidaCommand) {
