@@ -48,11 +48,6 @@ public class JogadorCPU extends Jogador {
 	}
 
 	/**
-	 * Jogo que está sendo jogado por este jogador
-	 */
-	private Jogo jogo;
-
-	/**
 	 * Quantidade de jogadores cuja resposta estamos esperando para um pedido de
 	 * truco.
 	 */
@@ -62,12 +57,6 @@ public class JogadorCPU extends Jogador {
 	 * Sinaliza se os adversários aceitaram um pedido de truco
 	 */
 	private boolean aceitaramTruco;
-
-	public void jogadorAceito(Jogador j, Jogo jogo) {
-		if (this.equals(j)) {
-			this.jogo = jogo;
-		}
-	}
 
 	private static Random random = new Random();
 	

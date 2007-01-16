@@ -1,4 +1,5 @@
 package br.inf.chester.minitruco.cliente;
+
 /*
  * Copyright © 2006 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
@@ -40,21 +41,72 @@ package br.inf.chester.minitruco.cliente;
  */
 public abstract class Jogador {
 
-	private String nome;
+	// Variáveis / Métodos úteis
 
 	private int posicao;
 
 	private Carta[] cartas;
 
 	/**
-	 * Informa que um novo jogador foi aceito no jogo
-	 * 
-	 * @param j
-	 *            Jogador aceito
-	 * @param jogo
-	 *            Jogo que aceitou o jogador
+	 * Jogo que está sendo jogado por este jogador
 	 */
-	public abstract void jogadorAceito(Jogador j, Jogo jogo);
+	protected Jogo jogo;
+
+	/**
+	 * Recupera a posição do jogador no jogo
+	 * 
+	 * @return número de 1 a 4 (não necessariamente a posição dele na mesa)
+	 */
+	public int getPosicao() {
+		return posicao;
+	}
+
+	public void setPosicao(int posicao) {
+		this.posicao = posicao;
+	}
+
+	/**
+	 * Recupera a equipe em que este jogador está (assumindo que ele já esteja
+	 * aceito em um jogo)
+	 * 
+	 * @return 1 ou 2
+	 */
+	public int getEquipe() {
+		return 1 + ((1 + posicao) % 2);
+	}
+
+	/**
+	 * Recupera a posição do parceiro
+	 * 
+	 * @return número de 1 a 4
+	 */
+	public int getParceiro() {
+		return 1 + ((posicao + 1) % 4);
+	}
+
+	public int getEquipeAdversaria() {
+		return 1 + (posicao % 2);
+	}
+
+	public void setCartas(Carta[] cartas) {
+		this.cartas = cartas;
+	}
+
+	public Carta[] getCartas() {
+		return cartas;
+	}
+
+	public boolean possuiCarta(Carta c) {
+		if (cartas == null) {
+			return false;
+		}
+		for (int i = 0; i < cartas.length; i++) {
+			if (cartas[i].equals(c)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Informa que uma carta foi jogada na mesa.
@@ -121,71 +173,6 @@ public abstract class Jogador {
 	 *            Jogador que recusou o pedido.
 	 */
 	public abstract void recusouAumentoAposta(Jogador j);
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setPosicao(int posicao) {
-		this.posicao = posicao;
-	}
-
-	public int getPosicao() {
-		return posicao;
-	}
-
-	/**
-	 * Recupera a equipe em que este jogador está (assumindo que ele já esteja
-	 * aceito em um jogo)
-	 * 
-	 * @return 1 ou 2
-	 */
-	public int getEquipe() {
-		return 1 + ((1 + posicao) % 2);
-	}
-
-	/**
-	 * Recupera a posição do parceiro
-	 * 
-	 * @return número de 1 a 4
-	 */
-	public int getParceiro() {
-		return 1 + ((posicao + 1) % 4);
-	}
-
-	public int getEquipeAdversaria() {
-		return 1 + (posicao % 2);
-	}
-
-	/*
-	 * private Jogador getParceiro(Jogador j) { int posParceiro =
-	 * (j.getPosicao() + 2); if (posParceiro > 4) posParceiro -= 4; return
-	 * getJogador(posParceiro); }
-	 */
-
-	public void setCartas(Carta[] cartas) {
-		this.cartas = cartas;
-	}
-
-	public Carta[] getCartas() {
-		return cartas;
-	}
-
-	public boolean possuiCarta(Carta c) {
-		if (cartas == null) {
-			return false;
-		}
-		for (int i = 0; i < cartas.length; i++) {
-			if (cartas[i].equals(c)) {
-				return true;
-			}
-		}
-		return false;
-	}
 
 	/**
 	 * Informa o jogador que a rodada foi fechada

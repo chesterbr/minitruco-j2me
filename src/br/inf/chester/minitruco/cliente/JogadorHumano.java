@@ -33,23 +33,12 @@ public class JogadorHumano extends Jogador implements Runnable {
 
 	private Mesa mesa;
 
-	private Jogo jogo;
-
 	private Display display;
 
 	public JogadorHumano(Display display, Mesa mesa) {
 		this.setDisplay(display);
 		this.mesa = mesa;
 		mesa.setJogador(this);
-		this.setNome("Você");
-
-	}
-
-	public void jogadorAceito(Jogador j, Jogo jogo) {
-		if (this.equals(j)) {
-			this.jogo = jogo;
-		}
-
 	}
 
 	/**

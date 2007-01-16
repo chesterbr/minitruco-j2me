@@ -40,7 +40,7 @@ import javax.microedition.midlet.MIDlet;
 
 /**
  * Ponto de entrada da aplicação no celular (MIDLet).
- * 
+ *
  * @author Chester
  * 
  */
@@ -50,6 +50,10 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	 * Jogo atual (caso haja um em andamento)
 	 */
 	private Jogo jogo;
+	
+	public void setJogo(Jogo j) {
+		this.jogo = j;
+	}
 
 	/**
 	 * Mesa onde está sendo exibido o jogo atual (caso haja um em andamento) ou
@@ -147,7 +151,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 	// Elementos do formulario de opções
 
-	private static final String[] OPCOES_ESTRATEGIAS = { "Sellani", "Willian",
+	static final String[] OPCOES_ESTRATEGIAS = { "Sellani", "Willian",
 			"Sortear" };
 
 	private static final String[] OPCOES_VISUAL = { "cartas grandes",
