@@ -1,13 +1,13 @@
 package br.inf.chester.minitruco.cliente;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.bluetooth.DiscoveryAgent;
 import javax.bluetooth.RemoteDevice;
-import javax.microedition.io.Connection;
 import javax.microedition.io.Connector;
+import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
-import javax.microedition.lcdui.Graphics;
 
 /**
  * Recebe conexões (via Bluetooth) de outros celulares-cliente, exibe suas
@@ -19,24 +19,38 @@ import javax.microedition.lcdui.Graphics;
  */
 public class ServidorBT extends TelaBT {
 
+	private static final char ENTER = '\n';
+
 	/**
 	 * Notificador do servidor (através do qual vamos aceitar as conexões)
 	 */
 	private StreamConnectionNotifier scnServidor;
+
+	/**
+	 * Conexoes dos jogadores conectados nos slots 1 a 3.
+	 * <p>
+	 * Note que o "slot" 0 estará sempre vazio, ele só existe pra alinhar com o
+	 * array apelidos[]
+	 */
+	StreamConnection[] connClientes = new StreamConnection[4];
 
 	public ServidorBT(MiniTruco midlet) {
 		// Exibe o form de apelido, que iniciará a busca de clientes no ok
 		super(midlet);
 	}
 
-	protected void paint(Graphics g) {
-		// TODO desenhar lista de clientes conectados, na posição
-	}
-
 	/**
 	 * Recebe as conexões
 	 */
 	public void run() {
+
+		// Inicializa os apelidos (servidor na 1a. posição)
+		apelidos[0] = apelido;
+		for (int i = 1; i <= 3; i++)
+			apelidos[i] = APELIDOS_CPU[i - 1];
+
+		for (int i = 0; i <= 3; i++)
+			System.out.println(apelidos[i]);
 
 		// Registra o serviço e recupera o objeto que irá receber as conexões
 		try {
@@ -50,16 +64,27 @@ public class ServidorBT extends TelaBT {
 
 		Logger.debug("Server aguardando conexoes BT");
 		while (estaVivo) {
-			Connection c = null;
+			mostraMsgAguarde = false;
+			repaint();
+			serviceRepaints();
+			StreamConnection c = null;
 			try {
+				// Aguarda uma conexão e encaixa ela em alguma vaga
 				c = scnServidor.acceptAndOpen();
-				RemoteDevice rdev = RemoteDevice.getRemoteDevice(c);
-				Logger.debug("Cliente conectou. endereco: "
-						+ rdev.getBluetoothAddress() + " nome="
-						+ rdev.getFriendlyName(true));
-				// TODO: adicionar o cliente à lista, criar uma thread para
-				// processar seu I/O
-				// ou criar logo o objeto Jogador para ele
+				for (int i = 1; i <= 3; i++) {
+					if (connClientes[i] == null) {
+						connClientes[i] = c;
+						apelidos[i] = RemoteDevice.getRemoteDevice(c)
+								.getFriendlyName(false);
+						c = null;
+						atualizaClientes();
+						break;
+					}
+				}
+				// Se não tiver vaga, rejeita
+				if (c != null) {
+					c.close();
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 				if (c != null)
@@ -71,5 +96,64 @@ public class ServidorBT extends TelaBT {
 
 			}
 		}
+	}
+
+	/**
+	 * Atualiza os dados nos clientes conectados (e re-pinta a tela do servidor,
+	 * para todo mundo ficar com a mesma informaçõ)
+	 */
+	private void atualizaClientes() {
+
+		// Atualiza a tela do servidor
+		repaint();
+
+		// Monta o comando de dados no formato:
+		// I apelido1|apelido2|apelido3|apelido4 regras
+		StringBuffer sbComando = new StringBuffer("I ");
+		for (int i = 0; i <= 3; i++) {
+			sbComando.append(apelidos[i]);
+			sbComando.append(i < 3 ? '|' : ' ');
+		}
+		sbComando.append(regras);
+		sbComando.append(' ');
+		// Envia para cada jogador, adicionando, ao final, a posição do mesmo
+		for (int i = 1; i <= 3; i++) {
+			try {
+				if (connClientes[i] != null) {
+					OutputStream out = connClientes[i].openOutputStream();
+					out.write(sbComando.toString().getBytes());
+					out.write('2' + i);
+					out.write(ENTER);
+				}
+			} catch (IOException e) {
+				// Em caso de erro, desconecta o jogador (e termina, pois a
+				// desconexão vai re-atualizar os clientes)
+				desconecta(i);
+				return;
+			}
+		}
+	}
+
+	/**
+	 * Fecha a conexão com este cliente e libera o slot dele
+	 * 
+	 * @param posicao
+	 *            posição da conexão no array (0 a 2)
+	 */
+	private void desconecta(int posicao) {
+		try {
+			connClientes[posicao].close();
+		} catch (IOException e) {
+			// No prob, pode já estar fechada mesmo
+		}
+		connClientes[posicao] = null;
+		apelidos[posicao] = APELIDOS_CPU[posicao];
+		atualizaClientes();
+	}
+
+	public int getPosicaoMesa(int i) {
+		// O 1o. slot no servidor é sempre para o jogador-servidor, os outros
+		// vão na ordem, então fica fácil:
+		return i + 1;
 	}
 }
