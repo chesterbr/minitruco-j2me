@@ -47,33 +47,6 @@ public abstract class Jogo implements Runnable {
 	 */
 	int numRodadaAtual;
 
-	private PrintStream logPrintStream = null;
-
-	/**
-	 * Determina para onde vai o log desse jogo
-	 * 
-	 * @param logPrintStream
-	 *            Stream de saída do log
-	 */
-	public void setLogPrintStream(PrintStream logPrintStream) {
-		this.logPrintStream = logPrintStream;
-	}
-
-	/**
-	 * Guarda uma mensagem no log (se houver algum ativado).
-	 * <p>
-	 * No caso do cliente, ela vai para o console (para fins de debug)
-	 * <p>
-	 * O servidor vai ter um arquivo de log específico para cada sala.
-	 * 
-	 * @param mensagem
-	 */
-	public void log(String mensagem) {
-		if (logPrintStream != null) {
-			logPrintStream.println(mensagem);
-		}
-	}
-
 	/**
 	 * Recupera um valor relativo para a carta, considerando as manilhas em jogo
 	 * <p>

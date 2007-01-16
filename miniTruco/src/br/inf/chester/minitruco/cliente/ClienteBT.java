@@ -29,6 +29,11 @@ public class ClienteBT extends TelaBT {
 
 	private OutputStream out;
 
+	/**
+	 * Posição deste cliente na mesa (determinada pelo servidor)
+	 */
+	private int posJogador;
+
 	public ClienteBT(MiniTruco midlet) {
 		// Exibe o form de apelido, que iniciará a busca de servidores no ok
 		super(midlet);
@@ -92,7 +97,17 @@ public class ClienteBT extends TelaBT {
 							char tipoNotificacao = sbLinha.charAt(0);
 							String parametros = sbLinha.delete(0, 2).toString();
 							switch (tipoNotificacao) {
-							case 'W':
+							case 'I':
+								// Recupera as informações do servidor
+								String[] tokens = split(parametros, ' ');
+								apelidos = split(tokens[0], '|');
+								regras = tokens[1];
+								posJogador = Integer.parseInt(tokens[2]);
+								// Atualiza o display
+								mostraMsgAguarde = false;
+								repaint();
+								serviceRepaints();
+								break;
 							case 'N':
 							}
 						}
@@ -212,9 +227,15 @@ public class ClienteBT extends TelaBT {
 
 	}
 
-	protected void paint(Graphics arg0) {
-		// TODO Auto-generated method stub
-
+	public int getPosicaoMesa(int i) {
+		// O 1o. slot no cliente é ele mesmo, logo este valor depende da posição
+		// do jogador no serivdor. A conta abaixo garante que o slot
+		// correspondente à posição do jogador (i.e., o slot posJogador-1)
+		// retorne sempre 1, o seguinte 2, o outro 3 e o último 4, "dando a
+		// volta" se necessário
+		int retorno = i - (posJogador - 1);
+		if (retorno < 1)
+			retorno += 4;
+		return retorno;
 	}
-
 }
