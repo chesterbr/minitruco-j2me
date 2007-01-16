@@ -35,6 +35,9 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	protected static final Command voltarCommand = new Command("Voltar",
 			Command.STOP, 999);
 
+	protected static final Command iniciarJogoCommand = new Command("Iniciar",
+			Command.SCREEN, 1);
+
 	/**
 	 * Fonte para a mensagem de "Aguarde"
 	 */

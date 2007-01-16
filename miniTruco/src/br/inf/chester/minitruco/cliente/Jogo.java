@@ -19,8 +19,6 @@ package br.inf.chester.minitruco.cliente;
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-import java.io.PrintStream;
-
 /**
  * Jogo em andamento (independente de estar rodando local ou remotamente).
  * <p>
@@ -227,16 +225,11 @@ public abstract class Jogo implements Runnable {
 			return false;
 		}
 
-		// Coloca o jogador na próxima vaga disponível
+		// Coloca o jogador na próxima vaga e vincula ao jogo
 		jogadores[numJogadores] = j;
 		numJogadores++;
 		j.setPosicao(numJogadores);
-
-		// Avisa a todos que o jogador entrou
-		for (int i = 1; i <= numJogadores; i++) {
-			getJogador(i).jogadorAceito(j, this);
-		}
-
+		j.jogo = this;
 		return true;
 
 	}

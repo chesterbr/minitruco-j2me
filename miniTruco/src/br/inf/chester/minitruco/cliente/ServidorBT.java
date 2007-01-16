@@ -2,12 +2,15 @@ package br.inf.chester.minitruco.cliente;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Random;
 
 import javax.bluetooth.DiscoveryAgent;
 import javax.bluetooth.RemoteDevice;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
 
 /**
  * Recebe conexões (via Bluetooth) de outros celulares-cliente, exibe suas
@@ -63,8 +66,10 @@ public class ServidorBT extends TelaBT {
 		// TODO: adicionar o "name=minitruco", verificar se é filtrável
 
 		Logger.debug("Server aguardando conexoes BT");
+		mostraMsgAguarde = false;
+		this.addCommand(iniciarJogoCommand);
+		this.addCommand(voltarCommand);
 		while (estaVivo) {
-			mostraMsgAguarde = false;
 			repaint();
 			serviceRepaints();
 			StreamConnection c = null;
@@ -156,4 +161,37 @@ public class ServidorBT extends TelaBT {
 		// vão na ordem, então fica fácil:
 		return i + 1;
 	}
+
+	/**
+	 * Processa comandos exclusivos do servidor
+	 */
+	public void commandAction(Command cmd, Displayable arg1) {
+		super.commandAction(cmd, arg1);
+		if (cmd.equals(iniciarJogoCommand)) {
+			// (este comando só existe no servidor)
+			Jogo j = new JogoLocal(regras.charAt(0) == 'T',
+					regras.charAt(1) == 'T');
+			j.adiciona(new JogadorHumano(display, midlet.mesa));
+			Random r = new Random();
+			for (int i = 1; i <= 3; i++) {
+				if (connClientes[i] != null) {
+					// j.adiciona(new JogadorBT());
+				} else {
+					// Sorteia uma estratégia (o while bizarro é pq eu não sei
+					// onde está o "Sortear" na lista)
+					// TODO melhorar essa tosqueira? integrar com o main? Mandar
+					// pra classe Estrategia?
+					String nome = "Sortear";
+					while (nome.equals("Sortear")) {
+						nome = MiniTruco.OPCOES_ESTRATEGIAS[(r.nextInt() >>> 1)
+								% (MiniTruco.OPCOES_ESTRATEGIAS.length)];
+					}
+					j.adiciona(new JogadorCPU(midlet
+							.criaEstrategiaPeloNome(nome)));
+				}
+			}
+			midlet.setJogo(j);
+		}
+	}
+
 }
