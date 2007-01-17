@@ -1,8 +1,8 @@
 package mt;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import javax.microedition.io.StreamConnection;
 
@@ -30,7 +30,7 @@ import javax.microedition.io.StreamConnection;
  * @author chester
  * 
  */
-public class JogadorBT extends Jogador {
+public class JogadorBT extends Jogador implements Runnable {
 
 	/**
 	 * Conexão com o celular remoto (onde está um objeto JogoRemoto)
@@ -53,6 +53,78 @@ public class JogadorBT extends Jogador {
 		this.conn = conn;
 		// TODO: Criar uma thread para processar as entradas (via inputstream) e
 		// encaminhar para o jogo local
+
+	}
+
+	/**
+	 * Processa as mensagens vindas do servidor (i.e., do JogoBT no celular
+	 * remoto), transformando-as novamente em eventos no Jogo local
+	 */
+	public void run() {
+		// TODO Auto-generated method stub
+		int c;
+		StringBuffer sbLinha = new StringBuffer();
+		DataInputStream in = null;
+		try {
+			// TODO: resolver a bagunça entre inputstream e datainputstream
+			// no programa todo
+			in = conn.openDataInputStream();
+			// TODO: melhorar estavivo
+			boolean estaVivo = true;
+			while (estaVivo && (c = in.read()) != -1) {
+				if (c == '\n' || c == '\r') {
+					if (sbLinha.length() > 0) {
+						Logger.debug(sbLinha.toString());
+						char tipoNotificacao = sbLinha.charAt(0);
+						String parametros = sbLinha.delete(0, 2).toString();
+						switch (tipoNotificacao) {
+						case 'J':
+							// Implementar, vide ComandoJ
+						case 'H':
+							// Implementar, vide ComandoH
+						case 'T':
+							// Implementar, vide ComandoT
+						case 'D':
+							// Implementar, vide ComandoD
+						case 'C':
+							// Implementar, vide ComandoC
+						}
+					}
+					sbLinha.setLength(0);
+				} else {
+					sbLinha.append((char) c);
+				}
+			}
+		} catch (IOException e) {
+			// TODO o que fazer aqui?
+			e.printStackTrace();
+			// É normal dar um erro de I/O quando o usuário pede pra
+			// desconectar (porque o loop vai tentar ler a última linha). Só
+			// vamos alertar se a desconexão foi forçada, ou se não foi
+			// possível abrir os streams de I/O
+			//if ((in == null) || (out == null) || estaVivo) {
+			//	alerta("Erro de I/O", e.getMessage(), true);
+			//}
+			// TODO finalizaServidor()?
+			return;
+		} finally {
+			try {
+				in.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			// Se saiu do loop e ainda estava "vivo", foi desconectado,
+			// avisa
+			// TODO o que fazer qqui?
+			//if (estaVivo) {
+			//	alerta("Desconectado", "Você foi desconectado do servidor.",
+			//			true);
+			//}
+			// TODO finalizaServidor();
+		}
+
 	}
 
 	/**
@@ -63,7 +135,7 @@ public class JogadorBT extends Jogador {
 	 * 
 	 * @param linha
 	 */
-	public synchronized void println(String linha) {
+	public synchronized void enviaLinha(String linha) {
 		try {
 			if (out == null) {
 				out = conn.openDataOutputStream();
@@ -87,7 +159,7 @@ public class JogadorBT extends Jogador {
 		} else {
 			param = " " + c.toString();
 		}
-		println("J " + j.getPosicao() + param);
+		enviaLinha("J " + j.getPosicao() + param);
 	}
 
 	public void inicioMao() {
@@ -97,45 +169,45 @@ public class JogadorBT extends Jogador {
 		if (jogo.isManilhaVelha()) {
 			comando.append(" " + jogo.cartaDaMesa);
 		}
-		println(comando.toString());
+		enviaLinha(comando.toString());
 	}
 
 	public void inicioPartida() {
-		println("P");
+		enviaLinha("P");
 	}
 
 	public void vez(Jogador j, boolean podeFechada) {
-		println("V " + j.getPosicao() + ' ' + (podeFechada ? 'T' : 'F'));
+		enviaLinha("V " + j.getPosicao() + ' ' + (podeFechada ? 'T' : 'F'));
 	}
 
 	public void pediuAumentoAposta(Jogador j, int valor) {
-		println("T " + j.getPosicao() + ' ' + valor);
+		enviaLinha("T " + j.getPosicao() + ' ' + valor);
 	}
 
 	public void aceitouAumentoAposta(Jogador j, int valor) {
-		println("D " + j.getPosicao() + ' ' + valor);
+		enviaLinha("D " + j.getPosicao() + ' ' + valor);
 	}
 
 	public void recusouAumentoAposta(Jogador j) {
-		println("C " + j.getPosicao());
+		enviaLinha("C " + j.getPosicao());
 	}
 
 	public void rodadaFechada(int numRodada, int resultado,
 			Jogador jogadorQueTorna) {
-		println("R " + resultado + ' ' + jogadorQueTorna.getPosicao());
+		enviaLinha("R " + resultado + ' ' + jogadorQueTorna.getPosicao());
 	}
 
 	public void maoFechada(int[] pontosEquipe) {
-		println("O " + pontosEquipe[0] + ' ' + pontosEquipe[1]);
+		enviaLinha("O " + pontosEquipe[0] + ' ' + pontosEquipe[1]);
 	}
 
 	public void jogoFechado(int numEquipeVencedora) {
 		// TODO desvinculaJogo();
-		println("G " + numEquipeVencedora);
+		enviaLinha("G " + numEquipeVencedora);
 	}
 
 	public void decidiuMao11(Jogador j, boolean aceita) {
-		println("H " + j.getPosicao() + (aceita ? " T" : " F"));
+		enviaLinha("H " + j.getPosicao() + (aceita ? " T" : " F"));
 	}
 
 	public void informaMao11(Carta[] cartasParceiro) {
@@ -145,12 +217,12 @@ public class JogadorBT extends Jogador {
 			if (i != 2)
 				sbComando.append(' ');
 		}
-		println(sbComando.toString());
+		enviaLinha(sbComando.toString());
 	}
 
 	public void jogoAbortado(Jogador j) {
 		// TODO desvinculaJogo();
-		println("A " + j.getPosicao());
+		enviaLinha("A " + j.getPosicao());
 	}
 
 }

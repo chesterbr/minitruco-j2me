@@ -113,7 +113,7 @@ public class ClienteBT extends TelaBT {
 								break;
 							case 'P':
 								// Cria um o jogo remoto
-								jogo = new JogoBT();
+								jogo = new JogoBT(this);
 								// Adiciona o jogador na posição correta
 								// (preenchendo as outras com dummies)
 								for (int i = 1; i <= 4; i++) {
