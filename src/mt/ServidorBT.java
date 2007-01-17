@@ -64,6 +64,9 @@ public class ServidorBT extends TelaBT {
 			midlet.alerta("Erro Bluetooth", e.getMessage());
 		}
 		// TODO: adicionar o "name=minitruco", verificar se é filtrável
+		// TODO: acrescentar um esquema para não aceitar mais conexõpes
+		// quando estiver "lotado", mas voltar a aceitar se algum jogador
+		// cair antes do início
 
 		Logger.debug("Server aguardando conexoes BT");
 		mostraMsgAguarde = false;
@@ -125,10 +128,13 @@ public class ServidorBT extends TelaBT {
 		for (int i = 1; i <= 3; i++) {
 			try {
 				if (connClientes[i] != null) {
+					// TODO: verificar se não é melhor abrir uma vez só e
+					// guardar
 					OutputStream out = connClientes[i].openOutputStream();
 					out.write(sbComando.toString().getBytes());
 					out.write('2' + i);
 					out.write(ENTER);
+					out.close();
 				}
 			} catch (IOException e) {
 				// Em caso de erro, desconecta o jogador (e termina, pois a
@@ -168,15 +174,21 @@ public class ServidorBT extends TelaBT {
 	public void commandAction(Command cmd, Displayable arg1) {
 		super.commandAction(cmd, arg1);
 		if (cmd.equals(iniciarJogoCommand)) {
-			// (este comando só existe no servidor)
+			// Cria um novo jogo e adiciona o jogador que está no servidor
 			Jogo j = new JogoLocal(regras.charAt(0) == 'T',
 					regras.charAt(1) == 'T');
+			midlet.setJogo(j);
 			j.adiciona(new JogadorHumano(display, midlet.mesa));
 			Random r = new Random();
+			// Adiciona jogadores para cada um dos slots remanescenets
 			for (int i = 1; i <= 3; i++) {
 				if (connClientes[i] != null) {
-					// j.adiciona(new JogadorBT());
+					// Se há alguém neste slot, cria um objeto JogadorBT para
+					// representá-lo dentro do jogo
+					j.adiciona(new JogadorBT(connClientes[i]));
 				} else {
+					// Se não há neste slot, preenche com um JogadorCPU
+
 					// Sorteia uma estratégia (o while bizarro é pq eu não sei
 					// onde está o "Sortear" na lista)
 					// TODO melhorar essa tosqueira? integrar com o main? Mandar
@@ -190,7 +202,9 @@ public class ServidorBT extends TelaBT {
 							.criaEstrategiaPeloNome(nome)));
 				}
 			}
-			midlet.setJogo(j);
+			// Daqui em diante o jogo local "assume"
+			// TODO: ver como vai fazer aqui (provavelmente aguardar o fim do jogo)
+			
 		}
 	}
 

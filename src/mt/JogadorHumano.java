@@ -215,7 +215,7 @@ public class JogadorHumano extends Jogador implements Runnable {
 
 		// Distribui a carta da mesa (se for manilha nova)
 		if (!jogo.isManilhaVelha()) {
-			mesa.distribuiCartaDaMesa(jogo.getCartaDaMesa());
+			mesa.distribuiCartaDaMesa(jogo.cartaDaMesa);
 		}
 
 		// Atualiza o placar

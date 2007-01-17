@@ -68,11 +68,6 @@ public class JogoLocal extends Jogo {
 	private int posJogadorDaVez;
 
 	/**
-	 * Carta que determina a manilha
-	 */
-	private Carta cartaDaMesa;
-
-	/**
 	 * Jogador que abriu a rodada
 	 */
 	private Jogador jogadorAbriuRodada;
@@ -584,15 +579,6 @@ public class JogoLocal extends Jogo {
 	 */
 	private Jogador getJogadorDaVez() {
 		return getJogador(posJogadorDaVez);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mt.JogoGenerico#getCartaDaMesa()
-	 */
-	public Carta getCartaDaMesa() {
-		return cartaDaMesa;
 	}
 
 	/*

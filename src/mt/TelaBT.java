@@ -299,7 +299,7 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	 * Ele efetua a operação em dois passos, mas esta abordagem tem a vantagem
 	 * de não alocar nenhum objeto além das strings não-nulas do array.
 	 */
-	public String[] split(String original, char separador) {
+	public static String[] split(String original, char separador) {
 		// Fase 1: Contagem dos tokens (para dimensionar o array)
 		int tamanho = original.length();
 		int qtdeTokens = 1;
