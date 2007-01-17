@@ -16,17 +16,19 @@ import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 
 /**
- * Conecta-se (via Bluetooth) num celular-servidor, mostra a configuração da
- * mesa e cria o proxy do jogo (JogoBT)
+ * Conecta-se (via Bluetooth) num celular-servidor, exibindo a configuração da
+ * mesa, além de cria o proxy do jogo (JogoBT) e o JogadorHumano conectado nele.
  * 
  * @author Chester
  * 
  */
 public class ClienteBT extends TelaBT {
 
-	private InputStream in;
+	public InputStream in;
 
-	private OutputStream out;
+	public OutputStream out;
+	
+	private JogadorCPU jogador;
 
 	/**
 	 * Posição deste cliente na mesa (determinada pelo servidor)
@@ -108,7 +110,9 @@ public class ClienteBT extends TelaBT {
 								serviceRepaints();
 								break;
 							case 'P':
-								// TODO: ???
+							default:
+								// Notificações "in-game", passa para o jogador
+								
 							}
 						}
 						sbLinha.setLength(0);
