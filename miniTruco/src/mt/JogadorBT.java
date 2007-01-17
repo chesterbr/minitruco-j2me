@@ -30,9 +30,8 @@ import javax.microedition.io.StreamConnection;
  */
 public class JogadorBT extends Jogador {
 
-	private StreamConnection conn;
 
-	private OutputStream out;
+	private ClienteBT clienteBT;
 
 	/**
 	 * Cria uma instância que representa um jogador conectado no servidor via
@@ -41,9 +40,11 @@ public class JogadorBT extends Jogador {
 	 * @param conn
 	 *            conexão BT estabelecida pelo jogador
 	 */
-	public JogadorBT(StreamConnection conn) {
-		this.conn = conn;
+	public JogadorBT(ClienteBT clienteBT) {
+		this.clienteBT = clienteBT;
 	}
+	
+//	public void processaComando()
 
 	/**
 	 * Manda uma linha de comando para o cliente
@@ -52,11 +53,8 @@ public class JogadorBT extends Jogador {
 	 */
 	public synchronized void println(String linha) {
 		try {
-			if (this.out == null) {
-				this.out = conn.openOutputStream();
-			}
-			out.write(linha.getBytes());
-			out.write('\n');
+			clienteBT.out.write(linha.getBytes());
+			clienteBT.out.write('\n');
 		} catch (IOException e) {
 			// TODO TRATAR!!!!!
 			e.printStackTrace();
