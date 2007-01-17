@@ -1,6 +1,6 @@
 package mt;
 
-import javax.microedition.io.StreamConnection;
+import java.io.IOException;
 
 /**
  * Representa, no cliente, o <code>Jogo</code> que está executando no
@@ -20,6 +20,18 @@ import javax.microedition.io.StreamConnection;
 public class JogoBT extends Jogo {
 
 	private JogadorHumano jogadorHumano;
+
+	private ClienteBT clienteBT;
+
+	/**
+	 * Cria um novo proxy de jogo remoto associado a um cliente
+	 * 
+	 * @param clienteBT
+	 *            Cliente que se conectou no jogo remoto
+	 */
+	public JogoBT(ClienteBT clienteBT) {
+		this.clienteBT = clienteBT;
+	}
 
 	/**
 	 * Esse baralho é apenas para sortear cartas quando alguém joga uma fechada
@@ -166,44 +178,65 @@ public class JogoBT extends Jogo {
 		}
 	}
 
+	/**
+	 * Não implementado em jogo bluetooth (apenas o JogadorCPU usa isso, e ele
+	 * não participa desses jogos).
+	 */
 	public void atualizaSituacao(SituacaoJogo s, Jogador j) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void aumentaAposta(Jogador j) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void decideMao11(Jogador j, boolean aceita) {
-		// TODO Auto-generated method stub
+		// não faz nada
 
 	}
 
 	public boolean isBaralhoLimpo() {
-		// TODO Auto-generated method stub
-		return false;
+		return clienteBT.regras.charAt(0) == 'T';
 	}
 
 	public boolean isManilhaVelha() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public void jogaCarta(Jogador j, Carta c) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void respondeAumento(Jogador j, boolean aceitou) {
-		// TODO Auto-generated method stub
-
+		return clienteBT.regras.charAt(1) == 'T';
 	}
 
 	public void run() {
-		// TODO Auto-generated method stub
+		// Notifica o jogador humano que a partida começou
+		getJogadorHumano().inicioPartida();
+	}
+	/**
+	 * Manda um comando para o celular do servidor.
+	 * <p>
+	 * Este comando é originado de alguma ação do JogadorCPU local (jogar uma
+	 * carta, pedir truco, etc.).
+	 * 
+	 * @param linha
+	 */
+	public synchronized void enviaLinha(String linha) {
+		try {
+			clienteBT.out.write(linha.getBytes());
+			clienteBT.out.write('\n');
+		} catch (IOException e) {
+			// TODO TRATAR!!!!!
+			e.printStackTrace();
+		}
+	}
 
+	public void jogaCarta(Jogador j, Carta c) {
+		enviaLinha("J " + c + (c.isFechada() ? " T" : ""));
+	}
+
+	public void decideMao11(Jogador j, boolean aceita) {
+		enviaLinha("H " + (aceita ? "T" : "F"));
+	}
+
+	public void aumentaAposta(Jogador j) {
+		if (j.equals(getJogadorHumano()))
+			enviaLinha("T");
+	}
+
+	public void respondeAumento(Jogador j, boolean aceitou) {
+		if (j.equals(getJogadorHumano())) {
+			if (aceitou)
+				enviaLinha("D");
+			else
+				enviaLinha("C");
+		}
 	}
 
 }
