@@ -78,7 +78,7 @@ public class JogadorBT extends Jogador {
 	}
 
 	public void inicioMao() {
-		StringBuilder comando = new StringBuilder("M");
+		StringBuffer comando = new StringBuffer("M");
 		for (int i = 0; i <= 2; i++)
 			comando.append(" " + getCartas()[i]);
 		if (jogo.isManilhaVelha()) {
@@ -126,7 +126,7 @@ public class JogadorBT extends Jogador {
 	}
 
 	public void informaMao11(Carta[] cartasParceiro) {
-		StringBuilder sbComando = new StringBuilder("F ");
+		StringBuffer sbComando = new StringBuffer("F ");
 		for (int i = 0; i <= 2; i++) {
 			sbComando.append(cartasParceiro[i]);
 			if (i != 2)

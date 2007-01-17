@@ -2,5 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="lib/midp.jar"/>
+	<classpathentry kind="lib" path="lib/btapi.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

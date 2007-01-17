@@ -9,8 +9,8 @@
 
 	<property name="JAR_EMULADOR" value="lib/me-app.jar" />
 	<property name="JAR_PROGUARD" value="lib/proguard.jar" />
-	<property name="JAR_CONVERSOR_PALM" value="lib/Converter.jar" />
 	<property name="wtk.midpapi" value="lib/midp.jar" />
+	<property name="btapi" value="lib/btapi.jar" />
 	<property name="jax" value="/lang/jax61" />
 
 	<!-- Diretórios de trabalho -->
@@ -25,7 +25,7 @@
 
 	<target name="roda_cliente" depends="compilar_sem_wtk" description="Compila e chama o cliente no emulador (bom para testes, exige apenas o emulador e as bibliotecas MIDP)">
 		<java classname="com.barteo.emulator.app.Main" classpath="${JAR_EMULADOR}:${BIN}:${RES}" fork="yes">
-			<arg value="br.inf.chester.minitruco.cliente.MiniTruco" />
+			<arg value="mt.MiniTruco" />
 		</java>
 		<delete dir="${BIN}" />
 	</target>
@@ -36,13 +36,13 @@
 	<target name="compilar_sem_wtk">
 		<delete dir="${BIN}" />
 		<mkdir dir="${BIN}" />
-		<javac target="1.1" source="1.2" bootclasspath="${wtk.midpapi}" destdir="${BIN}" srcdir="src" debug="true" debuglevel="lines,vars,source" />
+		<javac target="1.1" source="1.2" bootclasspath="${wtk.midpapi}:${btapi}" destdir="${BIN}" srcdir="src" debug="true" debuglevel="lines,vars,source" />
 	</target>
 
 	<target name="compilar">
 		<delete dir="${BIN}" />
 		<mkdir dir="${BIN}" />
-		<wtkbuild destdir="${BIN}" srcdir="src" preverify="false" debug="true" debuglevel="lines,vars,source" source="1.2" />
+		<wtkbuild classpath="${btapi}" destdir="${BIN}" srcdir="src" preverify="false" debug="true" debuglevel="lines,vars,source" source="1.2" />
 	</target>
 
 	<target name="ofuscar" depends="compilar">
@@ -58,6 +58,7 @@
 			<injar file="${DEPLOY}/temp.jar" />
 			<outjar file="${DEPLOY}/temp_o.jar" />
 			<libraryjar file="${wtk.midpapi}" />
+			<libraryjar file="${btapi}" />
 			<keep access="public" extends="javax.microedition.midlet.MIDlet" />
 			<keepclasseswithmembernames>
 				<method access="native" />
@@ -71,7 +72,7 @@
 	<target name="pre_verificar" depends="ofuscar">
 		<mkdir dir="${DEPLOY}/pre" />
 		<exec executable="${wtk.home}/bin/preverify">
-			<arg line="-classpath ${wtk.midpapi}" />
+			<arg line="-classpath ${wtk.midpapi}:${btapi}" />
 			<arg line="-d ${DEPLOY}/pre" />
 			<arg line="${BIN}" />
 		</exec>
@@ -79,7 +80,7 @@
 		<move file="${DEPLOY}/pre" tofile="${BIN}" />
 	</target>
 
-	<!-- Gera os .jar/.jad, o .zip dos fontes e o Javadoc -->
+	<!-- Gera os .jar/.jad e o Javadoc -->
 	<target name="dist" depends="pre_verificar">
 		<mkdir dir="${DEPLOY}" />
 		<!-- .jar -->
@@ -88,29 +89,9 @@
 		</wtkpackage>
 		<!-- .jad -->
 		<copy todir="${DEPLOY}" file="${JAD_DIR}/${NOME_APP}.jad" />
-		<!-- .prc (Palm) -->
-		<java classname="com.sun.midp.palm.database.MakeMIDPApp" classpath="${JAR_CONVERSOR_PALM}" fork="yes">
-			<arg value="-v" />
-			<arg value="-v" />
-			<arg value="-creator" />
-			<arg value="mTru" />
-			<arg value="-name" />
-			<arg value="miniTruco" />
-			<arg value="-longname" />
-			<arg value="miniTruco" />
-			<arg value="-icon" />
-			<arg value="${RES}/minitrucoicone_palm_gde.bmp" />
-			<arg value="-smallicon" />
-			<arg value="${RES}/minitrucoicone_palm_peq.bmp" />
-			<arg value="-outfile" />
-			<arg value="${DEPLOY}/${NOME_APP}.prc" />
-			<arg value="${DEPLOY}/${NOME_APP}.jar" />
-		</java>
-		<!-- Codigo-fonte -->
-		<delete file="${DEPLOY}/${NOME_APP}_src.zip" />
-		<zip destfile="${DEPLOY}/${NOME_APP}_src.zip" includes="miniTruco/**" excludes="**/*.zip,**/*.class,**/*.jar,**/lib,**/deploy/**" basedir=".." />
 		<!-- Javadoc -->
-		<javadoc overview="docs/overview_javadoc.html" access="public" author="true" classpath="lib/midp.jar" destdir="docs/javadoc" doctitle="miniTruco 2 - Javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="br.inf.chester.minitruco.servidor,br.inf.chester.minitruco.cliente" source="1.5" sourcepath="src" splitindex="true" use="true" version="true" />
+		<delete dir="docs/javadoc" />
+		<javadoc overview="docs/overview_javadoc.html" access="public" author="true" classpath="${wtk.midpapi}:${btapi}" destdir="docs/javadoc" doctitle="miniTruco 2 - Javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="mt" source="1.2" sourcepath="src" splitindex="true" use="true" version="true" />
 	</target>
 
 	<target name="limpeza">
