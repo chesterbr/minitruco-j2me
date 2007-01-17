@@ -1,5 +1,6 @@
 package mt;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -21,6 +22,7 @@ import javax.microedition.io.StreamConnection;
  * O evento "I" (que informa os nomes dos jogadores e regras do jogo) é o único
  * que não é gerado por esta classe, pois ocorre antes do <code>Jogo</code>
  * ser efetivamente criado.
+ * <p>
  * 
  * TODO documentar esta linguagem (na real, atualizar/traduzir a documentação do
  * client-server)
@@ -30,8 +32,15 @@ import javax.microedition.io.StreamConnection;
  */
 public class JogadorBT extends Jogador {
 
+	/**
+	 * Conexão com o celular remoto (onde está um objeto JogoRemoto)
+	 */
+	StreamConnection conn;
 
-	private ClienteBT clienteBT;
+	/**
+	 * Saída de dados da conexão (conn)
+	 */
+	private DataOutputStream out;
 
 	/**
 	 * Cria uma instância que representa um jogador conectado no servidor via
@@ -40,21 +49,27 @@ public class JogadorBT extends Jogador {
 	 * @param conn
 	 *            conexão BT estabelecida pelo jogador
 	 */
-	public JogadorBT(ClienteBT clienteBT) {
-		this.clienteBT = clienteBT;
+	public JogadorBT(StreamConnection conn) {
+		this.conn = conn;
+		// TODO: Criar uma thread para processar as entradas (via inputstream) e
+		// encaminhar para o jogo local
 	}
-	
-//	public void processaComando()
 
 	/**
-	 * Manda uma linha de comando para o cliente
+	 * Manda uma notificação (linha de comando) para o celular do cliente.
+	 * <p>
+	 * Esta notificação veio do JogoLocal, e será processada lá pela classe
+	 * JogoRemoto, para dar a idéia de que veio de um jogo rodando lá.
 	 * 
 	 * @param linha
 	 */
 	public synchronized void println(String linha) {
 		try {
-			clienteBT.out.write(linha.getBytes());
-			clienteBT.out.write('\n');
+			if (out == null) {
+				out = conn.openDataOutputStream();
+			}
+			out.write(linha.getBytes());
+			out.write('\n');
 		} catch (IOException e) {
 			// TODO TRATAR!!!!!
 			e.printStackTrace();
@@ -80,13 +95,13 @@ public class JogadorBT extends Jogador {
 		for (int i = 0; i <= 2; i++)
 			comando.append(" " + getCartas()[i]);
 		if (jogo.isManilhaVelha()) {
-			comando.append(" " + jogo.getCartaDaMesa());
+			comando.append(" " + jogo.cartaDaMesa);
 		}
 		println(comando.toString());
 	}
 
 	public void inicioPartida() {
-		println("P " + getPosicao());
+		println("P");
 	}
 
 	public void vez(Jogador j, boolean podeFechada) {

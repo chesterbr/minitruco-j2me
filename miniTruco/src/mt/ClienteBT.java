@@ -27,8 +27,10 @@ public class ClienteBT extends TelaBT {
 	public InputStream in;
 
 	public OutputStream out;
-	
-	private JogadorCPU jogador;
+
+	private JogadorHumano jogador;
+
+	private JogoBT jogo;
 
 	/**
 	 * Posição deste cliente na mesa (determinada pelo servidor)
@@ -85,7 +87,7 @@ public class ClienteBT extends TelaBT {
 		if (conn != null) {
 
 			// Loop principal: decodifica as notificações recebidas e as
-			// processa ou encaminha ao jogador, conforme o caso
+			// processa (ou encaminha ao JogoBT, se estivermos em jogo)
 			int c;
 			StringBuffer sbLinha = new StringBuffer();
 			try {
@@ -110,9 +112,25 @@ public class ClienteBT extends TelaBT {
 								serviceRepaints();
 								break;
 							case 'P':
+								// Cria um o jogo remoto
+								jogo = new JogoBT();
+								// Adiciona o jogador na posição correta
+								// (preenchendo as outras com dummies)
+								for (int i = 1; i <= 4; i++) {
+									if (i == posJogador) {
+										jogo.adiciona(new JogadorHumano(
+												display, midlet.mesa));
+									} else {
+										jogo.adiciona(new JogadorDummy());
+									}
+								}
+								break;
+							// Os outros eventos ocorrem durante o jogo,
+							// i.e., quando o Jogador local já existe, logo,
+							// vamos encaminhar para o objeto JogoRemoto
 							default:
-								// Notificações "in-game", passa para o jogador
-								
+								jogo.processaNotificacao(tipoNotificacao,
+										parametros);
 							}
 						}
 						sbLinha.setLength(0);

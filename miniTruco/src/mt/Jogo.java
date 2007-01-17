@@ -184,7 +184,10 @@ public abstract class Jogo implements Runnable {
 		return cartasJogadasPorRodada[rodada - 1];
 	}
 
-	public abstract Carta getCartaDaMesa();
+	/**
+	 * Carta que determina a manilha (em jogo que não usa manilha velha)
+	 */
+	protected Carta cartaDaMesa;
 
 	/**
 	 * Atualiza um objeto que contém a situação do jogo (exceto pelas cartas do
