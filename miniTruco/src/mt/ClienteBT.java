@@ -124,6 +124,14 @@ public class ClienteBT extends TelaBT {
 										jogo.adiciona(new JogadorDummy());
 									}
 								}
+								// TODO: isso duplica o que esta no menu
+								// principal, consolidar
+								display.setCurrent(midlet.mesa);
+								midlet.mostraMenuAbertura(false);
+								midlet.mesa
+										.addCommand(MiniTruco.sairPartidaCommand);
+								Thread t = new Thread(jogo);
+								t.start();
 								break;
 							// Os outros eventos ocorrem durante o jogo,
 							// i.e., quando o Jogador local já existe, logo,

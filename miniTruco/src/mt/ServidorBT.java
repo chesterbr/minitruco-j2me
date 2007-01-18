@@ -36,6 +36,11 @@ public class ServidorBT extends TelaBT {
 	 * array apelidos[]
 	 */
 	StreamConnection[] connClientes = new StreamConnection[4];
+	
+	/**
+	 * Jogo em andamento neste servidor
+	 */
+	JogoLocal jogo = null;
 
 	public ServidorBT(MiniTruco midlet) {
 		// Exibe o form de apelido, que iniciará a busca de clientes no ok
@@ -177,17 +182,17 @@ public class ServidorBT extends TelaBT {
 		super.commandAction(cmd, arg1);
 		if (cmd.equals(iniciarJogoCommand)) {
 			// Cria um novo jogo e adiciona o jogador que está no servidor
-			Jogo j = new JogoLocal(regras.charAt(0) == 'F',
+			jogo = new JogoLocal(regras.charAt(0) == 'F',
 					regras.charAt(1) == 'F');
-			midlet.setJogo(j);
-			j.adiciona(new JogadorHumano(display, midlet.mesa));
+			midlet.setJogo(jogo);
+			jogo.adiciona(new JogadorHumano(display, midlet.mesa));
 			Random r = new Random();
 			// Adiciona jogadores para cada um dos slots remanescenets
 			for (int i = 1; i <= 3; i++) {
 				if (connClientes[i] != null) {
 					// Se há alguém neste slot, cria um objeto JogadorBT para
 					// representá-lo dentro do jogo
-					j.adiciona(new JogadorBT(connClientes[i]));
+					jogo.adiciona(new JogadorBT(connClientes[i]));
 				} else {
 					// Se não há neste slot, preenche com um JogadorCPU
 
@@ -200,7 +205,7 @@ public class ServidorBT extends TelaBT {
 						nome = MiniTruco.OPCOES_ESTRATEGIAS[(r.nextInt() >>> 1)
 								% (MiniTruco.OPCOES_ESTRATEGIAS.length)];
 					}
-					j.adiciona(new JogadorCPU(midlet
+					jogo.adiciona(new JogadorCPU(midlet
 							.criaEstrategiaPeloNome(nome)));
 				}
 			}
@@ -209,7 +214,7 @@ public class ServidorBT extends TelaBT {
 			display.setCurrent(midlet.mesa);
 			midlet.mostraMenuAbertura(false);
 			midlet.mesa.addCommand(MiniTruco.sairPartidaCommand);
-			Thread t = new Thread(j);
+			Thread t = new Thread(jogo);
 			t.start();
 
 		}
