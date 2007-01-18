@@ -151,6 +151,7 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	}
 
 	public void commandAction(Command cmd, Displayable arg1) {
+		System.out.println(cmd.getLabel());
 		if (cmd.equals(okApelidoCommand)) {
 			// Confirma o apelido e começa a procurar servidores
 			apelido = txtApelido.getString();
