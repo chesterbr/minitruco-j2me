@@ -72,9 +72,11 @@ public class ServidorBT extends TelaBT {
 		mostraMsgAguarde = false;
 		this.addCommand(iniciarJogoCommand);
 		this.addCommand(voltarCommand);
+		this.setCommandListener(this);
 		while (estaVivo) {
 			repaint();
 			serviceRepaints();
+			Thread.yield();
 			StreamConnection c = null;
 			try {
 				// Aguarda uma conexão e encaixa ela em alguma vaga
@@ -175,8 +177,8 @@ public class ServidorBT extends TelaBT {
 		super.commandAction(cmd, arg1);
 		if (cmd.equals(iniciarJogoCommand)) {
 			// Cria um novo jogo e adiciona o jogador que está no servidor
-			Jogo j = new JogoLocal(regras.charAt(0) == 'T',
-					regras.charAt(1) == 'T');
+			Jogo j = new JogoLocal(regras.charAt(0) == 'F',
+					regras.charAt(1) == 'F');
 			midlet.setJogo(j);
 			j.adiciona(new JogadorHumano(display, midlet.mesa));
 			Random r = new Random();
@@ -202,9 +204,14 @@ public class ServidorBT extends TelaBT {
 							.criaEstrategiaPeloNome(nome)));
 				}
 			}
-			// Daqui em diante o jogo local "assume"
-			// TODO: ver como vai fazer aqui (provavelmente aguardar o fim do jogo)
-			
+			// Inicia o jogo
+			// TODO: isso duplica o que esta no menu principal, consolidar
+			display.setCurrent(midlet.mesa);
+			midlet.mostraMenuAbertura(false);
+			midlet.mesa.addCommand(MiniTruco.sairPartidaCommand);
+			Thread t = new Thread(j);
+			t.start();
+
 		}
 	}
 

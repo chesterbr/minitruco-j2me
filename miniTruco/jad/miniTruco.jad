@@ -7,7 +7,7 @@ MIDlet-Info-URL: http://chester.blog.br/
 MicroEdition-Configuration: CLDC-1.0
 MicroEdition-Profile: MIDP-1.0
 MIDlet-Jar-URL: miniTruco.jar
-MIDlet-Jar-Size: 55249
+MIDlet-Jar-Size: 59372
 MIDlet-Description: Jogo de truco - (c) Chester / Stone Age Scanners.
 Title: miniTruco
 Message: Jogo de truco - (c) Chester / Stone Age Scanners.
