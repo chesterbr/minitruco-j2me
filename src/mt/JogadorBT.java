@@ -77,17 +77,33 @@ public class JogadorBT extends Jogador implements Runnable {
 						Logger.debug(sbLinha.toString());
 						char tipoNotificacao = sbLinha.charAt(0);
 						String parametros = sbLinha.delete(0, 2).toString();
+						String[] args = ServidorBT.split(parametros, ' ');
 						switch (tipoNotificacao) {
 						case 'J':
-							// Implementar, vide ComandoJ
+							Carta[] cartas = getCartas();
+							for (int i = 0; i < cartas.length; i++) {
+								if (cartas[i] != null
+										&& cartas[i].toString().equals(args[1])) {
+									// Joga a carta. Se der certo o evento vai
+									// notificar a todos.
+									cartas[i].setFechada(args.length > 2
+											&& args[2].equals("T"));
+									jogo.jogaCarta(this, cartas[i]);
+								}
+							}
+							break;
 						case 'H':
-							// Implementar, vide ComandoH
+							jogo.decideMao11(this, args[1].equals("T"));
+							break;
 						case 'T':
-							// Implementar, vide ComandoT
+							jogo.aumentaAposta(this);
+							break;
 						case 'D':
-							// Implementar, vide ComandoD
+							jogo.respondeAumento(this, true);
+							break;
 						case 'C':
-							// Implementar, vide ComandoC
+							jogo.respondeAumento(this, false);
+							break;
 						}
 					}
 					sbLinha.setLength(0);
@@ -102,9 +118,9 @@ public class JogadorBT extends Jogador implements Runnable {
 			// desconectar (porque o loop vai tentar ler a última linha). Só
 			// vamos alertar se a desconexão foi forçada, ou se não foi
 			// possível abrir os streams de I/O
-			//if ((in == null) || (out == null) || estaVivo) {
-			//	alerta("Erro de I/O", e.getMessage(), true);
-			//}
+			// if ((in == null) || (out == null) || estaVivo) {
+			// alerta("Erro de I/O", e.getMessage(), true);
+			// }
 			// TODO finalizaServidor()?
 			return;
 		} finally {
@@ -114,14 +130,14 @@ public class JogadorBT extends Jogador implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			// Se saiu do loop e ainda estava "vivo", foi desconectado,
 			// avisa
 			// TODO o que fazer qqui?
-			//if (estaVivo) {
-			//	alerta("Desconectado", "Você foi desconectado do servidor.",
-			//			true);
-			//}
+			// if (estaVivo) {
+			// alerta("Desconectado", "Você foi desconectado do servidor.",
+			// true);
+			// }
 			// TODO finalizaServidor();
 		}
 
