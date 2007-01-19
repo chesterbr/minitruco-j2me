@@ -38,8 +38,10 @@ public class ServidorBT extends TelaBT {
 	StreamConnection[] connClientes = new StreamConnection[4];
 
 	public ServidorBT(MiniTruco midlet) {
-		// Exibe o form de apelido, que iniciará a busca de clientes no ok
 		super(midlet);
+		// Usa as regras escolhidas pelo usuário
+		this.regras = (midlet.cgRegras.isSelected(0) ? "T" : "F")
+				+ (midlet.cgRegras.isSelected(1) ? "T" : "F");
 	}
 
 	/**
@@ -177,8 +179,8 @@ public class ServidorBT extends TelaBT {
 		super.commandAction(cmd, arg1);
 		if (cmd.equals(iniciarJogoCommand)) {
 			// Cria um novo jogo e adiciona o jogador que está no servidor
-			Jogo jogo = new JogoLocal(regras.charAt(0) == 'F',
-					regras.charAt(1) == 'F');
+			Jogo jogo = new JogoLocal(regras.charAt(0) == 'T',
+					regras.charAt(1) == 'T');
 			jogo.adiciona(new JogadorHumano(display, midlet.mesa));
 			// Adiciona jogadores para os outros slots
 			for (int i = 1; i <= 3; i++) {
