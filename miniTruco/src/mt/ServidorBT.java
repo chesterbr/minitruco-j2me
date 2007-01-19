@@ -36,11 +36,6 @@ public class ServidorBT extends TelaBT {
 	 * array apelidos[]
 	 */
 	StreamConnection[] connClientes = new StreamConnection[4];
-	
-	/**
-	 * Jogo em andamento neste servidor
-	 */
-	JogoLocal jogo = null;
 
 	public ServidorBT(MiniTruco midlet) {
 		// Exibe o form de apelido, que iniciará a busca de clientes no ok
@@ -139,7 +134,7 @@ public class ServidorBT extends TelaBT {
 					// guardar
 					OutputStream out = connClientes[i].openOutputStream();
 					out.write(sbComando.toString().getBytes());
-					out.write('2' + i);
+					out.write('1' + i);
 					out.write(ENTER);
 					out.close();
 				}
@@ -170,9 +165,9 @@ public class ServidorBT extends TelaBT {
 	}
 
 	public int getPosicaoMesa(int i) {
-		// O 1o. slot no servidor é sempre para o jogador-servidor, os outros
-		// vão na ordem, então fica fácil:
-		return i + 1;
+		// O servidor é sempre o primeiro, e os outros vão na ordem, então tá
+		// fácil:
+		return i;
 	}
 
 	/**
@@ -182,41 +177,22 @@ public class ServidorBT extends TelaBT {
 		super.commandAction(cmd, arg1);
 		if (cmd.equals(iniciarJogoCommand)) {
 			// Cria um novo jogo e adiciona o jogador que está no servidor
-			jogo = new JogoLocal(regras.charAt(0) == 'F',
+			Jogo jogo = new JogoLocal(regras.charAt(0) == 'F',
 					regras.charAt(1) == 'F');
-			midlet.setJogo(jogo);
 			jogo.adiciona(new JogadorHumano(display, midlet.mesa));
-			Random r = new Random();
-			// Adiciona jogadores para cada um dos slots remanescenets
+			// Adiciona jogadores para os outros slots
 			for (int i = 1; i <= 3; i++) {
+				System.out.println(connClientes[i]);
 				if (connClientes[i] != null) {
-					// Se há alguém neste slot, cria um objeto JogadorBT para
-					// representá-lo dentro do jogo
+					// Se há alguém neste slot, cria um JogadorBT para
+					// representá-lo
 					jogo.adiciona(new JogadorBT(connClientes[i]));
 				} else {
-					// Se não há neste slot, preenche com um JogadorCPU
-
-					// Sorteia uma estratégia (o while bizarro é pq eu não sei
-					// onde está o "Sortear" na lista)
-					// TODO melhorar essa tosqueira? integrar com o main? Mandar
-					// pra classe Estrategia?
-					String nome = "Sortear";
-					while (nome.equals("Sortear")) {
-						nome = MiniTruco.OPCOES_ESTRATEGIAS[(r.nextInt() >>> 1)
-								% (MiniTruco.OPCOES_ESTRATEGIAS.length)];
-					}
-					jogo.adiciona(new JogadorCPU(midlet
-							.criaEstrategiaPeloNome(nome)));
+					// Se não há, preenche com um JogadorCPU
+					jogo.adiciona(new JogadorCPU("Sortear"));
 				}
 			}
-			// Inicia o jogo
-			// TODO: isso duplica o que esta no menu principal, consolidar
-			display.setCurrent(midlet.mesa);
-			midlet.mostraMenuAbertura(false);
-			midlet.mesa.addCommand(MiniTruco.sairPartidaCommand);
-			Thread t = new Thread(jogo);
-			t.start();
-
+			midlet.iniciaJogo(jogo);
 		}
 	}
 

@@ -40,20 +40,16 @@ import javax.microedition.midlet.MIDlet;
 
 /**
  * Ponto de entrada da aplicação no celular (MIDLet).
- *
+ * 
  * @author Chester
  * 
  */
 public class MiniTruco extends MIDlet implements CommandListener {
 
 	/**
-	 * Jogo atual (caso haja um em andamento)
+	 * Jogo (caso haja um) que está sendo jogado no momento
 	 */
-	private Jogo jogo;
-	
-	public void setJogo(Jogo j) {
-		this.jogo = j;
-	}
+	private Jogo jogoEmAndamento;
 
 	/**
 	 * Mesa onde está sendo exibido o jogo atual (caso haja um em andamento) ou
@@ -72,13 +68,19 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	private Form formOpcoes;
 
 	/**
+	 * Tela Bluetooth (cliente ou servidor) em exibição no momento
+	 */
+	public TelaBT telaBT;
+
+	/**
 	 * Sub-menu que permite selecionar um item da ajuda
 	 */
 	private List listAjuda;
 
 	/**
-	 * Estratégias a utilizar para os jogadores CPU. Os índices de 0 a 3
-	 * correspondem aos jogadores de 2 a 4 (o 1 é o humano).
+	 * Estratégias escolhidas para os jogadores CPU. Os índices de 0 a 3
+	 * correspondem aos jogadores de 2 a 4 (o jogador 1 é humano, não entra
+	 * aqui).
 	 */
 	private String[] estrategias;
 
@@ -182,11 +184,6 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 	ChoiceGroup cgRegras = new ChoiceGroup("Regras", Choice.MULTIPLE,
 			OPCOES_REGRAS, IMAGENS_REGRAS);
-
-	/**
-	 * Tela do opção de Bluetooth (cliente ou servidor) em exibição
-	 */
-	public TelaBT telaBT;
 
 	public MiniTruco() {
 
@@ -336,28 +333,16 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	public void commandAction(Command cmd, Displayable disp) {
 		if (cmd == iniciarCommand) {
 			// Inicializa novo jogo e adiciona o jogador humano
-			jogo = new JogoLocal(cgRegras.isSelected(0), cgRegras.isSelected(1));
+			Jogo jogo = new JogoLocal(cgRegras.isSelected(0), cgRegras
+					.isSelected(1));
 			jogadorHumano = new JogadorHumano(Display.getDisplay(this),
 					(Mesa) mesa);
 			jogo.adiciona(jogadorHumano);
 			// Adiciona os jogadores CPU com as estratégias escolhidas
-			Random r = new Random();
 			for (int i = 0; i <= 2; i++) {
-				String nome = estrategias[i];
-				while (nome.equals("Sortear")) {
-					nome = OPCOES_ESTRATEGIAS[(r.nextInt() >>> 1)
-							% (OPCOES_ESTRATEGIAS.length)];
-				}
-				jogo.adiciona(new JogadorCPU(criaEstrategiaPeloNome(nome)));
-				Logger.debug("Jogador " + (i + 2) + " usando estrategia "
-						+ nome);
+				jogo.adiciona(new JogadorCPU(estrategias[i]));
 			}
-			// Inicia o novo jogo
-			mesa.removeComandoAposta();
-			mostraMenuAbertura(false);
-			mesa.addCommand(sairPartidaCommand);
-			Thread t = new Thread(jogo);
-			t.start();
+			iniciaJogo(jogo);
 		} else if (cmd == btServerCommand) {
 			telaBT = new ServidorBT(this);
 		} else if (cmd == btClientCommand) {
@@ -368,9 +353,9 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			Display.getDisplay(this).setCurrent(mesa);
 		} else if (cmd == simSairPartidaCommand
 				|| cmd == sairPartidaSemPerguntarCommand) {
-			if (jogo != null) {
-				jogo.abortaJogo(jogadorHumano);
-				jogo = null;
+			if (jogoEmAndamento != null) {
+				jogoEmAndamento.abortaJogo(jogadorHumano);
+				jogoEmAndamento = null;
 				jogadorHumano = null;
 				novaMesa(false);
 				Display.getDisplay(this).setCurrent(mesa);
@@ -438,6 +423,31 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 	}
 
+	/**
+	 * Inicia um jogo e aguarda o seu final
+	 * 
+	 */
+	public void iniciaJogo(Jogo jogo) {
+		jogoEmAndamento = jogo;
+		mesa.removeComandoAposta();
+		mostraMenuAbertura(false);
+		mesa.addCommand(sairPartidaCommand);
+		Thread t = new Thread(jogo);
+		t.start();
+		Display.getDisplay(this).setCurrent(mesa);
+	}
+
+	/**
+	 * Exibe uma mensagem de alerta.
+	 * <p>
+	 * Este método não bloqueia a execução. Ao final do alerta, a mesa é
+	 * exibida.
+	 * 
+	 * @param titulo
+	 *            Título da tela
+	 * @param texto
+	 *            Texto da mensagem
+	 */
 	public void alerta(String titulo, String texto) {
 		Alert a = new Alert(titulo);
 		a.setString(texto);
@@ -453,17 +463,6 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		f.addCommand(naoSairPartidaCommand);
 		f.setCommandListener(this);
 		Display.getDisplay(this).setCurrent(f);
-	}
-
-	public Estrategia criaEstrategiaPeloNome(String nome) {
-		if (nome.equals("Sellani")) {
-			return new EstrategiaSellani();
-		} else if (nome.equals("Willian")) {
-			return new EstrategiaWillian();
-		} else {
-			alerta("Erro interno", "Estrategia invalida:" + nome);
-			return null;
-		}
 	}
 
 }

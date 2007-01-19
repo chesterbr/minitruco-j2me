@@ -43,8 +43,39 @@ public class JogadorCPU extends Jogador {
 	 */
 	SituacaoJogo situacaoJogo = new SituacaoJogo();
 
+	/**
+	 * Cria um novo jogador CPU, usando a estratégia fornecida.
+	 * 
+	 * @param estrategia
+	 *            Estratégia a ser adotada por este jogador
+	 */
 	public JogadorCPU(Estrategia estrategia) {
 		this.estrategia = estrategia;
+	}
+
+	/**
+	 * Cria um novo jogador CPU, buscando a estratégia pelo nome.
+	 * <p>
+	 * Se o nome for "Sortear", escolhe ao acaso uma estratégia dentre as
+	 * disponíveis
+	 * 
+	 * @param nomeEstrategia
+	 *            Nome da estratégia (ex.: "Willian") ou "Sortear" para uma
+	 *            aleatória
+	 */
+	public JogadorCPU(String nomeEstrategia) {
+		Random r = new Random();
+		while (nomeEstrategia.equals("Sortear")) {
+			nomeEstrategia = MiniTruco.OPCOES_ESTRATEGIAS[(r.nextInt() >>> 1)
+					% (MiniTruco.OPCOES_ESTRATEGIAS.length)];
+		}
+		if (nomeEstrategia.equals("Sellani")) {
+			this.estrategia = new EstrategiaSellani();
+		} else if (nomeEstrategia.equals("Willian")) {
+			this.estrategia = new EstrategiaWillian();
+		} else {
+			Logger.debug("estrategia invalida:" + nomeEstrategia);
+		}
 	}
 
 	/**
@@ -59,17 +90,19 @@ public class JogadorCPU extends Jogador {
 	private boolean aceitaramTruco;
 
 	private static Random random = new Random();
-	
+
 	public void vez(Jogador j, boolean podeFechada) {
 
-		// O truco é pedido numa nova thread, para os jogadores "pensarem" em paralelo
+		// O truco é pedido numa nova thread, para os jogadores "pensarem" em
+		// paralelo
 		class ThreadPedeTruco extends Thread {
 			public Jogador solicitante;
+
 			public void run() {
 				jogo.aumentaAposta(solicitante);
 			}
 		}
-		
+
 		if (this.equals(j)) {
 
 			// Dá um tempinho, pra fingir que está "pensando"
@@ -82,7 +115,7 @@ public class JogadorCPU extends Jogador {
 			// Atualiza a situação do jogo (incluindo as cartas na mão)
 			atualizaSituacaoJogo();
 			situacaoJogo.podeFechada = podeFechada;
-		
+
 			// Solicita que o estrategia jogue
 			int posCarta = estrategia.joga(situacaoJogo);
 
@@ -97,13 +130,13 @@ public class JogadorCPU extends Jogador {
 				t.start();
 				// Aguarda pelas respostas
 				while (numRespostasAguardando > 0) {
-						Thread.yield();
+					Thread.yield();
 				}
 				// Se não aceitaram, desencana...
 				if (!aceitaramTruco)
 					return;
 				// ...caso contrário, vamos seguir o jogo
-				//atualizaSituacaoJogo();
+				// atualizaSituacaoJogo();
 				situacaoJogo.valorProximaAposta = 0;
 				posCarta = estrategia.joga(situacaoJogo);
 			}
@@ -118,7 +151,7 @@ public class JogadorCPU extends Jogador {
 			c.setFechada(isFechada && podeFechada);
 			cartasRestantes.removeElement(c);
 			jogo.jogaCarta(this, c);
-		
+
 		}
 	}
 
@@ -195,7 +228,8 @@ public class JogadorCPU extends Jogador {
 		// Notifica o estrategia
 		estrategia.recusouAumentoAposta(j.getPosicao());
 
-		// Se estivermos aguardando resposta, contabiliza (e deixa o adversário perceber)
+		// Se estivermos aguardando resposta, contabiliza (e deixa o adversário
+		// perceber)
 		if (numRespostasAguardando > 0) {
 			numRespostasAguardando--;
 			Thread.yield();

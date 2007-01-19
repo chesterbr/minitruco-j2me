@@ -28,8 +28,6 @@ public class ClienteBT extends TelaBT {
 
 	public OutputStream out;
 
-	private JogadorHumano jogador;
-
 	private JogoBT jogo;
 
 	/**
@@ -124,14 +122,7 @@ public class ClienteBT extends TelaBT {
 										jogo.adiciona(new JogadorDummy());
 									}
 								}
-								// TODO: isso duplica o que esta no menu
-								// principal, consolidar
-								display.setCurrent(midlet.mesa);
-								midlet.mostraMenuAbertura(false);
-								midlet.mesa
-										.addCommand(MiniTruco.sairPartidaCommand);
-								Thread t = new Thread(jogo);
-								t.start();
+								midlet.iniciaJogo(jogo);
 								break;
 							// Os outros eventos ocorrem durante o jogo,
 							// i.e., quando o Jogador local já existe, logo,
@@ -260,10 +251,10 @@ public class ClienteBT extends TelaBT {
 	public int getPosicaoMesa(int i) {
 		// O 1o. slot no cliente é ele mesmo, logo este valor depende da posição
 		// do jogador no serivdor. A conta abaixo garante que o slot
-		// correspondente à posição do jogador (i.e., o slot posJogador-1)
+		// correspondente à posição do jogador (i.e., o slot posJogador)
 		// retorne sempre 1, o seguinte 2, o outro 3 e o último 4, "dando a
 		// volta" se necessário
-		int retorno = i - (posJogador - 1);
+		int retorno = i - posJogador + 1;
 		if (retorno < 1)
 			retorno += 4;
 		return retorno;

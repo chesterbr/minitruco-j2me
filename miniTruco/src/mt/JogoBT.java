@@ -211,6 +211,7 @@ public class JogoBT extends Jogo {
 		try {
 			clienteBT.out.write(linha.getBytes());
 			clienteBT.out.write('\n');
+			System.out.println("JogoBT encaminhou"+linha);
 		} catch (IOException e) {
 			// TODO TRATAR!!!!!
 			e.printStackTrace();
