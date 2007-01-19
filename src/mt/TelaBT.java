@@ -110,9 +110,7 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	 * Regras (string de 2 caracteres T/F, indicando baralho limpo e manilha
 	 * velha, nesta ordem) para o jogo a iniciar
 	 */
-	public String regras = "FF";
-
-	// TODO inicializar regras (setando no servidor e lendo no cliente)
+	public String regras;
 
 	public TelaBT(MiniTruco midlet) {
 
