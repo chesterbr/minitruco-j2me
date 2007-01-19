@@ -117,10 +117,10 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	public TelaBT(MiniTruco midlet) {
 
 		// Guarda o display da MIDlet (vamos precisar dele pra mostrar forms e
-		// alerts) e uma referência a ela (que vamos usar para devolver o
-		// controle quando a sessão acabar)
+		// alerts) e uma referência a ela, parando a animação.
 		this.display = Display.getDisplay(midlet);
 		this.midlet = midlet;
+		midlet.mesa.setAberturaVisivel(false);
 
 		// Recupera o dispositivo local (que é o ponto de entrada para as
 		// comunicações bluetooth
@@ -151,7 +151,6 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	}
 
 	public void commandAction(Command cmd, Displayable arg1) {
-		System.out.println(cmd.getLabel());
 		if (cmd.equals(okApelidoCommand)) {
 			// Confirma o apelido e começa a procurar servidores
 			apelido = txtApelido.getString();
@@ -162,7 +161,7 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 			midlet.telaBT = null;
 			estaVivo = false;
 			midlet.novaMesa(false);
-			midlet.startApp();
+			Display.getDisplay(midlet).setCurrent(midlet.mesa);
 		}
 	}
 
@@ -227,7 +226,7 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 				if (nome != null && !"".equals(nome)) {
 
 					// Decide onde escrever
-					int pos = getPosicaoMesa(i);
+					int pos = getPosicaoMesa(i + 1);
 
 					// Escreve
 					g.setColor(0x00000000);
@@ -283,10 +282,15 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	}
 
 	/**
-	 * Recupera a posição na mesa para a conexão no slot i
+	 * Recupera a posição na mesa para o jogador conectado na posição i.
+	 * <p>
+	 * Este método permite que cliente e servidor compartilhem o código de
+	 * desenho da tela (pois o que muda de um para outro é o "ponto de vista"
+	 * mesmo - ambos têm que ter o jogador humano na posição 1)
 	 * 
 	 * @param i
-	 *            "slot" de conexão, de 0 a 3
+	 *            posição (1 a 4) na conexão (no cliente é a posição na lista
+	 *            recebida; no servidor é a posição de jogo mesmo)
 	 * @return posição em que este jogador deve ser desenhado na mesa (e
 	 *         adicionado no jogo), na mesma convenção da classe Mesa
 	 *         (1=inferior, 2=direita, 3=superior, 4=esquerda)
