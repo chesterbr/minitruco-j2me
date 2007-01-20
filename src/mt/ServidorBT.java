@@ -179,6 +179,7 @@ public class ServidorBT extends TelaBT {
 		super.commandAction(cmd, arg1);
 		if (cmd.equals(iniciarJogoCommand)) {
 			// Cria um novo jogo e adiciona o jogador que está no servidor
+			Logger.debug("TEMP: regras="+regras);
 			Jogo jogo = new JogoLocal(regras.charAt(0) == 'T',
 					regras.charAt(1) == 'T');
 			jogo.adiciona(new JogadorHumano(display, midlet.mesa));
