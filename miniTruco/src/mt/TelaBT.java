@@ -118,7 +118,6 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 		// alerts) e uma referência a ela, parando a animação.
 		this.display = Display.getDisplay(midlet);
 		this.midlet = midlet;
-		midlet.mesa.setAberturaVisivel(false);
 
 		// Recupera o dispositivo local (que é o ponto de entrada para as
 		// comunicações bluetooth

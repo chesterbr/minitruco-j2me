@@ -444,12 +444,13 @@ public class JogoLocal extends Jogo {
 		numRodadaAtual = 1;
 		jogadorAbriuMao = jogadorAbriuRodada = jogadorQueAbre;
 
-		Logger.debug("Abrindo mao com jogador " + jogadorQueAbre.getPosicao()
+		Logger.debug("Abrindo mao com j" + jogadorQueAbre.getPosicao()
 				+ ",manilha=" + getManilha());
 
 		// Abre a primeira rodada, informando a carta da mesa e quem vai abrir
 		posJogadorDaVez = jogadorQueAbre.getPosicao();
 		for (int i = 1; i <= numJogadores; i++) {
+			Logger.debug("Enviando inicioMao para "+i);
 			getJogador(i).inicioMao();
 		}
 
@@ -528,6 +529,7 @@ public class JogoLocal extends Jogo {
 			public boolean podeFechada;
 
 			public void run() {
+				Logger.debug("notifica "+numNotificado+" da vez de "+jogadorDaVez.getPosicao());
 				getJogador(numNotificado).vez(jogadorDaVez, podeFechada);
 			}
 		}

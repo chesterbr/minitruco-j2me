@@ -51,13 +51,13 @@ public class JogadorBT extends Jogador implements Runnable {
 	 */
 	public JogadorBT(StreamConnection conn) {
 		this.conn = conn;
-		// TODO: Criar uma thread para processar as entradas (via inputstream) e
-		// encaminhar para o jogo local
+		Thread t = new Thread(this);
+		t.start();
 
 	}
 
 	/**
-	 * Processa as mensagens vindas do servidor (i.e., do JogoBT no celular
+	 * Processa as mensagens vindas do cliente (i.e., do JogoBT no celular
 	 * remoto), transformando-as novamente em eventos no Jogo local
 	 */
 	public void run() {
@@ -76,8 +76,7 @@ public class JogadorBT extends Jogador implements Runnable {
 					if (sbLinha.length() > 0) {
 						Logger.debug(sbLinha.toString());
 						char tipoNotificacao = sbLinha.charAt(0);
-						String parametros = sbLinha.delete(0, 2).toString();
-						String[] args = ServidorBT.split(parametros, ' ');
+						String[] args = ServidorBT.split(sbLinha.toString(), ' ');
 						switch (tipoNotificacao) {
 						case 'J':
 							Carta[] cartas = getCartas();
@@ -158,6 +157,7 @@ public class JogadorBT extends Jogador implements Runnable {
 			}
 			out.write(linha.getBytes());
 			out.write('\n');
+			Logger.debug(linha);
 		} catch (IOException e) {
 			// TODO TRATAR!!!!!
 			e.printStackTrace();
@@ -182,7 +182,8 @@ public class JogadorBT extends Jogador implements Runnable {
 		StringBuffer comando = new StringBuffer("M");
 		for (int i = 0; i <= 2; i++)
 			comando.append(" " + getCartas()[i]);
-		if (jogo.isManilhaVelha()) {
+		// Se for manilha nova, também envia o "vira"
+		if (!jogo.isManilhaVelha()) {
 			comando.append(" " + jogo.cartaDaMesa);
 		}
 		enviaLinha(comando.toString());
