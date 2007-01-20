@@ -38,6 +38,7 @@ public class Logger {
 	public static void debug(String string) {
 		// Descomentar para acompanhar o jogo no console
 		//System.out.println(string);
+		Thread.yield(); // Bugfix para Nokia 6600 e ME4SE
 	}
 
 }
