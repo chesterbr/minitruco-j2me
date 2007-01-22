@@ -182,7 +182,8 @@ public class Mesa extends Canvas {
 	/**
 	 * Verifica se uma carta já foi jogada na mesa
 	 * 
-	 * @param c Carta a verificar
+	 * @param c
+	 *            Carta a verificar
 	 */
 	public boolean isJogada(Carta c) {
 		return cartasJogadas.contains(c);
@@ -486,6 +487,21 @@ public class Mesa extends Canvas {
 			g.drawString(textoBalao, x + MARGEM_BALAO_LEFT, y
 					+ MARGEM_BALAO_TOP, Graphics.LEFT | Graphics.TOP);
 
+		}
+
+		// Imprime, se necessario, o log de mensagens
+		if (Logger.log != null) {
+			g.setFont(fontePlacar);
+			g.setColor(0x00000000);
+			int alturaLog = fontePlacar.getHeight();
+			int alturaCanvas = this.getHeight();
+			for (int i = 0; (i < Logger.log.length)
+					&& ((i + 1) * alturaLog <= alturaCanvas); i++) {
+				if (Logger.log[i] != null) {
+					g.drawString(Logger.log[i], 0, i * alturaLog, Graphics.LEFT
+							| Graphics.TOP);
+				}
+			}
 		}
 
 		// Descarrega, se necessário, o buffer

@@ -211,6 +211,7 @@ public class JogoLocal extends Jogo {
 			}
 
 			// Notifica os jogadores que a mão foi feita
+			Logger.debug("Notificando mao");
 			for (int i = 1; i <= 4; i++) {
 				getJogador(i).rodadaFechada(numRodadaAtual,
 						getResultadoRodada(numRodadaAtual), jogadorQueTorna);
@@ -243,6 +244,7 @@ public class JogoLocal extends Jogo {
 
 			// Se já tivermos vencedor (ou empate final), notifica e abre uma
 			// nova mao, senão segue a vida na mão seguinte
+			Logger.debug("resultadoRodada=" + resultadoRodada);
 			if (resultadoRodada != 0) {
 				// Soma os pontos (se não deu emptate)
 				if (resultadoRodada != 3) {

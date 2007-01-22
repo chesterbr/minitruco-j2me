@@ -22,12 +22,16 @@ package br.inf.chester.minitruco.cliente;
 /**
  * Faz o log do jogo, para fins de debug.
  * <p>
- * Foi separada da classe original, para que o servidor não tivesse dependências
- * de J2ME
+ * 
  * @author chester
- *
+ * 
  */
 public class Logger {
+
+	/**
+	 * Log rotativo (para exibir na tela do celular)
+	 */
+	public static String[] log = null;
 
 	/**
 	 * Método usado para debug (permite acompanhar o jogo no console)
@@ -35,10 +39,15 @@ public class Logger {
 	 * @param string
 	 *            Mensagem informativa
 	 */
-	public static void debug(String string) {
-		// Descomentar para acompanhar o jogo no console
-		//System.out.println(string);
-		Thread.yield(); // Bugfix para Nokia 6600 e ME4SE
+	public static synchronized void debug(String string) {
+		// Envia para o console
+		System.out.println(string);
+
+		// Guarda no log rotativo
+		for (int i = 0; i < log.length - 1; i++) {
+			log[i] = log[i + 1];
+		}
+		log[log.length-1] = string;
 	}
 
 }

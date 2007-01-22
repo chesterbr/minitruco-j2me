@@ -26,8 +26,9 @@ import javax.microedition.lcdui.Display;
 
 /**
  * Jogador interagindo no celular.
+ * 
  * @author Chester
- *
+ * 
  */
 public class JogadorHumano extends Jogador implements Runnable {
 
@@ -192,7 +193,7 @@ public class JogadorHumano extends Jogador implements Runnable {
 
 		// Balãozinho
 		mesa.balao(posicaoNaTela(j), "Desce!", 800);
-		
+
 		// Caso tenha sido eu quem pediu o truco, retoma a vez
 		mesa.retomaVezDepoisDoAumento();
 
