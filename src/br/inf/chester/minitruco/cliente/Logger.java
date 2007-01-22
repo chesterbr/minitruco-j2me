@@ -43,11 +43,13 @@ public class Logger {
 		// Envia para o console
 		System.out.println(string);
 
-		// Guarda no log rotativo
-		for (int i = 0; i < log.length - 1; i++) {
-			log[i] = log[i + 1];
+		// Guarda no log rotativo, se estiver habilitado
+		if (log != null) {
+			for (int i = 0; i < log.length - 1; i++) {
+				log[i] = log[i + 1];
+			}
+			log[log.length - 1] = string;
 		}
-		log[log.length-1] = string;
 	}
 
 }
