@@ -78,13 +78,18 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	private List listAjuda;
 
 	/**
+	 * Sub-menu que permite selecionar entre o cliente e o servidor bluetoth
+	 */
+	private List listBluetooth;
+
+	/**
 	 * Estratégias escolhidas para os jogadores CPU. Os índices de 0 a 3
 	 * correspondem aos jogadores de 2 a 4 (o jogador 1 é humano, não entra
 	 * aqui).
 	 */
 	private String[] estrategias;
 
-	// Elementos de interação (menus, comandos, etc.) e constantes relacionadas
+	// Listas de opções para menus de ajuda e bluetooth
 
 	private static final String[] OPCOES_AJUDA = { "Instru\u00E7\u00F5es",
 			"Regras do Truco", "Sobre o miniTruco", "Voltar" };
@@ -92,14 +97,16 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	private static final String[] ARQUIVOS_AJUDA = { "/instrucoes.txt",
 			"/regras.txt", "/sobre.txt" };
 
+	private static final String[] OPCOES_BLUETOOTH = { "Criar jogo",
+			"Procurar jogo", "Voltar" };
+
+	// Menu principal
+
 	public static Command iniciarCommand = new Command("Iniciar",
 			Command.SCREEN, 1);
 
-	public static Command btServerCommand = new Command("Servidor BT",
+	public static Command bluetoothComand = new Command("Bluetooth",
 			Command.SCREEN, 2);
-
-	public static Command btClientCommand = new Command("Cliente BT",
-			Command.SCREEN, 3);
 
 	public static Command ajudaCommand = new Command("Ajuda", Command.SCREEN, 4);
 
@@ -109,8 +116,22 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	public static Command sairProgramaCommand = new Command("Sair",
 			Command.EXIT, 7);
 
+	// Menus ajuda / bluetooth / alerta
+
+	public static Command okBluetoothCommand = new Command("Ok",
+			Command.SCREEN, 1);
+
 	public static Command okItemAjudaCommand = new Command("Ok",
 			Command.SCREEN, 1);
+
+	public static Command voltarMenuCommand = new Command("Voltar",
+			Command.CANCEL, 5);
+
+	public static Command okTexto = new Command("Ok", Command.OK, 1);
+
+	public static Command okOpcoesCommand = new Command("Ok", Command.OK, 1);
+
+	// Menus in-game
 
 	public static Command sairPartidaCommand = new Command("Encerrar",
 			Command.STOP, 4);
@@ -140,10 +161,6 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 	public static Command dozeCommand = new Command(Mesa.TEXTO_DOZE,
 			Command.OK, 1);
-
-	public static Command okTexto = new Command("Ok", Command.OK, 1);
-
-	public static Command okOpcoesCommand = new Command("Ok", Command.OK, 1);
 
 	public static Command simSairPartidaCommand = new Command("Sim",
 			Command.OK, 1);
@@ -185,6 +202,8 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	ChoiceGroup cgRegras = new ChoiceGroup("Regras", Choice.MULTIPLE,
 			OPCOES_REGRAS, IMAGENS_REGRAS);
 
+	// PONTO DE ENTRADA DA MIDLET
+
 	public MiniTruco() {
 
 		// Cria uma nova mesa, pronta pra animar
@@ -223,7 +242,16 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 		listAjuda = new List("Ajuda", List.IMPLICIT, OPCOES_AJUDA, null);
 		listAjuda.addCommand(okItemAjudaCommand);
+		listAjuda.addCommand(voltarMenuCommand);
 		listAjuda.setCommandListener(this);
+
+		if (isSuportaBluetooth()) {
+			listBluetooth = new List("Jogo via Bluetooth", List.IMPLICIT,
+					OPCOES_BLUETOOTH, null);
+			listBluetooth.addCommand(okBluetoothCommand);
+			listBluetooth.addCommand(voltarMenuCommand);
+			listBluetooth.setCommandListener(this);
+		}
 
 		versaoMidlet = getAppProperty("MIDlet-Version");
 
@@ -299,8 +327,9 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	void mostraMenuAbertura(boolean visivel) {
 		if (visivel) {
 			mesa.addCommand(iniciarCommand);
-			mesa.addCommand(btServerCommand);
-			mesa.addCommand(btClientCommand);
+			if (isSuportaBluetooth()) {
+				mesa.addCommand(bluetoothComand);
+			}
 			mesa.addCommand(ajudaCommand);
 			mesa.addCommand(opcoesCommand);
 			mesa.addCommand(sairProgramaCommand);
@@ -311,8 +340,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		} else {
 			mesa.removeCommand(sairProgramaCommand);
 			mesa.removeCommand(iniciarCommand);
-			mesa.removeCommand(btServerCommand);
-			mesa.removeCommand(btClientCommand);
+			mesa.removeCommand(bluetoothComand);
 			mesa.removeCommand(ajudaCommand);
 			mesa.removeCommand(opcoesCommand);
 		}
@@ -330,6 +358,13 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		mesa.isAppRodando = false;
 	}
 
+	/**
+	 * Processa os comandos de menu (principal, in-game, ajuda, bluetooth e
+	 * opções).
+	 * <p>
+	 * (é, ficou um certo balaio-de-gato, mas pelo menos economizou umas
+	 * classes)
+	 */
 	public void commandAction(Command cmd, Displayable disp) {
 		if (cmd == iniciarCommand) {
 			// Inicializa novo jogo e adiciona o jogador humano
@@ -343,10 +378,24 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				jogo.adiciona(new JogadorCPU(estrategias[i]));
 			}
 			iniciaJogo(jogo);
-		} else if (cmd == btServerCommand) {
-			telaBT = new ServidorBT(this);
-		} else if (cmd == btClientCommand) {
-			telaBT = new ClienteBT(this);
+		} else if (cmd == bluetoothComand) {
+			// Mostra o menu (lista) para o jogador escolher cliente ou servidor
+			Display.getDisplay(this).setCurrent(listBluetooth);
+		} else if ((cmd == List.SELECT_COMMAND || cmd == okBluetoothCommand)
+				&& Display.getDisplay(this).getCurrent().equals(listBluetooth)) {
+			// Inicializa o componente (cliente ou servidor) escolhido
+			switch (listBluetooth.getSelectedIndex()) {
+			case 0:
+				telaBT = new ServidorBT(this);
+				break;
+			case 1:
+				telaBT = new ClienteBT(this);
+				break;
+			default:
+				Display.getDisplay(this).setCurrent(mesa);
+			}
+		} else if (cmd == voltarMenuCommand) {
+			Display.getDisplay(this).setCurrent(mesa);
 		} else if (cmd == sairPartidaCommand) {
 			confirmaSairPartida();
 		} else if (cmd == naoSairPartidaCommand) {
@@ -463,6 +512,31 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		f.addCommand(naoSairPartidaCommand);
 		f.setCommandListener(this);
 		Display.getDisplay(this).setCurrent(f);
+	}
+
+	/**
+	 * Cache do teste de suporte a bluetooth
+	 * 
+	 * @see MiniTruco#isSuportaBluetooth()
+	 */
+	private Boolean suportaBluetooth = null;
+
+	/**
+	 * Verifica se o dispostivo suporta bluetooth
+	 * 
+	 * @return true se encontrou a classe
+	 *         <code>javax.bluetooth.localdevice</code>
+	 */
+	private boolean isSuportaBluetooth() {
+		if (suportaBluetooth == null) {
+			try {
+				Class.forName("javax.bluetooth.LocalDevice");
+				suportaBluetooth = new Boolean(true);
+			} catch (ClassNotFoundException e) {
+				suportaBluetooth = new Boolean(false);
+			}
+		}
+		return suportaBluetooth.booleanValue();
 	}
 
 }

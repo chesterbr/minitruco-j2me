@@ -37,6 +37,8 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 
 	protected static final Command iniciarJogoCommand = new Command("Iniciar",
 			Command.SCREEN, 1);
+	
+	protected static final char ENTER = '\n';
 
 	/**
 	 * Fonte para a mensagem de "Aguarde"
@@ -60,7 +62,8 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	 * Identificador único Bluetooth do "serviço miniTruco"
 	 */
 	public static final UUID UUID_BT = new UUID(
-			"102030405060708090A0B0C0D0E0F010", false);
+			"3B175368ABB411DBA508C2B155D89593", false);
+	         
 
 	protected static final String[] APELIDOS_CPU = { "CPU1", "CPU2", "CPU3" };
 
@@ -91,26 +94,35 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	LocalDevice localDevice;
 
 	/**
-	 * Sinaliza que ainda estamos em uma sessão bluetooth
-	 */
-	protected boolean estaVivo = true;
-
-	/**
 	 * Apelidos dos jogadores conectados nos "slots" de 0 a 3
 	 */
 	protected String[] apelidos = new String[4];
-
-	/**
-	 * Indica se devemos mostrar a mensagem "aguarde" (true) ou os jogadores nas
-	 * suas posições (false)
-	 */
-	protected boolean mostraMsgAguarde = true;
 
 	/**
 	 * Regras (string de 2 caracteres T/F, indicando baralho limpo e manilha
 	 * velha, nesta ordem) para o jogo a iniciar
 	 */
 	public String regras;
+
+	/**
+	 * Mensagem exibida quando ainda não temos mesa (ou null para exibir a mesa)
+	 */
+	private String msgDisplay = "";
+
+	/**
+	 * Define o que será mostrado na tela (pode ser uma mensagem ou os jogadores
+	 * conectados) e a atualiza.
+	 * 
+	 * @param msg
+	 *            Mensagem a ser exibida. Se for <code>null</code>, exibe a
+	 *            mesa com os jogadores posicionados.
+	 */
+	protected void setStatusDisplay(String msg) {
+		msgDisplay = msg;
+		repaint();
+		serviceRepaints();
+		Thread.yield();
+	}
 
 	public TelaBT(MiniTruco midlet) {
 
@@ -124,8 +136,16 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 		try {
 			localDevice = LocalDevice.getLocalDevice();
 		} catch (BluetoothStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.debug(e.toString());
+			midlet.alerta("Erro Bluetooth", e.getMessage());
+			return;
+		} catch (RuntimeException re) {
+			// Esse catch é um pouco abrangente, mas é a primeira chamada a
+			// classes bt, assim, se for dar algum erro bizarro, é aqui
+			Logger.debug("erro runtime bt");
+			Logger.debug(re.toString());
+			midlet.alerta("Erro Runtime", re.getMessage());
+			return;
 		}
 
 		mostraFormApelido();
@@ -149,18 +169,26 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 
 	public void commandAction(Command cmd, Displayable arg1) {
 		if (cmd.equals(okApelidoCommand)) {
-			// Confirma o apelido e começa a procurar servidores
+			// Confirma o apelido e começa a procurar servidores ou aguardar
+			// clientes (quem decide é a subclasse, no seu método run())
 			apelido = txtApelido.getString();
+			this.addCommand(voltarCommand);
 			display.setCurrent(this);
 			(new Thread(this)).start();
 		} else if (cmd.equals(voltarCommand)) {
 			// Sinaliza a finalização para a thread e volta ao menu
+			encerraSessaoBT();
 			midlet.telaBT = null;
-			estaVivo = false;
 			midlet.novaMesa(false);
 			Display.getDisplay(midlet).setCurrent(midlet.mesa);
 		}
 	}
+
+	/**
+	 * Encerra a sessão (cliente ou servidor), liberando quaisquer recursos que
+	 * estejam em uso.
+	 */
+	public abstract void encerraSessaoBT();
 
 	/**
 	 * Exibe um alerta e aguarda o "ok"
@@ -210,7 +238,7 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 		g.setColor(0x0000FF00);
 		g.fillRect(0, 0, getWidth(), getHeight());
 
-		if (!mostraMsgAguarde) {
+		if (msgDisplay == null) {
 
 			// Nomes dos jogadores
 
@@ -272,7 +300,7 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 			g.fillRect(0, 0, getWidth(), getHeight());
 			g.setColor(0x00FF0000);
 			g.setFont(fonteAguarde);
-			g.drawString("AGUARDE", getWidth() / 2, getHeight() / 2,
+			g.drawString(msgDisplay, getWidth() / 2, getHeight() / 2,
 					Graphics.HCENTER | Graphics.BASELINE);
 		}
 
