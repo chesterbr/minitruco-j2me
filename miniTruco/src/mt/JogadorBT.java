@@ -1,10 +1,7 @@
 package mt;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-
-import javax.microedition.io.StreamConnection;
+import java.io.InputStream;
 
 /**
  * Representa o jogador conectado em um servidor bluetooth.
@@ -33,14 +30,14 @@ import javax.microedition.io.StreamConnection;
 public class JogadorBT extends Jogador implements Runnable {
 
 	/**
-	 * Conexão com o celular remoto (onde está um objeto JogoRemoto)
+	 * Servidor que criou este jogador
 	 */
-	StreamConnection conn;
+	private ServidorBT servidor;
 
 	/**
-	 * Saída de dados da conexão (conn)
+	 * Slot em que este jogador está no jogo
 	 */
-	private DataOutputStream out;
+	private int slot;
 
 	/**
 	 * Cria uma instância que representa um jogador conectado no servidor via
@@ -48,9 +45,12 @@ public class JogadorBT extends Jogador implements Runnable {
 	 * 
 	 * @param conn
 	 *            conexão BT estabelecida pelo jogador
+	 * @param slot
+	 *            slot que o jogador ocupa no servidor
 	 */
-	public JogadorBT(StreamConnection conn) {
-		this.conn = conn;
+	public JogadorBT(ServidorBT servidor, int slot) {
+		this.servidor = servidor;
+		this.slot = slot;
 		Thread t = new Thread(this);
 		t.start();
 
@@ -64,11 +64,9 @@ public class JogadorBT extends Jogador implements Runnable {
 		// TODO Auto-generated method stub
 		int c;
 		StringBuffer sbLinha = new StringBuffer();
-		DataInputStream in = null;
+		InputStream in = null;
 		try {
-			// TODO: resolver a bagunça entre inputstream e datainputstream
-			// no programa todo
-			in = conn.openDataInputStream();
+			in = servidor.connClientes[slot].openInputStream();
 			// TODO: melhorar estavivo
 			boolean estaVivo = true;
 			while (estaVivo && (c = in.read()) != -1) {
@@ -76,7 +74,8 @@ public class JogadorBT extends Jogador implements Runnable {
 					if (sbLinha.length() > 0) {
 						Logger.debug(sbLinha.toString());
 						char tipoNotificacao = sbLinha.charAt(0);
-						String[] args = ServidorBT.split(sbLinha.toString(), ' ');
+						String[] args = ServidorBT.split(sbLinha.toString(),
+								' ');
 						switch (tipoNotificacao) {
 						case 'J':
 							Carta[] cartas = getCartas();
@@ -151,17 +150,7 @@ public class JogadorBT extends Jogador implements Runnable {
 	 * @param linha
 	 */
 	public synchronized void enviaLinha(String linha) {
-		try {
-			if (out == null) {
-				out = conn.openDataOutputStream();
-			}
-			out.write(linha.getBytes());
-			out.write('\n');
-			Logger.debug(linha);
-		} catch (IOException e) {
-			// TODO TRATAR!!!!!
-			e.printStackTrace();
-		}
+		servidor.enviaComando(slot, linha);
 	}
 
 	public void cartaJogada(Jogador j, Carta c) {

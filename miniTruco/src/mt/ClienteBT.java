@@ -35,6 +35,8 @@ public class ClienteBT extends TelaBT {
 	 */
 	private int posJogador;
 
+	private boolean estaVivo = true;
+
 	public ClienteBT(MiniTruco midlet) {
 		// Exibe o form de apelido, que iniciará a busca de servidores no ok
 		super(midlet);
@@ -43,13 +45,14 @@ public class ClienteBT extends TelaBT {
 	public void run() {
 
 		// Inicia a busca por celulares remotos
+		setStatusDisplay("Procurando celulares...");
 		DiscoveryAgent agente = localDevice.getDiscoveryAgent();
 		MiniTrucoDiscoveryListener lsnr = new MiniTrucoDiscoveryListener(agente);
 		try {
 			agente.startInquiry(DiscoveryAgent.GIAC, lsnr);
-		} catch (BluetoothStateException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (BluetoothStateException re) {
+			setStatusDisplay("Erro:" + re.getMessage());
+			return;
 		}
 
 		// Aguarda o final da busca
@@ -62,8 +65,7 @@ public class ClienteBT extends TelaBT {
 		for (int i = 0; i < lsnr.devs.size(); i++) {
 			RemoteDevice remdev = (RemoteDevice) lsnr.devs.elementAt(i);
 			try {
-				Logger.debug("Buscando servico de truco no aparelho "
-						+ remdev.getBluetoothAddress());
+				setStatusDisplay("Localizando jogo...");
 				MiniTrucoDiscoveryListener servicoListener = new MiniTrucoDiscoveryListener(
 						agente);
 				agente.searchServices(null, new UUID[] { UUID_BT }, remdev,
@@ -76,14 +78,17 @@ public class ClienteBT extends TelaBT {
 					break;
 				}
 			} catch (BluetoothStateException e) {
-				// TODO tratar
-				e.printStackTrace();
+				setStatusDisplay("Erro:" + e.getMessage());
+				return;
 			}
 		}
 
-		// Se conseguiu conectar, processa as mensagens até que o jogo se inicie
-		if (conn != null) {
-
+		if (conn == null) {
+			display.setCurrent(midlet.mesa);
+			midlet
+					.alerta("Jogo n\u00E3o encontrado",
+							"Nenhum celular com jogo Bluetooth criado foi encontrado. Crie um jogo ou tente novamente");
+		} else {
 			// Loop principal: decodifica as notificações recebidas e as
 			// processa (ou encaminha ao JogoBT, se estivermos em jogo)
 			int c;
@@ -92,7 +97,7 @@ public class ClienteBT extends TelaBT {
 				in = conn.openInputStream();
 				out = conn.openOutputStream();
 				while (estaVivo && (c = in.read()) != -1) {
-					if (c == '\n' || c == '\r') {
+					if (c == ENTER) {
 						if (sbLinha.length() > 0) {
 							Logger.debug(sbLinha.toString());
 							char tipoNotificacao = sbLinha.charAt(0);
@@ -104,10 +109,8 @@ public class ClienteBT extends TelaBT {
 								apelidos = split(tokens[0], '|');
 								regras = tokens[1];
 								posJogador = Integer.parseInt(tokens[2]);
-								// Atualiza o display
-								mostraMsgAguarde = false;
-								repaint();
-								serviceRepaints();
+								// Atualiza as posições dos jogadores
+								setStatusDisplay(null);
 								break;
 							case 'P':
 								// Cria um o jogo remoto
@@ -158,6 +161,10 @@ public class ClienteBT extends TelaBT {
 			}
 		}
 
+	}
+
+	public void encerraSessaoBT() {
+		// TODO implementar
 	}
 
 	/**
@@ -223,11 +230,20 @@ public class ClienteBT extends TelaBT {
 				String url = servicos[0].getConnectionURL(
 						ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
 				try {
-					conn = (StreamConnection) Connector.open(url);
-					agent.cancelServiceSearch(idBusca);
+					// Tenta conectar, e se der certo, encerra as buscas
+					RemoteDevice dev = servicos[0].getHostDevice();
+					String nome;
+					if (dev != null) {
+						nome = dev.getFriendlyName(false);
+						setStatusDisplay("Tentando " + nome);
+						conn = (StreamConnection) Connector.open(url);
+						setStatusDisplay("Conectado em " + nome + "!");
+						agent.cancelServiceSearch(idBusca);
+					}
 				} catch (IOException e) {
-					// TODO decidir o que fazer, ignorar parece razoável
-					e.printStackTrace();
+					// Deu errado, desencana e vai pro próximo
+					Logger.debug(e.getMessage());
+					Logger.debug(url);
 				}
 			}
 		}
