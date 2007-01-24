@@ -488,6 +488,21 @@ public class Mesa extends Canvas {
 
 		}
 
+		// Imprime, se necessario, o log de mensagens
+		if (Logger.log != null) {
+			g.setFont(fontePlacar);
+			g.setColor(0x00000000);
+			int alturaLog = fontePlacar.getHeight();
+			int alturaCanvas = this.getHeight();
+			for (int i = 0; (i < Logger.log.length)
+					&& ((i + 1) * alturaLog <= alturaCanvas); i++) {
+				if (Logger.log[i] != null) {
+					g.drawString(Logger.log[i], 0, i * alturaLog, Graphics.LEFT
+							| Graphics.TOP);
+				}
+			}
+		}
+		
 		// Descarrega, se necessário, o buffer
 		if (g != saved) {
 			saved.drawImage(offscreen, 0, 0, Graphics.LEFT | Graphics.TOP);
