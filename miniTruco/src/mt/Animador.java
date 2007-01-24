@@ -84,109 +84,126 @@ public class Animador extends Thread {
 	 */
 	public void frame() {
 
-		// Animação da abertura
-		if (aberturaAnimando) {
-			frameAtual++;
-			if (mesa.aberturaAlturaSas > ALTURA_SAS_FINAL) {
-				// Sobe o "sas apresenta" seis linhas por frame
-				mesa.aberturaAlturaSas = Math.max(mesa.aberturaAlturaSas - 6,
-						ALTURA_SAS_FINAL);
-			} else if (mesa.aberturaNumCartas < 10) {
-				// A cada 10 frames, mostra uma carta
-				framesCartaAtual++;
-				if (framesCartaAtual > 4) {
-					mesa.aberturaNumCartas++;
-					framesCartaAtual = 0;
-				}
-			} else {
-				// Aproveita o contador pra dar mais um tempinho, mostra a URL e boa
-				framesCartaAtual++;
-				if (framesCartaAtual > 8) {
-					mesa.aberturaUrlVisivel = true;
-					aberturaAnimando = false;
-				}
-			}
-			mesa.repaint();
-			mesa.serviceRepaints();
-		}
-
-		// Animação de cartas se movendo
-		if (cartaAnimada != null) {
-			frameAtual++;
-			cartaAnimada.setTop(topInicial + (topFinal - topInicial)
-					* frameAtual / numFrames);
-			cartaAnimada.setLeft(leftInicial + (leftFinal - leftInicial)
-					* frameAtual / numFrames);
-			if (frameAtual == numFrames) {
-				cartaAnimada = null;
-			}
-			mesa.repaint();
-			mesa.serviceRepaints();
-		}
-
-		// ícone da rodada piscando
-		if (numRodadaPiscando != 0) {
-			if (frameAtual < numFrames) {
+		// Como os Nokia Series 40 dão pau aqui, vamos guardar os erros
+		// (o que não afeta o andamento do jogo, geralmente falando)
+		// animacaoAtual guarda o estágio em que ocorreu o erro, para debug
+		String animacaoAtual = null;
+		try {
+			// Animação da abertura
+			if (aberturaAnimando) {
+				animacaoAtual = "abertura";
 				frameAtual++;
-			} else {
-				frameAtual = 0;
-				if (mesa.iconesRodadas[numRodadaPiscando - 1] == iconeRodadaAceso) {
-					mesa.iconesRodadas[numRodadaPiscando - 1] = iconeRodadaApagado;
+				if (mesa.aberturaAlturaSas > ALTURA_SAS_FINAL) {
+					// Sobe o "sas apresenta" seis linhas por frame
+					mesa.aberturaAlturaSas = Math.max(
+							mesa.aberturaAlturaSas - 6, ALTURA_SAS_FINAL);
+				} else if (mesa.aberturaNumCartas < 10) {
+					// A cada 10 frames, mostra uma carta
+					framesCartaAtual++;
+					if (framesCartaAtual > 4) {
+						mesa.aberturaNumCartas++;
+						framesCartaAtual = 0;
+					}
 				} else {
-					mesa.iconesRodadas[numRodadaPiscando - 1] = iconeRodadaAceso;
-					piscadaAtual++;
-				}
-				if (piscadaAtual == NUM_PISCADAS_ICONE_RODADA) {
-					numRodadaPiscando = 0;
+					// Aproveita o contador pra dar mais um tempinho, mostra a
+					// URL e boa
+					framesCartaAtual++;
+					if (framesCartaAtual > 8) {
+						mesa.aberturaUrlVisivel = true;
+						aberturaAnimando = false;
+					}
 				}
 				mesa.repaint();
 				mesa.serviceRepaints();
 			}
-		}
 
-		// Placar piscando
-		if (numPlacarPiscando != 0) {
-			if (frameAtual < numFrames) {
+			// Animação de cartas se movendo
+			if (cartaAnimada != null) {
+				animacaoAtual = "cartas";
 				frameAtual++;
-			} else {
-				frameAtual = 0;
-				if (!mesa.stringPlacar[numPlacarPiscando - 1].equals("")) {
-					mesa.stringPlacar[numPlacarPiscando - 1] = "";
+				cartaAnimada.setTop(topInicial + (topFinal - topInicial)
+						* frameAtual / numFrames);
+				cartaAnimada.setLeft(leftInicial + (leftFinal - leftInicial)
+						* frameAtual / numFrames);
+				if (frameAtual == numFrames) {
+					cartaAnimada = null;
+				}
+				mesa.repaint();
+				mesa.serviceRepaints();
+			}
+
+			// ícone da rodada piscando
+			if (numRodadaPiscando != 0) {
+				animacaoAtual = "icone da rodada";
+				if (frameAtual < numFrames) {
+					frameAtual++;
 				} else {
-					mesa.stringPlacar[numPlacarPiscando - 1] = stringPlacarAtual;
-					piscadaAtual++;
+					frameAtual = 0;
+					if (mesa.iconesRodadas[numRodadaPiscando - 1] == iconeRodadaAceso) {
+						mesa.iconesRodadas[numRodadaPiscando - 1] = iconeRodadaApagado;
+					} else {
+						mesa.iconesRodadas[numRodadaPiscando - 1] = iconeRodadaAceso;
+						piscadaAtual++;
+					}
+					if (piscadaAtual == NUM_PISCADAS_ICONE_RODADA) {
+						numRodadaPiscando = 0;
+					}
+					mesa.repaint();
+					mesa.serviceRepaints();
 				}
-				if (piscadaAtual == NUM_PISCADAS_PLACAR) {
-					numPlacarPiscando = 0;
+			}
+
+			// Placar piscando
+			if (numPlacarPiscando != 0) {
+				animacaoAtual = "placar";
+				if (frameAtual < numFrames) {
+					frameAtual++;
+				} else {
+					frameAtual = 0;
+					if (!mesa.stringPlacar[numPlacarPiscando - 1].equals("")) {
+						mesa.stringPlacar[numPlacarPiscando - 1] = "";
+					} else {
+						mesa.stringPlacar[numPlacarPiscando - 1] = stringPlacarAtual;
+						piscadaAtual++;
+					}
+					if (piscadaAtual == NUM_PISCADAS_PLACAR) {
+						numPlacarPiscando = 0;
+					}
+					mesa.repaint();
+					mesa.serviceRepaints();
 				}
-				mesa.repaint();
-				mesa.serviceRepaints();
 			}
-		}
 
-		// Balão sendo exibido
-		if (isMostrandoBalao) {
-			if (frameAtual == 0) {
-				mesa.repaint();
-				mesa.serviceRepaints();
+			// Balão sendo exibido
+			if (isMostrandoBalao) {
+				animacaoAtual = "balao";
+				if (frameAtual == 0) {
+					mesa.repaint();
+					mesa.serviceRepaints();
+				}
+				frameAtual++;
+				if (frameAtual > numFrames) {
+					mesa.posicaoBalao = 0;
+					isMostrandoBalao = false;
+					// mesa.repaint();
+					// mesa.serviceRepaints();
+				}
 			}
-			frameAtual++;
-			if (frameAtual > numFrames) {
-				mesa.posicaoBalao = 0;
-				isMostrandoBalao = false;
-				// mesa.repaint();
-				// mesa.serviceRepaints();
-			}
-		}
 
-		// Texto piscando (atualiza a tela a cada n frames)
-		if (isTextoPiscando) {
-			numFramesPassados++;
-			if (numFramesPassados == numFramesPiscaTexto) {
-				numFramesPassados = 0;
-				mesa.repaint();
-				mesa.serviceRepaints();
+			// Texto piscando (atualiza a tela a cada n frames)
+			if (isTextoPiscando) {
+				animacaoAtual = "";
+				numFramesPassados++;
+				if (numFramesPassados == numFramesPiscaTexto) {
+					numFramesPassados = 0;
+					mesa.repaint();
+					mesa.serviceRepaints();
+				}
 			}
+		} catch (RuntimeException e) {
+			Logger.debug("Erro em Animador.frame():");
+			Logger.debug(animacaoAtual);
+			Logger.debug(e.toString());
 		}
 
 	}
