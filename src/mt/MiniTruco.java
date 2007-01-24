@@ -178,13 +178,17 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 	private static final String[] OPCOES_REGRAS = { "baralho limpo",
 			"manilha velha" };
+	
+	private static final String[] OPCOES_DEBUG = { "Exibir log" };
 
 	private static final Image[] IMAGENS_VISUAL = { null, null };
 
 	private static final Image[] IMAGENS_REGRAS = { null, null };
 
 	private static final Image[] IMAGENS_ESTRATEGIAS = { null, null, null };
-
+	
+	private static final Image[] IMAGENS_DEBUG = { null };
+	
 	ChoiceGroup cgParceiro = new ChoiceGroup("Parceiro", Choice.EXCLUSIVE,
 			OPCOES_ESTRATEGIAS, IMAGENS_ESTRATEGIAS);
 
@@ -201,6 +205,9 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 	ChoiceGroup cgRegras = new ChoiceGroup("Regras", Choice.MULTIPLE,
 			OPCOES_REGRAS, IMAGENS_REGRAS);
+	
+	ChoiceGroup cgDebug = new ChoiceGroup("Debug", Choice.MULTIPLE,
+			OPCOES_DEBUG, IMAGENS_DEBUG);
 
 	// PONTO DE ENTRADA DA MIDLET
 
@@ -227,6 +234,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		formOpcoes.append(cgParceiro);
 		formOpcoes.append(cgAdversarioEsq);
 		formOpcoes.append(cgAdversarioDir);
+		formOpcoes.append(cgDebug);
 		formOpcoes.addCommand(okOpcoesCommand);
 		formOpcoes.setCommandListener(this);
 		for (int i = 0; i < OPCOES_ESTRATEGIAS.length; i++) {
@@ -448,7 +456,12 @@ public class MiniTruco extends MIDlet implements CommandListener {
 					.getSelectedIndex()];
 			Carta.setCartasGrandes(cgVisual.isSelected(0));
 			Animador.setAnimacaoLigada(cgVisual.isSelected(1));
-
+			if (cgDebug.isSelected(0)) {
+				Logger.log = new String[6];
+			} else {
+				Logger.log = null;
+			}
+			
 			if (cgRegras.isSelected(0) && cgRegras.isSelected(1)) {
 				// Se houver conflito, faz o ajuste e mantém o form
 				alerta("Conflito", "A manilha velha (fixa) exige baralho sujo.");

@@ -30,15 +30,27 @@ package mt;
 public class Logger {
 
 	/**
+	 * Log rotativo (para exibir na tela do celular)
+	 */
+	public static String[] log = null;
+
+	/**
 	 * Método usado para debug (permite acompanhar o jogo no console)
 	 * 
 	 * @param string
 	 *            Mensagem informativa
 	 */
-	public static void debug(String string) {
-		// Descomentar para acompanhar o jogo no console
+	public static synchronized void debug(String string) {
+		// Envia para o console
 		System.out.println(string);
-		Thread.yield();
+
+		// Guarda no log rotativo, se estiver habilitado
+		if (log != null) {
+			for (int i = 0; i < log.length - 1; i++) {
+				log[i] = log[i + 1];
+			}
+			log[log.length - 1] = string;
+		}
 	}
 
 }
