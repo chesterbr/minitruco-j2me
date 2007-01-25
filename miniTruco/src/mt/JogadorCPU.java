@@ -303,7 +303,7 @@ public class JogadorCPU extends Jogador {
 
 	}
 
-	public void jogoAbortado(Jogador j) {
+	public void jogoAbortado(int posicao) {
 		// Não precisa tratar
 
 	}

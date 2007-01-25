@@ -6,13 +6,13 @@ import java.io.IOException;
  * Representa, no cliente, o <code>Jogo</code> que está executando no
  * servidor.
  * <p>
- * De maneira análoga à <code>JogadorBT</code>, suas responsabildiades são:
+ * De maneira análoga à <code>JogadorBT</code>, ela converte as notificações
+ * do jogador local em mensagens de texto (enviando-as ao servidor) e recebe
+ * mensagens de texto do servidor, transformando-as em notificações para o
+ * jogador local.
  * <p>
- * 1) Encaminhar para o celular do servidor os comandos dados pelo JogadorCPU
- * local
- * <p>
- * 2) Receber deste mesmo celular os eventos de jogo, e repassar para o
- * JogadorCPU local.
+ * A conexão é gerenciada por <code>ClienteBT</code>, já que uma conexão pode
+ * ser usada em jogos sucessivos.
  * 
  * @author chester
  * 
@@ -175,6 +175,11 @@ public class JogoBT extends Jogo {
 		case 'G':
 			// Fim de jogo
 			getJogadorHumano().jogoFechado(Integer.parseInt(parametros));
+			break;
+		case 'A':
+			// Jogo abortado por alguém
+			getJogadorHumano().jogoAbortado(Integer.parseInt(parametros));
+			break;
 		}
 	}
 
@@ -184,7 +189,6 @@ public class JogoBT extends Jogo {
 	 */
 	public void atualizaSituacao(SituacaoJogo s, Jogador j) {
 		// não faz nada
-
 	}
 
 	public boolean isBaralhoLimpo() {
@@ -199,6 +203,7 @@ public class JogoBT extends Jogo {
 		// Notifica o jogador humano que a partida começou
 		getJogadorHumano().inicioPartida();
 	}
+
 	/**
 	 * Manda um comando para o celular do servidor.
 	 * <p>
@@ -210,8 +215,8 @@ public class JogoBT extends Jogo {
 	public synchronized void enviaLinha(String linha) {
 		try {
 			clienteBT.out.write(linha.getBytes());
-			clienteBT.out.write('\n');
-			System.out.println("JogoBT encaminhou"+linha);
+			clienteBT.out.write(TelaBT.ENTER);
+			System.out.println("JogoBT encaminhou" + linha);
 		} catch (IOException e) {
 			// TODO TRATAR!!!!!
 			e.printStackTrace();

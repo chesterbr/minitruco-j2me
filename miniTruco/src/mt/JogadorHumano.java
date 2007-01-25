@@ -26,8 +26,9 @@ import javax.microedition.lcdui.Display;
 
 /**
  * Jogador interagindo no celular.
+ * 
  * @author Chester
- *
+ * 
  */
 public class JogadorHumano extends Jogador implements Runnable {
 
@@ -181,7 +182,7 @@ public class JogadorHumano extends Jogador implements Runnable {
 
 		// Balãozinho
 		mesa.balao(posicaoNaTela(j), "Desce!", 800);
-		
+
 		// Caso tenha sido eu quem pediu o truco, retoma a vez
 		mesa.retomaVezDepoisDoAumento();
 
@@ -419,11 +420,12 @@ public class JogadorHumano extends Jogador implements Runnable {
 
 	}
 
-	public void jogoAbortado(Jogador j) {
-		// Isso aqui vai ser importante quando for multiplayer
-		// if (j != this) {
-		// mesa.balao(posicaoNaTela(j), "Tchau pra vocês", 2000);
-		// }
+	public void jogoAbortado(int posicao) {
+		int posTela = posicaoNaTela(jogo.getJogador(posicao));
+		if (posTela != 1) {
+			// Sacaneia quem abortou (apenas no multiplayer)
+			mesa.balao(posTela, "Tchau, pessoal!", 1000);
+		}
 
 	}
 

@@ -22,7 +22,6 @@ package mt;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Random;
 
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
@@ -49,7 +48,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	/**
 	 * Jogo (caso haja um) que está sendo jogado no momento
 	 */
-	private Jogo jogoEmAndamento;
+	Jogo jogoEmAndamento;
 
 	/**
 	 * Mesa onde está sendo exibido o jogo atual (caso haja um em andamento) ou
@@ -60,7 +59,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	/**
 	 * Jogador que está interagindo com o celular
 	 */
-	private JogadorHumano jogadorHumano;
+	JogadorHumano jogadorHumano;
 
 	/**
 	 * Formulário de configuração do jogo
@@ -178,7 +177,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 	private static final String[] OPCOES_REGRAS = { "baralho limpo",
 			"manilha velha" };
-	
+
 	private static final String[] OPCOES_DEBUG = { "Exibir log" };
 
 	private static final Image[] IMAGENS_VISUAL = { null, null };
@@ -186,9 +185,9 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	private static final Image[] IMAGENS_REGRAS = { null, null };
 
 	private static final Image[] IMAGENS_ESTRATEGIAS = { null, null, null };
-	
+
 	private static final Image[] IMAGENS_DEBUG = { null };
-	
+
 	ChoiceGroup cgParceiro = new ChoiceGroup("Parceiro", Choice.EXCLUSIVE,
 			OPCOES_ESTRATEGIAS, IMAGENS_ESTRATEGIAS);
 
@@ -205,7 +204,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 	ChoiceGroup cgRegras = new ChoiceGroup("Regras", Choice.MULTIPLE,
 			OPCOES_REGRAS, IMAGENS_REGRAS);
-	
+
 	ChoiceGroup cgDebug = new ChoiceGroup("Debug", Choice.MULTIPLE,
 			OPCOES_DEBUG, IMAGENS_DEBUG);
 
@@ -410,16 +409,18 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			Display.getDisplay(this).setCurrent(mesa);
 		} else if (cmd == simSairPartidaCommand
 				|| cmd == sairPartidaSemPerguntarCommand) {
-			if (jogoEmAndamento != null) {
-				jogoEmAndamento.abortaJogo(jogadorHumano);
-				jogoEmAndamento = null;
-				jogadorHumano = null;
-				novaMesa(false);
-				Display.getDisplay(this).setCurrent(mesa);
-			} else {
-				// Isso teoricamente nao acontece, mas...
-				alerta("Erro inesperado", "Nao ha jogo em andamento");
+			if (telaBT instanceof ClienteBT) {
+				// Se for um jogo cliente, derruba
+				telaBT.encerraSessaoBT();
+				telaBT = null;
+			} else if (telaBT instanceof ServidorBT) {
+				// O jogo servidor se vira sozinho (seria sacanagem derrubar
+				// todo mundo)
+				((ServidorBT) telaBT).desconecta(-1);
+				return;
 			}
+			encerraJogo(jogadorHumano.getPosicao(), true);
+
 		} else if (cmd == trucoCommand || cmd == seisCommand
 				|| cmd == noveCommand || cmd == dozeCommand
 				|| cmd == aceitaCommand || cmd == recusaCommand
@@ -461,7 +462,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			} else {
 				Logger.log = null;
 			}
-			
+
 			if (cgRegras.isSelected(0) && cgRegras.isSelected(1)) {
 				// Se houver conflito, faz o ajuste e mantém o form
 				alerta("Conflito", "A manilha velha (fixa) exige baralho sujo.");
@@ -486,8 +487,10 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	}
 
 	/**
-	 * Inicia um jogo e aguarda o seu final
+	 * Inicia um jogo e o exibe.
 	 * 
+	 * @param jogo
+	 *            Objeto jogo (já com os quatro jogadores)
 	 */
 	public void iniciaJogo(Jogo jogo) {
 		jogoEmAndamento = jogo;
@@ -497,6 +500,30 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		Thread t = new Thread(jogo);
 		t.start();
 		Display.getDisplay(this).setCurrent(mesa);
+	}
+
+	/**
+	 * Encerra o jogo em andamento (se houver um) e volta para o menu principal
+	 * 
+	 * @param posicao
+	 *            Posição do jogador que motivou o encerramento do jogo (0 caso
+	 *            não haja jogo em andamento ou não se queira notificar nada)
+	 * @param voltaAoMenu
+	 *            se True, exibe a tela principal, caso contrário, fica onde
+	 *            está
+	 */
+	public void encerraJogo(int posicao, boolean voltaAoMenu) {
+		if (jogoEmAndamento != null) {
+			if (posicao != 0) {
+				jogoEmAndamento.abortaJogo(posicao);
+			}
+			jogoEmAndamento = null;
+		}
+		jogadorHumano = null;
+		novaMesa(false);
+		if (voltaAoMenu) {
+			Display.getDisplay(this).setCurrent(mesa);
+		}
 	}
 
 	/**
