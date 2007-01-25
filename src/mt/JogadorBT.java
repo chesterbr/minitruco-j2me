@@ -6,20 +6,16 @@ import java.io.InputStream;
 /**
  * Representa o jogador conectado em um servidor bluetooth.
  * <p>
- * Suas funções são, essencialmente:
+ * Ele converte as notificações do jogo local em mensagens de texto (enviando-as
+ * para o cliente) e converte as mensagens de texto vindas do cliente em
+ * notificações para o jogo local.
  * <p>
- * 1) Encaminhar os eventos gerados pela classe Jogo local para o celular
- * remoto;
+ * A ida é feita através do ServidorBT (que detém a conexão e os outputstreams),
+ * mas a volta é feita por um InputStream local, criado só para isso.
  * <p>
- * 2) Receber os comandos do celular remoto e encaminhar para a classe Jogo;
- * <p>
- * Os eventos são descritos em uma linguagem baseada no antigo protocolo do
- * miniTruco client-server.
- * <P>
- * O evento "I" (que informa os nomes dos jogadores e regras do jogo) é o único
- * que não é gerado por esta classe, pois ocorre antes do <code>Jogo</code>
- * ser efetivamente criado.
- * <p>
+ * Desta forma, objeto "vive" enquanto este InputStream local estiver aberto,
+ * mas a conexão/saída ficam disponíveis para novas partidas com o mesmo
+ * cliente. que não é gerado por esta classe, pois ocorre antes do
  * 
  * TODO documentar esta linguagem (na real, atualizar/traduzir a documentação do
  * client-server)
@@ -35,9 +31,9 @@ public class JogadorBT extends Jogador implements Runnable {
 	private ServidorBT servidor;
 
 	/**
-	 * Slot em que este jogador está no jogo
+	 * Inputstream do jogador conectado
 	 */
-	private int slot;
+	InputStream in;
 
 	/**
 	 * Cria uma instância que representa um jogador conectado no servidor via
@@ -50,7 +46,6 @@ public class JogadorBT extends Jogador implements Runnable {
 	 */
 	public JogadorBT(ServidorBT servidor, int slot) {
 		this.servidor = servidor;
-		this.slot = slot;
 		Thread t = new Thread(this);
 		t.start();
 
@@ -61,29 +56,50 @@ public class JogadorBT extends Jogador implements Runnable {
 	 * remoto), transformando-as novamente em eventos no Jogo local
 	 */
 	public void run() {
-		// TODO Auto-generated method stub
-		int c;
+		// Aguarda a definição da posição (importante, pois ela determina o slot
+		// no servidor para o envio de mensagens)
+		while (getPosicao() == 0) {
+			Thread.yield();
+		}
+		// Caractere lido e buffer que acumula a linha lida
+		int c = 0;
 		StringBuffer sbLinha = new StringBuffer();
-		InputStream in = null;
 		try {
-			in = servidor.connClientes[slot].openInputStream();
-			// TODO: melhorar estavivo
-			boolean estaVivo = true;
-			while (estaVivo && (c = in.read()) != -1) {
-				if (c == '\n' || c == '\r') {
+			in = servidor.connClientes[getPosicao() - 2].openInputStream();
+			// O loop dura enquanto o InputStream não for null. Sim, eu poderia
+			// usar uma leitura mais eficiente, com blocking, mas aí não consigo
+			// detectar o fim da partida (sem perder o primeiro caractere do
+			// primeiro comando da partida seguinte)
+			do {
+				while (in != null && in.available() == 0) {
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// Alguém já tratou isso um dia?
+					}
+				}
+				if (in == null)
+					break;
+				// Lê o próximo caractre
+				c = in.read();
+				if (c != TelaBT.ENTER) {
+					// Acumula caracteres até formar uma linha
+					sbLinha.append((char) c);
+					Logger.debug("caractere acumulado:" + c);
+				} else {
+					// Processa linhas (não-vazias)
 					if (sbLinha.length() > 0) {
-						Logger.debug(sbLinha.toString());
+						Logger.debug("Linha acumulada: " + sbLinha.toString());
 						char tipoNotificacao = sbLinha.charAt(0);
 						String[] args = ServidorBT.split(sbLinha.toString(),
 								' ');
 						switch (tipoNotificacao) {
 						case 'J':
+							// Procura a carta correspondente ao parâmetro
 							Carta[] cartas = getCartas();
 							for (int i = 0; i < cartas.length; i++) {
 								if (cartas[i] != null
 										&& cartas[i].toString().equals(args[1])) {
-									// Joga a carta. Se der certo o evento vai
-									// notificar a todos.
 									cartas[i].setFechada(args.length > 2
 											&& args[2].equals("T"));
 									jogo.jogaCarta(this, cartas[i]);
@@ -105,53 +121,47 @@ public class JogadorBT extends Jogador implements Runnable {
 						}
 					}
 					sbLinha.setLength(0);
-				} else {
-					sbLinha.append((char) c);
 				}
-			}
+			} while (in != null);
 		} catch (IOException e) {
-			// TODO o que fazer aqui?
-			e.printStackTrace();
-			// É normal dar um erro de I/O quando o usuário pede pra
-			// desconectar (porque o loop vai tentar ler a última linha). Só
-			// vamos alertar se a desconexão foi forçada, ou se não foi
-			// possível abrir os streams de I/O
-			// if ((in == null) || (out == null) || estaVivo) {
-			// alerta("Erro de I/O", e.getMessage(), true);
-			// }
-			// TODO finalizaServidor()?
-			return;
-		} finally {
-			try {
-				in.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			// Se saiu do loop e ainda estava "vivo", foi desconectado,
-			// avisa
-			// TODO o que fazer qqui?
-			// if (estaVivo) {
-			// alerta("Desconectado", "Você foi desconectado do servidor.",
-			// true);
-			// }
-			// TODO finalizaServidor();
+			// Não precisa tratar - ou é fim de jogo, ou o servidor cuida
 		}
-
+		Logger.debug("encerrando loop JogadorBT");
 	}
 
 	/**
-	 * Manda uma notificação (linha de comando) para o celular do cliente.
+	 * Encerra a thread principal, efetivamente finalizando o JogadorBT
+	 */
+	void finaliza() {
+		// O in.close "does nothing", segundo a especificação (
+		// http://tinyurl.com/2r59cp#close() ), então eu anulo o objeto e
+		// monitoro isso no loop
+		try {
+			in.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		in = null;
+	}
+
+	/**
+	 * Manda uma linha de texto para o celular do cliente.
 	 * <p>
-	 * Esta notificação veio do JogoLocal, e será processada lá pela classe
-	 * JogoRemoto, para dar a idéia de que veio de um jogo rodando lá.
+	 * Estas linhas representam eventos gerados pelo JogoLocal.
 	 * 
 	 * @param linha
 	 */
-	public synchronized void enviaLinha(String linha) {
-		servidor.enviaComando(slot, linha);
+	public synchronized void enviaMensagem(String linha) {
+		servidor.enviaMensagem(getPosicao() - 2, linha);
 	}
+
+	// Os métodos restantes convertem as notificações do JogoLocal em mensagens
+	// de texto, que serão reconvertidas em solicitações no cliente para o
+	// JogadorHumano.
+	//
+	// As únicas exceções são os eventos de fim-de-jogo, que finalizam o
+	// JogadorBT
 
 	public void cartaJogada(Jogador j, Carta c) {
 		String param;
@@ -164,7 +174,7 @@ public class JogadorBT extends Jogador implements Runnable {
 		} else {
 			param = " " + c.toString();
 		}
-		enviaLinha("J " + j.getPosicao() + param);
+		enviaMensagem("J " + j.getPosicao() + param);
 	}
 
 	public void inicioMao() {
@@ -175,45 +185,40 @@ public class JogadorBT extends Jogador implements Runnable {
 		if (!jogo.isManilhaVelha()) {
 			comando.append(" " + jogo.cartaDaMesa);
 		}
-		enviaLinha(comando.toString());
+		enviaMensagem(comando.toString());
 	}
 
 	public void inicioPartida() {
-		enviaLinha("P");
+		enviaMensagem("P");
 	}
 
 	public void vez(Jogador j, boolean podeFechada) {
-		enviaLinha("V " + j.getPosicao() + ' ' + (podeFechada ? 'T' : 'F'));
+		enviaMensagem("V " + j.getPosicao() + ' ' + (podeFechada ? 'T' : 'F'));
 	}
 
 	public void pediuAumentoAposta(Jogador j, int valor) {
-		enviaLinha("T " + j.getPosicao() + ' ' + valor);
+		enviaMensagem("T " + j.getPosicao() + ' ' + valor);
 	}
 
 	public void aceitouAumentoAposta(Jogador j, int valor) {
-		enviaLinha("D " + j.getPosicao() + ' ' + valor);
+		enviaMensagem("D " + j.getPosicao() + ' ' + valor);
 	}
 
 	public void recusouAumentoAposta(Jogador j) {
-		enviaLinha("C " + j.getPosicao());
+		enviaMensagem("C " + j.getPosicao());
 	}
 
 	public void rodadaFechada(int numRodada, int resultado,
 			Jogador jogadorQueTorna) {
-		enviaLinha("R " + resultado + ' ' + jogadorQueTorna.getPosicao());
+		enviaMensagem("R " + resultado + ' ' + jogadorQueTorna.getPosicao());
 	}
 
 	public void maoFechada(int[] pontosEquipe) {
-		enviaLinha("O " + pontosEquipe[0] + ' ' + pontosEquipe[1]);
-	}
-
-	public void jogoFechado(int numEquipeVencedora) {
-		// TODO desvinculaJogo();
-		enviaLinha("G " + numEquipeVencedora);
+		enviaMensagem("O " + pontosEquipe[0] + ' ' + pontosEquipe[1]);
 	}
 
 	public void decidiuMao11(Jogador j, boolean aceita) {
-		enviaLinha("H " + j.getPosicao() + (aceita ? " T" : " F"));
+		enviaMensagem("H " + j.getPosicao() + (aceita ? " T" : " F"));
 	}
 
 	public void informaMao11(Carta[] cartasParceiro) {
@@ -223,12 +228,19 @@ public class JogadorBT extends Jogador implements Runnable {
 			if (i != 2)
 				sbComando.append(' ');
 		}
-		enviaLinha(sbComando.toString());
+		enviaMensagem(sbComando.toString());
 	}
 
-	public void jogoAbortado(Jogador j) {
-		// TODO desvinculaJogo();
-		enviaLinha("A " + j.getPosicao());
+	// Eventos de fim-de-jogo
+
+	public void jogoFechado(int numEquipeVencedora) {
+		enviaMensagem("G " + numEquipeVencedora);
+		finaliza();
+	}
+
+	public void jogoAbortado(int posicao) {
+		enviaMensagem("A " + posicao);
+		finaliza();
 	}
 
 }

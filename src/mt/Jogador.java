@@ -43,7 +43,7 @@ public abstract class Jogador {
 
 	// Variáveis / Métodos úteis
 
-	private int posicao;
+	private int posicao = 0;
 
 	private Carta[] cartas;
 
@@ -233,8 +233,8 @@ public abstract class Jogador {
 	 * jogador desistiu)
 	 * 
 	 * @param j
-	 *            Jogador que abortou o jogo
+	 *            Posição do jogador que abortou
 	 */
-	public abstract void jogoAbortado(Jogador j);
+	public abstract void jogoAbortado(int posicao);
 
 }

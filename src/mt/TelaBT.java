@@ -11,17 +11,14 @@ import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
-import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.TextField;
 
 /**
- * Decorator para o servidor e o cliente BlueTooth - adiciona form de apelido,
- * código para exibição dos jogadores conectados, constantes e outros elementos
- * comnus aos dois lados.
+ * Decorator para o servidor e o cliente BlueTooth código para exibição dos
+ * jogadores conectados, constantes e outros elementos comnus aos dois lados.
  * <p>
- * Após a exibição do form de apelido, o processo apropriado (busca de clientes
- * ou de servidores) é iniciado através do método run()
+ * A procura/oferta do serviço de jogo é feita pelas classes descendentes.
  * 
  * @author Chester
  * 
@@ -37,7 +34,7 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 
 	protected static final Command iniciarJogoCommand = new Command("Iniciar",
 			Command.SCREEN, 1);
-	
+
 	protected static final char ENTER = '\n';
 
 	/**
@@ -63,7 +60,6 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	 */
 	public static final UUID UUID_BT = new UUID(
 			"3B175368ABB411DBA508C2B155D89593", false);
-	         
 
 	protected static final String[] APELIDOS_CPU = { "CPU1", "CPU2", "CPU3" };
 
@@ -78,12 +74,6 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	protected Display display;
 
 	/**
-	 * Apelido do jogador (obtido do "friendly name" do celular, mas editável
-	 * quando ele pede pra jogar via bluetooth)
-	 */
-	String apelido;
-
-	/**
 	 * Campo texto do apleido do jogador
 	 */
 	TextField txtApelido;
@@ -94,7 +84,7 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	LocalDevice localDevice;
 
 	/**
-	 * Apelidos dos jogadores conectados nos "slots" de 0 a 3
+	 * Apelidos dos jogadores nas quatro posições da mesa.
 	 */
 	protected String[] apelidos = new String[4];
 
@@ -112,22 +102,25 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	/**
 	 * Define o que será mostrado na tela (pode ser uma mensagem ou os jogadores
 	 * conectados) e a atualiza.
+	 * <p>
+	 * Caso haja outro Displayable em exibição, solicita a mudança para este.
 	 * 
 	 * @param msg
 	 *            Mensagem a ser exibida. Se for <code>null</code>, exibe a
 	 *            mesa com os jogadores posicionados.
 	 */
-	protected void setStatusDisplay(String msg) {
+	protected void setTelaMsg(String msg) {
+		display.setCurrent(this);
+		Thread.yield();
 		msgDisplay = msg;
 		repaint();
 		serviceRepaints();
-		Thread.yield();
 	}
 
 	public TelaBT(MiniTruco midlet) {
 
 		// Guarda o display da MIDlet (vamos precisar dele pra mostrar forms e
-		// alerts) e uma referência a ela, parando a animação.
+		// alerts) e uma referência a ela.
 		this.display = Display.getDisplay(midlet);
 		this.midlet = midlet;
 
@@ -137,50 +130,34 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 			localDevice = LocalDevice.getLocalDevice();
 		} catch (BluetoothStateException e) {
 			Logger.debug(e.toString());
-			midlet.alerta("Erro Bluetooth", e.getMessage());
+			alerta("Erro Bluetooth", e.getMessage());
 			return;
 		} catch (RuntimeException re) {
 			// Esse catch é um pouco abrangente, mas é a primeira chamada a
 			// classes bt, assim, se for dar algum erro bizarro, é aqui
 			Logger.debug("erro runtime bt");
 			Logger.debug(re.toString());
-			midlet.alerta("Erro Runtime", re.getMessage());
+			alerta("Erro Runtime", re.getMessage());
 			return;
 		}
 
-		mostraFormApelido();
+		// Inicia e mostra a tela básica (comando voltar)
+		addCommand(voltarCommand);
+		setCommandListener(this);
+		display.setCurrent(this);
 
-	}
+		// Inicia o oferecimento/procura do serviço (conforme o caso)
+		(new Thread(this)).start();
 
-	public void mostraFormApelido() {
-		String sugestao = apelido;
-		if (sugestao == null) {
-			sugestao = localDevice.getFriendlyName();
-		}
-		Form formApelido = new Form("Apelido");
-		txtApelido = new TextField("Informe seu apelido", sugestao, 15,
-				TextField.ANY);
-		formApelido.append(txtApelido);
-		formApelido.setCommandListener(this);
-		formApelido.addCommand(okApelidoCommand);
-		formApelido.addCommand(voltarCommand);
-		display.setCurrent(formApelido);
 	}
 
 	public void commandAction(Command cmd, Displayable arg1) {
-		if (cmd.equals(okApelidoCommand)) {
-			// Confirma o apelido e começa a procurar servidores ou aguardar
-			// clientes (quem decide é a subclasse, no seu método run())
-			apelido = txtApelido.getString();
-			this.addCommand(voltarCommand);
-			display.setCurrent(this);
-			(new Thread(this)).start();
-		} else if (cmd.equals(voltarCommand)) {
-			// Sinaliza a finalização para a thread e volta ao menu
+		if (cmd.equals(voltarCommand)) {
+			// Sinaliza a finalização para a thread, encerra qualquer partida
+			// pendente e volta ao menu
 			encerraSessaoBT();
 			midlet.telaBT = null;
-			midlet.novaMesa(false);
-			Display.getDisplay(midlet).setCurrent(midlet.mesa);
+			midlet.encerraJogo(0, true);
 		}
 	}
 

@@ -312,15 +312,21 @@ public abstract class Jogo implements Runnable {
 	}
 
 	/**
-	 * Indica que o jogo foi finalizado por iniciativa deste jogador.
+	 * Indica que o jogo foi finalizado por iniciativa do jogador naquela
+	 * posição.
 	 * <p>
 	 * Implementações podem sobrescrever (ex.: para notificar o servidor) mas
 	 * devem chamar o super()
+	 * <p>
+	 * 
+	 * @param posicao
+	 *            posição (1 a 4) do jogador que motivou o abort
 	 */
-	public void abortaJogo(Jogador j) {
+	public void abortaJogo(int posicao) {
 		jogoFinalizado = true;
 		for (int i = 1; i <= 4; i++) {
-			getJogador(i).jogoAbortado(j);
+			if (i != posicao)
+				getJogador(i).jogoAbortado(posicao);
 		}
 	}
 

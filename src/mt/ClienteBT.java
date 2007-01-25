@@ -14,6 +14,7 @@ import javax.bluetooth.ServiceRecord;
 import javax.bluetooth.UUID;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
+import javax.microedition.lcdui.Display;
 
 /**
  * Conecta-se (via Bluetooth) num celular-servidor, exibindo a configuração da
@@ -24,6 +25,8 @@ import javax.microedition.io.StreamConnection;
  */
 public class ClienteBT extends TelaBT {
 
+	StreamConnection conn = null;
+
 	public InputStream in;
 
 	public OutputStream out;
@@ -31,9 +34,31 @@ public class ClienteBT extends TelaBT {
 	private JogoBT jogo;
 
 	/**
-	 * Posição deste cliente na mesa (determinada pelo servidor)
+	 * Posição que o jogador local ocupa no jogo (do servidor)
+	 * <p>
+	 * A posição dele na mesa é diferente.
+	 * 
+	 * @see ClienteBT#getPosicaoMesa(int)
 	 */
 	private int posJogador;
+
+	/**
+	 * Recupera a posição "visual" correspondente a uma posição de jogo (i.e.,
+	 * uma posição no servidor)
+	 * <p>
+	 * A idéia é que o jogador local fique sempre na parte inferior da tela,
+	 * então o método retorna 1 para o jogador local, 2 para quem está à direita
+	 * dele, etc.
+	 * 
+	 * @param i
+	 *            posição (no servidor) do jogador que queremos consultar
+	 */
+	public int getPosicaoMesa(int i) {
+		int retorno = i - posJogador + 1;
+		if (retorno < 1)
+			retorno += 4;
+		return retorno;
+	}
 
 	private boolean estaVivo = true;
 
@@ -45,13 +70,13 @@ public class ClienteBT extends TelaBT {
 	public void run() {
 
 		// Inicia a busca por celulares remotos
-		setStatusDisplay("Procurando celulares...");
+		setTelaMsg("Procurando celulares...");
 		DiscoveryAgent agente = localDevice.getDiscoveryAgent();
 		MiniTrucoDiscoveryListener lsnr = new MiniTrucoDiscoveryListener(agente);
 		try {
 			agente.startInquiry(DiscoveryAgent.GIAC, lsnr);
 		} catch (BluetoothStateException re) {
-			setStatusDisplay("Erro:" + re.getMessage());
+			setTelaMsg("Erro:" + re.getMessage());
 			return;
 		}
 
@@ -61,11 +86,10 @@ public class ClienteBT extends TelaBT {
 		}
 
 		// Para cada celular encontrado, verifica se é um servidor e conecta
-		StreamConnection conn = null;
 		for (int i = 0; i < lsnr.devs.size(); i++) {
 			RemoteDevice remdev = (RemoteDevice) lsnr.devs.elementAt(i);
 			try {
-				setStatusDisplay("Localizando jogo...");
+				setTelaMsg("Localizando jogo...");
 				MiniTrucoDiscoveryListener servicoListener = new MiniTrucoDiscoveryListener(
 						agente);
 				agente.searchServices(null, new UUID[] { UUID_BT }, remdev,
@@ -78,16 +102,19 @@ public class ClienteBT extends TelaBT {
 					break;
 				}
 			} catch (BluetoothStateException e) {
-				setStatusDisplay("Erro:" + e.getMessage());
+				setTelaMsg("Erro:" + e.getMessage());
 				return;
 			}
 		}
 
 		if (conn == null) {
-			display.setCurrent(midlet.mesa);
-			midlet
-					.alerta("Jogo n\u00E3o encontrado",
-							"Nenhum celular com jogo Bluetooth criado foi encontrado. Crie um jogo ou tente novamente");
+			if (estaVivo) {
+				display.setCurrent(midlet.mesa);
+				midlet
+						.alerta(
+								"Jogo n\u00E3o encontrado",
+								"Nenhum celular com jogo Bluetooth criado foi encontrado. Crie um jogo ou tente novamente");
+			}
 		} else {
 			// Loop principal: decodifica as notificações recebidas e as
 			// processa (ou encaminha ao JogoBT, se estivermos em jogo)
@@ -104,13 +131,19 @@ public class ClienteBT extends TelaBT {
 							String parametros = sbLinha.delete(0, 2).toString();
 							switch (tipoNotificacao) {
 							case 'I':
-								// Recupera as informações do servidor
+								// Encerra qualquer jogo em andamento
+								if (jogo != null) {
+									midlet.encerraJogo(jogo.getJogadorHumano()
+											.getPosicao(), false);
+									display.setCurrent(this);
+									jogo = null;
+								}
+								// Exibe as informações recebidas fora do jogo
 								String[] tokens = split(parametros, ' ');
 								apelidos = split(tokens[0], '|');
 								regras = tokens[1];
 								posJogador = Integer.parseInt(tokens[2]);
-								// Atualiza as posições dos jogadores
-								setStatusDisplay(null);
+								setTelaMsg(null);
 								break;
 							case 'P':
 								// Cria um o jogo remoto
@@ -119,8 +152,10 @@ public class ClienteBT extends TelaBT {
 								// (preenchendo as outras com dummies)
 								for (int i = 1; i <= 4; i++) {
 									if (i == posJogador) {
-										jogo.adiciona(new JogadorHumano(
-												display, midlet.mesa));
+										midlet.jogadorHumano = new JogadorHumano(
+												display, midlet.mesa);
+										jogo.adiciona(midlet.jogadorHumano);
+
 									} else {
 										jogo.adiciona(new JogadorDummy());
 									}
@@ -141,30 +176,44 @@ public class ClienteBT extends TelaBT {
 					}
 				}
 			} catch (IOException e) {
-				// É normal dar um erro de I/O quando o usuário pede pra
-				// desconectar (porque o loop vai tentar ler a última linha). Só
-				// vamos alertar se a desconexão foi forçada, ou se não foi
-				// possível abrir os streams de I/O
-				if ((in == null) || (out == null) || estaVivo) {
+				if (estaVivo) {
 					alerta("Erro de I/O", e.getMessage(), true);
 				}
-				// TODO finalizaServidor()?
-				return;
 			} finally {
-				// Se saiu do loop e ainda estava "vivo", foi desconectado,
-				// avisa
+				Logger.debug("saiu do loop");
+				// Se a desconexão foi forçada, avisa e sai
 				if (estaVivo) {
 					alerta("Desconectado",
 							"Você foi desconectado do servidor.", true);
+					super.commandAction(voltarCommand, this);
 				}
-				// TODO finalizaServidor();
 			}
 		}
 
 	}
 
 	public void encerraSessaoBT() {
-		// TODO implementar
+		// TODO: interromper, é muito chato isso
+		// Obs.: poderia interromper o inquiry/discovery aqui, mas a flag já
+		// garante que vai dar timeout de qualquer jeito. Isso tem um efeito
+		// colateral:se voce sair e entrar na busca muito rapido pode dar um
+		// erro de BluetoothState, mas acho que é tolerável.
+
+		// Obs.: fechar o conn invalida o in() e out() (cujos close() não fazem
+		// nada, cf. Javadoc do MIDP)
+		
+		Logger.debug("encerra sessao bt");
+		estaVivo = false;
+		if (conn != null) {
+			try {
+				in.close();
+				out.close();
+				conn.close();
+				Logger.debug("fechou conexao cliente");
+			} catch (IOException e) {
+				// Ja estava fechado
+			}
+		}
 	}
 
 	/**
@@ -212,21 +261,21 @@ public class ClienteBT extends TelaBT {
 		}
 
 		/**
-		 * Adiciona um dispositivo encontrado à lista
+		 * Achou um celular (potencialmente servidor), adiciona à lista
 		 */
 		public void deviceDiscovered(RemoteDevice arg0, DeviceClass arg1) {
-			devs.addElement(arg0);
-			try {
-				System.out.println("achou" + arg0.getFriendlyName(false));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (estaVivo) {
+				devs.addElement(arg0);
 			}
 		}
 
+		/**
+		 * Achou um serviço (potencialmente um jogo miniTruco aberto), tenta
+		 * conectar
+		 */
 		public void servicesDiscovered(int idBusca, ServiceRecord[] servicos) {
 			// Só vai haver um serviço de truco por celular mesmo
-			if (servicos.length > 0) {
+			if (estaVivo && servicos.length > 0) {
 				String url = servicos[0].getConnectionURL(
 						ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
 				try {
@@ -235,9 +284,9 @@ public class ClienteBT extends TelaBT {
 					String nome;
 					if (dev != null) {
 						nome = dev.getFriendlyName(false);
-						setStatusDisplay("Tentando " + nome);
+						setTelaMsg("Tentando " + nome);
 						conn = (StreamConnection) Connector.open(url);
-						setStatusDisplay("Conectado em " + nome + "!");
+						setTelaMsg("Conectado em " + nome + "!");
 						agent.cancelServiceSearch(idBusca);
 					}
 				} catch (IOException e) {
@@ -264,15 +313,4 @@ public class ClienteBT extends TelaBT {
 
 	}
 
-	public int getPosicaoMesa(int i) {
-		// O 1o. slot no cliente é ele mesmo, logo este valor depende da posição
-		// do jogador no serivdor. A conta abaixo garante que o slot
-		// correspondente à posição do jogador (i.e., o slot posJogador)
-		// retorne sempre 1, o seguinte 2, o outro 3 e o último 4, "dando a
-		// volta" se necessário
-		int retorno = i - posJogador + 1;
-		if (retorno < 1)
-			retorno += 4;
-		return retorno;
-	}
 }

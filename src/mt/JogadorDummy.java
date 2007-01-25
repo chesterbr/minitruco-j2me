@@ -55,7 +55,7 @@ public class JogadorDummy extends Jogador {
 
 	}
 
-	public void jogoAbortado(Jogador j) {
+	public void jogoAbortado(int posicao) {
 
 	}
 

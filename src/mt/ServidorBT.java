@@ -32,7 +32,7 @@ public class ServidorBT extends TelaBT {
 	StreamConnection[] connClientes = new StreamConnection[3];
 
 	/**
-	 * OutputSterams dos jogadores conectados
+	 * OutputStreams dos jogadores conectados
 	 */
 	private OutputStream[] outClientes = new OutputStream[3];
 
@@ -50,7 +50,7 @@ public class ServidorBT extends TelaBT {
 	}
 
 	/**
-	 * Envia um comando para o cliente no slot especificado.
+	 * Envia uma linha de texto para o cliente no slot especificado.
 	 * <p>
 	 * Se o slot espedificado estiver vazio, não faz nada.
 	 * <p>
@@ -61,7 +61,7 @@ public class ServidorBT extends TelaBT {
 	 * @param comando
 	 *            texto do comando/notificação a enviar
 	 */
-	public void enviaComando(int slot, String comando) {
+	public synchronized void enviaMensagem(int slot, String comando) {
 		if (outClientes[slot] != null) {
 			try {
 				outClientes[slot].write(comando.getBytes());
@@ -78,82 +78,124 @@ public class ServidorBT extends TelaBT {
 				} catch (IOException ioe) {
 					// No prob, já deve ter morrido
 				}
-				// Libera slot e atualiza status (dos remanescentes e do
-				// servidor)
-				connClientes[slot] = null;
-				outClientes[slot] = null;
-				apelidos[slot+1] = APELIDOS_CPU[slot];
-				atualizaClientes();
-				atualizaServidor();
+				// Libera o slot e encerra o jogo em andamento
+				desconecta(slot);
 			}
 		}
 	}
 
 	/**
-	 * Sinaliza que o servidor ainda está em atividade
+	 * Desconecta um jogador (ou notifica desistência do servidor) e exibe a
+	 * tela de jogadores
+	 * 
+	 * @param slot
+	 *            slot do jogador a desconectar. Se for -1, notifica desistência
+	 *            do servidor
 	 */
-	protected boolean estaVivo = true;
+	void desconecta(int slot) {
+		Logger.debug("desconectou posicao " + slot);
+		if (slot != -1) {
+			connClientes[slot] = null;
+			outClientes[slot] = null;
+			apelidos[slot + 1] = APELIDOS_CPU[slot];
+		}
+		midlet.encerraJogo(slot + 2, false);
+		setModoSetup(true);
+		atualizaServidor();
+		atualizaClientes();
+	}
+
+	/**
+	 * Determina a situação atual do servidor, a saber:
+	 * <p>
+	 * J = Jogo em andamento<br>
+	 * L = Lotado, aguardando inicio de jogo<br>
+	 * A = Aguardando conexao ou inicio de jogo <br>
+	 * X = Servidor sendo encerrado
+	 */
+	private char status;
 
 	/**
 	 * Loop da thread principal (que recebe e processa as conexões dos clientes)
 	 */
 	public void run() {
 
-		this.addCommand(voltarCommand);
-		this.setCommandListener(this);
+		Thread.yield(); // O ME2SE dá uma zica planetária sem isso
 
 		// Inicializa os apelidos (servidor na 1a. posição)
-		apelidos[0] = apelido;
+		apelidos[0] = localDevice.getFriendlyName();
 		for (int i = 1; i <= 3; i++)
 			apelidos[i] = APELIDOS_CPU[i - 1];
 
-		// Incializa a thread de monitoração dos clientes conectados
+		// Coloca o servidor em modo "setup", e a thread secundária para
+		// monitorar desconexões
+		setModoSetup(true);
 		Thread tm = new ThreadMonitoraClientes();
 		tm.start();
 
-		// Loop principal
-		Logger.debug("Server aguardando conexoes BT");
-		while (estaVivo) {
+		// Loop principal (executa enquanto o servidor não for encerrado)
+		while (status != 'X') {
 
-			// Atualiza o display (local e remoto)
-			int numClientes = getNumClientes();
+			// Se estivermos em jogo, aguarda o encerramento
+			while (status == 'J') {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// não precisa tratar
+				}
+				continue; // checa novamente X
+			}
+
+			// Saímos do modo jogo, atualiza o display (local e remoto)
 			atualizaServidor();
 			atualizaClientes();
 
-			// Espera surgir pelo menos um slot livre
-			if (numClientes == 3) {
-				aguardarConexoes(false);
-				while (getNumClientes() == 3) {
+			// Se estiver lotado, aguarda desconexão ou início de jogo
+			if (status == 'L') {
+				do {
 					try {
-						Thread.sleep(2000);
+						Thread.sleep(1000);
 					} catch (InterruptedException e) {
 						// não precisa tratar
 					}
-				}
+				} while (status == 'L');
+				continue; // checa novamente J/X
 			}
 
-			// Aguarda uma conexão e encaixa ela no slot livre
-			aguardarConexoes(true);
+			// TODO: tirar isso quando tiver certeza
+			if (status != 'A') {
+				alerta("Erro interno", "status deveria ser A", true);
+				Logger.debug("Status não-a:" + status);
+				return;
+			}
+
+			// Se chegou aqui, estamos ativos, fora do jogo e com vaga
+			// disponível, logo, vamos aguardar uma conexão (ou um
+			// encerramento, que interrompe o acceptAndOpen())
 			StreamConnection c = null;
 			try {
 				c = scnServidor.acceptAndOpen();
+				// Encaixa na primeira vaga disponível
 				for (int i = 0; i <= 2; i++) {
 					if (connClientes[i] == null) {
 						connClientes[i] = c;
 						outClientes[i] = c.openOutputStream();
-						apelidos[i+1] = RemoteDevice.getRemoteDevice(c)
+						apelidos[i + 1] = RemoteDevice.getRemoteDevice(c)
 								.getFriendlyName(false);
 						c = null;
 						break;
 					}
 				}
+				// Continua recebendo conexões (a menos que lote)
+				setModoSetup(true);
 			} catch (IOException e) {
-				if (c != null)
+				if (c != null) {
 					try {
 						c.close();
 					} catch (IOException e2) {
 						// Nada a fazer
 					}
+				}
 			}
 		}
 	}
@@ -164,10 +206,10 @@ public class ServidorBT extends TelaBT {
 	 */
 	private void atualizaServidor() {
 		if (getNumClientes() == 0) {
-			setStatusDisplay("Aguardando jogadores...");
+			setTelaMsg("Aguardando jogadores...");
 			this.removeCommand(iniciarJogoCommand);
 		} else {
-			setStatusDisplay(null);
+			setTelaMsg(null);
 			this.addCommand(iniciarJogoCommand);
 		}
 	}
@@ -184,11 +226,12 @@ public class ServidorBT extends TelaBT {
 	class ThreadMonitoraClientes extends Thread {
 
 		public void run() {
-			while (estaVivo) {
+			// Executa enquanto o servidor não for encerrado
+			while (status != 'X') {
 				// Envia um comando vazio (apenas para testar a conexão, e
 				// processar qualquer desconexão que tenha ocorrido)
 				for (int i = 0; i <= 2; i++) {
-					enviaComando(i, "");
+					enviaMensagem(i, "");
 				}
 				try {
 					sleep(2000);
@@ -215,56 +258,107 @@ public class ServidorBT extends TelaBT {
 	}
 
 	/**
-	 * Interrompe o loop principal e quaisquer conexões existentes,
+	 * Interrompe as threads e quaisquer conexões existentes
 	 */
 	public void encerraSessaoBT() {
-		setStatusDisplay("Encerrando...");
-		estaVivo = false;
-		aguardarConexoes(false);
+		setTelaMsg("Encerrando...");
 		for (int i = 0; i <= 2; i++) {
 			if (connClientes[i] != null) {
 				try {
+					if (midlet.jogoEmAndamento!=null) {
+						Jogador j = midlet.jogoEmAndamento.getJogador(i+2);
+						if (j instanceof JogadorBT) {
+							((JogadorBT)j).finaliza();
+						}
+					}
+					outClientes[i].close();
 					connClientes[i].close();
 				} catch (IOException e) {
 					// Já estava fechada, desencana
 				}
 			}
 		}
+		status = 'X';
+		setModoSetup(false);
 	}
 
 	/**
-	 * Permite/bloqueia a entrada de novas conexões.
+	 * Coloca o servidor no modo "jogo" (não aceita conexões e exibe a mesa de
+	 * jogo) ou "setup" (exibe os usuários conectados e aceita novas conexões
+	 * apenas se houver vaga).
 	 * <p>
-	 * Caso o servidor já esteja aguardando/parado, não faz nada.
+	 * Esta operação atualiza o indicador <code>status</code> para A ou L (no
+	 * modo setup) ou J (no modo jogo). Caso ele já esteja previamente em X
+	 * (encerramento), o notifier é desligado, independente de
+	 * <code>isSetup</code>
+	 * <p>
 	 * 
-	 * @param aguardar
-	 *            true para permitir, false para bloquear
+	 * @param isSetup
+	 *            true para modo "setup", false para modo "jogo"
 	 */
-	public void aguardarConexoes(boolean aguardar) {
-		if (aguardar) {
-			if (scnServidor == null) {
-				try {
-					localDevice.setDiscoverable(DiscoveryAgent.GIAC);
-					// TODO: adicionar o "name=minitruco", verificar se é
-					// filtrável
-					scnServidor = (StreamConnectionNotifier) Connector
-							.open("btspp://localhost:" + UUID_BT.toString());
-				} catch (IOException e) {
-					Logger.debug("Erro server:");
-					Logger.debug(e.toString());
-					encerraSessaoBT();
-					midlet.alerta("Erro Bluetooth", e.getMessage());
-				}
+	public synchronized void setModoSetup(boolean isSetup) {
+
+		if ((!isSetup) || (status == 'X')) {
+
+			// Se não for encerramento, é novo jogo
+			if (status != 'X') {
+				status = 'J';
+				display.setCurrent(midlet.mesa);
 			}
-		} else {
+
+			// Desativa o notifier, impedindo novas conexões
 			if (scnServidor != null) {
 				try {
+					localDevice
+							.setDiscoverable(DiscoveryAgent.NOT_DISCOVERABLE);
 					scnServidor.close();
 				} catch (IOException e) {
 					// Já fechou, nada a fazer
 				}
 				scnServidor = null;
 			}
+
+		} else {
+
+			if (status == 'J') {
+				if (midlet.jogoEmAndamento != null) {
+					midlet.encerraJogo(1, false);
+				}
+			}
+
+			int n = getNumClientes();
+			int modo = localDevice.getDiscoverable();
+			status = n < 3 ? 'A' : 'L';
+
+			// Se há vaga e não estamos em listen, ativa o listen
+			if ((n < 3) && (scnServidor == null)) {
+				try {
+					localDevice.setDiscoverable(DiscoveryAgent.GIAC);
+					scnServidor = (StreamConnectionNotifier) Connector
+							.open("btspp://localhost:" + UUID_BT.toString()
+									+ ";name=miniTruco");
+				} catch (IOException e) {
+					Logger.debug("Erro server:");
+					Logger.debug(e.toString());
+					alerta("Erro Bluetooth", e.getMessage(), true);
+					encerraSessaoBT();
+				}
+			}
+
+			// Se não há vaga e estamos em listen, desativa
+			if ((n == 3) && (scnServidor != null)
+					&& (modo != DiscoveryAgent.NOT_DISCOVERABLE)) {
+				try {
+					localDevice
+							.setDiscoverable(DiscoveryAgent.NOT_DISCOVERABLE);
+					scnServidor.close();
+				} catch (IOException e) {
+					// Já fechou, nada a fazer
+				}
+				scnServidor = null;
+			}
+
+			display.setCurrent(this);
 
 		}
 	}
@@ -286,7 +380,7 @@ public class ServidorBT extends TelaBT {
 		String comando = sbComando.toString();
 		// Envia a notificação para cada jogador (com sua posição)
 		for (int i = 0; i <= 2; i++) {
-			enviaComando(i, comando + (i + 2));
+			enviaMensagem(i, comando + (i + 2));
 		}
 	}
 
@@ -301,16 +395,19 @@ public class ServidorBT extends TelaBT {
 	public void commandAction(Command cmd, Displayable arg1) {
 		super.commandAction(cmd, arg1);
 		if (cmd.equals(iniciarJogoCommand)) {
+			// Bloqueia novas conexões
+			setModoSetup(false);
 			// Cria um novo jogo e adiciona o jogador que está no servidor
 			Jogo jogo = new JogoLocal(regras.charAt(0) == 'T',
 					regras.charAt(1) == 'T');
-			jogo.adiciona(new JogadorHumano(display, midlet.mesa));
+			midlet.jogadorHumano = new JogadorHumano(display, midlet.mesa);
+			jogo.adiciona(midlet.jogadorHumano);
 			// Adiciona jogadores para os outros slots
 			for (int i = 0; i <= 2; i++) {
 				if (connClientes[i] != null) {
 					// Se há alguém neste slot, cria um JogadorBT para
 					// representá-lo
-					jogo.adiciona(new JogadorBT(this,i));
+					jogo.adiciona(new JogadorBT(this, i));
 				} else {
 					// Se não há, preenche com um JogadorCPU
 					jogo.adiciona(new JogadorCPU("Sortear"));
