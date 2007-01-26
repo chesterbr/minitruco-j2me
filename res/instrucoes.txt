@@ -12,4 +12,6 @@ Quando for uma mão de 11 simples a seu favor, você verá as cartas do adversário 
 
 Antes de começar o jogo, você pode acessar o menu Opções para escolher a dificuldade, ajustar opções visuais ou ativar regras alternativas, como a de manilha velha ou o baralho limpo. Obs.: Suas opções ficam armazenadas na memória do celular.
 
+Para jogar em vários celulares, use o menu Bluetooth/Criar Jogo em um deles e o Bluetooth/Procurar Jogo nos outros. Quem cria o jogo configura as características dele.
+
 Boa diversão!
