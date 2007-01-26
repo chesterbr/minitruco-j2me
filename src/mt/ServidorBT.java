@@ -93,7 +93,7 @@ public class ServidorBT extends TelaBT {
 	 *            do servidor
 	 */
 	void desconecta(int slot) {
-		Logger.debug("desconectou posicao " + slot);
+		MiniTruco.log("desconectou posicao " + slot);
 		if (slot != -1) {
 			connClientes[slot] = null;
 			outClientes[slot] = null;
@@ -160,13 +160,6 @@ public class ServidorBT extends TelaBT {
 					}
 				} while (status == 'L');
 				continue; // checa novamente J/X
-			}
-
-			// TODO: tirar isso quando tiver certeza
-			if (status != 'A') {
-				alerta("Erro interno", "status deveria ser A", true);
-				Logger.debug("Status não-a:" + status);
-				return;
 			}
 
 			// Se chegou aqui, estamos ativos, fora do jogo e com vaga
@@ -338,8 +331,8 @@ public class ServidorBT extends TelaBT {
 							.open("btspp://localhost:" + UUID_BT.toString()
 									+ ";name=miniTruco");
 				} catch (IOException e) {
-					Logger.debug("Erro server:");
-					Logger.debug(e.toString());
+					MiniTruco.log("Erro server:");
+					MiniTruco.log(e.toString());
 					alerta("Erro Bluetooth", e.getMessage(), true);
 					encerraSessaoBT();
 				}

@@ -215,10 +215,8 @@ public class JogoBT extends Jogo {
 		try {
 			clienteBT.out.write(linha.getBytes());
 			clienteBT.out.write(TelaBT.ENTER);
-			System.out.println("JogoBT encaminhou" + linha);
 		} catch (IOException e) {
-			// TODO TRATAR!!!!!
-			e.printStackTrace();
+			// Não preciso tratar, desconexões são identificadas no loop do in
 		}
 	}
 

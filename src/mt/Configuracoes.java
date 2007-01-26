@@ -119,7 +119,7 @@ public class Configuracoes {
 			return c;
 		} catch (RecordStoreException e) {
 			// Se der erro, retorna um novo objeto
-			Logger.debug(e.getMessage());
+			MiniTruco.log(e.getMessage());
 			return new Configuracoes();
 		} finally {
 			if (rs != null)
@@ -127,7 +127,7 @@ public class Configuracoes {
 					rs.closeRecordStore();
 				} catch (RecordStoreException re) {
 					// Ai jisuis, por que um close declara exceção?
-					Logger.debug("Erro ao fechar rs:" + re.getMessage());
+					MiniTruco.log("Erro ao fechar rs:" + re.getMessage());
 				}
 		}
 
@@ -168,17 +168,17 @@ public class Configuracoes {
 		} catch (RecordStoreException e) {
 			// Se der erro, desencana (dificilmente o usuário poderá fazer algo
 			// a respeito mesmo)
-			Logger.debug(e.getMessage());
+			MiniTruco.log(e.getMessage());
 		} catch (IOException e) {
 			// Idem
-			Logger.debug(e.getMessage());
+			MiniTruco.log(e.getMessage());
 		} finally {
 			if (rs != null)
 				try {
 					rs.closeRecordStore();
 				} catch (RecordStoreException re) {
 					// Ai jisuis, por que um close declara exceção?
-					Logger.debug("Erro ao fechar rs:" + re.getMessage());
+					MiniTruco.log("Erro ao fechar rs:" + re.getMessage());
 				}
 		}
 

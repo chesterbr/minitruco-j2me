@@ -489,15 +489,15 @@ public class Mesa extends Canvas {
 		}
 
 		// Imprime, se necessario, o log de mensagens
-		if (Logger.log != null) {
+		if (MiniTruco.log != null) {
 			g.setFont(fontePlacar);
 			g.setColor(0x00000000);
 			int alturaLog = fontePlacar.getHeight();
 			int alturaCanvas = this.getHeight();
-			for (int i = 0; (i < Logger.log.length)
+			for (int i = 0; (i < MiniTruco.log.length)
 					&& ((i + 1) * alturaLog <= alturaCanvas); i++) {
-				if (Logger.log[i] != null) {
-					g.drawString(Logger.log[i], 0, i * alturaLog, Graphics.LEFT
+				if (MiniTruco.log[i] != null) {
+					g.drawString(MiniTruco.log[i], 0, i * alturaLog, Graphics.LEFT
 							| Graphics.TOP);
 				}
 			}

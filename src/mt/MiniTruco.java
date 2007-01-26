@@ -458,9 +458,9 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			Carta.setCartasGrandes(cgVisual.isSelected(0));
 			Animador.setAnimacaoLigada(cgVisual.isSelected(1));
 			if (cgDebug.isSelected(0)) {
-				Logger.log = new String[6];
+				MiniTruco.log = new String[6];
 			} else {
-				Logger.log = null;
+				MiniTruco.log = null;
 			}
 
 			if (cgRegras.isSelected(0) && cgRegras.isSelected(1)) {
@@ -577,6 +577,30 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			}
 		}
 		return suportaBluetooth.booleanValue();
+	}
+
+	/**
+	 * Log rotativo (para exibir na tela do celular)
+	 */
+	public static String[] log = null;
+
+	/**
+	 * Método usado para debug (permite acompanhar o jogo no console)
+	 * 
+	 * @param string
+	 *            Mensagem informativa
+	 */
+	public static synchronized void log(String string) {
+		// Envia para o console
+		System.out.println(string);
+	
+		// Guarda no log rotativo, se estiver habilitado
+		if (log != null) {
+			for (int i = 0; i < log.length - 1; i++) {
+				log[i] = log[i + 1];
+			}
+			log[log.length - 1] = string;
+		}
 	}
 
 }

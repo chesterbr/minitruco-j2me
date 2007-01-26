@@ -129,14 +129,14 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 		try {
 			localDevice = LocalDevice.getLocalDevice();
 		} catch (BluetoothStateException e) {
-			Logger.debug(e.toString());
+			MiniTruco.log(e.toString());
 			alerta("Erro Bluetooth", e.getMessage());
 			return;
 		} catch (RuntimeException re) {
 			// Esse catch é um pouco abrangente, mas é a primeira chamada a
 			// classes bt, assim, se for dar algum erro bizarro, é aqui
-			Logger.debug("erro runtime bt");
-			Logger.debug(re.toString());
+			MiniTruco.log("erro runtime bt");
+			MiniTruco.log(re.toString());
 			alerta("Erro Runtime", re.getMessage());
 			return;
 		}

@@ -340,7 +340,7 @@ public class EstrategiaWillian implements Estrategia {
 		} else {
 			c = s.cartasJogadas[s.numRodadaAtual - 1][s.posJogador - 1];
 		}
-		Logger.debug("obtendo chances de "
+		MiniTruco.log("obtendo chances de "
 				+ c
 				+ (indiceCarta < s.cartasJogador.length ? " em maos"
 						: " na mesa"));
@@ -370,44 +370,44 @@ public class EstrategiaWillian implements Estrategia {
 		int trucador = pegarVez(s, s.posJogadorPedindoAumento);
 		int eu = pegarVez(s, s.posJogador);
 
-		Logger.debug("Analizando, truco2 -> 1");
+		MiniTruco.log("Analizando, truco2 -> 1");
 		/* se eu jogo depois do trucador */
 		if (eu > trucador) {
-			Logger.debug("Analizando, truco2 -> 2");
+			MiniTruco.log("Analizando, truco2 -> 2");
 
 			/* fizemos a primeira */
 			if (eu % 2 == 1) {
-				Logger.debug("Analizando, truco2 -> 3");
+				MiniTruco.log("Analizando, truco2 -> 3");
 				return true;
 			} else {
 				// TODO observar parceiro
-				Logger.debug("Analizando, truco2 -> 4");
+				MiniTruco.log("Analizando, truco2 -> 4");
 
 				/* não tornou trucando ... */
 				if (trucador != 1 && precisoJogar(s)) {
-					Logger.debug("Analizando, truco2 -> 5");
+					MiniTruco.log("Analizando, truco2 -> 5");
 					int maiorMao = maiorCarta(s.cartasJogador, s.manilha);
 					int maiorMesa = maiorCarta(s.cartasJogadas[1], s.manilha);
-					Logger.debug("Analizando, truco2 -> 6");
+					MiniTruco.log("Analizando, truco2 -> 6");
 					if (s.cartasJogador[maiorMao].getValorTruco(s.manilha) < s.cartasJogadas[1][maiorMesa]
 							.getValorTruco(s.manilha))
 						return false;
 				}
-				Logger.debug("Analizando, truco2 -> 7");
+				MiniTruco.log("Analizando, truco2 -> 7");
 				int chances = getChances(s, 0) + getChances(s, 1);
 
 				chances = chances / 2 - 10;
-				Logger.debug("Analizando, truco2 -> 8");
+				MiniTruco.log("Analizando, truco2 -> 8");
 				if (Math.abs(r.nextInt()) % 100 <= chances + 25)
 					return true;
 
 			}
 		} else {
 
-			Logger.debug("Analizando, truco2 -> 9");
+			MiniTruco.log("Analizando, truco2 -> 9");
 			int chances = getChances(s, 0);
 
-			Logger.debug("Analizando, truco2 -> 10");
+			MiniTruco.log("Analizando, truco2 -> 10");
 			chances = chances / 2 + (eu % 2 == 1 ? 20 : -20);
 			if (Math.abs(r.nextInt()) % 100 <= chances + 25)
 				return true;
@@ -424,46 +424,46 @@ public class EstrategiaWillian implements Estrategia {
 		int[] valor = { -2, -1, -1, 0, 0, 0, 1, 1, 2 };
 
 		int critico = valor[Math.abs(r.nextInt()) % 8] + 10;
-		Logger.debug("Analizando, truco3 -> 1");
+		MiniTruco.log("Analizando, truco3 -> 1");
 
 		if (trucador != 1) {
-			Logger.debug("Analizando, truco3 -> 2");
+			MiniTruco.log("Analizando, truco3 -> 2");
 			int maiorMesa = maiorCarta(s.cartasJogadas[1], s.manilha);
 			int meuValor;
 			if (eu > trucador) {
-				Logger.debug("Analizando, truco3 -> 3");
+				MiniTruco.log("Analizando, truco3 -> 3");
 				if (maiorMesa % 2 != eu % 2) {
-					Logger.debug("Analizando, truco3 -> 4");
+					MiniTruco.log("Analizando, truco3 -> 4");
 					if (s.cartasJogadas[2][maiorMesa].getValorTruco(s.manilha) > s.cartasJogador[0]
 							.getValorTruco(s.manilha))
 						return false;
-					Logger.debug("Analizando, truco3 -> 5");
+					MiniTruco.log("Analizando, truco3 -> 5");
 					meuValor = s.cartasJogador[0].getValorTruco(s.manilha);
 				} else {
-					Logger.debug("Analizando, truco3 -> 6");
+					MiniTruco.log("Analizando, truco3 -> 6");
 					meuValor = s.cartasJogador[0].getValorTruco(s.manilha) > s.cartasJogadas[2][maiorMesa]
 							.getValorTruco(s.manilha) ? s.cartasJogador[0]
 							.getValorTruco(s.manilha)
 							: s.cartasJogadas[2][maiorMesa]
 									.getValorTruco(s.manilha);
 				}
-				Logger.debug("Analizando, truco3 -> 7");
+				MiniTruco.log("Analizando, truco3 -> 7");
 			} else {
 				if (maiorMesa % 2 == eu % 2) {
-					Logger.debug("Analizando, truco3 -> 8");
+					MiniTruco.log("Analizando, truco3 -> 8");
 					meuValor = s.cartasJogadas[2][maiorMesa]
 							.getValorTruco(s.manilha);
 				} else {
-					Logger.debug("Analizando, truco3 -> 9");
+					MiniTruco.log("Analizando, truco3 -> 9");
 					return false;
 				}
 			}
-			Logger.debug("Analizando, truco3 -> 10");
+			MiniTruco.log("Analizando, truco3 -> 10");
 			if (meuValor > critico)
 				return true;
 			return false;
 		}
-		Logger.debug("Analizando, truco3 -> 11");
+		MiniTruco.log("Analizando, truco3 -> 11");
 		if (s.cartasJogador[0].getValorTruco(s.manilha) > critico)
 			return true;
 		return false;
