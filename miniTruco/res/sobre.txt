@@ -1,4 +1,4 @@
-Copyright © 2006 Carlos Duarte do Nascimento (Chester) - cd@pobox.com
+Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester) - cd@pobox.com
 
 Estratégia da CPU (EstrategiaWillian):  Copyright © 2006 Willian Gigliotti - wgigliotti@gmail.com
 

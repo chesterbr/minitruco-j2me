@@ -39,8 +39,8 @@ public class JogadorBT extends Jogador implements Runnable {
 	 * Cria uma instância que representa um jogador conectado no servidor via
 	 * Bluetooth
 	 * 
-	 * @param conn
-	 *            conexão BT estabelecida pelo jogador
+	 * @param servidor
+	 *            Servidor que fará o meio-de-campo
 	 */
 	public JogadorBT(ServidorBT servidor) {
 		this.servidor = servidor;

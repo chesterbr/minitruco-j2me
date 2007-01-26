@@ -267,22 +267,15 @@ Se você quiser rodar a aplicação num celular
         do tipo deles (humano, cpu, etc.), e também que o Jogador interaja com um jogo
         sem importar se ele é local ou remoto.
         </p>
-        <p>
-        
-        </p>
-        <p>
-            Vale a pena consultar o
-            <a href="javadoc/index.html">Javadoc</a>, que descreve todas as
-            classes e praticamente todos os métodos e atributos.
-        </p>
+
         <h2>
             Perguntas Freqüentes (FAQ)
         </h2>
 
         <p>
-            <i>Cadê o servidor</i>
+            <i>Cadê a versão multiplayer via GPRS?</i>
             <br />
-            Desencanei dele (é difícil achar um celular que consiga conectar
+            Desencanei dela (é difícil achar um celular que consiga conectar
             direto num servidor não-http). No trunk você só vai encontrar o
             cliente. Optei por orientar o projeto na direção do Bluetooth.
             <br />
@@ -308,23 +301,15 @@ Se você quiser rodar a aplicação num celular
         </p>
 
         <p>
-            <i>As classes são confusas. Não tem como rolar um diagrama UML?</i>
-            <br />
-            <strike>Estou louco pra fazer isso, mas minha ferramenta
-                predileta, o Jude, não suporta Java 1.5. Eu tenho o MyEclipse (que é
-                pago, mas vale cada centavo), só que justamente este feature (UML)
-                ele não suporta no Mac</strike> Essa desculpa acabou, preciso arrumar outra
-            ou tomar vergonha e resolver isso.
-        </p>
-
-        <p>
             <i>Porque você usa esse bando de tralha (Antenna, Proguard, etc.)
                 se o J2ME Wireless Toolkit tem tudo isso?</i>
             <br />
             Porque o kit em questão só roda em Win32/Linux (belo exemplo de
             aplicação 100% Pure Java, Sun), e eu uso Mac. Além disso, as
             ferramentas abertas em questão são, a meu ver, mais focadas e
-            eficientes.
+            eficientes. E com a nova política de libs inclusas, quem usa
+            Eclipse ou Ant pode baixar e sair usando, sem depender de
+            instalar o WTK.
         </p>
 
         <p>
@@ -337,7 +322,7 @@ Se você quiser rodar a aplicação num celular
 
 
         <h2>
-            Dicas
+            Dicas e Observações
         </h2>
 
         <p>
@@ -346,12 +331,25 @@ Se você quiser rodar a aplicação num celular
             com.barteo.emulator.app.Main e passando em Arguments a string
             "br.inf.chester.minitruco.cliente.MiniTruco"
         </p>
+        
+        <p>
+            Infelizmente, o MicroEmulator não simula o Bluetooth. Para desenvolver
+            este feature eu usei o 
+            <a href="http://rococosoft.com/registration_simulator.asp">Impronto Simulator</a> -
+            uma excelente ferramenta (mencionada até em <a href="http://developers.sun.com/techtopics/mobility/midp/articles/bluetooth2/">tutoriais de Bluetooth da Sun</a>)
+            que conta com uma versão gratuita para uso não-comercial.
+            </p>
+            <p>Não
+            posso distribuir aqui porque a licença de uso é personalizada, mas o link acima
+            permite solicitar a mesma, caso alguém queira ver este feature em funcionamento
+            e (como eu) não tenha dois celulares.
+        </p>
 
         <h2>
             Avisos Legais
         </h2>
         <p>
-            Copyright © 2006 Carlos Duarte do Nascimento (Chester) - cd@pobox.com
+            Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester) - cd@pobox.com
             <br />
             Estratégia da CPU (EstrategiaWillian): Copyright © 2006 Willian
             Gigliotti - wgigliotti@gmail.com
