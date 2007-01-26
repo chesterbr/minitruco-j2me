@@ -41,10 +41,8 @@ public class JogadorBT extends Jogador implements Runnable {
 	 * 
 	 * @param conn
 	 *            conexão BT estabelecida pelo jogador
-	 * @param slot
-	 *            slot que o jogador ocupa no servidor
 	 */
-	public JogadorBT(ServidorBT servidor, int slot) {
+	public JogadorBT(ServidorBT servidor) {
 		this.servidor = servidor;
 		Thread t = new Thread(this);
 		t.start();

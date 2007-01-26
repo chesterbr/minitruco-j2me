@@ -61,7 +61,6 @@ public class JogoBT extends Jogo {
 	 *            caractere identificador
 	 * @param parametros
 	 *            dependem do caractere
-	 * @see protocolo.txt
 	 */
 	public void processaNotificacao(char tipoNotificacao, String parametros) {
 
