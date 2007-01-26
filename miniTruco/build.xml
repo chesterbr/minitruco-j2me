@@ -89,7 +89,8 @@
 		</wtkpackage>
 		<!-- .jad -->
 		<copy todir="${DEPLOY}" file="${JAD_DIR}/${NOME_APP}.jad" />
-		<!-- Javadoc -->
+		<!-- Javadoc e applet.html -->
+		<copy todir="${DEPLOY}" file="${RES}/applet.html" />
 		<delete dir="docs/javadoc" />
 		<javadoc overview="docs/overview_javadoc.html" access="public" author="true" classpath="${wtk.midpapi}:${btapi}" destdir="docs/javadoc" doctitle="miniTruco 2 - Javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="mt" source="1.2" sourcepath="src" splitindex="true" use="true" version="true" />
 	</target>
