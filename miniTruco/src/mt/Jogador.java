@@ -232,7 +232,7 @@ public abstract class Jogador {
 	 * Informa que o jogo foi abandonado por alguma causa externa (ex.: um
 	 * jogador desistiu)
 	 * 
-	 * @param j
+	 * @param posicao
 	 *            Posição do jogador que abortou
 	 */
 	public abstract void jogoAbortado(int posicao);

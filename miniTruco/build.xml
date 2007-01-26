@@ -1,10 +1,10 @@
-<project name="miniTruco" default="roda_cliente">
+<project name="miniTruco" default="executa_emulador">
 
 	<!-- INFORMAR AQUI o diretório onde está instalado o J2ME SDK da Sun -->
 	<property name="wtk.home" value="/Applications/midp" />
 
 	<!-- Definições das bibliotecas auxiliares -->
-	<taskdef resource="antenna.properties" classpath="lib/antenna-bin-0.9.13.jar" />
+	<taskdef resource="antenna.properties" classpath="lib/antenna-bin.jar" />
 	<taskdef resource="proguard/ant/task.properties" classpath="lib/proguard.jar" />
 
 	<property name="JAR_EMULADOR" value="lib/me-app.jar" />
@@ -23,7 +23,7 @@
 
 	<!-- Tasks principais (executar estas) -->
 
-	<target name="roda_cliente" depends="compilar_sem_wtk" description="Compila e chama o cliente no emulador (bom para testes, exige apenas o emulador e as bibliotecas MIDP)">
+	<target name="executa_emulador" depends="compilar_sem_wtk" description="Compila e chama o cliente no emulador (bom para testes, exige apenas o emulador e as bibliotecas MIDP)">
 		<java classname="com.barteo.emulator.app.Main" classpath="${JAR_EMULADOR}:${BIN}:${RES}" fork="yes">
 			<arg value="mt.MiniTruco" />
 		</java>

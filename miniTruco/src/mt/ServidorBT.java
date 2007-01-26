@@ -407,7 +407,7 @@ public class ServidorBT extends TelaBT {
 				if (connClientes[i] != null) {
 					// Se há alguém neste slot, cria um JogadorBT para
 					// representá-lo
-					jogo.adiciona(new JogadorBT(this, i));
+					jogo.adiciona(new JogadorBT(this));
 				} else {
 					// Se não há, preenche com um JogadorCPU
 					jogo.adiciona(new JogadorCPU("Sortear"));
