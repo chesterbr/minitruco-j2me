@@ -125,7 +125,7 @@ public class ClienteBT extends TelaBT {
 				while (estaVivo && (c = in.read()) != -1) {
 					if (c == ENTER) {
 						if (sbLinha.length() > 0) {
-							Logger.debug(sbLinha.toString());
+							MiniTruco.log(sbLinha.toString());
 							char tipoNotificacao = sbLinha.charAt(0);
 							String parametros = sbLinha.delete(0, 2).toString();
 							switch (tipoNotificacao) {
@@ -179,7 +179,7 @@ public class ClienteBT extends TelaBT {
 					alerta("Erro de I/O", e.getMessage(), true);
 				}
 			} finally {
-				Logger.debug("saiu do loop");
+				MiniTruco.log("saiu do loop");
 				// Se a desconexão foi forçada, avisa e sai
 				if (estaVivo) {
 					alerta("Desconectado",
@@ -201,14 +201,14 @@ public class ClienteBT extends TelaBT {
 		// Obs.: fechar o conn invalida o in() e out() (cujos close() não fazem
 		// nada, cf. Javadoc do MIDP)
 		
-		Logger.debug("encerra sessao bt");
+		MiniTruco.log("encerra sessao bt");
 		estaVivo = false;
 		if (conn != null) {
 			try {
 				in.close();
 				out.close();
 				conn.close();
-				Logger.debug("fechou conexao cliente");
+				MiniTruco.log("fechou conexao cliente");
 			} catch (IOException e) {
 				// Ja estava fechado
 			}
@@ -290,8 +290,8 @@ public class ClienteBT extends TelaBT {
 					}
 				} catch (IOException e) {
 					// Deu errado, desencana e vai pro próximo
-					Logger.debug(e.getMessage());
-					Logger.debug(url);
+					MiniTruco.log(e.getMessage());
+					MiniTruco.log(url);
 				}
 			}
 		}

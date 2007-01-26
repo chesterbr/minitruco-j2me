@@ -83,11 +83,11 @@ public class JogadorBT extends Jogador implements Runnable {
 				if (c != TelaBT.ENTER) {
 					// Acumula caracteres até formar uma linha
 					sbLinha.append((char) c);
-					Logger.debug("caractere acumulado:" + c);
+					MiniTruco.log("caractere acumulado:" + c);
 				} else {
 					// Processa linhas (não-vazias)
 					if (sbLinha.length() > 0) {
-						Logger.debug("Linha acumulada: " + sbLinha.toString());
+						MiniTruco.log("Linha acumulada: " + sbLinha.toString());
 						char tipoNotificacao = sbLinha.charAt(0);
 						String[] args = ServidorBT.split(sbLinha.toString(),
 								' ');
@@ -124,7 +124,7 @@ public class JogadorBT extends Jogador implements Runnable {
 		} catch (IOException e) {
 			// Não precisa tratar - ou é fim de jogo, ou o servidor cuida
 		}
-		Logger.debug("encerrando loop JogadorBT");
+		MiniTruco.log("encerrando loop JogadorBT");
 	}
 
 	/**
@@ -133,12 +133,11 @@ public class JogadorBT extends Jogador implements Runnable {
 	void finaliza() {
 		// O in.close "does nothing", segundo a especificação (
 		// http://tinyurl.com/2r59cp#close() ), então eu anulo o objeto e
-		// monitoro isso no loop
+		// monitoro isso no loop (mas fecho anyway)
 		try {
 			in.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// nao tratar
 		}
 		in = null;
 	}

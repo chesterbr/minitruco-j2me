@@ -74,7 +74,7 @@ public class JogadorCPU extends Jogador {
 		} else if (nomeEstrategia.equals("Willian")) {
 			this.estrategia = new EstrategiaWillian();
 		} else {
-			Logger.debug("estrategia invalida:" + nomeEstrategia);
+			MiniTruco.log("estrategia invalida:" + nomeEstrategia);
 		}
 	}
 
@@ -168,7 +168,7 @@ public class JogadorCPU extends Jogador {
 			// receberia informacoes posteriores ao aceite)
 			synchronized (jogo) {
 				if (situacaoJogo.posJogadorPedindoAumento != 0) {
-					Logger.debug("Jogador " + this.getPosicao()
+					MiniTruco.log("Jogador " + this.getPosicao()
 							+ " vai avaliar truco");
 					boolean resposta = estrategia.aceitaTruco(situacaoJogo);
 					jogo.respondeAumento(this, resposta);
@@ -292,7 +292,7 @@ public class JogadorCPU extends Jogador {
 		// Pergunta ao estrategia se ele topa a mão de 11, devolvendo
 		// a resposta para o jogo
 		atualizaSituacaoJogo();
-		Logger.debug("J" + getPosicao() + " decidindo mao 11, com cartas "
+		MiniTruco.log("J" + getPosicao() + " decidindo mao 11, com cartas "
 				+ situacaoJogo.cartasJogador[0] + ","
 				+ situacaoJogo.cartasJogador[1] + ","
 				+ situacaoJogo.cartasJogador[2] + " e parceiro com "
