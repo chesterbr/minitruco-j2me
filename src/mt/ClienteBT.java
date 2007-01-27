@@ -22,15 +22,33 @@ import javax.microedition.io.StreamConnection;
  * @author Chester
  * 
  */
-public class ClienteBT extends TelaBT {
-
-	StreamConnection conn = null;
+public class ClienteBT extends TelaBT implements DiscoveryListener {
 
 	public InputStream in;
 
 	public OutputStream out;
 
 	private JogoBT jogo;
+	
+	/**
+	 * Indica que a busca (de serviço ou celular) foi concluída
+	 */
+	boolean terminou = false;
+	
+	/**
+	 * Dispositivos encontrados
+	 */
+	Vector devs = new Vector();
+
+	/**
+	 * Serviço "servidor miniTruco" encontrado
+	 */
+	ServiceRecord srServidor = null;
+
+	/**
+	 * Conexão com o servidor
+	 */
+	public StreamConnection conn = null;
 
 	/**
 	 * Posição que o jogador local ocupa no jogo (do servidor)
@@ -59,10 +77,11 @@ public class ClienteBT extends TelaBT {
 		return retorno;
 	}
 
-	private boolean estaVivo = true;
+	boolean estaVivo = true;
+
+	private DiscoveryAgent agente;
 
 	public ClienteBT(MiniTruco midlet) {
-		// Exibe o form de apelido, que iniciará a busca de servidores no ok
 		super(midlet);
 	}
 
@@ -70,35 +89,30 @@ public class ClienteBT extends TelaBT {
 
 		// Inicia a busca por celulares remotos
 		setTelaMsg("Procurando celulares...");
-		DiscoveryAgent agente = localDevice.getDiscoveryAgent();
-		MiniTrucoDiscoveryListener lsnr = new MiniTrucoDiscoveryListener(agente);
+		agente = localDevice.getDiscoveryAgent();
+		terminou = false;
 		try {
-			agente.startInquiry(DiscoveryAgent.GIAC, lsnr);
+			agente.startInquiry(DiscoveryAgent.GIAC, this);
 		} catch (BluetoothStateException re) {
 			setTelaMsg("Erro:" + re.getMessage());
 			return;
 		}
 
 		// Aguarda o final da busca
-		while (!lsnr.terminou) {
+		while (!terminou) {
 			Thread.yield();
 		}
 
 		// Para cada celular encontrado, verifica se é um servidor e conecta
-		for (int i = 0; i < lsnr.devs.size(); i++) {
-			RemoteDevice remdev = (RemoteDevice) lsnr.devs.elementAt(i);
+		for (int i = 0; i < devs.size(); i++) {
+			RemoteDevice remdev = (RemoteDevice) devs.elementAt(i);
 			try {
 				setTelaMsg("Localizando jogo...");
-				MiniTrucoDiscoveryListener servicoListener = new MiniTrucoDiscoveryListener(
-						agente);
+				terminou = false;
 				agente.searchServices(null, new UUID[] { UUID_BT }, remdev,
-						servicoListener);
-				while (!servicoListener.terminou) {
+						this);
+				while (!terminou) {
 					Thread.yield();
-				}
-				if (servicoListener.conn != null) {
-					conn = servicoListener.conn;
-					break;
 				}
 			} catch (BluetoothStateException e) {
 				setTelaMsg("Erro:" + e.getMessage());
@@ -216,100 +230,55 @@ public class ClienteBT extends TelaBT {
 	}
 
 	/**
-	 * Responde à busca de aparelho, e, para cada aparelho, à busca do serviço
-	 * "servidor de miniTruco".
-	 * 
-	 * @author Chester
+	 * Achou um celular (potencialmente servidor), adiciona à lista
 	 */
-	class MiniTrucoDiscoveryListener implements DiscoveryListener {
-
-		/**
-		 * Agente que iniciou esta busca (útil para interrompê-la quando
-		 * encontramos um servidor rodando o serviço
-		 */
-		DiscoveryAgent agent;
-
-		/**
-		 * Dispositivos encontrados
-		 */
-		Vector devs = new Vector();
-
-		/**
-		 * Serviço "servidor miniTruco" encontrado
-		 */
-		ServiceRecord srServidor = null;
-
-		/**
-		 * Indica que a busca foi concluída
-		 */
-		boolean terminou = false;
-
-		/**
-		 * Conexão com o servidor, se algum for encontrado
-		 */
-		public StreamConnection conn = null;
-
-		/**
-		 * Cria um novo listener, memorizando o agente originador
-		 * 
-		 * @param agent
-		 */
-		public MiniTrucoDiscoveryListener(DiscoveryAgent agent) {
-			super();
-			this.agent = agent;
+	public void deviceDiscovered(RemoteDevice arg0, DeviceClass arg1) {
+		if (estaVivo) {
+			devs.addElement(arg0);
 		}
-
-		/**
-		 * Achou um celular (potencialmente servidor), adiciona à lista
-		 */
-		public void deviceDiscovered(RemoteDevice arg0, DeviceClass arg1) {
-			if (estaVivo) {
-				devs.addElement(arg0);
-			}
-		}
-
-		/**
-		 * Achou um serviço (potencialmente um jogo miniTruco aberto), tenta
-		 * conectar
-		 */
-		public void servicesDiscovered(int idBusca, ServiceRecord[] servicos) {
-			// Só vai haver um serviço de truco por celular mesmo
-			if (estaVivo && servicos.length > 0) {
-				String url = servicos[0].getConnectionURL(
-						ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
-				try {
-					// Tenta conectar, e se der certo, encerra as buscas
-					RemoteDevice dev = servicos[0].getHostDevice();
-					String nome;
-					if (dev != null) {
-						nome = dev.getFriendlyName(false);
-						setTelaMsg("Tentando " + nome);
-						conn = (StreamConnection) Connector.open(url);
-						setTelaMsg("Conectado em " + nome + "!");
-						agent.cancelServiceSearch(idBusca);
-					}
-				} catch (IOException e) {
-					// Deu errado, desencana e vai pro próximo
-					MiniTruco.log(e.getMessage());
-					MiniTruco.log(url);
-				}
-			}
-		}
-
-		/**
-		 * Notifica conclusão da busca de dispositivos
-		 */
-		public void inquiryCompleted(int arg0) {
-			terminou = true;
-		}
-
-		/**
-		 * Notifica conclusão da busca de serviço
-		 */
-		public void serviceSearchCompleted(int arg0, int arg1) {
-			terminou = true;
-		}
-
 	}
+
+	/**
+	 * Achou um serviço (potencialmente um jogo miniTruco aberto), tenta
+	 * conectar
+	 */
+	public void servicesDiscovered(int idBusca, ServiceRecord[] servicos) {
+		// Só vai haver um serviço de truco por celular mesmo
+		if (estaVivo && servicos.length > 0) {
+			String url = servicos[0].getConnectionURL(
+					ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
+			try {
+				// Tenta conectar, e se der certo, encerra as buscas
+				RemoteDevice dev = servicos[0].getHostDevice();
+				String nome;
+				if (dev != null) {
+					nome = dev.getFriendlyName(false);
+					setTelaMsg("Tentando " + nome);
+					conn = (StreamConnection) Connector.open(url);
+					setTelaMsg("Conectado em " + nome + "!");
+					agente.cancelServiceSearch(idBusca);
+				}
+			} catch (IOException e) {
+				// Deu errado, desencana e vai pro próximo
+				MiniTruco.log(e.getMessage());
+				MiniTruco.log(url);
+			}
+		}
+	}
+
+	/**
+	 * Notifica conclusão da busca de dispositivos
+	 */
+	public void inquiryCompleted(int arg0) {
+		terminou = true;
+	}
+
+	/**
+	 * Notifica conclusão da busca de serviço
+	 */
+	public void serviceSearchCompleted(int arg0, int arg1) {
+		terminou = true;
+	}
+
 
 }
