@@ -414,6 +414,7 @@ public class JogadorHumano extends Jogador implements Runnable {
 		} else if (cmd == MiniTruco.trucoCommand
 				|| cmd == MiniTruco.seisCommand || cmd == MiniTruco.noveCommand
 				|| cmd == MiniTruco.dozeCommand) {
+			mesa.removeComandoAposta();
 			mesa.suspendeVezParaAumento();
 			jogo.aumentaAposta(this);
 		}
@@ -424,7 +425,7 @@ public class JogadorHumano extends Jogador implements Runnable {
 		int posTela = posicaoNaTela(jogo.getJogador(posicao));
 		if (posTela != 1) {
 			// Sacaneia quem abortou (apenas no multiplayer)
-			mesa.balao(posTela, "Tchau, pessoal!", 1000);
+			mesa.balao(posTela, "Fui...", 1200);		
 		}
 
 	}

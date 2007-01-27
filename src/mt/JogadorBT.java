@@ -134,10 +134,12 @@ public class JogadorBT extends Jogador implements Runnable {
 		// O in.close "does nothing", segundo a especificação (
 		// http://tinyurl.com/2r59cp#close() ), então eu anulo o objeto e
 		// monitoro isso no loop (mas fecho anyway)
-		try {
-			in.close();
-		} catch (IOException e) {
-			// nao tratar
+		if (in != null) {
+			try {
+				in.close();
+			} catch (IOException e) {
+				// nao tratar
+			}
 		}
 		in = null;
 	}
