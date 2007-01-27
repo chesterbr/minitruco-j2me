@@ -433,18 +433,18 @@ public class ServidorBT extends TelaBT {
 			// se conectando, daí o synchornized.
 			synchronized (this) {
 				Object temp;
-				temp = connClientes[0];
-				connClientes[0] = connClientes[1];
-				connClientes[1] = connClientes[2];
-				connClientes[2] = (StreamConnection) temp;
-				temp = outClientes[0];
-				outClientes[0] = outClientes[1];
-				outClientes[1] = outClientes[2];
-				outClientes[2] = (OutputStream) temp;
-				temp = apelidos[1];
-				apelidos[1] = apelidos[2];
-				apelidos[2] = apelidos[3];
-				apelidos[3] = (String) temp;
+				temp = connClientes[2];
+				connClientes[2] = connClientes[1];
+				connClientes[1] = connClientes[0];
+				connClientes[0] = (StreamConnection) temp;
+				temp = outClientes[2];
+				outClientes[2] = outClientes[1];
+				outClientes[1] = outClientes[0];
+				outClientes[0] = (OutputStream) temp;
+				temp = apelidos[3];
+				apelidos[3] = apelidos[2];
+				apelidos[2] = apelidos[1];
+				apelidos[1] = (String) temp;
 				atualizaClientes();
 				atualizaServidor();
 			}
