@@ -54,7 +54,8 @@ public class ServidorBT extends TelaBT {
 	 * <p>
 	 * Se o slot espedificado estiver vazio, não faz nada.
 	 * <p>
-	 * Se o cliente der erro, processa sua desconexão.
+	 * Se o cliente der erro, processa sua desconexão (principal motivo do
+	 * synchronized).
 	 * 
 	 * @param slot
 	 *            índice do cliente em connClientes/outClientes
@@ -89,16 +90,19 @@ public class ServidorBT extends TelaBT {
 	 * tela de jogadores
 	 * 
 	 * @param slot
-	 *            slot do jogador a desconectar. Se for -1, notifica desistência
-	 *            do servidor
+	 *            slot do jogador a desconectar (0 a 2). Se for -1, notifica
+	 *            desistência do servidor. Se for -2, não notifica nada (apenas
+	 *            encerra e vai para a tela).
 	 */
 	void desconecta(int slot) {
-		MiniTruco.log("desconectou posicao " + slot);
-		if (slot != -1) {
+		MiniTruco.log("desconecta() " + slot);
+		if (slot >= 0) {
 			connClientes[slot] = null;
 			outClientes[slot] = null;
 			apelidos[slot + 1] = APELIDOS_CPU[slot];
 		}
+		// -1 vai notificar que o servidor (posição -1+2=1) desistiu
+		// -2 não notifica ninguém (posição -2+2=0)
 		midlet.encerraJogo(slot + 2, false);
 		setModoSetup(true);
 		atualizaServidor();
@@ -114,6 +118,15 @@ public class ServidorBT extends TelaBT {
 	 * X = Servidor sendo encerrado
 	 */
 	private char status;
+
+	private static final Command iniciarJogoCommand = new Command("Iniciar",
+			Command.SCREEN, 1);
+
+	private static final Command trocaParceiroCommand = new Command(
+			"Troca Parceiro", Command.SCREEN, 2);
+
+	private static final Command inverteAdversariosCommand = new Command(
+			"Inverte Advers\u00E1rios", Command.SCREEN, 3);
 
 	/**
 	 * Loop da thread principal (que recebe e processa as conexões dos clientes)
@@ -169,14 +182,18 @@ public class ServidorBT extends TelaBT {
 			try {
 				c = scnServidor.acceptAndOpen();
 				// Encaixa na primeira vaga disponível
-				for (int i = 0; i <= 2; i++) {
-					if (connClientes[i] == null) {
-						connClientes[i] = c;
-						outClientes[i] = c.openOutputStream();
-						apelidos[i + 1] = RemoteDevice.getRemoteDevice(c)
-								.getFriendlyName(false);
-						c = null;
-						break;
+				// (o synchronized é pra não fazer isso enquanto estiver
+				// mexendo nas posições via menu)
+				synchronized (this) {
+					for (int i = 0; i <= 2; i++) {
+						if (connClientes[i] == null) {
+							connClientes[i] = c;
+							outClientes[i] = c.openOutputStream();
+							apelidos[i + 1] = RemoteDevice.getRemoteDevice(c)
+									.getFriendlyName(false);
+							c = null;
+							break;
+						}
 					}
 				}
 				// Continua recebendo conexões (a menos que lote)
@@ -201,9 +218,13 @@ public class ServidorBT extends TelaBT {
 		if (getNumClientes() == 0) {
 			setTelaMsg("Aguardando jogadores...");
 			this.removeCommand(iniciarJogoCommand);
+			this.removeCommand(trocaParceiroCommand);
+			this.removeCommand(inverteAdversariosCommand);
 		} else {
 			setTelaMsg(null);
 			this.addCommand(iniciarJogoCommand);
+			this.addCommand(trocaParceiroCommand);
+			this.addCommand(inverteAdversariosCommand);
 		}
 	}
 
@@ -258,10 +279,10 @@ public class ServidorBT extends TelaBT {
 		for (int i = 0; i <= 2; i++) {
 			if (connClientes[i] != null) {
 				try {
-					if (midlet.jogoEmAndamento!=null) {
-						Jogador j = midlet.jogoEmAndamento.getJogador(i+2);
+					if (midlet.jogoEmAndamento != null) {
+						Jogador j = midlet.jogoEmAndamento.getJogador(i + 2);
 						if (j instanceof JogadorBT) {
-							((JogadorBT)j).finaliza();
+							((JogadorBT) j).finaliza();
 						}
 					}
 					outClientes[i].close();
@@ -387,7 +408,7 @@ public class ServidorBT extends TelaBT {
 	 */
 	public void commandAction(Command cmd, Displayable arg1) {
 		super.commandAction(cmd, arg1);
-		if (cmd.equals(iniciarJogoCommand)) {
+		if (cmd.equals(ServidorBT.iniciarJogoCommand)) {
 			// Bloqueia novas conexões
 			setModoSetup(false);
 			// Cria um novo jogo e adiciona o jogador que está no servidor
@@ -407,7 +428,43 @@ public class ServidorBT extends TelaBT {
 				}
 			}
 			midlet.iniciaJogo(jogo);
+		} else if (cmd.equals(ServidorBT.trocaParceiroCommand)) {
+			// Enquanto rola essa dança da cadeira, não queremos ninguém
+			// se conectando, daí o synchornized.
+			synchronized (this) {
+				Object temp;
+				temp = connClientes[0];
+				connClientes[0] = connClientes[1];
+				connClientes[1] = connClientes[2];
+				connClientes[2] = (StreamConnection) temp;
+				temp = outClientes[0];
+				outClientes[0] = outClientes[1];
+				outClientes[1] = outClientes[2];
+				outClientes[2] = (OutputStream) temp;
+				temp = apelidos[1];
+				apelidos[1] = apelidos[2];
+				apelidos[2] = apelidos[3];
+				apelidos[3] = (String) temp;
+				atualizaClientes();
+				atualizaServidor();
+			}
+		} else if (cmd.equals(ServidorBT.inverteAdversariosCommand)) {
+			// Idem acima
+			synchronized (this) {
+				Object temp;
+				temp = connClientes[0];
+				connClientes[0] = connClientes[2];
+				connClientes[2] = (StreamConnection) temp;
+				temp = outClientes[0];
+				outClientes[0] = outClientes[2];
+				outClientes[2] = (OutputStream) temp;
+				temp = apelidos[1];
+				apelidos[1] = apelidos[3];
+				apelidos[3] = (String) temp;
+				atualizaClientes();
+				atualizaServidor();
+			}
 		}
-	}
 
+	}
 }

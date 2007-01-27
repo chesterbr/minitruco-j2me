@@ -414,9 +414,14 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				telaBT.encerraSessaoBT();
 				telaBT = null;
 			} else if (telaBT instanceof ServidorBT) {
-				// O jogo servidor se vira sozinho (seria sacanagem derrubar
-				// todo mundo)
-				((ServidorBT) telaBT).desconecta(-1);
+				// Se for um jogo servidor, volta ao menu
+				if (cmd==simSairPartidaCommand) {
+					// Servidor abortou a partida, notifica
+					((ServidorBT) telaBT).desconecta(-1);
+				} else {
+					// Fim de jogo normal, não notifica
+					((ServidorBT) telaBT).desconecta(-2);
+				}
 				return;
 			}
 			encerraJogo(jogadorHumano.getPosicao(), true);
@@ -593,7 +598,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	public static synchronized void log(String string) {
 		// Envia para o console
 		System.out.println(string);
-	
+
 		// Guarda no log rotativo, se estiver habilitado
 		if (log != null) {
 			for (int i = 0; i < log.length - 1; i++) {

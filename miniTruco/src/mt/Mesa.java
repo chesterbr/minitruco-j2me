@@ -93,7 +93,7 @@ public class Mesa extends Canvas {
 	private int topCartaDaMesa, leftCartaDaMesa;
 
 	public static final String TEXTO_TRUCO = "Truco!";
-
+	
 	public static final String TEXTO_SEIS = "Seis!";
 
 	public static final String TEXTO_NOVE = "NOVE!";
@@ -182,7 +182,8 @@ public class Mesa extends Canvas {
 	/**
 	 * Verifica se uma carta já foi jogada na mesa
 	 * 
-	 * @param c Carta a verificar
+	 * @param c
+	 *            Carta a verificar
 	 */
 	public boolean isJogada(Carta c) {
 		return cartasJogadas.contains(c);
@@ -497,12 +498,12 @@ public class Mesa extends Canvas {
 			for (int i = 0; (i < MiniTruco.log.length)
 					&& ((i + 1) * alturaLog <= alturaCanvas); i++) {
 				if (MiniTruco.log[i] != null) {
-					g.drawString(MiniTruco.log[i], 0, i * alturaLog, Graphics.LEFT
-							| Graphics.TOP);
+					g.drawString(MiniTruco.log[i], 0, i * alturaLog,
+							Graphics.LEFT | Graphics.TOP);
 				}
 			}
 		}
-		
+
 		// Descarrega, se necessário, o buffer
 		if (g != saved) {
 			saved.drawImage(offscreen, 0, 0, Graphics.LEFT | Graphics.TOP);
@@ -986,12 +987,23 @@ public class Mesa extends Canvas {
 
 	/**
 	 * Ajusta o menu para quando a partida acaba.
+	 * <p>
+	 * Em jogos stand-alone e no sevidor Bluetooth, isso significa trocar o
+	 * comando Encerrar (que pede confirmação) pelo Fim (que volta direto ao
+	 * menu, ou, no caso do servidor, à tela de configuração).
+	 * <p>
+	 * Em jogos onde o celular é um cliente Bluetooth, apenas removemos o
+	 * comando Encerrar - é quebra de padrão não dar uma opção de encerramento
+	 * *apenas* neste momento, mas é melhor que arriscar que o jogador se
+	 * desconecte sem querer.
 	 */
 	public void mostraMenuFimPartida() {
-		// Troca o comando normal de finalizar a partida (que pede confirmação)
-		// por um que não faz perguntas
 		removeCommand(MiniTruco.sairPartidaCommand);
-		addCommand(MiniTruco.sairPartidaSemPerguntarCommand);
+		if (getJogador().jogo instanceof JogoLocal) {
+			// Tanto o jogo stand-alone quanto o servidor instanciam um
+			// JogoLocal (só o cliente instancia um JogoBT)
+			addCommand(MiniTruco.sairPartidaSemPerguntarCommand);
+		}
 	}
 
 	String textoBalao;
