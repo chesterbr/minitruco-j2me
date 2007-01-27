@@ -14,6 +14,7 @@ import javax.bluetooth.ServiceRecord;
 import javax.bluetooth.UUID;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
+import javax.microedition.lcdui.Canvas;
 
 /**
  * Conecta-se (via Bluetooth) num celular-servidor, exibindo a configuração da
@@ -29,12 +30,12 @@ public class ClienteBT extends TelaBT implements DiscoveryListener {
 	public OutputStream out;
 
 	private JogoBT jogo;
-	
+
 	/**
 	 * Indica que a busca (de serviço ou celular) foi concluída
 	 */
 	boolean terminou = false;
-	
+
 	/**
 	 * Dispositivos encontrados
 	 */
@@ -79,7 +80,16 @@ public class ClienteBT extends TelaBT implements DiscoveryListener {
 
 	boolean estaVivo = true;
 
+	/**
+	 * Agente que iniciou as busca por celular ou serviço
+	 */
 	private DiscoveryAgent agente;
+
+	/**
+	 * ID da busca de serviço iniciada (necessário para cancelar se o usuário
+	 * volta para o menu antes de terminar)
+	 */
+	private int idBuscaServico;
 
 	public ClienteBT(MiniTruco midlet) {
 		super(midlet);
@@ -101,6 +111,9 @@ public class ClienteBT extends TelaBT implements DiscoveryListener {
 		// Aguarda o final da busca
 		while (!terminou) {
 			Thread.yield();
+			if (!estaVivo) {
+				return; // Usuário cancelou
+			}
 		}
 
 		// Para cada celular encontrado, verifica se é um servidor e conecta
@@ -109,10 +122,13 @@ public class ClienteBT extends TelaBT implements DiscoveryListener {
 			try {
 				setTelaMsg("Localizando jogo...");
 				terminou = false;
-				agente.searchServices(null, new UUID[] { UUID_BT }, remdev,
-						this);
+				idBuscaServico = agente.searchServices(null,
+						new UUID[] { UUID_BT }, remdev, this);
 				while (!terminou) {
 					Thread.yield();
+					if (!estaVivo) {
+						return; // Usuário cancelou
+					}
 				}
 			} catch (BluetoothStateException e) {
 				setTelaMsg("Erro:" + e.getMessage());
@@ -206,19 +222,20 @@ public class ClienteBT extends TelaBT implements DiscoveryListener {
 	}
 
 	public void encerraSessaoBT() {
-		// TODO: interromper, é muito chato isso
-		// Obs.: poderia interromper o inquiry/discovery aqui, mas a flag já
-		// garante que vai dar timeout de qualquer jeito. Isso tem um efeito
-		// colateral:se voce sair e entrar na busca muito rapido pode dar um
-		// erro de BluetoothState, mas acho que é tolerável.
 
-		// Obs.: fechar o conn invalida o in() e out() (cujos close() não fazem
-		// nada, cf. Javadoc do MIDP)
-		
-		MiniTruco.log("encerra sessao bt");
+		// Sinaliza o encerramento
 		estaVivo = false;
+
+		// Interrompe procuras em andamento, se existirem
+		agente.cancelInquiry(this);
+		agente.cancelServiceSearch(idBuscaServico);
+
+		// Fecha a conexão, se existir
 		if (conn != null) {
 			try {
+				// Obs.: fechar o conn invalida o in() e out() (cujos close()
+				// não fazem nada, cf. Javadoc do MIDP), por isso não fiz try...
+				// catch spearados
 				in.close();
 				out.close();
 				conn.close();
@@ -279,6 +296,5 @@ public class ClienteBT extends TelaBT implements DiscoveryListener {
 	public void serviceSearchCompleted(int arg0, int arg1) {
 		terminou = true;
 	}
-
 
 }
