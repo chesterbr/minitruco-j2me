@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -40,7 +41,7 @@ import javax.microedition.lcdui.Image;
  * @author Chester
  * 
  */
-public class Mesa extends Canvas {
+public class Mesa extends Canvas implements Runnable {
 
 	/**
 	 * Margem entre a mesa e as cartas
@@ -93,7 +94,7 @@ public class Mesa extends Canvas {
 	private int topCartaDaMesa, leftCartaDaMesa;
 
 	public static final String TEXTO_TRUCO = "Truco!";
-	
+
 	public static final String TEXTO_SEIS = "Seis!";
 
 	public static final String TEXTO_NOVE = "NOVE!";
@@ -634,20 +635,16 @@ public class Mesa extends Canvas {
 			switch (tecla) {
 			case KEY_NUM1:
 				if (isAguardandoAceite) {
-					ThreadComandoMenu tcm = new ThreadComandoMenu(this);
-					tcm.executa(MiniTruco.aceitaCommand);
+					executaComando(MiniTruco.aceitaCommand);
 				} else if (isAguardandoMao11) {
-					ThreadComandoMenu tcm = new ThreadComandoMenu(this);
-					tcm.executa(MiniTruco.aceitaMao11Command);
+					executaComando(MiniTruco.aceitaMao11Command);
 				}
 				break;
 			case KEY_NUM3:
 				if (isAguardandoAceite) {
-					ThreadComandoMenu tcm = new ThreadComandoMenu(this);
-					tcm.executa(MiniTruco.recusaCommand);
+					executaComando(MiniTruco.recusaCommand);
 				} else if (isAguardandoMao11) {
-					ThreadComandoMenu tcm = new ThreadComandoMenu(this);
-					tcm.executa(MiniTruco.recusaMao11Command);
+					executaComando(MiniTruco.recusaMao11Command);
 				}
 				break;
 			}
@@ -1141,6 +1138,32 @@ public class Mesa extends Canvas {
 		this.aberturaAlturaSas = Animador.ALTURA_SAS_FINAL;
 		this.aberturaNumCartas = 10;
 		this.aberturaUrlVisivel = true;
+	}
+
+	/**
+	 * Comando a ser executado em uma thread separada
+	 * @see Mesa#executaComando(Command)
+	 */
+	private Command cmdEmThread;
+	
+	/**
+	 * Executa comandos do jogo a partir de uma nova thread (permitindo que o
+	 * jogador responda assíncronamente com os outros).
+	 * <p>
+	 * Era parte da classe ThreadComandoMenu (foi movido para cá para reduzir o
+	 * .jar)
+	 */
+	public void executaComando(Command cmd) {
+		cmdEmThread = cmd;
+		Thread t = new Thread(this);
+		t.start();
+	}
+	
+	/**
+	 * @see Mesa#executaComando(Command)
+	 */
+	public void run() {
+		getJogador().executaComando(cmdEmThread);
 	}
 
 }
