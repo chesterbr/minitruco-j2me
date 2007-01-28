@@ -14,7 +14,6 @@ import javax.bluetooth.ServiceRecord;
 import javax.bluetooth.UUID;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
-import javax.microedition.lcdui.Canvas;
 
 /**
  * Conecta-se (via Bluetooth) num celular-servidor, exibindo a configuração da
