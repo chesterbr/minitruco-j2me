@@ -124,8 +124,7 @@ public class JogoLocal extends Jogo {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see mt.JogoGenerico#jogaCarta(mt.Jogador,
-	 *      mt.Carta)
+	 * @see mt.JogoGenerico#jogaCarta(mt.Jogador, mt.Carta)
 	 */
 	public synchronized void jogaCarta(Jogador j, Carta c) {
 
@@ -258,8 +257,7 @@ public class JogoLocal extends Jogo {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see mt.JogoGenerico#decideMao11(mt.Jogador,
-	 *      boolean)
+	 * @see mt.JogoGenerico#decideMao11(mt.Jogador, boolean)
 	 */
 	public synchronized void decideMao11(Jogador j, boolean aceita) {
 
@@ -333,9 +331,37 @@ public class JogoLocal extends Jogo {
 		for (int i = 0; i <= 3; i++)
 			recusouAumento[i] = false;
 		int valor = calcValorAumento();
+
+		// O código abaixo notifica primeiro os jogadores que não forem
+		// JogadorCPU, e depois estes.
+		//
+		// Motivo: o JogadorCPU responde imediatamente ao aumento, assim,
+		// se eu não fizer isso, um celular-cliente Bluetooth que esteja numa
+		// posição maior vai mostrar o balão de resposta antes do da pergunta
+		// (pois a notificação de resposta será gerada imediatamente).
+		// 
+		// Isso, em termos OO, é uma quebra de contrato (até então, instâncias
+		// de Jogo tratavam instâncias de Jogador de forma indiscriminada).
+		//
+		// A solução "correta" seria fazer o JogadorCPU segurar a sua resposta,
+		// mas isso implica em mais uma inner class/thread (e a aplicação já
+		// está beirando os limites de tamanho), então vou cercar com as tags
+		// <gambiarra> e </gambiarra>, apenas para me martirzar.
+
+		// <gambiarra>
 		for (int i = 1; i <= 4; i++) {
-			getJogador(i).pediuAumentoAposta(j, valor);
+			Jogador ji = getJogador(i);
+			if (!(ji instanceof JogadorCPU)) {
+				ji.pediuAumentoAposta(j, valor);
+			}
 		}
+		for (int i = 1; i <= 4; i++) {
+			Jogador ji = getJogador(i);
+			if (ji instanceof JogadorCPU) {
+				ji.pediuAumentoAposta(j, valor);
+			}
+		}
+		// </gambiarra>
 		return;
 
 	}
@@ -343,8 +369,7 @@ public class JogoLocal extends Jogo {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see mt.JogoGenerico#respondeAumento(mt.Jogador,
-	 *      boolean)
+	 * @see mt.JogoGenerico#respondeAumento(mt.Jogador, boolean)
 	 */
 	public synchronized void respondeAumento(Jogador j, boolean aceitou) {
 		// Apenas os adversários de quem trucou respondem
@@ -450,7 +475,7 @@ public class JogoLocal extends Jogo {
 		// Abre a primeira rodada, informando a carta da mesa e quem vai abrir
 		posJogadorDaVez = jogadorQueAbre.getPosicao();
 		for (int i = 1; i <= numJogadores; i++) {
-			MiniTruco.log("Enviando inicioMao para "+i);
+			MiniTruco.log("Enviando inicioMao para " + i);
 			getJogador(i).inicioMao();
 		}
 
@@ -529,7 +554,8 @@ public class JogoLocal extends Jogo {
 			public boolean podeFechada;
 
 			public void run() {
-				MiniTruco.log("notifica "+numNotificado+" da vez de "+jogadorDaVez.getPosicao());
+				MiniTruco.log("notifica " + numNotificado + " da vez de "
+						+ jogadorDaVez.getPosicao());
 				getJogador(numNotificado).vez(jogadorDaVez, podeFechada);
 			}
 		}
@@ -586,8 +612,7 @@ public class JogoLocal extends Jogo {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see mt.JogoGenerico#atualizaSituacao(mt.SituacaoJogo,
-	 *      mt.Jogador)
+	 * @see mt.JogoGenerico#atualizaSituacao(mt.SituacaoJogo, mt.Jogador)
 	 */
 	public void atualizaSituacao(SituacaoJogo s, Jogador j) {
 		s.baralhoSujo = !this.baralhoLimpo;
