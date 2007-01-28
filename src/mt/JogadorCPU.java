@@ -31,7 +31,7 @@ import java.util.Vector;
  * @see Estrategia
  * 
  */
-public class JogadorCPU extends Jogador {
+public class JogadorCPU extends Jogador implements Runnable {
 
 	/**
 	 * Estrategia que está controlando este jogador
@@ -93,16 +93,6 @@ public class JogadorCPU extends Jogador {
 
 	public void vez(Jogador j, boolean podeFechada) {
 
-		// O truco é pedido numa nova thread, para os jogadores "pensarem" em
-		// paralelo
-		class ThreadPedeTruco extends Thread {
-			public Jogador solicitante;
-
-			public void run() {
-				jogo.aumentaAposta(solicitante);
-			}
-		}
-
 		if (this.equals(j)) {
 
 			// Dá um tempinho, pra fingir que está "pensando"
@@ -123,10 +113,11 @@ public class JogadorCPU extends Jogador {
 			if (posCarta == -1) {
 
 				// Faz a solicitação de truco numa nova thread
+				// (usando o próprio JogadorCPU como Runnable - era uma inner
+				// class, mas otimizei para reduzir o .jar)
 				aceitaramTruco = false;
 				numRespostasAguardando = 2;
-				ThreadPedeTruco t = new ThreadPedeTruco();
-				t.solicitante = this;
+				Thread t = new Thread(this);
 				t.start();
 				// Aguarda pelas respostas
 				while (numRespostasAguardando > 0) {
@@ -153,6 +144,16 @@ public class JogadorCPU extends Jogador {
 			jogo.jogaCarta(this, c);
 
 		}
+	}
+
+	/**
+	 * Envia a notificação de aumento de aposta.
+	 * <p>
+	 * É feito em thread separada para que o vez() aguarde as respostas sem se
+	 * perder.
+	 */
+	public void run() {
+		jogo.aumentaAposta(this);
 	}
 
 	public void pediuAumentoAposta(Jogador j, int valor) {
@@ -305,7 +306,6 @@ public class JogadorCPU extends Jogador {
 
 	public void jogoAbortado(int posicao) {
 		// Não precisa tratar
-
 	}
 
 }
