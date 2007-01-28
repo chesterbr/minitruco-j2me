@@ -22,7 +22,7 @@ import javax.microedition.io.StreamConnection;
  * @author Chester
  * 
  */
-public class ClienteBT extends TelaBT implements DiscoveryListener {
+public class ClienteBT extends TelaBT {
 
 	public InputStream in;
 
@@ -80,9 +80,14 @@ public class ClienteBT extends TelaBT implements DiscoveryListener {
 	boolean estaVivo = true;
 
 	/**
-	 * Agente que iniciou as busca por celular ou serviço
+	 * Agente que iniciou a busca por celular ou serviço
 	 */
 	private DiscoveryAgent agente;
+
+	/**
+	 * Responde aos eventos gerados pela busca por celular ou serviço
+	 */
+	private DiscoveryListener listener;
 
 	/**
 	 * ID da busca de serviço iniciada (necessário para cancelar se o usuário
@@ -99,9 +104,10 @@ public class ClienteBT extends TelaBT implements DiscoveryListener {
 		// Inicia a busca por celulares remotos
 		setTelaMsg("Procurando celulares...");
 		agente = localDevice.getDiscoveryAgent();
+		listener = new ClienteBTListener();
 		terminou = false;
 		try {
-			agente.startInquiry(DiscoveryAgent.GIAC, this);
+			agente.startInquiry(DiscoveryAgent.GIAC, listener);
 		} catch (BluetoothStateException re) {
 			setTelaMsg("Erro:" + re.getMessage());
 			return;
@@ -122,7 +128,7 @@ public class ClienteBT extends TelaBT implements DiscoveryListener {
 				setTelaMsg("Localizando jogo...");
 				terminou = false;
 				idBuscaServico = agente.searchServices(null,
-						new UUID[] { UUID_BT }, remdev, this);
+						new UUID[] { UUID_BT }, remdev, listener);
 				while (!terminou) {
 					Thread.yield();
 					if (!estaVivo) {
@@ -226,7 +232,7 @@ public class ClienteBT extends TelaBT implements DiscoveryListener {
 		estaVivo = false;
 
 		// Interrompe procuras em andamento, se existirem
-		agente.cancelInquiry(this);
+		agente.cancelInquiry(listener);
 		agente.cancelServiceSearch(idBuscaServico);
 
 		// Fecha a conexão, se existir
@@ -246,54 +252,64 @@ public class ClienteBT extends TelaBT implements DiscoveryListener {
 	}
 
 	/**
-	 * Achou um celular (potencialmente servidor), adiciona à lista
+	 * Responde ao eventos gerados pela busca por aparelhos (e, para cada
+	 * aparelho, pela busca do serviço "servidor de miniTruco").
+	 * 
+	 * @author Chester
 	 */
-	public void deviceDiscovered(RemoteDevice arg0, DeviceClass arg1) {
-		if (estaVivo) {
-			devs.addElement(arg0);
-		}
-	}
+	class ClienteBTListener implements DiscoveryListener {
 
-	/**
-	 * Achou um serviço (potencialmente um jogo miniTruco aberto), tenta
-	 * conectar
-	 */
-	public void servicesDiscovered(int idBusca, ServiceRecord[] servicos) {
-		// Só vai haver um serviço de truco por celular mesmo
-		if (estaVivo && servicos.length > 0) {
-			String url = servicos[0].getConnectionURL(
-					ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
-			try {
-				// Tenta conectar, e se der certo, encerra as buscas
-				RemoteDevice dev = servicos[0].getHostDevice();
-				String nome;
-				if (dev != null) {
-					nome = dev.getFriendlyName(false);
-					setTelaMsg("Tentando " + nome);
-					conn = (StreamConnection) Connector.open(url);
-					setTelaMsg("Conectado em " + nome + "!");
-					agente.cancelServiceSearch(idBusca);
-				}
-			} catch (IOException e) {
-				// Deu errado, desencana e vai pro próximo
-				MiniTruco.log(e.getMessage());
-				MiniTruco.log(url);
+		/**
+		 * Achou um celular (potencialmente servidor), adiciona à lista
+		 */
+		public void deviceDiscovered(RemoteDevice arg0, DeviceClass arg1) {
+			if (estaVivo) {
+				devs.addElement(arg0);
 			}
 		}
-	}
 
-	/**
-	 * Notifica conclusão da busca de dispositivos
-	 */
-	public void inquiryCompleted(int arg0) {
-		terminou = true;
-	}
+		/**
+		 * Achou um serviço (potencialmente um jogo miniTruco aberto), tenta
+		 * conectar
+		 */
+		public void servicesDiscovered(int idBusca, ServiceRecord[] servicos) {
+			// Só vai haver um serviço de truco por celular mesmo
+			if (estaVivo && servicos.length > 0) {
+				String url = servicos[0].getConnectionURL(
+						ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
+				try {
+					// Tenta conectar, e se der certo, encerra as buscas
+					RemoteDevice dev = servicos[0].getHostDevice();
+					String nome;
+					if (dev != null) {
+						nome = dev.getFriendlyName(false);
+						setTelaMsg("Tentando " + nome);
+						conn = (StreamConnection) Connector.open(url);
+						setTelaMsg("Conectado em " + nome + "!");
+						agente.cancelServiceSearch(idBusca);
+					}
+				} catch (IOException e) {
+					// Deu errado, desencana e vai pro próximo
+					MiniTruco.log(e.getMessage());
+					MiniTruco.log(url);
+				}
+			}
+		}
 
-	/**
-	 * Notifica conclusão da busca de serviço
-	 */
-	public void serviceSearchCompleted(int arg0, int arg1) {
-		terminou = true;
+		/**
+		 * Notifica conclusão da busca de dispositivos
+		 */
+		public void inquiryCompleted(int arg0) {
+			terminou = true;
+		}
+
+		/**
+		 * Notifica conclusão da busca de serviço
+		 */
+		public void serviceSearchCompleted(int arg0, int arg1) {
+			terminou = true;
+		}
+
 	}
 
 }
