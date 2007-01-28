@@ -316,7 +316,7 @@ public class Carta {
 	 * 
 	 * @return
 	 */
-	private Image getImgNaipe() {
+	private synchronized Image getImgNaipe() {
 		// Inicializa, se necessario, os bitmaps dos naipes
 		if (naipes == null) {
 			try {
@@ -358,7 +358,7 @@ public class Carta {
 	 * 
 	 * @return
 	 */
-	private Image getImgValor() {
+	private synchronized Image getImgValor() {
 		// Inicializa, se necessario, os bitmaps dos valores
 		// (são 13 para os naipes vermelhos e 13 para os naipes pretos)
 		if (valores == null) {
@@ -416,7 +416,7 @@ public class Carta {
 				|| (naipe == NAIPE_PAUS) ? 0 : 1];
 	}
 
-	private Image getImgFundoCarta() {
+	private synchronized Image getImgFundoCarta() {
 		if (fundoCarta == null) {
 			try {
 				fundoCarta = Image
