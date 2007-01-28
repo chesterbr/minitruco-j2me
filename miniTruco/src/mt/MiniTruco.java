@@ -415,7 +415,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				telaBT = null;
 			} else if (telaBT instanceof ServidorBT) {
 				// Se for um jogo servidor, volta ao menu
-				if (cmd==simSairPartidaCommand) {
+				if (cmd == simSairPartidaCommand) {
 					// Servidor abortou a partida, notifica
 					((ServidorBT) telaBT).desconecta(-1);
 				} else {
@@ -430,10 +430,11 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				|| cmd == noveCommand || cmd == dozeCommand
 				|| cmd == aceitaCommand || cmd == recusaCommand
 				|| cmd == aceitaMao11Command || cmd == recusaMao11Command) {
-			// Comandos que rolam durante o jogo, dispara uma thread para
-			// executar
-			ThreadComandoMenu tcm = new ThreadComandoMenu(mesa);
-			tcm.executa(cmd);
+			// Encaminha as ações in-game para a mesa.
+			// (é, quando eu fiz esse jogo, o conceito de commandListener não
+			// estava claro - a mesadeveria ser o listener de suas ações, agora
+			// já foi).
+			mesa.executaComando(cmd);
 		} else if (cmd == sairProgramaCommand) {
 			destroyApp(true);
 			notifyDestroyed();
