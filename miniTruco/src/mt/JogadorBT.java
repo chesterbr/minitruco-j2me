@@ -80,10 +80,9 @@ public class JogadorBT extends Jogador implements Runnable {
 					break;
 				// Lê o próximo caractre
 				c = in.read();
-				if (c != TelaBT.ENTER) {
+				if (c != '\r' && c != '\n') {
 					// Acumula caracteres até formar uma linha
 					sbLinha.append((char) c);
-					MiniTruco.log("caractere acumulado:" + c);
 				} else {
 					// Processa linhas (não-vazias)
 					if (sbLinha.length() > 0) {
@@ -117,8 +116,8 @@ public class JogadorBT extends Jogador implements Runnable {
 							jogo.respondeAumento(this, false);
 							break;
 						}
+						sbLinha.setLength(0);
 					}
-					sbLinha.setLength(0);
 				}
 			} while (in != null);
 		} catch (IOException e) {

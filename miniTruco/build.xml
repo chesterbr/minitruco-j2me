@@ -92,7 +92,7 @@
 		<!-- Javadoc e applet.html -->
 		<copy todir="${DEPLOY}" file="${RES}/applet.html" />
 		<delete dir="docs/javadoc" />
-		<javadoc overview="docs/overview_javadoc.html" access="public" author="true" classpath="${wtk.midpapi}:${btapi}" destdir="docs/javadoc" doctitle="miniTruco 3 - Javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="mt" source="1.2" sourcepath="src" splitindex="true" use="true" version="true" />
+		<javadoc overview="docs/overview_javadoc.html" access="package" author="true" classpath="${wtk.midpapi}:${btapi}" destdir="docs/javadoc" doctitle="miniTruco 3 - Javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="mt" source="1.2" sourcepath="src" splitindex="true" use="true" version="true" />
 	</target>
 
 	<target name="limpeza">
