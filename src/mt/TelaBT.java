@@ -32,7 +32,16 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	protected static final Command voltarCommand = new Command("Voltar",
 			Command.STOP, 999);
 
-	protected static final char ENTER = '\n';
+	/**
+	 * Quebra de linha enviada tanto no sentido client->server quanto no
+	 * server->client.
+	 * <p>
+	 * Poderia usar só \r ou só \n, mas enviar dois caracteres ajuda com
+	 * celulares que enroscam no último caractere (ex.: a combinação Nokia 6600 -
+	 * Motorla L6) sem prejudicar os demais (já que as rotinas de leitura
+	 * ignoram linhas em branco)
+	 */
+	protected static final byte[] ENTER = "\r\n".getBytes();
 
 	/**
 	 * Fonte para a mensagem de "Aguarde"
