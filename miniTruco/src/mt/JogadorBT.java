@@ -80,7 +80,7 @@ public class JogadorBT extends Jogador implements Runnable {
 					break;
 				// Lê o próximo caractre
 				c = in.read();
-				if (c != '\r' && c != '\n') {
+				if (c != TelaBT.SEPARADOR_REC) {
 					// Acumula caracteres até formar uma linha
 					sbLinha.append((char) c);
 				} else {

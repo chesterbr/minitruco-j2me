@@ -66,7 +66,8 @@ public class ServidorBT extends TelaBT {
 		if (outClientes[slot] != null) {
 			try {
 				outClientes[slot].write(comando.getBytes());
-				outClientes[slot].write(ENTER);
+				outClientes[slot].write(SEPARADOR_ENV);
+				outClientes[slot].flush();
 			} catch (IOException e) {
 				// Processa desconexão
 				try {
