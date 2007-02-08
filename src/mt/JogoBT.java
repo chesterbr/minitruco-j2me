@@ -214,7 +214,8 @@ public class JogoBT extends Jogo {
 	public synchronized void enviaLinha(String linha) {
 		try {
 			clienteBT.out.write(linha.getBytes());
-			clienteBT.out.write(TelaBT.ENTER);
+			clienteBT.out.write(TelaBT.SEPARADOR_ENV);
+			clienteBT.out.flush();
 		} catch (IOException e) {
 			// Não preciso tratar, desconexões são identificadas no loop do in
 		}

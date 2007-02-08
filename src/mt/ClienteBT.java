@@ -158,7 +158,7 @@ public class ClienteBT extends TelaBT {
 				in = conn.openInputStream();
 				out = conn.openOutputStream();
 				while (estaVivo && (c = in.read()) != -1) {
-					if (c == '\r' || c == '\n') {
+					if (c == TelaBT.SEPARADOR_REC) {
 						if (sbLinha.length() > 0) {
 							MiniTruco.log(sbLinha.toString());
 							char tipoNotificacao = sbLinha.charAt(0);

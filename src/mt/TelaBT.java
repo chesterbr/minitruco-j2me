@@ -33,15 +33,19 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 			Command.STOP, 999);
 
 	/**
-	 * Quebra de linha enviada tanto no sentido client->server quanto no
-	 * server->client.
+	 * Separador de linha enviado (tanto no sentido client-server quanto no
+	 * server-client).
 	 * <p>
-	 * Poderia usar só \r ou só \n, mas enviar dois caracteres ajuda com
-	 * celulares que enroscam no último caractere (ex.: a combinação Nokia 6600 -
-	 * Motorla L6) sem prejudicar os demais (já que as rotinas de leitura
-	 * ignoram linhas em branco)
+	 * É propositalmente um conjunto de SEPARADOR_REC, para garantir que o
+	 * recebimento seja detectado (linhas em branco são ignoradas de qualquer
+	 * forma).
 	 */
-	protected static final byte[] ENTER = "\r\n".getBytes();
+	public static final byte[] SEPARADOR_ENV = "**".getBytes();
+
+	/**
+	 * Separador de linha recebido
+	 */
+	public static final int SEPARADOR_REC = '*';
 
 	/**
 	 * Fonte para a mensagem de "Aguarde"
