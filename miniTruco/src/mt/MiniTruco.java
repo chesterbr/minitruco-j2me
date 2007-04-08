@@ -178,7 +178,8 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	private static final String[] OPCOES_REGRAS = { "baralho limpo",
 			"manilha velha" };
 
-	private static final String[] OPCOES_DEBUG = { "Exibir log" };
+	private static final String[] OPCOES_DEBUG = {
+			"for\u00E7ar menu bluetooth (exige reiniciar)", "exibir log" };
 
 	private static final Image[] IMAGENS_VISUAL = { null, null };
 
@@ -186,7 +187,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 	private static final Image[] IMAGENS_ESTRATEGIAS = { null, null, null };
 
-	private static final Image[] IMAGENS_DEBUG = { null };
+	private static final Image[] IMAGENS_DEBUG = { null, null };
 
 	ChoiceGroup cgParceiro = new ChoiceGroup("Parceiro", Choice.EXCLUSIVE,
 			OPCOES_ESTRATEGIAS, IMAGENS_ESTRATEGIAS);
@@ -223,6 +224,13 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		cgRegras.setSelectedIndex(0, conf.baralhoLimpo);
 		cgRegras.setSelectedIndex(1, conf.manilhaVelha);
 		Carta.setCartasGrandes(conf.cartasGrandes);
+		cgDebug.setSelectedIndex(0, conf.forcaBluetooth);
+		if (conf.forcaBluetooth) {
+			// Se forçamos o menu bluetooth, é preciso cachear esta escolha
+			// (para evitar futuras detecções) e atualizar o menu de abertura
+			suportaBluetooth = new Boolean(true);
+			mostraMenuAbertura(true);
+		}
 		mesa.montaBaralhoCenario();
 
 		// Inicializa os "displayables" da aplicação (menos os do
@@ -463,7 +471,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 					.getSelectedIndex()];
 			Carta.setCartasGrandes(cgVisual.isSelected(0));
 			Animador.setAnimacaoLigada(cgVisual.isSelected(1));
-			if (cgDebug.isSelected(0)) {
+			if (cgDebug.isSelected(1)) {
 				MiniTruco.log = new String[6];
 			} else {
 				MiniTruco.log = null;
@@ -481,6 +489,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				conf.animacaoLigada = Animador.isAnimacaoLigada();
 				conf.baralhoLimpo = cgRegras.isSelected(0);
 				conf.manilhaVelha = cgRegras.isSelected(1);
+				conf.forcaBluetooth = cgDebug.isSelected(0);
 				conf.salva();
 
 				// Volta pra tela anterior
@@ -561,14 +570,20 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	}
 
 	/**
-	 * Cache do teste de suporte a bluetooth
+	 * Cache do teste de suporte a bluetooth.
+	 * <p>
+	 * (parece bobo, mas é melhor evitar testar toda hora)
 	 * 
 	 * @see MiniTruco#isSuportaBluetooth()
 	 */
 	private Boolean suportaBluetooth = null;
 
 	/**
-	 * Verifica se o dispostivo suporta bluetooth
+	 * Verifica se o dispostivo suporta bluetooth.
+	 * <p>
+	 * A resposta é cacheada na propriedade <code>suportaBluetooth</code>, e
+	 * isso pode ser usado para "forçar" a exibição do menu através das opções
+	 * de debug.
 	 * 
 	 * @return true se encontrou a classe
 	 *         <code>javax.bluetooth.localdevice</code>

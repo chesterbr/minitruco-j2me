@@ -52,7 +52,7 @@ public class Configuracoes {
 	 * quebrarem a compatibilidade, basta incrementar este número para garantir
 	 * que antigos registros sejam descartados
 	 */
-	private static final int VERSAO_ID = 104;
+	private static final int VERSAO_ID = 105;
 
 	/**
 	 * Identificador do registro das configurações no RecordStore
@@ -72,6 +72,8 @@ public class Configuracoes {
 	public boolean baralhoLimpo = false;
 
 	public boolean manilhaVelha = false;
+
+	public boolean forcaBluetooth = false;
 
 	/**
 	 * Carrega as configurações da memória do celular
@@ -106,6 +108,7 @@ public class Configuracoes {
 					c.animacaoLigada = disDados.readBoolean();
 					c.baralhoLimpo = disDados.readBoolean();
 					c.manilhaVelha = disDados.readBoolean();
+					c.forcaBluetooth = disDados.readBoolean();
 				} catch (IOException e) {
 					// Se der erro na leitura, retorna um objeto default, mas
 					// com o ID deste (para que a próxima gravação o
@@ -156,6 +159,7 @@ public class Configuracoes {
 			dosDados.writeBoolean(animacaoLigada);
 			dosDados.writeBoolean(baralhoLimpo);
 			dosDados.writeBoolean(manilhaVelha);
+			dosDados.writeBoolean(forcaBluetooth);
 
 			// Atualiza o recordstore
 			byte[] dados = baosDados.toByteArray();
