@@ -169,7 +169,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 	// Elementos do formulario de opções
 
-	static final String[] OPCOES_ESTRATEGIAS = { "Sellani", "Willian",
+	static final String[] OPCOES_ESTRATEGIAS = { "Sellani", "Willian", "Gasparotto v1.0", 
 			"Sortear" };
 
 	private static final String[] OPCOES_VISUAL = { "cartas grandes",
@@ -185,7 +185,9 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 	private static final Image[] IMAGENS_REGRAS = { null, null };
 
-	private static final Image[] IMAGENS_ESTRATEGIAS = { null, null, null };
+	/** aumentar array aqui para cada nova estratégia incluída**/
+	//** no momento: Willian, Sellani, Gasparotto v1.0 **/
+	private static final Image[] IMAGENS_ESTRATEGIAS = { null, null, null, null };
 
 	private static final Image[] IMAGENS_DEBUG = { null, null };
 

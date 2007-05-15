@@ -4,6 +4,9 @@ package mt;
  * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
+ * Copyright © 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * (frases aleatórias para balões)
+ * 
  * Este programa é um software livre; você pode redistribui-lo e/ou 
  * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
  * publicada pela Fundação do Software Livre (FSF); na versão 2 da 
@@ -19,6 +22,7 @@ package mt;
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+import java.util.Random;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Command;
@@ -32,10 +36,18 @@ import javax.microedition.lcdui.Display;
  */
 public class JogadorHumano extends Jogador implements Runnable {
 
+	private static Random rand = new Random();
+	
 	private Mesa mesa;
 
 	private Display display;
 
+	// Sorteia um número inteiro entre 1 e o argumento do método
+	private int sorteio(int maxNumero)
+	{
+		return (Math.abs(rand.nextInt())%maxNumero + 1);		
+	}
+	
 	public JogadorHumano(Display display, Mesa mesa) {
 		this.setDisplay(display);
 		this.mesa = mesa;
@@ -140,19 +152,59 @@ public class JogadorHumano extends Jogador implements Runnable {
 		}
 
 		// Mostra o balãozinho com o pedido
-		String texto;
+		String texto = "";
 		switch (valor) {
 		case 3:
-			texto = Mesa.TEXTO_TRUCO;
+			switch(sorteio(3)) {
+			case 1:
+				texto = "Truco!";
+				break;
+			case 2:
+				texto = "Truco ladr\u00E3o!";
+				break;
+			case 3:
+				texto = "É truco mesmo!";
+				break;
+			}
 			break;
 		case 6:
-			texto = Mesa.TEXTO_SEIS;
+			switch(sorteio(3)) {
+			case 1:
+				texto = "Seis!";
+				break;
+			case 2:
+				texto = "Meio pau!";
+				break;
+			case 3:
+				texto = "Seeeeeis!";
+				break;
+			}
 			break;
 		case 9:
-			texto = Mesa.TEXTO_NOVE;
+			switch(sorteio(3)) {
+			case 1:
+				texto = "NOVE!";
+				break;
+			case 2:
+				texto = "Toma nove!";
+				break;
+			case 3:
+				texto = "NOOOOOVE!";
+				break;
+			}
 			break;
 		default:
-			texto = Mesa.TEXTO_DOZE;
+			switch(sorteio(3)) {
+			case 1:
+				texto = "DOZE!";
+				break;
+			case 2:
+				texto = "DOZE NA CABE\u00C7A!";
+				break;
+			case 3:
+				texto = "DOOOOOZE!";
+				break;
+			}
 			break;
 		}
 		mesa.balao(posicaoNaTela(j), texto, 1000 + 200 * (valor / 3));
@@ -181,8 +233,18 @@ public class JogadorHumano extends Jogador implements Runnable {
 		mesa.removeOpcoesAceite();
 
 		// Balãozinho
-		mesa.balao(posicaoNaTela(j), "Desce!", 800);
-
+		switch(sorteio(3)) {
+			case 1:
+				mesa.balao(posicaoNaTela(j), "Desce!", 800);
+				break;
+			case 2:
+				mesa.balao(posicaoNaTela(j), "Vamos nessa!", 800);
+				break;
+			case 3:
+				mesa.balao(posicaoNaTela(j), "Manda bala!", 800);
+				break;
+		}
+		
 		// Caso tenha sido eu quem pediu o truco, retoma a vez
 		mesa.retomaVezDepoisDoAumento();
 
@@ -191,7 +253,17 @@ public class JogadorHumano extends Jogador implements Runnable {
 	public void recusouAumentoAposta(Jogador j) {
 
 		// Balãozinho
-		mesa.balao(posicaoNaTela(j), "Tou fora", 500);
+		switch(sorteio(3)) {
+			case 1:
+				mesa.balao(posicaoNaTela(j), "T\u00f4 fora.", 500);
+				break;
+			case 2:
+				mesa.balao(posicaoNaTela(j), "N\u00e3o quero.", 500);
+				break;
+			case 3:
+				mesa.balao(posicaoNaTela(j), "N\u00e3o.", 500);
+				break;
+		}
 
 	}
 
@@ -332,13 +404,36 @@ public class JogadorHumano extends Jogador implements Runnable {
 		if (numEquipeVencedora == this.getEquipe()) {
 			t = new Thread() {
 				public void run() {
-					mesa.balao(1, "TOOOOMEM!!!", 5000);
+					// Balãozinho
+					switch(sorteio(3)) {
+						case 1:
+							mesa.balao(1, "Toooomem!!!", 5000);
+							break;
+						case 2:
+							mesa.balao(1, "Foi f\u00e1cil demais!!!", 5000);
+							break;
+						case 3:
+							mesa.balao(1, "Que lavada!!!", 5000);
+							break;
+					}
 				}
 			};
-		} else {
+		}
+		else {
 			t = new Thread() {
 				public void run() {
-					mesa.balao(1, ":-(", 5000);
+					// Balãozinho
+					switch(sorteio(3)) {
+						case 1:
+							mesa.balao(1, ":-(", 5000);
+							break;
+						case 2:
+							mesa.balao(1, "Ok...", 5000);
+							break;
+						case 3:
+							mesa.balao(1, "Raios!", 5000);
+							break;
+					}
 				}
 			};
 		}
@@ -362,7 +457,7 @@ public class JogadorHumano extends Jogador implements Runnable {
 		// aceite)
 		if (!aceita || (aceita && !jaAceitou)) {
 			mesa.balao(posicaoNaTela(j), (aceita ? "Vamos jogar!"
-					: "N\u00E3o quero"), 1000);
+					: "N\u00E3o quero."), 1000);
 		}
 
 		if (aceita) {
