@@ -73,6 +73,8 @@ public class JogadorCPU extends Jogador implements Runnable {
 			this.estrategia = new EstrategiaSellani();
 		} else if (nomeEstrategia.equals("Willian")) {
 			this.estrategia = new EstrategiaWillian();
+		} else if (nomeEstrategia.equals("Gasparotto v1.0")) {
+			this.estrategia = new EstrategiaGasparotto();
 		} else {
 			MiniTruco.log("estrategia invalida:" + nomeEstrategia);
 		}
