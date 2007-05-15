@@ -163,7 +163,7 @@ public class JogadorHumano extends Jogador implements Runnable {
 				texto = "Truco ladr\u00E3o!";
 				break;
 			case 3:
-				texto = "É truco mesmo!";
+				texto = "\u00c9 truco mesmo!";
 				break;
 			}
 			break;
