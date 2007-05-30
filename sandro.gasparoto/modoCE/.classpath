@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="src/" kind="src" path=""/>
+	<classpathentry exported="true" kind="lib" path="lib/midp.jar" sourcepath="lib/midp.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/btapi.jar" sourcepath="lib/btapi.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
