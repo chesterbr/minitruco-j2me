@@ -4,6 +4,9 @@ package mt;
  * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
+ * Copyright © 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * (modo confronto de estratégias)
+ * 
  * Este programa é um software livre; você pode redistribui-lo e/ou 
  * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
  * publicada pela Fundação do Software Livre (FSF); na versão 2 da 
@@ -90,6 +93,11 @@ public class SituacaoJogo {
 	 */
 	int[] pontosEquipe = new int[2];
 
+	/**
+	 * Número de vaquinhas no pasto de cada equipe
+	 */
+	int[] vaquinhasNoPasto = new int[2];
+	
 	/**
 	 * Para cada rodada (0-2) dá as cartas jogadas pelas 4 posicões (0-3)
 	 */

@@ -50,7 +50,7 @@ public class EstrategiaGasparotto implements Estrategia
 	 */
 	public String getNomeEstrategia() 
 	{
-		return "Gasparotto v1.0";
+		return "Gasparotto v1.1";
 	}
 
 	/**
@@ -453,12 +453,12 @@ public class EstrategiaGasparotto implements Estrategia
 				qualidadeCarta(s.cartasJogador[C[1]],s)==TRES)
 					// Jogar o três
 					return C[1];
-				// Vai que temos uma manilha também (C[1]) (ou mesmo outro três),
-				// mesmo assim vamos jogar o três
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-						qualidadeCarta(s.cartasJogador[C[2]],s)==TRES)
-						// Jogar o três
-						return C[2];		
+			// Vai que temos uma manilha também (C[1]) (ou mesmo outro três),
+			// mesmo assim vamos jogar o três
+			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
+				qualidadeCarta(s.cartasJogador[C[2]],s)==TRES)
+					// Jogar o três
+					return C[2];		
 			// Checa se temos o picafumo, espadilha ou escopeta
 			// Mas somente jogar caso não tenhamos o zap também
 			// Isto quer dizer que uma dessas tem que ser a maior carta na mão...
@@ -467,12 +467,11 @@ public class EstrategiaGasparotto implements Estrategia
 				qualidadeCarta(s.cartasJogador[C[0]],s)==ESCOPETA)
 					// Jogar então
 					return C[0];
-		
+			return C[2]; // retorna a menor então
 		} else {
 			// jogar a menor carta
 			return C[2];
 		}
-		return C[0]; // para satisfazer o corretor do método (Eclipse)...
 	}
 
 	private int joga_primeira_rodada_posmao(SituacaoJogo s) 
@@ -940,7 +939,7 @@ public class EstrategiaGasparotto implements Estrategia
 
 		if(qualidadeCarta(s.cartasJogador[C[0]],s)>=TRES &&
 			qualidadeCarta(s.cartasJogador[C[1]],s)>=TRES) {
-			if(podeEValeAPenaAumentar(s,80,10,1,0))
+			if(podeEValeAPenaAumentar(s,70,10,1,0))
 				return -1;
 			return C[1];
 		}
@@ -990,21 +989,21 @@ public class EstrategiaGasparotto implements Estrategia
 		if(maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s)>=TRES)
 			return C[1]+10;
 		if(qualidadeCarta(s.cartasJogador[C[0]],s)>=TRES) {
-				if(podeEValeAPenaAumentar(s,95,40,1,0))
+				if(podeEValeAPenaAumentar(s,85,30,1,0))
 					return -1;
 				return C[0];
 		}
 		if(maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s)==DOIS)
 			return C[1]+10;
 		if(qualidadeCarta(s.cartasJogador[C[0]],s)==DOIS) {
-			if(podeEValeAPenaAumentar(s,90,30,1,0))
+			if(podeEValeAPenaAumentar(s,80,20,1,0))
 				return -1;
 			return C[0];
 		}
 		if(maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s)==AS)
 			return C[1]+10;
 		if(qualidadeCarta(s.cartasJogador[C[0]],s)==AS) {
-			if(podeEValeAPenaAumentar(s,85,20,1,0))
+			if(podeEValeAPenaAumentar(s,75,10,1,0))
 				return -1;
 			return C[0];
 		}
@@ -1038,7 +1037,7 @@ public class EstrategiaGasparotto implements Estrategia
 			return -1;
 		
 		if(qualidadeCarta(s.cartasJogador[C[0]],s)>TRES &&
-			podeEValeAPenaAumentar(s,50,10,1,0))
+			podeEValeAPenaAumentar(s,45,5,1,0))
 				return -1;
 
 		return C[0];
@@ -1059,7 +1058,7 @@ public class EstrategiaGasparotto implements Estrategia
 			return C[0]+10;
 		
 		if(qualidadeCarta(s.cartasJogador[C[0]],s)>TRES &&
-			podeEValeAPenaAumentar(s,50,10,1,0))
+			podeEValeAPenaAumentar(s,45,5,1,0))
 				return -1;
 		
 		return C[0];
@@ -1083,7 +1082,7 @@ public class EstrategiaGasparotto implements Estrategia
 				return -1;
 		
 		if(qualidadeCarta(s.cartasJogador[C[0]],s)>TRES &&
-			podeEValeAPenaAumentar(s,70,15,1,0))
+			podeEValeAPenaAumentar(s,60,5,1,0))
 				return -1;
 	
 		if(qualidadeCarta(s.cartasJogador[C[0]],s)==TRES &&
@@ -1104,7 +1103,7 @@ public class EstrategiaGasparotto implements Estrategia
 			return -1;
 		
 		if(qualidadeCarta(s.cartasJogador[C[0]],s)<qualidadeMaiorMesa(s) &&
-			podeEValeAPenaAumentar(s,50,10,1,0))
+			podeEValeAPenaAumentar(s,45,5,1,0))
 				return -1;
 		
 		if(podeEValeAPenaAumentar(s,100,100,100,100))
@@ -1211,7 +1210,7 @@ public class EstrategiaGasparotto implements Estrategia
 			if(s.resultadoRodada[0]==3)
 			{
 				if((partidaGanha(s) && podeEValeAPenaAumentar(s,100,100,100,100)) ||
-					(matoAdversario(s,false) && (qualidadeMinhaMaior(s)==PICAFUMO || qualidadeMinhaMaior(s)==ESPADILHA || qualidadeMinhaMaior(s)==ESCOPETA) && podeEValeAPenaAumentar(s,50,10,1,0)) )
+					(matoAdversario(s,false) && (qualidadeMinhaMaior(s)==PICAFUMO || qualidadeMinhaMaior(s)==ESPADILHA || qualidadeMinhaMaior(s)==ESCOPETA) && podeEValeAPenaAumentar(s,45,5,1,0)) )
 					return -1; //Aumentar aposta					
 				return C[0]; // temos que jogar a maior
 			}

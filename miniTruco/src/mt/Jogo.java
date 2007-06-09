@@ -3,6 +3,9 @@ package mt;
 /*
  * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
+ *
+ * Copyright © 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * (modo confronto de estratégias)
  * 
  * Este programa é um software livre; você pode redistribui-lo e/ou 
  * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
@@ -257,6 +260,18 @@ public abstract class Jogo implements Runnable {
 	 */
 	protected int[] pontosEquipe = new int[2];
 
+	/**
+	 * Número de vaquinhas no pasto de cada equipe.
+	 *
+	 */
+	protected int[] vaquinhasNoPasto = new int[2];
+	
+	/**
+	 * Sinalizador do modo confronto de estratégias
+	 *
+	 */
+	protected boolean modoCE;
+	
 	/**
 	 * Indica que o jogo foi finalizado (para evitar que os jogadoresCPU fiquem
 	 * "rodando em falso" caso o jogo seja abortado

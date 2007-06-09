@@ -4,6 +4,9 @@ package mt;
  * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
+ * Copyright © 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * (modo confronto de estratégias e frases aleatórias para balões)
+ * 
  * Este programa é um software livre; você pode redistribui-lo e/ou 
  * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
  * publicada pela Fundação do Software Livre (FSF); na versão 2 da 
@@ -194,16 +197,22 @@ public abstract class Jogador {
 	 * 
 	 * @param pontosEquipe
 	 *            Array com os pontos da equipe 1 e 2 (índices 0 e 1)
+	 *         
+	 * @param vaquinhasNoPasto
+	 * 			  Array com os pontos com relação ao número de partidas das equipes 1 e 2 (índices 0 e 1)
 	 */
-	public abstract void maoFechada(int[] pontosEquipe);
+	public abstract void maoFechada(int[] pontosEquipe, int[] vaquinhasNoPasto);
 
 	/**
 	 * Informa que o jogo foi concluído
 	 * 
 	 * @param numEquipeVencedora
 	 *            Equipe que ganhou o jogo (1 ou 2)
+	 *           
+	 * @param vaquinhasNoPasto
+	 * 			  Array com os pontos com relação ao número de partidas das equipes 1 e 2 (índices 0 e 1)
 	 */
-	public abstract void jogoFechado(int numEquipeVencedora);
+	public abstract void jogoFechado(int numEquipeVencedora, int[] vaquinhasNoPasto);
 
 	/**
 	 * Informa que um jogador fez sua escolha de topar ou não uma rodada quando
@@ -236,5 +245,74 @@ public abstract class Jogador {
 	 *            Posição do jogador que abortou
 	 */
 	public abstract void jogoAbortado(int posicao);
-
+	
+	/**
+	 * Textos para a gritaria
+	 * Aqui pode-se incluir livremente novas opções
+	 * uma vez que o algoritmo checa o array todo
+	 */	
+	public static final String[] BALAO_TEXTOS_TRUCO = {
+		"Truco!",
+		"Truco ladr\u00E3o!", 
+		"\u00c9 truco mesmo!",
+		"Truuuco!",
+		"Truco na cabe\u00e7a!",
+		"\u00c9 truco!"
+	};
+	public static final String[] BALAO_TEXTOS_SEIS = {
+		"Seis!",
+		"Meio-pau!",
+		"Seeeeeis!",
+		"Seeeeis na lata!",
+		"Toma seis!",
+		"SEEEEEEEEIS"
+	};
+	public static final String[] BALAO_TEXTOS_NOVE = {
+		"Nove!",
+		"Nooooove!",
+		"Nove na cabe\u00e7a!",
+		"\u00c9 nove!"
+	};
+	public static final String[] BALAO_TEXTOS_DOZE = {
+		"Doze!",
+		"\u00c9 doze!",
+		"Doze sem piedade!"
+	};
+	public static final String[] BALAO_TEXTOS_DESCE = {
+		"Desce!",
+		"Manda bala!",
+		"Vamos nessa!",
+		"Vamos ver.",
+		"Quero ver.",
+		"Desce ladr\u00E3o!"
+	};
+	public static final String[] BALAO_TEXTOS_RECUSA = {
+		"T\u00f4 fora.",
+		"N\u00e3o quero.",
+		"N\u00e3o.",
+		"Nem pensar."
+	};
+	public static final String[] BALAO_TEXTOS_VENCEDOR = {
+		"Foi f\u00e1cil demais!!!",
+		"Toooooomem!",
+		"Que lavada!"
+	};
+	public static final String[] BALAO_TEXTOS_DERROTADO = {
+		":-(",
+		"Ok...",
+		"Raios!..."
+	};
+	public static final String[] BALAO_TEXTOS_ACEITAMAO11 = {
+		"Vamos jogar!",
+		"Vamos nessa!",
+		"T\u00f4 dentro."
+	};
+	public static final String[] BALAO_TEXTOS_RECUSAMAO11 = {
+		"N\u00E3o quero.",
+		"Que lixo!",
+		"N\u00e3o.",
+		"Nem pensar.",
+		"T\u00f4 fora."		
+	};
+	
 }

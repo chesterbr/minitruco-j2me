@@ -48,6 +48,7 @@ public class JogadorHumano extends Jogador implements Runnable {
 		return (Math.abs(rand.nextInt())%maxNumero + 1);		
 	}
 	
+	// Construtor
 	public JogadorHumano(Display display, Mesa mesa) {
 		this.setDisplay(display);
 		this.mesa = mesa;
@@ -155,56 +156,16 @@ public class JogadorHumano extends Jogador implements Runnable {
 		String texto = "";
 		switch (valor) {
 		case 3:
-			switch(sorteio(3)) {
-			case 1:
-				texto = "Truco!";
-				break;
-			case 2:
-				texto = "Truco ladr\u00E3o!";
-				break;
-			case 3:
-				texto = "\u00c9 truco mesmo!";
-				break;
-			}
+			texto = BALAO_TEXTOS_TRUCO[sorteio(BALAO_TEXTOS_TRUCO.length)-1];
 			break;
 		case 6:
-			switch(sorteio(3)) {
-			case 1:
-				texto = "Seis!";
-				break;
-			case 2:
-				texto = "Meio pau!";
-				break;
-			case 3:
-				texto = "Seeeeeis!";
-				break;
-			}
+			texto = BALAO_TEXTOS_SEIS[sorteio(BALAO_TEXTOS_SEIS.length)-1];
 			break;
 		case 9:
-			switch(sorteio(3)) {
-			case 1:
-				texto = "NOVE!";
-				break;
-			case 2:
-				texto = "Toma nove!";
-				break;
-			case 3:
-				texto = "NOOOOOVE!";
-				break;
-			}
+			texto = BALAO_TEXTOS_NOVE[sorteio(BALAO_TEXTOS_NOVE.length)-1];
 			break;
 		default:
-			switch(sorteio(3)) {
-			case 1:
-				texto = "DOZE!";
-				break;
-			case 2:
-				texto = "DOZE NA CABE\u00C7A!";
-				break;
-			case 3:
-				texto = "DOOOOOZE!";
-				break;
-			}
+			texto = BALAO_TEXTOS_DOZE[sorteio(BALAO_TEXTOS_DOZE.length)-1];
 			break;
 		}
 		mesa.balao(posicaoNaTela(j), texto, 1000 + 200 * (valor / 3));
@@ -233,17 +194,9 @@ public class JogadorHumano extends Jogador implements Runnable {
 		mesa.removeOpcoesAceite();
 
 		// Balãozinho
-		switch(sorteio(3)) {
-			case 1:
-				mesa.balao(posicaoNaTela(j), "Desce!", 800);
-				break;
-			case 2:
-				mesa.balao(posicaoNaTela(j), "Vamos nessa!", 800);
-				break;
-			case 3:
-				mesa.balao(posicaoNaTela(j), "Manda bala!", 800);
-				break;
-		}
+		String texto = "";
+		texto = BALAO_TEXTOS_DESCE[sorteio(BALAO_TEXTOS_DESCE.length)-1];
+		mesa.balao(posicaoNaTela(j), texto, 800);
 		
 		// Caso tenha sido eu quem pediu o truco, retoma a vez
 		mesa.retomaVezDepoisDoAumento();
@@ -253,17 +206,9 @@ public class JogadorHumano extends Jogador implements Runnable {
 	public void recusouAumentoAposta(Jogador j) {
 
 		// Balãozinho
-		switch(sorteio(3)) {
-			case 1:
-				mesa.balao(posicaoNaTela(j), "T\u00f4 fora.", 500);
-				break;
-			case 2:
-				mesa.balao(posicaoNaTela(j), "N\u00e3o quero.", 500);
-				break;
-			case 3:
-				mesa.balao(posicaoNaTela(j), "N\u00e3o.", 500);
-				break;
-		}
+		String texto = "";
+		texto = BALAO_TEXTOS_RECUSA[sorteio(BALAO_TEXTOS_RECUSA.length)-1];
+		mesa.balao(posicaoNaTela(j), texto, 500);
 
 	}
 
@@ -389,7 +334,7 @@ public class JogadorHumano extends Jogador implements Runnable {
 
 	private boolean jaAceitou;
 
-	public void maoFechada(int[] pontosEquipe) {
+	public void maoFechada(int[] pontosEquipe, int[] vaquinhasNoPasto) {
 
 		// Guarda os pontos (nossos e deles) e atualiza o placar
 		pontosNos = pontosEquipe[getEquipe() - 1];
@@ -398,24 +343,16 @@ public class JogadorHumano extends Jogador implements Runnable {
 
 	}
 
-	public void jogoFechado(int numEquipeVencedora) {
+	public void jogoFechado(int numEquipeVencedora, int[] vaquinhasNoPasto) {
 		mesa.mostraMenuFimPartida();
 		Thread t;
 		if (numEquipeVencedora == this.getEquipe()) {
 			t = new Thread() {
 				public void run() {
 					// Balãozinho
-					switch(sorteio(3)) {
-						case 1:
-							mesa.balao(1, "Toooomem!!!", 5000);
-							break;
-						case 2:
-							mesa.balao(1, "Foi f\u00e1cil demais!!!", 5000);
-							break;
-						case 3:
-							mesa.balao(1, "Que lavada!!!", 5000);
-							break;
-					}
+					String texto = "";
+					texto = BALAO_TEXTOS_VENCEDOR[sorteio(BALAO_TEXTOS_VENCEDOR.length)-1];
+					mesa.balao(1, texto, 5000);
 				}
 			};
 		}
@@ -423,17 +360,9 @@ public class JogadorHumano extends Jogador implements Runnable {
 			t = new Thread() {
 				public void run() {
 					// Balãozinho
-					switch(sorteio(3)) {
-						case 1:
-							mesa.balao(1, ":-(", 5000);
-							break;
-						case 2:
-							mesa.balao(1, "Ok...", 5000);
-							break;
-						case 3:
-							mesa.balao(1, "Raios!", 5000);
-							break;
-					}
+					String texto = "";
+					texto = BALAO_TEXTOS_DERROTADO[sorteio(BALAO_TEXTOS_DERROTADO.length)-1];
+					mesa.balao(1, texto, 5000);
 				}
 			};
 		}
@@ -456,8 +385,12 @@ public class JogadorHumano extends Jogador implements Runnable {
 		// Mostra o balão (no caso do balão de aceitar, apenas se for o 1o.
 		// aceite)
 		if (!aceita || (aceita && !jaAceitou)) {
-			mesa.balao(posicaoNaTela(j), (aceita ? "Vamos jogar!"
-					: "N\u00E3o quero."), 1000);
+			String texto = "";
+			if(aceita)
+				texto = BALAO_TEXTOS_ACEITAMAO11[sorteio(BALAO_TEXTOS_ACEITAMAO11.length)-1];
+			else
+				texto = BALAO_TEXTOS_RECUSAMAO11[sorteio(BALAO_TEXTOS_RECUSAMAO11.length)-1];
+			mesa.balao(posicaoNaTela(j), texto, 1000);
 		}
 
 		if (aceita) {
@@ -525,4 +458,5 @@ public class JogadorHumano extends Jogador implements Runnable {
 
 	}
 
+	
 }

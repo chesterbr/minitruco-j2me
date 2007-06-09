@@ -211,7 +211,7 @@ public class JogadorBT extends Jogador implements Runnable {
 		enviaMensagem("R " + resultado + ' ' + jogadorQueTorna.getPosicao());
 	}
 
-	public void maoFechada(int[] pontosEquipe) {
+	public void maoFechada(int[] pontosEquipe, int[] vaquinhasNoPasto) {
 		enviaMensagem("O " + pontosEquipe[0] + ' ' + pontosEquipe[1]);
 	}
 
@@ -231,7 +231,7 @@ public class JogadorBT extends Jogador implements Runnable {
 
 	// Eventos de fim-de-jogo
 
-	public void jogoFechado(int numEquipeVencedora) {
+	public void jogoFechado(int numEquipeVencedora, int[] vaquinhasNoPasto) {
 		enviaMensagem("G " + numEquipeVencedora);
 		finaliza();
 	}
@@ -241,4 +241,5 @@ public class JogadorBT extends Jogador implements Runnable {
 		finaliza();
 	}
 
+	
 }

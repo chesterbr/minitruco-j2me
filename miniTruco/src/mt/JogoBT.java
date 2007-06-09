@@ -169,11 +169,11 @@ public class JogoBT extends Jogo {
 			// Fim de mão, recupera os placares
 			pontosEquipe[0] = Integer.parseInt(tokens[0]);
 			pontosEquipe[1] = Integer.parseInt(tokens[1]);
-			getJogadorHumano().maoFechada(pontosEquipe);
+			getJogadorHumano().maoFechada(pontosEquipe, vaquinhasNoPasto);
 			break;
 		case 'G':
 			// Fim de jogo
-			getJogadorHumano().jogoFechado(Integer.parseInt(parametros));
+			getJogadorHumano().jogoFechado(Integer.parseInt(parametros), vaquinhasNoPasto);
 			break;
 		case 'A':
 			// Jogo abortado por alguém
