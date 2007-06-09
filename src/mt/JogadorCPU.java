@@ -73,7 +73,7 @@ public class JogadorCPU extends Jogador implements Runnable {
 			this.estrategia = new EstrategiaSellani();
 		} else if (nomeEstrategia.equals("Willian")) {
 			this.estrategia = new EstrategiaWillian();
-		} else if (nomeEstrategia.equals("Gasparotto v1.0")) {
+		} else if (nomeEstrategia.equals("Gasparotto v1.1")) {
 			this.estrategia = new EstrategiaGasparotto();
 		} else {
 			MiniTruco.log("estrategia invalida:" + nomeEstrategia);
@@ -249,11 +249,11 @@ public class JogadorCPU extends Jogador implements Runnable {
 		// Não faz nada
 	}
 
-	public void maoFechada(int[] pontosEquipe) {
+	public void maoFechada(int[] pontosEquipe, int[] vaquinhasNoPasto) {
 		// Não faz nada
 	}
 
-	public void jogoFechado(int numEquipeVencedora) {
+	public void jogoFechado(int numEquipeVencedora, int[] vaquinhasNoPasto) {
 		// Não faz nada
 	}
 

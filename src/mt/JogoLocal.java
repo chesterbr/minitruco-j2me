@@ -3,6 +3,9 @@ package mt;
 /*
  * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
+ *
+ * Copyright © 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * (modo confronto de estratégias)
  * 
  * Este programa é um software livre; você pode redistribui-lo e/ou 
  * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
@@ -84,6 +87,8 @@ public class JogoLocal extends Jogo {
 	private boolean[] aguardandoRespostaMaoDe11 = new boolean[4];
 
 	private boolean manilhaVelha, baralhoLimpo;
+	
+	private int nPartidasModoCE;
 
 	/**
 	 * Cria um novo jogo.
@@ -99,8 +104,29 @@ public class JogoLocal extends Jogo {
 	public JogoLocal(boolean baralhoLimpo, boolean manilhaVelha) {
 		this.manilhaVelha = manilhaVelha;
 		this.baralhoLimpo = baralhoLimpo;
+		this.modoCE = false;
 	}
 
+	/**
+	 * Cria um novo jogo no modo confronto de estratégias
+	 * <p>
+	 * O jogo é criado, mas apenas inicia quando forem adicionados jogadores
+	 * 
+	 * @param manilhaVelha
+	 *            true para jogo com manilhas fixas, false para jogar ocm "vira"
+	 * @param baralhoLimpo
+	 *            true para baralho sem os 4, 5, 6, 7, false para baralho
+	 *            completo (sujo)
+	 */
+	public JogoLocal(boolean baralhoLimpo, boolean manilhaVelha, int nPartidasModoCE) {
+		this.manilhaVelha = manilhaVelha;
+		this.baralhoLimpo = baralhoLimpo;
+		this.vaquinhasNoPasto[0] = 0;
+		this.vaquinhasNoPasto[1] = 0;		
+		this.modoCE = true;
+		this.nPartidasModoCE = nPartidasModoCE;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -417,23 +443,52 @@ public class JogoLocal extends Jogo {
 		MiniTruco.log("Mao fechou. Placar: " + pontosEquipe[0] + " a "
 				+ pontosEquipe[1]);
 
+		boolean acabou = false;
+		
 		// Notifica os jogadores que a rodada acabou, e, se for o caso, que o
-		// jogo acaobu também
-		for (int i = 1; i <= 4; i++) {
-			getJogador(i).maoFechada(pontosEquipe);
-			if (pontosEquipe[0] > 11) {
-				getJogador(i).jogoFechado(1);
-			} else if (pontosEquipe[1] > 11) {
-				getJogador(i).jogoFechado(2);
+		// jogo acabou também
+		if(modoCE) {
+			if(pontosEquipe[0]>11) {
+				vaquinhasNoPasto[0]++;
+				pontosEquipe[0]=0;
+				pontosEquipe[1]=0;
 			}
+			if(pontosEquipe[1]>11) {
+				vaquinhasNoPasto[1]++;
+				pontosEquipe[0]=0;
+				pontosEquipe[1]=0;
+			}
+			for (int i = 1; i <= 4; i++) {
+				getJogador(i).maoFechada(pontosEquipe, vaquinhasNoPasto);
+				// Checa se ainda temos que jogar mais partidas ou já está tudo decidido
+				if(((nPartidasModoCE-vaquinhasNoPasto[0]) < vaquinhasNoPasto[0]) ||
+						((nPartidasModoCE-vaquinhasNoPasto[1]) < vaquinhasNoPasto[1])){
+					// acabou...
+					acabou = true;
+					if (this.vaquinhasNoPasto[0] > vaquinhasNoPasto[1])
+						getJogador(i).jogoFechado(1, vaquinhasNoPasto);
+					else 
+						getJogador(i).jogoFechado(2, vaquinhasNoPasto);
+				}
+			}
+		} else {
+			for (int i = 1; i <= 4; i++) {
+				getJogador(i).maoFechada(pontosEquipe, vaquinhasNoPasto);
+				if (pontosEquipe[0] > 11) {
+					getJogador(i).jogoFechado(1, vaquinhasNoPasto);
+				} else if (pontosEquipe[1] > 11) {
+					getJogador(i).jogoFechado(2, vaquinhasNoPasto);
+				}
+			}			
 		}
 		// Se ainda estivermos em jogo, incia a nova mao
-		if (pontosEquipe[0] <= 11 && pontosEquipe[1] <= 11) {
+		if (pontosEquipe[0] <= 11 && pontosEquipe[1] <= 11 && acabou==false) {
 			int posAbre = jogadorAbriuMao.getPosicao() + 1;
 			if (posAbre == 5)
 				posAbre = 1;
 			iniciaMao(getJogador(posAbre));
 		}
+		
 		return;
 	}
 
@@ -629,8 +684,10 @@ public class JogoLocal extends Jogo {
 					.getPosicao();
 		s.valorMao = this.valorMao;
 
-		for (int i = 0; i <= 1; i++)
+		for (int i = 0; i <= 1; i++) {
 			s.pontosEquipe[i] = this.pontosEquipe[i];
+			s.vaquinhasNoPasto[i] = this.vaquinhasNoPasto[i];
+		}
 		for (int i = 0; i <= 2; i++)
 			s.resultadoRodada[i] = this.resultadoRodada[i];
 

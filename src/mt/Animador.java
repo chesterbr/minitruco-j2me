@@ -4,6 +4,9 @@ package mt;
  * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
+ * Copyright © 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * (modo confronto de estratégias)
+ * 
  * Este programa é um software livre; você pode redistribui-lo e/ou 
  * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
  * publicada pela Fundação do Software Livre (FSF); na versão 2 da 
@@ -402,6 +405,53 @@ public class Animador extends Thread {
 
 	}
 
+	public void piscaPlacarComVaquinhasInfo(int numPlacar, int ptsA, int ptsB, int partidasA, int partidasB, boolean modoCE) {
+
+		// Aguarda a finalização de outras animações
+		aguardaFimAnimacoes();
+
+		// Inicializa os parâmetros e acende o ícone
+		frameAtual = 0;
+		numFrames = FPS / 8; // 1/8 de segundo por "meia-piscada"
+		if(modoCE)
+			 stringPlacarAtual = (numPlacar == 1 ? Mesa.STRING_DA
+					: Mesa.STRING_DB)
+					+ (numPlacar == 1 ? partidasA : partidasB)
+					+ "-" + (numPlacar == 1 ? ptsA : ptsB);	
+		else stringPlacarAtual = (numPlacar == 1 ? Mesa.STRING_NOS
+				: Mesa.STRING_ELES)
+				+ (numPlacar == 1 ? partidasA : partidasB)
+				+ "-" + (numPlacar == 1 ? ptsA : ptsB);
+		piscadaAtual = 0;
+
+		// Inicia a animação
+		numPlacarPiscando = numPlacar;
+
+		// Aguarda o final
+		while (mesa.isAppRodando && numPlacarPiscando != 0) {
+			try {
+				sleep(1);
+			} catch (InterruptedException e) {
+				// Não faz nada, é só controle de timing
+			}
+		}
+
+		// Atualiza o outro placar agora (para não complicar
+		// atualizo os dois placares mesmo...)
+		// Necessário para início de partidas após uma
+		// das duplas colocar uma vaquinha no pasto
+		if(modoCE) {
+			mesa.stringPlacar[0] = Mesa.STRING_DA + partidasA + "-" + ptsA;
+			mesa.stringPlacar[1] = Mesa.STRING_DB + partidasB + "-" + ptsB;
+		} else {
+			mesa.stringPlacar[0] = Mesa.STRING_NOS + partidasA + "-" + ptsA;
+			mesa.stringPlacar[1] = Mesa.STRING_ELES + partidasB + "-" + ptsB;
+		}
+		mesa.repaint();
+		mesa.serviceRepaints();
+
+	}
+	
 	/**
 	 * Acende o ícone de status da rodada (dando umas piscadinhas antes)
 	 * 

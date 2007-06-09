@@ -3,6 +3,9 @@ package mt;
 /*
  * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
+ *
+ * Copyright © 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * (modo confronto de estratégias)
  * 
  * Este programa é um software livre; você pode redistribui-lo e/ou 
  * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
@@ -62,6 +65,12 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	JogadorHumano jogadorHumano;
 
 	/**
+	 * Jogador que está substituindo o jogador humano no modo confronto de
+	 * estratégias
+	 */
+	JogadorBot jogadorBot;
+
+	/**
 	 * Formulário de configuração do jogo
 	 */
 	private Form formOpcoes;
@@ -88,6 +97,31 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	 */
 	private String[] estrategias;
 
+	/**
+	 * Estratégias escolhidas para os jogadores CPU no modo confronto de
+	 * estratégias. O índice 0 corresponde à dupla B (horizontal na mesa) e o
+	 * índice 1 corresponde à dupla A (vertical na mesa).
+	 */
+	private String[] estrategiasModoCE;
+
+	/**
+	 * Variável indicativa de modo confronto de estratégias
+	 * 
+	 */
+	boolean modoCE = false;
+
+	/**
+	 * Variável indicativa do número máximo de partidas a serem jogadas no modo
+	 * confronto de estratégias
+	 * 
+	 */
+	int nPartidasModoCE = 1;
+
+	/**
+	 * Formulário de configuração do modo confronto de estratégias
+	 */
+	private Form formModoCE;
+
 	// Listas de opções para menus de ajuda e bluetooth
 
 	private static final String[] OPCOES_AJUDA = { "Instru\u00E7\u00F5es",
@@ -112,6 +146,9 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	public static Command opcoesCommand = new Command("Op\u00E7\u00F5es",
 			Command.SCREEN, 5);
 
+	public static Command modoCECommand = new Command(
+			"Op\u00E7\u00F5es modo CE", Command.SCREEN, 6);
+
 	public static Command sairProgramaCommand = new Command("Sair",
 			Command.EXIT, 7);
 
@@ -129,6 +166,11 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	public static Command okTexto = new Command("Ok", Command.OK, 1);
 
 	public static Command okOpcoesCommand = new Command("Ok", Command.OK, 1);
+
+	public static Command okModoCECommand = new Command("Ok", Command.OK, 1);
+
+	public static Command okAvisoBTmodoCECommand = new Command("Ok",
+			Command.OK, 1);
 
 	// Menus in-game
 
@@ -169,8 +211,8 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 	// Elementos do formulario de opções
 
-	static final String[] OPCOES_ESTRATEGIAS = { "Sellani", "Willian", "Gasparotto v1.0", 
-			"Sortear" };
+	static final String[] OPCOES_ESTRATEGIAS = { "Sellani", "Willian",
+			"Gasparotto v1.1", "Sortear" };
 
 	private static final String[] OPCOES_VISUAL = { "cartas grandes",
 			"cartas animadas" };
@@ -179,17 +221,16 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			"manilha velha" };
 
 	private static final String[] OPCOES_DEBUG = {
-			"for\u00E7ar menu bluetooth (exige reiniciar)", "exibir log" };
+			"for\u00E7ar menu bluetooth (exige reiniciar)", "exibir log",
+			"confronto de estrat\u00E9gias" };
 
 	private static final Image[] IMAGENS_VISUAL = { null, null };
 
 	private static final Image[] IMAGENS_REGRAS = { null, null };
 
-	/** aumentar array aqui para cada nova estratégia incluída**/
-	//** no momento: Willian, Sellani, Gasparotto v1.0 **/
+	// ** aumentar array aqui para cada nova estratégia incluída**
+	// ** no momento: Willian, Sellani, Gasparotto v1.1 **
 	private static final Image[] IMAGENS_ESTRATEGIAS = { null, null, null, null };
-
-	private static final Image[] IMAGENS_DEBUG = { null, null };
 
 	ChoiceGroup cgParceiro = new ChoiceGroup("Parceiro", Choice.EXCLUSIVE,
 			OPCOES_ESTRATEGIAS, IMAGENS_ESTRATEGIAS);
@@ -211,6 +252,25 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	ChoiceGroup cgDebug = new ChoiceGroup("Debug", Choice.MULTIPLE,
 			OPCOES_DEBUG, IMAGENS_DEBUG);
 
+	// Elementos exclusivos do formulário de opções do modo confronto de
+	// estratégias
+
+	private static final String[] OPCOES_NPARTIDAS = { "1", "3", "11", "35" };
+
+	private static final Image[] IMAGENS_NPARTIDAS = { null, null, null, null };
+
+	private static final Image[] IMAGENS_DEBUG = { null, null, null };
+
+	ChoiceGroup cgModoCEDuplaA = new ChoiceGroup("Dupla A (vertical)",
+			Choice.EXCLUSIVE, OPCOES_ESTRATEGIAS, IMAGENS_ESTRATEGIAS);
+
+	ChoiceGroup cgModoCEDuplaB = new ChoiceGroup("Dupla B (horizontal)",
+			Choice.EXCLUSIVE, OPCOES_ESTRATEGIAS, IMAGENS_ESTRATEGIAS);
+
+	ChoiceGroup cgModoCEnPartidas = new ChoiceGroup(
+			"N\u00famero m\u00e1ximo de partidas", Choice.EXCLUSIVE,
+			OPCOES_NPARTIDAS, IMAGENS_NPARTIDAS);
+
 	// PONTO DE ENTRADA DA MIDLET
 
 	public MiniTruco() {
@@ -220,6 +280,9 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 		// Carrega as configurações da memória do celular
 		// (ou as default, se não houver nada na memória)
+		Configuracoes confModoCE = Configuracoes.getConfiguracoesModoCE();
+		estrategiasModoCE = confModoCE.estrategiasModoCE;
+		nPartidasModoCE = confModoCE.nPartidasModoCE;
 		Configuracoes conf = Configuracoes.getConfiguracoes();
 		estrategias = conf.estrategias;
 		Animador.setAnimacaoLigada(conf.animacaoLigada);
@@ -237,6 +300,23 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 		// Inicializa os "displayables" da aplicação (menos os do
 		// multiplayer, que são responsabilidade da classe Servidor)
+		formModoCE = new Form("Op\u00E7\u00F5es do Confronto");
+		formModoCE.append(cgModoCEDuplaA);
+		formModoCE.append(cgModoCEDuplaB);
+		formModoCE.append(cgModoCEnPartidas);
+		formModoCE.addCommand(okModoCECommand);
+		formModoCE.setCommandListener(this);
+		for (int i = 0; i < OPCOES_ESTRATEGIAS.length; i++) {
+			cgModoCEDuplaA.setSelectedIndex(i, OPCOES_ESTRATEGIAS[i]
+					.equals(estrategiasModoCE[1]));
+			cgModoCEDuplaB.setSelectedIndex(i, OPCOES_ESTRATEGIAS[i]
+					.equals(estrategiasModoCE[0]));
+		}
+		for (int i = 0; i < OPCOES_NPARTIDAS.length; i++) {
+			cgModoCEnPartidas.setSelectedIndex(i, OPCOES_NPARTIDAS[i]
+					.equals(Integer.toString(nPartidasModoCE)));
+		}
+
 		formOpcoes = new Form("Op\u00E7\u00F5es");
 		formOpcoes.append(cgVisual);
 		formOpcoes.append(cgRegras);
@@ -344,11 +424,18 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	void mostraMenuAbertura(boolean visivel) {
 		if (visivel) {
 			mesa.addCommand(iniciarCommand);
-			if (isSuportaBluetooth()) {
+			if (isSuportaBluetooth() && !modoCE) {
 				mesa.addCommand(bluetoothComand);
+			} else {
+				mesa.removeCommand(bluetoothComand);
 			}
 			mesa.addCommand(ajudaCommand);
 			mesa.addCommand(opcoesCommand);
+			if (modoCE) {
+				mesa.addCommand(modoCECommand);
+			} else {
+				mesa.removeCommand(modoCECommand);
+			}
 			mesa.addCommand(sairProgramaCommand);
 			mesa.removeComandoAposta();
 			mesa.removeOpcoesAceite();
@@ -360,6 +447,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			mesa.removeCommand(bluetoothComand);
 			mesa.removeCommand(ajudaCommand);
 			mesa.removeCommand(opcoesCommand);
+			mesa.removeCommand(modoCECommand);
 		}
 
 	}
@@ -384,20 +472,45 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	 */
 	public void commandAction(Command cmd, Displayable disp) {
 		if (cmd == iniciarCommand) {
-			// Inicializa novo jogo e adiciona o jogador humano
-			Jogo jogo = new JogoLocal(cgRegras.isSelected(0), cgRegras
-					.isSelected(1));
-			jogadorHumano = new JogadorHumano(Display.getDisplay(this),
-					(Mesa) mesa);
-			jogo.adiciona(jogadorHumano);
-			// Adiciona os jogadores CPU com as estratégias escolhidas
-			for (int i = 0; i <= 2; i++) {
-				jogo.adiciona(new JogadorCPU(estrategias[i]));
+			// Checa se estamos no modo confronto de estratégias
+			if (this.modoCE) {
+				// Inicializa novo jogo com 4 jogadores CPU com
+				// as devidas estratégias escolhidas para dupla A e B
+				Jogo jogo = new JogoLocal(cgRegras.isSelected(0), cgRegras
+						.isSelected(1), this.nPartidasModoCE);
+				// Dupla A jogador de baixo
+				jogadorBot = new JogadorBot(estrategiasModoCE[1], Display
+						.getDisplay(this), (Mesa) mesa);
+				jogo.adiciona(jogadorBot);
+				// Dupla B jogador à direita
+				jogo.adiciona(new JogadorCPU(estrategiasModoCE[0]));
+				// Dupla A jogador de cima
+				jogo.adiciona(new JogadorCPU(estrategiasModoCE[1]));
+				// Dupla B jogador à esquerda
+				jogo.adiciona(new JogadorCPU(estrategiasModoCE[0]));
+				iniciaJogo(jogo);
+			} else {
+				// Inicializa novo jogo e adiciona o jogador humano
+				Jogo jogo = new JogoLocal(cgRegras.isSelected(0), cgRegras
+						.isSelected(1));
+				jogadorHumano = new JogadorHumano(Display.getDisplay(this),
+						(Mesa) mesa);
+				jogo.adiciona(jogadorHumano);
+				// Adiciona os jogadores CPU com as estratégias escolhidas
+				for (int i = 0; i <= 2; i++) {
+					jogo.adiciona(new JogadorCPU(estrategias[i]));
+				}
+				iniciaJogo(jogo);
 			}
-			iniciaJogo(jogo);
 		} else if (cmd == bluetoothComand) {
-			// Mostra o menu (lista) para o jogador escolher cliente ou servidor
+			// Mostra o menu (lista) para o jogador escolher cliente ou
+			// servidor
 			Display.getDisplay(this).setCurrent(listBluetooth);
+		} else if (cmd == okAvisoBTmodoCECommand) {
+			// Volta pra tela inicial
+			Display.getDisplay(this).setCurrent(mesa);
+			mesa.montaBaralhoCenario();
+			mesa.repaint();
 		} else if ((cmd == List.SELECT_COMMAND || cmd == okBluetoothCommand)
 				&& Display.getDisplay(this).getCurrent().equals(listBluetooth)) {
 			// Inicializa o componente (cliente ou servidor) escolhido
@@ -434,7 +547,10 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				}
 				return;
 			}
-			encerraJogo(jogadorHumano.getPosicao(), true);
+			if (this.modoCE)
+				encerraJogo(jogadorBot.getPosicao(), true);
+			else
+				encerraJogo(jogadorHumano.getPosicao(), true);
 
 		} else if (cmd == trucoCommand || cmd == seisCommand
 				|| cmd == noveCommand || cmd == dozeCommand
@@ -463,6 +579,8 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			}
 		} else if (cmd == opcoesCommand) {
 			Display.getDisplay(this).setCurrent(formOpcoes);
+		} else if (cmd == modoCECommand) {
+			Display.getDisplay(this).setCurrent(formModoCE);
 		} else if (cmd == okOpcoesCommand) {
 			// Seta as opções escolhidas no form (menos as regras,
 			// que ficam guardadas no choiceGroup mesmo)
@@ -478,7 +596,10 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			} else {
 				MiniTruco.log = null;
 			}
-
+			this.modoCE = cgDebug.isSelected(2);
+			if (mesa != null) {
+				mesa.setModoCE(this.modoCE);
+			}
 			if (cgRegras.isSelected(0) && cgRegras.isSelected(1)) {
 				// Se houver conflito, faz o ajuste e mantém o form
 				alerta("Conflito", "A manilha velha (fixa) exige baralho sujo.");
@@ -495,12 +616,31 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				conf.salva();
 
 				// Volta pra tela anterior
+				mostraMenuAbertura(true);
 				Display.getDisplay(this).setCurrent(mesa);
 				mesa.montaBaralhoCenario();
 				mesa.repaint();
 			}
-		}
+		} else if (cmd == okModoCECommand) {
+			estrategiasModoCE[0] = OPCOES_ESTRATEGIAS[cgModoCEDuplaB
+					.getSelectedIndex()];
+			estrategiasModoCE[1] = OPCOES_ESTRATEGIAS[cgModoCEDuplaA
+					.getSelectedIndex()];
+			nPartidasModoCE = Integer
+					.parseInt(OPCOES_NPARTIDAS[cgModoCEnPartidas
+							.getSelectedIndex()]);
 
+			// Guarda as opções na memória do celular
+			Configuracoes confModoCE = Configuracoes.getConfiguracoesModoCE();
+			confModoCE.estrategiasModoCE = estrategiasModoCE;
+			confModoCE.nPartidasModoCE = nPartidasModoCE;
+			confModoCE.salvaModoCE();
+
+			// Volta pra tela anterior
+			Display.getDisplay(this).setCurrent(mesa);
+			mesa.montaBaralhoCenario();
+			mesa.repaint();
+		}
 	}
 
 	/**
@@ -536,7 +676,10 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			}
 			jogoEmAndamento = null;
 		}
-		jogadorHumano = null;
+		if (this.modoCE)
+			jogadorBot = null;
+		else
+			jogadorHumano = null;
 		novaMesa(false);
 		if (voltaAoMenu) {
 			Display.getDisplay(this).setCurrent(mesa);
@@ -564,7 +707,13 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 	private void confirmaSairPartida() {
 		Form f = new Form("miniTruco");
-		f.append(new StringItem(null, "Deseja mesmo abandonar esta partida?"));
+		if (this.modoCE)
+			f
+					.append(new StringItem(null,
+							"Deseja mesmo abandonar modo confronto de estrat\u00e9gias?"));
+		else
+			f.append(new StringItem(null,
+					"Deseja mesmo abandonar esta partida?"));
 		f.addCommand(simSairPartidaCommand);
 		f.addCommand(naoSairPartidaCommand);
 		f.setCommandListener(this);

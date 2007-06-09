@@ -4,6 +4,9 @@ package mt;
  * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
+ * Copyright © 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * (modo confronto de estratégias)
+ * 
  * Este programa é um software livre; você pode redistribui-lo e/ou 
  * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
  * publicada pela Fundação do Software Livre (FSF); na versão 2 da 
@@ -207,6 +210,46 @@ public class Mesa extends Canvas implements Runnable {
 
 	private JogadorHumano jogador;
 
+	/**
+	 * Informa a mesa o JogadorBot que está acoplado a ela (isto acontece
+	 * somente no modo confronto de estratégias)
+	 * 
+	 * @param jogador
+	 */
+
+	private JogadorBot jogadorBot;
+
+	private boolean modoCE = false;
+
+	/**
+	 * Informa à mesa o bot que jogará nela (mudando o modo para Confronto de
+	 * Estratégias)
+	 * 
+	 * @param jogador
+	 */
+	public void setJogadorBot(JogadorBot jogador) {
+		this.jogadorBot = jogador;
+		this.modoCE = true;
+	}
+
+	/**
+	 * Ajusta a mesa para o modo normal ou confronto.
+	 * 
+	 * @param modoCE
+	 *            true para modo Confronto de Estratégias, false para jogo
+	 *            normal
+	 */
+	public void setModoCE(boolean modoCE) {
+		this.modoCE = modoCE;
+		if (modoCE == false) {
+			this.jogadorBot = null;
+		}
+	}
+
+	JogadorBot getJogadorBot() {
+		return jogadorBot;
+	}
+
 	private static Font fontePlacar = Font.getFont(Font.FACE_PROPORTIONAL,
 			Font.STYLE_PLAIN, Font.SIZE_SMALL);
 
@@ -216,6 +259,8 @@ public class Mesa extends Canvas implements Runnable {
 	String[] stringPlacar = new String[2];
 
 	int[] placar = new int[2];
+
+	int[] placarPartidas = new int[2];
 
 	public void atualizaPlacar(int nos, int eles) {
 		if (nos == 0 && eles == 0) {
@@ -234,16 +279,85 @@ public class Mesa extends Canvas implements Runnable {
 		}
 	}
 
+	public void atualizaPlacarComVaquinhasInfo(int nos, int eles,
+			int vaquinhasNoPastoDplA, int vaquinhasNoPastoDplB) {
+		if (vaquinhasNoPastoDplA == 0 && vaquinhasNoPastoDplB == 0 && nos == 0
+				&& eles == 0) {
+			// Inicializa o placar
+			limpaPlacar();
+		} else {
+			// Atualiza e pisca a string do placar que mudou
+			if (placarPartidas[0] != vaquinhasNoPastoDplA) {
+				animador
+						.piscaPlacarComVaquinhasInfo(1, nos, eles,
+								vaquinhasNoPastoDplA, vaquinhasNoPastoDplB,
+								this.modoCE);
+			} else if (placarPartidas[1] != vaquinhasNoPastoDplB) {
+				animador
+						.piscaPlacarComVaquinhasInfo(2, nos, eles,
+								vaquinhasNoPastoDplA, vaquinhasNoPastoDplB,
+								this.modoCE);
+			} else if (placar[0] != nos) {
+				animador
+						.piscaPlacarComVaquinhasInfo(1, nos, eles,
+								vaquinhasNoPastoDplA, vaquinhasNoPastoDplB,
+								this.modoCE);
+			} else if (placar[1] != eles) {
+				animador
+						.piscaPlacarComVaquinhasInfo(2, nos, eles,
+								vaquinhasNoPastoDplA, vaquinhasNoPastoDplB,
+								this.modoCE);
+			}
+			// Guarda os resultados
+			placar[0] = nos;
+			placar[1] = eles;
+			placarPartidas[0] = vaquinhasNoPastoDplA;
+			placarPartidas[1] = vaquinhasNoPastoDplB;
+		}
+	}
+
+	/**
+	 * Mostra o placar das partidas (somente para o modo confronto de
+	 * estratégias)
+	 * 
+	 * @param jogador
+	 */
+	public void mostraResultadoFinalModoCE(int vaquinhasNoPastodplA,
+			int vaquinhasNoPastodplB) {
+
+		// Mostra placar final
+		// TO DO
+		// Aqui o legal seria mostrar o resultado final
+		// assim como o nome das estratégias??
+		// hummm talvez não... o resultado já aparece na mesa...
+
+		// Mostra menu final
+		removeCommand(MiniTruco.sairPartidaCommand);
+		addCommand(MiniTruco.sairPartidaSemPerguntarCommand);
+
+	}
+
 	static final String STRING_NOS = "N\u00F3s: ";
 
 	static final String STRING_ELES = "Eles: ";
+
+	static final String STRING_DA = "A: ";
+
+	static final String STRING_DB = "B: ";
 
 	public void limpaPlacar() {
 		// Limpa os resultados e as strings (sem piscar)
 		placar[0] = 0;
 		placar[1] = 0;
-		stringPlacar[0] = STRING_NOS + "0";
-		stringPlacar[1] = STRING_ELES + "0";
+		placarPartidas[0] = 0;
+		placarPartidas[1] = 0;
+		if (this.modoCE) {
+			stringPlacar[0] = STRING_DA + "0-0";
+			stringPlacar[1] = STRING_DB + "0-0";
+		} else {
+			stringPlacar[0] = STRING_NOS + "0";
+			stringPlacar[1] = STRING_ELES + "0";
+		}
 	}
 
 	/**
@@ -345,13 +459,27 @@ public class Mesa extends Canvas implements Runnable {
 						+ 6, getHeight() / 2 + 1, imgLogoCartas.getWidth(),
 						hCarta);
 			}
-			// Endereço para download
 			if (aberturaUrlVisivel) {
-				g.setColor(0x000000FF);
-				g.setFont(Font.getFont(Font.FACE_PROPORTIONAL,
-						Font.STYLE_UNDERLINED, Font.SIZE_SMALL));
-				g.drawString("m.chester.blog.br", getWidth() / 2,
-						getHeight() - 2, Graphics.HCENTER | Graphics.BOTTOM);
+				if (!this.modoCE) {
+					g.setColor(0x000000FF);
+					g.setFont(Font.getFont(Font.FACE_PROPORTIONAL,
+							Font.STYLE_UNDERLINED, Font.SIZE_SMALL));
+					g
+							.drawString("m.chester.blog.br", getWidth() / 2,
+									getHeight() - 2, Graphics.HCENTER
+											| Graphics.BOTTOM);
+				} else {
+					g.setColor(0x990033);
+					g.setFont(Font.getFont(Font.FACE_PROPORTIONAL,
+							Font.STYLE_BOLD, Font.SIZE_SMALL));
+					g.drawString("modo confronto", getWidth() / 2,
+							getHeight() - 12, Graphics.HCENTER
+									| Graphics.BOTTOM);
+					g
+							.drawString("<S. Gasparoto>", getWidth() / 2,
+									getHeight() - 2, Graphics.HCENTER
+											| Graphics.BOTTOM);
+				}
 			}
 		}
 
@@ -383,6 +511,12 @@ public class Mesa extends Canvas implements Runnable {
 		g.setColor(0xFFFF00);
 
 		switch (posicaoDaVez) {
+		case 1: // Baixo (somente no modo confronto de estratégias)
+			if (this.modoCE) {
+				// TO DO
+				// Chester: help here!
+			}
+			break;
 		case 2: // Direita
 			leftVez = getWidth() - (Carta.larguraCartas) / 2 - MARGEM - 2;
 			topVez = getHeight() / 2 - Carta.alturaCartas / 2 - 11;
@@ -747,7 +881,8 @@ public class Mesa extends Canvas implements Runnable {
 			leftFinal = getWidth() / 2 - Carta.larguraCartas + i
 					* (Carta.larguraCartas * 2 / 3);
 			topFinal = getHeight() - (Carta.alturaCartas + MARGEM);
-			c.setVirada(true);
+			if (!this.modoCE)
+				c.setVirada(true);
 			break;
 		case 2:
 			leftFinal = getWidth() - Carta.larguraCartas - MARGEM;
@@ -1142,10 +1277,11 @@ public class Mesa extends Canvas implements Runnable {
 
 	/**
 	 * Comando a ser executado em uma thread separada
+	 * 
 	 * @see Mesa#executaComando(Command)
 	 */
 	private Command cmdEmThread;
-	
+
 	/**
 	 * Executa comandos do jogo a partir de uma nova thread (permitindo que o
 	 * jogador responda assíncronamente com os outros).
@@ -1158,7 +1294,7 @@ public class Mesa extends Canvas implements Runnable {
 		Thread t = new Thread(this);
 		t.start();
 	}
-	
+
 	/**
 	 * @see Mesa#executaComando(Command)
 	 */

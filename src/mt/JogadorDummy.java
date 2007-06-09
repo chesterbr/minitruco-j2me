@@ -59,11 +59,11 @@ public class JogadorDummy extends Jogador {
 
 	}
 
-	public void jogoFechado(int numEquipeVencedora) {
+	public void jogoFechado(int numEquipeVencedora, int[] vaquinhasNoPasto) {
 
 	}
 
-	public void maoFechada(int[] pontosEquipe) {
+	public void maoFechada(int[] pontosEquipe, int[] vaquinhasNoPasto) {
 
 	}
 
@@ -84,4 +84,5 @@ public class JogadorDummy extends Jogador {
 
 	}
 
+	
 }
