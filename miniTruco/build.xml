@@ -32,7 +32,6 @@
 	<target name="gera_full" depends="prepara_full,dist,limpeza" description="Gera o .jar/.jad da versão completa" />
 	<target name="gera_light" depends="prepara_light,dist,limpeza" description="Gera o .jar/.jad da versão 'light'" />
 	<target name="javadoc" description="Gera a documentação (Javadoc)">
-		<delete dir="docs/javadoc" />
 		<javadoc overview="docs/overview_javadoc.html" access="package" author="true" classpath="${wtk.midpapi}:${btapi}" destdir="docs/javadoc" doctitle="miniTruco 3 - Javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="mt" source="1.2" sourcepath="src" splitindex="true" use="true" version="true" />
 	</target>
 
@@ -123,6 +122,7 @@
 	</target>
 
 	<target name="limpeza">
+		<delete dir="${TMP_SRC}" />
 		<delete dir="${BIN}" />
 	</target>
 
