@@ -42,6 +42,10 @@ import javax.microedition.midlet.MIDlet;
 
 /**
  * Ponto de entrada da aplicação no celular (MIDLet).
+ * <p>
+ * Os comentários de linha simples [IF_FULL] e [ENDIF_FULL] denotam seções de
+ * código que só serão compiladas na versão "full" do jogo (e não na versão
+ * "light", que visa um .jar menor). O build.xml garante isto.
  * 
  * @author Chester
  * 
@@ -78,8 +82,10 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	/**
 	 * Tela Bluetooth (cliente ou servidor) em exibição no momento
 	 */
+	// [IF_FULL]
 	public TelaBT telaBT;
 
+	// [ENDIF_FULL]
 	/**
 	 * Sub-menu que permite selecionar um item da ajuda
 	 */
@@ -220,8 +226,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	private static final String[] OPCOES_REGRAS = { "baralho limpo",
 			"manilha velha" };
 
-	private static final String[] OPCOES_DEBUG = {
-			"for\u00E7ar menu bluetooth (exige reiniciar)", "exibir log",
+	private static final String[] OPCOES_DEBUG = { "exibir log",
 			"confronto de estrat\u00E9gias" };
 
 	private static final Image[] IMAGENS_VISUAL = { null, null };
@@ -259,7 +264,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 	private static final Image[] IMAGENS_NPARTIDAS = { null, null, null, null };
 
-	private static final Image[] IMAGENS_DEBUG = { null, null, null };
+	private static final Image[] IMAGENS_DEBUG = { null, null };
 
 	ChoiceGroup cgModoCEDuplaA = new ChoiceGroup("Dupla A (vertical)",
 			Choice.EXCLUSIVE, OPCOES_ESTRATEGIAS, IMAGENS_ESTRATEGIAS);
@@ -289,13 +294,6 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		cgRegras.setSelectedIndex(0, conf.baralhoLimpo);
 		cgRegras.setSelectedIndex(1, conf.manilhaVelha);
 		Carta.setCartasGrandes(conf.cartasGrandes);
-		cgDebug.setSelectedIndex(0, conf.forcaBluetooth);
-		if (conf.forcaBluetooth) {
-			// Se forçamos o menu bluetooth, é preciso cachear esta escolha
-			// (para evitar futuras detecções) e atualizar o menu de abertura
-			suportaBluetooth = new Boolean(true);
-			mostraMenuAbertura(true);
-		}
 		mesa.montaBaralhoCenario();
 
 		// Inicializa os "displayables" da aplicação (menos os do
@@ -514,6 +512,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		} else if ((cmd == List.SELECT_COMMAND || cmd == okBluetoothCommand)
 				&& Display.getDisplay(this).getCurrent().equals(listBluetooth)) {
 			// Inicializa o componente (cliente ou servidor) escolhido
+			// [IF_FULL]
 			switch (listBluetooth.getSelectedIndex()) {
 			case 0:
 				telaBT = new ServidorBT(this);
@@ -524,6 +523,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			default:
 				Display.getDisplay(this).setCurrent(mesa);
 			}
+			// [ENDIF_FULL]
 		} else if (cmd == voltarMenuCommand) {
 			Display.getDisplay(this).setCurrent(mesa);
 		} else if (cmd == sairPartidaCommand) {
@@ -532,6 +532,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			Display.getDisplay(this).setCurrent(mesa);
 		} else if (cmd == simSairPartidaCommand
 				|| cmd == sairPartidaSemPerguntarCommand) {
+			// [IF_FULL]
 			if (telaBT instanceof ClienteBT) {
 				// Se for um jogo cliente, derruba
 				telaBT.encerraSessaoBT();
@@ -547,6 +548,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				}
 				return;
 			}
+			// [ENDIF_FULL]
 			if (this.modoCE)
 				encerraJogo(jogadorBot.getPosicao(), true);
 			else
@@ -591,12 +593,12 @@ public class MiniTruco extends MIDlet implements CommandListener {
 					.getSelectedIndex()];
 			Carta.setCartasGrandes(cgVisual.isSelected(0));
 			Animador.setAnimacaoLigada(cgVisual.isSelected(1));
-			if (cgDebug.isSelected(1)) {
+			if (cgDebug.isSelected(0)) {
 				MiniTruco.log = new String[6];
 			} else {
 				MiniTruco.log = null;
 			}
-			this.modoCE = cgDebug.isSelected(2);
+			this.modoCE = cgDebug.isSelected(1);
 			if (mesa != null) {
 				mesa.setModoCE(this.modoCE);
 			}
@@ -612,7 +614,6 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				conf.animacaoLigada = Animador.isAnimacaoLigada();
 				conf.baralhoLimpo = cgRegras.isSelected(0);
 				conf.manilhaVelha = cgRegras.isSelected(1);
-				conf.forcaBluetooth = cgDebug.isSelected(0);
 				conf.salva();
 
 				// Volta pra tela anterior
@@ -741,12 +742,15 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	 */
 	private boolean isSuportaBluetooth() {
 		if (suportaBluetooth == null) {
+			suportaBluetooth = new Boolean(false);
+			// [IF_FULL]
 			try {
 				Class.forName("javax.bluetooth.LocalDevice");
 				suportaBluetooth = new Boolean(true);
 			} catch (ClassNotFoundException e) {
-				suportaBluetooth = new Boolean(false);
+				// Se der erro, o celular não suporta Bluetooth.
 			}
+			// [ENDIF_FULL]
 		}
 		return suportaBluetooth.booleanValue();
 	}

@@ -14,24 +14,53 @@
 	<property name="jax" value="/lang/jax61" />
 
 	<!-- Diretórios de trabalho -->
+	<property name="TMP_SRC" value="deploy/src" />
 	<property name="BIN" value="deploy/bin" />
 	<property name="RES" value="res" />
 	<property name="DEPLOY" value="deploy" />
 	<property name="WEBROOT" value="webroot" />
-	<property name="NOME_APP" value="miniTruco" />
 	<property name="JAD_DIR" value="jad" />
 
 	<!-- Tasks principais (executar estas) -->
 
-	<target name="executa_emulador" depends="compilar_sem_wtk" description="Compila e chama o cliente no emulador (bom para testes, exige apenas o emulador e as bibliotecas MIDP)">
+	<target name="executa_emulador" depends="compilar_sem_wtk" description="Compila as classes e chama o jogo no emulador (bom para testes, pois exige apenas o emulador e as bibliotecas MIDP)">
 		<java classname="com.barteo.emulator.app.Main" classpath="${JAR_EMULADOR}:${BIN}:${RES}" fork="yes">
 			<arg value="mt.MiniTruco" />
 		</java>
 		<delete dir="${BIN}" />
 	</target>
-	<target name="gera_tudo" depends="dist,limpeza" description="Monta todos os arquivos do cliente (.jar./.jad do celular, .zip dos fontes, javadoc em docs/javadoc/)" />
+	<target name="gera_full" depends="prepara_full,dist,limpeza" description="Gera o .jar/.jad da versão completa" />
+	<target name="gera_light" depends="prepara_light,dist,limpeza" description="Gera o .jar/.jad da versão 'light'" />
+	<target name="javadoc" description="Gera a documentação (Javadoc)">
+		<delete dir="docs/javadoc" />
+		<javadoc overview="docs/overview_javadoc.html" access="package" author="true" classpath="${wtk.midpapi}:${btapi}" destdir="docs/javadoc" doctitle="miniTruco 3 - Javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="mt" source="1.2" sourcepath="src" splitindex="true" use="true" version="true" />
+	</target>
 
 	<!-- Tasks de apoio -->
+
+	<target name="prepara_light">
+		<!-- O filterset remove da compilação o código entre "// [IF_FULL]" e "// [ENDIF_FULL]"
+		     Isso mesmo: compilação condicional em Java! Mega-power-dica do Andreas Schaaefer:
+		     http://weblogs.java.net/blog/schaefa/archive/2005/01/how_to_do_condi_1.html     
+		-->
+		<delete dir="${TMP_SRC}" />
+		<copy todir="${TMP_SRC}">
+			<fileset dir="src" excludes="**/*BT.java,**/JogadorDummy.java" />
+			<filterset begintoken="// [" endtoken="]">
+				<filter token="IF_FULL" value="/*" />
+				<filter token="ENDIF_FULL" value="*/" />
+			</filterset>
+		</copy>
+		<property name="NOME_APP" value="miniTrucoLight" />
+	</target>
+
+	<target name="prepara_full">
+		<delete dir="${TMP_SRC}" />
+		<copy todir="${TMP_SRC}">
+			<fileset dir="src" />
+		</copy>
+		<property name="NOME_APP" value="miniTruco" />
+	</target>
 
 	<target name="compilar_sem_wtk">
 		<delete dir="${BIN}" />
@@ -42,7 +71,7 @@
 	<target name="compilar">
 		<delete dir="${BIN}" />
 		<mkdir dir="${BIN}" />
-		<wtkbuild classpath="${btapi}" destdir="${BIN}" srcdir="src" preverify="false" debug="true" debuglevel="lines,vars,source" source="1.2" />
+		<wtkbuild classpath="${btapi}" destdir="${BIN}" srcdir="${TMP_SRC}" preverify="false" debug="true" debuglevel="lines,vars,source" source="1.2" />
 	</target>
 
 	<target name="ofuscar" depends="compilar">
@@ -89,10 +118,8 @@
 		</wtkpackage>
 		<!-- .jad -->
 		<copy todir="${DEPLOY}" file="${JAD_DIR}/${NOME_APP}.jad" />
-		<!-- Javadoc e applet.html -->
+		<!-- applet.html (para rodar no browser)-->
 		<copy todir="${DEPLOY}" file="${RES}/applet.html" />
-		<delete dir="docs/javadoc" />
-		<javadoc overview="docs/overview_javadoc.html" access="package" author="true" classpath="${wtk.midpapi}:${btapi}" destdir="docs/javadoc" doctitle="miniTruco 3 - Javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="mt" source="1.2" sourcepath="src" splitindex="true" use="true" version="true" />
 	</target>
 
 	<target name="limpeza">

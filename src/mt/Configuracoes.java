@@ -79,8 +79,6 @@ public class Configuracoes {
 
 	public boolean manilhaVelha = false;
 
-	public boolean forcaBluetooth = false;
-	
 	public int nPartidasModoCE = 1;
 
 	/**
@@ -118,7 +116,6 @@ public class Configuracoes {
 					c.animacaoLigada = disDados.readBoolean();
 					c.baralhoLimpo = disDados.readBoolean();
 					c.manilhaVelha = disDados.readBoolean();
-					c.forcaBluetooth = disDados.readBoolean();
 				} catch (IOException e) {
 					// Se der erro na leitura, retorna um objeto default, mas
 					// com o ID deste (para que a próxima gravação o
@@ -230,7 +227,6 @@ public class Configuracoes {
 			dosDados.writeBoolean(animacaoLigada);
 			dosDados.writeBoolean(baralhoLimpo);
 			dosDados.writeBoolean(manilhaVelha);
-			dosDados.writeBoolean(forcaBluetooth);
 
 			// Atualiza o recordstore
 			byte[] dados = baosDados.toByteArray();
