@@ -3,16 +3,18 @@ About miniTruco Libraries and Tools
 
 miniTruco is an open-source (GPL) implementation of a Brazilian card game
 for mobile devices, created by me (Chester) with contributions from several
-other people.
+other people (see copyright notes in individual files).
 
-This file clarifies the distribuiton of libraries from other open source
+This text clarifies the distribuiton of libraries from other open source
 projects whithin miniTruco's source repositories (which can be found at
 http://code.google.com/p/minitruco/), citing their original copyright
-owners and distribution sites, in compliance with the terms of LGPL.
+owners and distribution sites, in compliance with the terms of LGPL
+and other library licenses under which those libraries were released.
 
-It is written in portuguese (as is most of miniTruco's documentation, since
-it is a game of little interest for non-Brazilians), but the library list
-at the end of the document should be clear for anyone.
+It is recommended that any programmer intending to use those libraries
+in his/her own projects download their full distributions on the mentioned
+sites, and read their license agreements to make sure his use does not
+violate such licenses.
 
 I believe in good faith that this redistribution is in compliance with the
 licenses of each software included, but if there is any problem in this
@@ -43,14 +45,9 @@ licença compatível. Então resolvi incluí-las, junto com os esqueletos
 mencionados (que compilei a partir de fontes que achei na web, provavelmente
 gerados a partir das especificações).
 
-Infelizmente, o Converter.jar (usado para gerar a versão .prc, compatível
-com JVMs de Palm mais antigas) não possui uma licença compatível com esse
-tipo de distribuição. Aliando isso às dificuldades questas JVMs já têm,
-optei por descontinuar o suporte a Palm.
-
 Segue uma relação dos arquivos .jar que acompanham este projeto, informando
 os nomes das bibliotecas, suas URLs de download e notas de copyright, em
-conformidade com as normas da LGPL.
+conformidade com as normas da LGPL e licenças equivalentes das bibliotecas.
 
 Recomendo que qualquer projeto que vá utilizá-las faça-o com versões
 atualizadas (e completas, com documentação, licença e outros itens importantes)
@@ -62,7 +59,7 @@ Tools/Libraries List (Lista de Bibliotecas/Ferramentas)
 
 antenna-bin.jar
   Antenna
-  An Ant-to-End Solution For Wireless Java
+  An Ant end-to-end Solution For Wireless Java
   (c) 2002-2006 Jörg Pleumann (LGPL)
   http://antenna.sourceforge.net/
 
@@ -72,7 +69,7 @@ proguard.jar
   Copyright (c) 2002-2006 Eric Lafortune (GPL)
   http://proguard.sourceforge.net/
   
-me-app.jar
+microemulator.jar
   MicroEmulator
   J2ME Device Emulator
   Copyright (C) 2001 Bartek Teodorczyk (LGPL) 
@@ -90,6 +87,18 @@ bt-api.jar
   Compiled by myself, based on btapi-source.zip from the final JSR-82 (which
   states (c) Copyright 2001, 2002 Motorola, Inc, but is also SCSL)
   http://jcp.org/aboutJava/communityprocess/final/jsr082/index.html
+
+me4se.jar
+  ME4SE
+  J2ME Device Emulator
+  (C) 2005 Stefan Haustein, Michael Kroll, Jörg Pleumann.
+  http://kobjects.sourceforge.net/me4se/index.shtml
+
+bluecove.jar
+  BlueCove
+  A Java library for Bluetooth (JSR-82 implementation)
+  (c) 2004-2007 BlueCove Team
+  http://bluecove.sourceforge.net/
 
 Obs.: In some cases I renamed the .jar name, removing file version numbers
 (so they can be upgraded without having to edit the Ant buildfile).
