@@ -96,7 +96,7 @@ public class ServidorBT extends TelaBT {
 	 *            encerra e vai para a tela).
 	 */
 	void desconecta(int slot) {
-		MiniTruco.log("desconecta() " + slot);
+		log("desconecta() " + slot);
 		if (slot >= 0) {
 			connClientes[slot] = null;
 			outClientes[slot] = null;
@@ -182,6 +182,7 @@ public class ServidorBT extends TelaBT {
 			StreamConnection c = null;
 			try {
 				c = scnServidor.acceptAndOpen();
+				log("recebeu conexao ");
 				// Encaixa na primeira vaga disponível
 				// (o synchronized é pra não fazer isso enquanto estiver
 				// mexendo nas posições via menu)
@@ -200,6 +201,7 @@ public class ServidorBT extends TelaBT {
 				// Continua recebendo conexões (a menos que lote)
 				setModoSetup(true);
 			} catch (IOException e) {
+				log(e.getMessage());
 				if (c != null) {
 					try {
 						c.close();
@@ -353,8 +355,8 @@ public class ServidorBT extends TelaBT {
 							.open("btspp://localhost:" + UUID_BT.toString()
 									+ ";name=miniTruco");
 				} catch (IOException e) {
-					MiniTruco.log("Erro server:");
-					MiniTruco.log(e.toString());
+					log("Erro server:");
+					log(e.toString());
 					alerta("Erro Bluetooth", e.getMessage(), true);
 					encerraSessaoBT();
 				}

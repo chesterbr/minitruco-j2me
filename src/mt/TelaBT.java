@@ -127,6 +127,20 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 		serviceRepaints();
 	}
 
+	/**
+	 * Faz o log de uma mensagem, garantindo que ela seja exibida (caso esta
+	 * opção esteja ativada)
+	 * 
+	 * @param msg
+	 */
+	protected void log(String msg) {
+		MiniTruco.log(msg);
+		if (MiniTruco.log != null) {
+			repaint();
+			serviceRepaints();
+		}
+	}
+
 	public TelaBT(MiniTruco midlet) {
 
 		// Guarda o display da MIDlet (vamos precisar dele pra mostrar forms e
@@ -289,6 +303,21 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 			g.setFont(fonteAguarde);
 			g.drawString(msgDisplay, getWidth() / 2, getHeight() / 2,
 					Graphics.HCENTER | Graphics.BASELINE);
+		}
+
+		// Imprime, se necessario, o log de mensagens
+		if (MiniTruco.log != null) {
+			g.setFont(Mesa.fontePlacar);
+			g.setColor(0x00000000);
+			int alturaLog = Mesa.fontePlacar.getHeight();
+			int alturaCanvas = this.getHeight();
+			for (int i = 0; (i < MiniTruco.log.length)
+					&& ((i + 1) * alturaLog <= alturaCanvas); i++) {
+				if (MiniTruco.log[i] != null) {
+					g.drawString(MiniTruco.log[i], 0, i * alturaLog,
+							Graphics.LEFT | Graphics.TOP);
+				}
+			}
 		}
 
 	}

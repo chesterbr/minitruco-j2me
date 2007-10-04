@@ -1,13 +1,12 @@
-<project name="miniTruco" default="executa_emulador">
+<project name="miniTruco" default="executa_microemulator2">
 
 	<!-- INFORMAR AQUI o diretório onde está instalado o J2ME SDK da Sun -->
-	<property name="wtk.home" value="/Applications/midp" />
+	<property name="wtk.home" value="C:\WTK2.5.1\" />
 
 	<!-- Definições das bibliotecas auxiliares -->
 	<taskdef resource="antenna.properties" classpath="lib/antenna-bin.jar" />
 	<taskdef resource="proguard/ant/task.properties" classpath="lib/proguard.jar" />
-
-	<property name="JAR_EMULADOR" value="lib/me-app.jar" />
+	
 	<property name="JAR_PROGUARD" value="lib/proguard.jar" />
 	<property name="wtk.midpapi" value="lib/midp.jar" />
 	<property name="btapi" value="lib/btapi.jar" />
@@ -23,12 +22,24 @@
 
 	<!-- Tasks principais (executar estas) -->
 
-	<target name="executa_emulador" depends="compilar_sem_wtk" description="Compila as classes e chama o jogo no emulador (bom para testes, pois exige apenas o emulador e as bibliotecas MIDP)">
-		<java classname="com.barteo.emulator.app.Main" classpath="${JAR_EMULADOR}:${BIN}:${RES}" fork="yes">
+	<target name="executa_me4se" depends="compilar_sem_wtk" description="Compila as classes e chama o jogo no microemulator (com suporte Bluetooth)">
+		<java classname="org.me4se.MIDletRunner" classpath="lib/me4se.jar:lib/bluecove-2.0.1.jar:${BIN}:${RES}" fork="yes">
 			<arg value="mt.MiniTruco" />
 		</java>
 		<delete dir="${BIN}" />
 	</target>
+
+	<target name="executa_microemulator2" depends="compilar_sem_wtk" description="Compila as classes e chama o jogo no emulador (bom para testes, pois exige apenas o emulador e as bibliotecas MIDP)">
+		<java classname="org.microemu.app.Main" classpath="lib/microemulator.jar:lib/bluecove-2.0.1.jar:${BIN}:${RES}" fork="yes">
+			<arg value="--appclassloader" />
+			<arg value="delegating" />
+			<arg value="mt.MiniTruco" />
+		</java>
+		<delete dir="${BIN}" />
+	</target>
+
+
+	
 	<target name="gera_full" depends="prepara_full,dist,limpeza" description="Gera o .jar/.jad da versão completa" />
 	<target name="gera_light" depends="prepara_light,dist,limpeza" description="Gera o .jar/.jad da versão 'light'" />
 	<target name="javadoc" description="Gera a documentação (Javadoc)">
@@ -100,7 +111,7 @@
 	<target name="pre_verificar" depends="ofuscar">
 		<mkdir dir="${DEPLOY}/pre" />
 		<exec executable="${wtk.home}/bin/preverify">
-			<arg line="-classpath ${wtk.midpapi}:${btapi}" />
+			<arg line="-classpath ${wtk.midpapi};${btapi}" />
 			<arg line="-d ${DEPLOY}/pre" />
 			<arg line="${BIN}" />
 		</exec>
@@ -112,7 +123,7 @@
 	<target name="dist" depends="pre_verificar">
 		<mkdir dir="${DEPLOY}" />
 		<!-- .jar -->
-		<wtkpackage basedir="${BIN}" jarfile="${DEPLOY}/${NOME_APP}.jar" jadfile="${JAD_DIR}/${NOME_APP}.jad">
+		<wtkpackage preverify="no" basedir="${BIN}" jarfile="${DEPLOY}/${NOME_APP}.jar" jadfile="${JAD_DIR}/${NOME_APP}.jad">
 			<fileset dir="${RES}" includes="*.png,*.txt" />
 		</wtkpackage>
 		<!-- .jad -->
