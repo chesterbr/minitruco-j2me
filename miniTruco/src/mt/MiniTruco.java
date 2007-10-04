@@ -777,6 +777,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			}
 			log[log.length - 1] = string;
 		}
+		
 	}
 
 }

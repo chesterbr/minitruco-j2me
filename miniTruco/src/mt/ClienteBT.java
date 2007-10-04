@@ -31,9 +31,9 @@ public class ClienteBT extends TelaBT {
 	private JogoBT jogo;
 
 	/**
-	 * Indica que a busca (de serviço ou celular) foi concluída
+	 * Indica que a busca (de serviço ou no celular) foi concluída
 	 */
-	boolean terminou = false;
+	boolean terminou = false;	
 
 	/**
 	 * Dispositivos encontrados
@@ -106,6 +106,7 @@ public class ClienteBT extends TelaBT {
 		agente = localDevice.getDiscoveryAgent();
 		listener = new ClienteBTListener();
 		terminou = false;
+		log("Iniciando busca de servidores");
 		try {
 			agente.startInquiry(DiscoveryAgent.GIAC, listener);
 		} catch (BluetoothStateException re) {
@@ -120,12 +121,24 @@ public class ClienteBT extends TelaBT {
 				return; // Usuário cancelou
 			}
 		}
+		log("finalizou busca de servidores");
 
 		// Para cada celular encontrado, verifica se é um servidor e conecta
 		for (int i = 0; i < devs.size(); i++) {
 			RemoteDevice remdev = (RemoteDevice) devs.elementAt(i);
 			try {
-				setTelaMsg("Localizando jogo...");
+				// Recupera o nome do celular, se der
+				String nome = null;
+				try {
+					nome = remdev.getFriendlyName(true);
+				} catch (IOException e) {
+					nome = null;
+				}
+				if (nome == null)
+					nome = "celular";
+				// Dá um feedback
+				setTelaMsg("Consultando " + nome);
+				log("Consultando " + nome);
 				terminou = false;
 				idBuscaServico = agente.searchServices(null,
 						new UUID[] { UUID_BT }, remdev, listener);
@@ -139,6 +152,9 @@ public class ClienteBT extends TelaBT {
 				setTelaMsg("Erro:" + e.getMessage());
 				return;
 			}
+			// Se conectou num jogo, não precisa mais procurar
+			if (conn != null)
+				break;
 		}
 
 		if (conn == null) {
@@ -160,7 +176,7 @@ public class ClienteBT extends TelaBT {
 				while (estaVivo && (c = in.read()) != -1) {
 					if (c == TelaBT.SEPARADOR_REC) {
 						if (sbLinha.length() > 0) {
-							MiniTruco.log(sbLinha.toString());
+							log(sbLinha.toString());
 							char tipoNotificacao = sbLinha.charAt(0);
 							String parametros = sbLinha.delete(0, 2).toString();
 							switch (tipoNotificacao) {
@@ -214,7 +230,7 @@ public class ClienteBT extends TelaBT {
 					alerta("Erro de I/O", e.getMessage(), true);
 				}
 			} finally {
-				MiniTruco.log("saiu do loop");
+				log("saiu do loop");
 				// Se a desconexão foi forçada, avisa e sai
 				if (estaVivo) {
 					alerta("Desconectado",
@@ -244,7 +260,7 @@ public class ClienteBT extends TelaBT {
 				in.close();
 				out.close();
 				conn.close();
-				MiniTruco.log("fechou conexao cliente");
+				log("fechou conexao cliente");
 			} catch (IOException e) {
 				// Ja estava fechado
 			}
@@ -265,6 +281,7 @@ public class ClienteBT extends TelaBT {
 		public void deviceDiscovered(RemoteDevice arg0, DeviceClass arg1) {
 			if (estaVivo) {
 				devs.addElement(arg0);
+				log("encontrou celular ID "+arg0.getBluetoothAddress());
 			}
 		}
 
@@ -275,6 +292,7 @@ public class ClienteBT extends TelaBT {
 		public void servicesDiscovered(int idBusca, ServiceRecord[] servicos) {
 			// Só vai haver um serviço de truco por celular mesmo
 			if (estaVivo && servicos.length > 0) {
+				log("Encontrou servico truco");
 				String url = servicos[0].getConnectionURL(
 						ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
 				try {
@@ -283,15 +301,17 @@ public class ClienteBT extends TelaBT {
 					String nome;
 					if (dev != null) {
 						nome = dev.getFriendlyName(false);
-						setTelaMsg("Tentando " + nome);
+						setTelaMsg("Tentando " + nome + ", url="+ url);
 						conn = (StreamConnection) Connector.open(url);
+						log("conectou em "+nome+", cancelando busca");
 						setTelaMsg("Conectado em " + nome + "!");
 						agente.cancelServiceSearch(idBusca);
+						log("cancelou busca");
 					}
 				} catch (IOException e) {
 					// Deu errado, desencana e vai pro próximo
-					MiniTruco.log(e.getMessage());
-					MiniTruco.log(url);
+					log(e.getMessage());
+					log(url);					
 				}
 			}
 		}

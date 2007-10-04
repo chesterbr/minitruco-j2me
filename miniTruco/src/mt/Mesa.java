@@ -250,10 +250,10 @@ public class Mesa extends Canvas implements Runnable {
 		return jogadorBot;
 	}
 
-	private static Font fontePlacar = Font.getFont(Font.FACE_PROPORTIONAL,
+	public static Font fontePlacar = Font.getFont(Font.FACE_PROPORTIONAL,
 			Font.STYLE_PLAIN, Font.SIZE_SMALL);
 
-	private static Font fonteBalao = Font.getFont(Font.FACE_PROPORTIONAL,
+	public static Font fonteBalao = Font.getFont(Font.FACE_PROPORTIONAL,
 			Font.STYLE_PLAIN, Font.SIZE_SMALL);
 
 	String[] stringPlacar = new String[2];
