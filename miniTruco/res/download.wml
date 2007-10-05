@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE wml PUBLIC "-//WAPFORUM//DTD WML 1.1//EN" "http://www.wapforum.org/DTD/wml_1.1.xml">
+<wml>
+<card title="miniTruco">
+<p>
+Selecione a versao apropriada:
+</p>
+<p>
+<a href="miniTrucoLight.jad">Light</a>: Para celulares com pouca memoria.
+</p>
+<p>
+<a href="miniTruco.jad">Completa</a>: Inclui jogo via Bluetooth (em desenvolvimento).
+</p>
+
+</card>
+</wml>
