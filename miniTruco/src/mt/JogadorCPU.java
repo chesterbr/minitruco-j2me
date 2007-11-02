@@ -66,8 +66,8 @@ public class JogadorCPU extends Jogador implements Runnable {
 	public JogadorCPU(String nomeEstrategia) {
 		Random r = new Random();
 		while (nomeEstrategia.equals("Sortear")) {
-			nomeEstrategia = MiniTruco.OPCOES_ESTRATEGIAS[(r.nextInt() >>> 1)
-					% (MiniTruco.OPCOES_ESTRATEGIAS.length)];
+			nomeEstrategia = JogadorCPU.OPCOES_ESTRATEGIAS[(r.nextInt() >>> 1)
+					% (JogadorCPU.OPCOES_ESTRATEGIAS.length)];
 		}
 		if (nomeEstrategia.equals("Sellani")) {
 			this.estrategia = new EstrategiaSellani();
@@ -76,7 +76,7 @@ public class JogadorCPU extends Jogador implements Runnable {
 		} else if (nomeEstrategia.equals("Gasparotto v1.1")) {
 			this.estrategia = new EstrategiaGasparotto();
 		} else {
-			MiniTruco.log("estrategia invalida:" + nomeEstrategia);
+			Jogo.log("estrategia invalida:" + nomeEstrategia);
 		}
 	}
 
@@ -171,7 +171,7 @@ public class JogadorCPU extends Jogador implements Runnable {
 			// receberia informacoes posteriores ao aceite)
 			synchronized (jogo) {
 				if (situacaoJogo.posJogadorPedindoAumento != 0) {
-					MiniTruco.log("Jogador " + this.getPosicao()
+					Jogo.log("Jogador " + this.getPosicao()
 							+ " vai avaliar truco");
 					boolean resposta = estrategia.aceitaTruco(situacaoJogo);
 					jogo.respondeAumento(this, resposta);
@@ -282,6 +282,9 @@ public class JogadorCPU extends Jogador implements Runnable {
 	 */
 	private Vector cartasRestantes = new Vector(3);
 
+	static final String[] OPCOES_ESTRATEGIAS = { "Sellani", "Willian",
+	"Gasparotto v1.1", "Sortear" };
+
 	public void inicioPartida() {
 		// Avisa o estrategia
 		estrategia.inicioPartida();
@@ -295,7 +298,7 @@ public class JogadorCPU extends Jogador implements Runnable {
 		// Pergunta ao estrategia se ele topa a mão de 11, devolvendo
 		// a resposta para o jogo
 		atualizaSituacaoJogo();
-		MiniTruco.log("J" + getPosicao() + " decidindo mao 11, com cartas "
+		Jogo.log("J" + getPosicao() + " decidindo mao 11, com cartas "
 				+ situacaoJogo.cartasJogador[0] + ","
 				+ situacaoJogo.cartasJogador[1] + ","
 				+ situacaoJogo.cartasJogador[2] + " e parceiro com "

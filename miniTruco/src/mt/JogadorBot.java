@@ -98,8 +98,8 @@ public class JogadorBot extends Jogador implements Runnable {
 	 */
 	public JogadorBot(String nomeEstrategia, Display display, Mesa mesa) {
 		while (nomeEstrategia.equals("Sortear")) {
-			nomeEstrategia = MiniTruco.OPCOES_ESTRATEGIAS[(random.nextInt() >>> 1)
-					% (MiniTruco.OPCOES_ESTRATEGIAS.length)];
+			nomeEstrategia = JogadorCPU.OPCOES_ESTRATEGIAS[(random.nextInt() >>> 1)
+					% (JogadorCPU.OPCOES_ESTRATEGIAS.length)];
 		}
 		if (nomeEstrategia.equals("Sellani")) {
 			this.estrategia = new EstrategiaSellani();
@@ -108,7 +108,7 @@ public class JogadorBot extends Jogador implements Runnable {
 		} else if (nomeEstrategia.equals("Gasparotto v1.1")) {
 			this.estrategia = new EstrategiaGasparotto();
 		} else {
-			MiniTruco.log("estrategia invalida:" + nomeEstrategia);
+			Jogo.log("estrategia invalida:" + nomeEstrategia);
 		}
 
 		this.setDisplay(display);
@@ -263,7 +263,7 @@ public class JogadorBot extends Jogador implements Runnable {
 			// receberia informacoes posteriores ao aceite)
 			synchronized (jogo) {
 				if (situacaoJogo.posJogadorPedindoAumento != 0) {
-					MiniTruco.log("Jogador " + this.getPosicao()
+					Jogo.log("Jogador " + this.getPosicao()
 							+ " vai avaliar truco");
 					boolean resposta = estrategia.aceitaTruco(situacaoJogo);
 					jogo.respondeAumento(this, resposta);
@@ -488,7 +488,7 @@ public class JogadorBot extends Jogador implements Runnable {
 		// Pergunta ao estrategia se ele topa a mão de 11, devolvendo
 		// a resposta para o jogo
 		atualizaSituacaoJogo();
-		MiniTruco.log("J" + getPosicao() + " decidindo mao 11, com cartas "
+		Jogo.log("J" + getPosicao() + " decidindo mao 11, com cartas "
 				+ situacaoJogo.cartasJogador[0] + ","
 				+ situacaoJogo.cartasJogador[1] + ","
 				+ situacaoJogo.cartasJogador[2] + " e parceiro com "

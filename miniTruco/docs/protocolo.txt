@@ -1,3 +1,7 @@
+Este texto descreve os comandos enviados pelos clientes e as notificações
+dadas pelo servidor, tanto para o jogo BlueTooth (classes *BT) quanto para
+o jogo via GPRS (classes *TCP e pasta miniTrucoServer)
+
 Comandos
 --------
  

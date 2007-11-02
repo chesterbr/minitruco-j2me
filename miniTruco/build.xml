@@ -38,10 +38,31 @@
 		<delete dir="${BIN}" />
 	</target>
 
-
-	
 	<target name="gera_full" depends="prepara_full,dist,limpeza" description="Gera o .jar/.jad da versão completa" />
+	
 	<target name="gera_light" depends="prepara_light,dist,limpeza" description="Gera o .jar/.jad da versão 'light'" />
+
+	<target name="gera_server" description="Gera o .jar da versão servidor (exige o projeto miniTrucoServer no mesmo nível do miniTruco)" >
+		<delete file="${DEPLOY}/miniTrucoServer.jar" />
+		<delete dir="${DEPLOY}/tmpsrc" />
+		<mkdir dir="${DEPLOY}/tmpsrc" />
+		<copy todir="${DEPLOY}/tmpsrc">
+			<fileset dir="src" />
+			<fileset dir="../miniTrucoServer/src" />
+		</copy>
+		<delete dir="${BIN}" />
+		<mkdir dir="${BIN}" />
+		<javac target="1.5" classpath="${wtk.midpapi}:${btapi}" source="1.5" destdir="${BIN}" srcdir="${DEPLOY}/tmpsrc" debug="true" debuglevel="lines,vars,source" />
+		<jar basedir="${BIN}" destfile="${DEPLOY}/miniTrucoServer.jar">
+			<manifest>
+				<attribute name="Main-Class" value="br.inf.chester.minitruco.servidor.MiniTrucoServer" />
+			</manifest>
+			<fileset dir="../miniTrucoServer/res" includes="*.html,*.jar" />
+			<fileset dir="${DEPLOY}/" includes="miniTruco.jar" />
+		</jar>
+		<delete dir="${DEPLOY}/tmpsrc" />
+	</target>
+	
 	<target name="javadoc" description="Gera a documentação (Javadoc)">
 		<javadoc overview="docs/overview_javadoc.html" access="package" author="true" classpath="${wtk.midpapi}:${btapi}" destdir="docs/javadoc" doctitle="miniTruco 3 - Javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="mt" source="1.2" sourcepath="src" splitindex="true" use="true" version="true" />
 	</target>
@@ -55,7 +76,7 @@
 		-->
 		<delete dir="${TMP_SRC}" />
 		<copy todir="${TMP_SRC}">
-			<fileset dir="src" excludes="**/*BT.java,**/JogadorDummy.java" />
+			<fileset dir="src" excludes="**/*BT.java,**/JogadorBot.java,**/JogadorDummy.java,**/*TCP.java" />
 			<filterset begintoken="// [" endtoken="]">
 				<filter token="IF_FULL" value="/*" />
 				<filter token="ENDIF_FULL" value="*/" />

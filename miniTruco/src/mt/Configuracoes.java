@@ -55,7 +55,7 @@ public class Configuracoes {
 	 * quebrarem a compatibilidade, basta incrementar este número para garantir
 	 * que antigos registros sejam descartados
 	 */
-	private static final int VERSAO_ID = 106;
+	private static final int VERSAO_ID = 107;
 	private static final int VERSAO_ID_MODOCE = 10110;
 	
 	/**
@@ -81,6 +81,17 @@ public class Configuracoes {
 
 	public int nPartidasModoCE = 1;
 
+	public String servidor = SERVIDOR_DEFAULT;
+	
+	public String nomeJogador;	
+	
+	public static final String PORTA_DEFAULT = "6912";
+
+	public static final String SERVIDOR_DEFAULT = "chester.servegame.org:"
+		+ PORTA_DEFAULT;
+
+
+	
 	/**
 	 * Carrega as configurações da memória do celular
 	 * 
@@ -116,6 +127,8 @@ public class Configuracoes {
 					c.animacaoLigada = disDados.readBoolean();
 					c.baralhoLimpo = disDados.readBoolean();
 					c.manilhaVelha = disDados.readBoolean();
+					c.nomeJogador = disDados.readUTF();
+					c.servidor = disDados.readUTF();
 				} catch (IOException e) {
 					// Se der erro na leitura, retorna um objeto default, mas
 					// com o ID deste (para que a próxima gravação o
@@ -129,7 +142,7 @@ public class Configuracoes {
 			return c;
 		} catch (RecordStoreException e) {
 			// Se der erro, retorna um novo objeto
-			MiniTruco.log(e.getMessage());
+			Jogo.log(e.getMessage());
 			return new Configuracoes();
 		} finally {
 			if (rs != null)
@@ -137,7 +150,7 @@ public class Configuracoes {
 					rs.closeRecordStore();
 				} catch (RecordStoreException re) {
 					// Ai jisuis, por que um close declara exceção?
-					MiniTruco.log("Erro ao fechar rs:" + re.getMessage());
+					Jogo.log("Erro ao fechar rs:" + re.getMessage());
 				}
 		}
 
@@ -188,7 +201,7 @@ public class Configuracoes {
 			return c;
 		} catch (RecordStoreException e) {
 			// Se der erro, retorna um novo objeto
-			MiniTruco.log(e.getMessage());
+			Jogo.log(e.getMessage());
 			return new Configuracoes();
 		} finally {
 			if (rs != null)
@@ -196,7 +209,7 @@ public class Configuracoes {
 					rs.closeRecordStore();
 				} catch (RecordStoreException re) {
 					// Ai jisuis, por que um close declara exceção?
-					MiniTruco.log("Erro ao fechar rs:" + re.getMessage());
+					Jogo.log("Erro ao fechar rs:" + re.getMessage());
 				}
 		}
 
@@ -227,7 +240,9 @@ public class Configuracoes {
 			dosDados.writeBoolean(animacaoLigada);
 			dosDados.writeBoolean(baralhoLimpo);
 			dosDados.writeBoolean(manilhaVelha);
-
+			dosDados.writeUTF(nomeJogador == null ? "" : nomeJogador);
+			dosDados.writeUTF(servidor == null ? "" : servidor);
+			
 			// Atualiza o recordstore
 			byte[] dados = baosDados.toByteArray();
 			if (this.recordId == REGISTRO_INEXISTENTE) {
@@ -239,17 +254,17 @@ public class Configuracoes {
 		} catch (RecordStoreException e) {
 			// Se der erro, desencana (dificilmente o usuário poderá fazer algo
 			// a respeito mesmo)
-			MiniTruco.log(e.getMessage());
+			Jogo.log(e.getMessage());
 		} catch (IOException e) {
 			// Idem
-			MiniTruco.log(e.getMessage());
+			Jogo.log(e.getMessage());
 		} finally {
 			if (rs != null)
 				try {
 					rs.closeRecordStore();
 				} catch (RecordStoreException re) {
 					// Ai jisuis, por que um close declara exceção?
-					MiniTruco.log("Erro ao fechar rs:" + re.getMessage());
+					Jogo.log("Erro ao fechar rs:" + re.getMessage());
 				}
 		}
 
@@ -289,17 +304,17 @@ public class Configuracoes {
 		} catch (RecordStoreException e) {
 			// Se der erro, desencana (dificilmente o usuário poderá fazer algo
 			// a respeito mesmo)
-			MiniTruco.log(e.getMessage());
+			Jogo.log(e.getMessage());
 		} catch (IOException e) {
 			// Idem
-			MiniTruco.log(e.getMessage());
+			Jogo.log(e.getMessage());
 		} finally {
 			if (rs != null)
 				try {
 					rs.closeRecordStore();
 				} catch (RecordStoreException re) {
 					// Ai jisuis, por que um close declara exceção?
-					MiniTruco.log("Erro ao fechar rs:" + re.getMessage());
+					Jogo.log("Erro ao fechar rs:" + re.getMessage());
 				}
 		}
 

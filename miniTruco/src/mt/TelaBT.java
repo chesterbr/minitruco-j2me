@@ -134,8 +134,8 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	 * @param msg
 	 */
 	protected void log(String msg) {
-		MiniTruco.log(msg);
-		if (MiniTruco.log != null) {
+		Jogo.log(msg);
+		if (Jogo.log != null) {
 			repaint();
 			serviceRepaints();
 		}
@@ -153,14 +153,14 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 		try {
 			localDevice = LocalDevice.getLocalDevice();
 		} catch (BluetoothStateException e) {
-			MiniTruco.log(e.toString());
+			Jogo.log(e.toString());
 			alerta("Erro Bluetooth", e.getMessage());
 			return;
 		} catch (RuntimeException re) {
 			// Esse catch é um pouco abrangente, mas é a primeira chamada a
 			// classes bt, assim, se for dar algum erro bizarro, é aqui
-			MiniTruco.log("erro runtime bt");
-			MiniTruco.log(re.toString());
+			Jogo.log("erro runtime bt");
+			Jogo.log(re.toString());
 			alerta("Erro Runtime", re.getMessage());
 			return;
 		}
@@ -306,15 +306,15 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 		}
 
 		// Imprime, se necessario, o log de mensagens
-		if (MiniTruco.log != null) {
+		if (Jogo.log != null) {
 			g.setFont(Mesa.fontePlacar);
 			g.setColor(0x00000000);
 			int alturaLog = Mesa.fontePlacar.getHeight();
 			int alturaCanvas = this.getHeight();
-			for (int i = 0; (i < MiniTruco.log.length)
+			for (int i = 0; (i < Jogo.log.length)
 					&& ((i + 1) * alturaLog <= alturaCanvas); i++) {
-				if (MiniTruco.log[i] != null) {
-					g.drawString(MiniTruco.log[i], 0, i * alturaLog,
+				if (Jogo.log[i] != null) {
+					g.drawString(Jogo.log[i], 0, i * alturaLog,
 							Graphics.LEFT | Graphics.TOP);
 				}
 			}
