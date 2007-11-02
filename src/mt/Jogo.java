@@ -29,6 +29,10 @@ package mt;
  * <code>JogoLocal</code>) ou manter a comunicação com um jogo em execução
  * remota (<code>JogoRemoto</code>). Em qualquer caso, os objetos Jogador
  * não terão ciência de onde o jogo está se passando.
+ * <p>
+ * A classe também faz o log (para fins de debug). Idealmente haveria uma classe
+ * para isso, mas economizamos uns Ks deixando aqui (não pode ser na classe
+ * principal porque esta depende das classes MIDP, que o servidor não tem).
  * 
  * @see JogoLocal
  * @author Chester
@@ -190,7 +194,7 @@ public abstract class Jogo implements Runnable {
 	/**
 	 * Carta que determina a manilha (em jogo que não usa manilha velha)
 	 */
-	protected Carta cartaDaMesa;
+	public Carta cartaDaMesa;
 
 	/**
 	 * Atualiza um objeto que contém a situação do jogo (exceto pelas cartas do
@@ -262,16 +266,16 @@ public abstract class Jogo implements Runnable {
 
 	/**
 	 * Número de vaquinhas no pasto de cada equipe.
-	 *
+	 * 
 	 */
 	protected int[] vaquinhasNoPasto = new int[2];
-	
+
 	/**
 	 * Sinalizador do modo confronto de estratégias
-	 *
+	 * 
 	 */
 	protected boolean modoCE;
-	
+
 	/**
 	 * Indica que o jogo foi finalizado (para evitar que os jogadoresCPU fiquem
 	 * "rodando em falso" caso o jogo seja abortado
@@ -296,6 +300,8 @@ public abstract class Jogo implements Runnable {
 	 *            Carta virada. Ignorado se for jogo com manilha velha
 	 */
 	public void setManilha(Carta c) {
+
+		cartaDaMesa = c;
 
 		if (isManilhaVelha()) {
 			manilha = SituacaoJogo.MANILHA_INDETERMINADA;
@@ -343,6 +349,31 @@ public abstract class Jogo implements Runnable {
 			if (i != posicao)
 				getJogador(i).jogoAbortado(posicao);
 		}
+	}
+
+	/**
+	 * Log rotativo (para exibir na tela do celular)
+	 */
+	public static String[] log = null;
+
+	/**
+	 * Método usado para debug (permite acompanhar o jogo no console)
+	 * 
+	 * @param string
+	 *            Mensagem informativa
+	 */
+	public static synchronized void log(String string) {
+		// Envia para o console
+		System.out.println(string);
+
+		// Guarda no log rotativo, se estiver habilitado
+		if (Jogo.log != null) {
+			for (int i = 0; i < Jogo.log.length - 1; i++) {
+				Jogo.log[i] = Jogo.log[i + 1];
+			}
+			Jogo.log[Jogo.log.length - 1] = string;
+		}
+
 	}
 
 }

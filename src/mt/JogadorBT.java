@@ -17,9 +17,6 @@ import java.io.InputStream;
  * mas a conexão/saída ficam disponíveis para novas partidas com o mesmo
  * cliente. que não é gerado por esta classe, pois ocorre antes do
  * 
- * TODO documentar esta linguagem (na real, atualizar/traduzir a documentação do
- * client-server)
- * 
  * @author chester
  * 
  */
@@ -86,7 +83,7 @@ public class JogadorBT extends Jogador implements Runnable {
 				} else {
 					// Processa linhas (não-vazias)
 					if (sbLinha.length() > 0) {
-						MiniTruco.log("Linha acumulada: " + sbLinha.toString());
+						Jogo.log("Linha acumulada: " + sbLinha.toString());
 						char tipoNotificacao = sbLinha.charAt(0);
 						String[] args = ServidorBT.split(sbLinha.toString(),
 								' ');
@@ -123,7 +120,7 @@ public class JogadorBT extends Jogador implements Runnable {
 		} catch (IOException e) {
 			// Não precisa tratar - ou é fim de jogo, ou o servidor cuida
 		}
-		MiniTruco.log("encerrando loop JogadorBT");
+		Jogo.log("encerrando loop JogadorBT");
 	}
 
 	/**

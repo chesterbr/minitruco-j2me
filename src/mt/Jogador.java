@@ -49,11 +49,25 @@ public abstract class Jogador {
 	private int posicao = 0;
 
 	private Carta[] cartas;
-
+	
 	/**
 	 * Jogo que está sendo jogado por este jogador
 	 */
 	protected Jogo jogo;
+
+	private String nome;
+
+	/**
+	 * Nome do jogador (em jogos multiplayer)
+	 * @return
+	 */
+	public String getNome() {
+		return nome;
+	}
+	
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
 
 	/**
 	 * Recupera a posição do jogador no jogo

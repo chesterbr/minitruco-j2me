@@ -204,9 +204,9 @@ public class Animador extends Thread {
 				}
 			}
 		} catch (RuntimeException e) {
-			MiniTruco.log("Erro em Animador.frame():");
-			MiniTruco.log(animacaoAtual);
-			MiniTruco.log(e.toString());
+			Jogo.log("Erro em Animador.frame():");
+			Jogo.log(animacaoAtual);
+			Jogo.log(e.toString());
 		}
 
 	}

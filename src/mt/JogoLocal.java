@@ -178,7 +178,7 @@ public class JogoLocal extends Jogo {
 			c.setFechada(false);
 		}
 
-		MiniTruco.log("J" + j.getPosicao() + " joga " + c);
+		Jogo.log("J" + j.getPosicao() + " joga " + c);
 
 		// Dá a carta como jogada, notificando os jogadores
 		cartasJogadasPorRodada[numRodadaAtual - 1][j.getPosicao() - 1] = c;
@@ -219,7 +219,7 @@ public class JogoLocal extends Jogo {
 				}
 			}
 
-			MiniTruco.log("Rodada fechou. Resultado: "
+			Jogo.log("Rodada fechou. Resultado: "
 					+ getResultadoRodada(numRodadaAtual));
 
 			// Se houve vencedor, passa a vez para o jogador que fechou a
@@ -293,7 +293,7 @@ public class JogoLocal extends Jogo {
 		if (jogoFinalizado || !aguardandoRespostaMaoDe11[j.getPosicao() - 1])
 			return;
 
-		MiniTruco.log("J" + j.getPosicao() + (aceita ? "" : " nao")
+		Jogo.log("J" + j.getPosicao() + (aceita ? "" : " nao")
 				+ " quer jogar mao de 11 ");
 
 		// Avisa os outros jogadores da decisão
@@ -350,7 +350,7 @@ public class JogoLocal extends Jogo {
 			return;
 		}
 
-		MiniTruco.log("Jogador  " + j.getPosicao() + " pede aumento");
+		Jogo.log("Jogador  " + j.getPosicao() + " pede aumento");
 
 		// Atualiza o status e notifica os outros jogadores do pedido
 		jogadorPedindoAumento = j;
@@ -404,7 +404,7 @@ public class JogoLocal extends Jogo {
 			return;
 		}
 
-		MiniTruco.log("Jogador  " + j.getPosicao()
+		Jogo.log("Jogador  " + j.getPosicao()
 				+ (aceitou ? "aceitou" : "recusou"));
 
 		if (aceitou) {
@@ -440,7 +440,7 @@ public class JogoLocal extends Jogo {
 	 */
 	private void fechaMao() {
 
-		MiniTruco.log("Mao fechou. Placar: " + pontosEquipe[0] + " a "
+		Jogo.log("Mao fechou. Placar: " + pontosEquipe[0] + " a "
 				+ pontosEquipe[1]);
 
 		boolean acabou = false;
@@ -524,13 +524,13 @@ public class JogoLocal extends Jogo {
 		numRodadaAtual = 1;
 		jogadorAbriuMao = jogadorAbriuRodada = jogadorQueAbre;
 
-		MiniTruco.log("Abrindo mao com j" + jogadorQueAbre.getPosicao()
+		Jogo.log("Abrindo mao com j" + jogadorQueAbre.getPosicao()
 				+ ",manilha=" + getManilha());
 
 		// Abre a primeira rodada, informando a carta da mesa e quem vai abrir
 		posJogadorDaVez = jogadorQueAbre.getPosicao();
 		for (int i = 1; i <= numJogadores; i++) {
-			MiniTruco.log("Enviando inicioMao para " + i);
+			Jogo.log("Enviando inicioMao para " + i);
 			getJogador(i).inicioMao();
 		}
 
@@ -609,7 +609,7 @@ public class JogoLocal extends Jogo {
 			public boolean podeFechada;
 
 			public void run() {
-				MiniTruco.log("notifica " + numNotificado + " da vez de "
+				Jogo.log("notifica " + numNotificado + " da vez de "
 						+ jogadorDaVez.getPosicao());
 				getJogador(numNotificado).vez(jogadorDaVez, podeFechada);
 			}

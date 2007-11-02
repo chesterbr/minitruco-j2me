@@ -45,7 +45,7 @@ package mt;
  * conversar...
  * 
  * @author Chester
- * @see MiniTruco#OPCOES_ESTRATEGIAS
+ * @see JogadorCPU#OPCOES_ESTRATEGIAS
  */
 public interface Estrategia {
 

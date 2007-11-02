@@ -217,7 +217,9 @@ public class Mesa extends Canvas implements Runnable {
 	 * @param jogador
 	 */
 
+	// [IF_FULL]	
 	private JogadorBot jogadorBot;
+	// [ENDIF_FULL]
 
 	private boolean modoCE = false;
 
@@ -227,10 +229,12 @@ public class Mesa extends Canvas implements Runnable {
 	 * 
 	 * @param jogador
 	 */
+	// [IF_FULL]	
 	public void setJogadorBot(JogadorBot jogador) {
 		this.jogadorBot = jogador;
 		this.modoCE = true;
 	}
+	// [ENDIF_FULL]
 
 	/**
 	 * Ajusta a mesa para o modo normal ou confronto.
@@ -241,15 +245,19 @@ public class Mesa extends Canvas implements Runnable {
 	 */
 	public void setModoCE(boolean modoCE) {
 		this.modoCE = modoCE;
+		// [IF_FULL]	
 		if (modoCE == false) {
 			this.jogadorBot = null;
 		}
+		// [ENDIF_FULL]
 	}
 
+	// [IF_FULL]	
 	JogadorBot getJogadorBot() {
 		return jogadorBot;
 	}
-
+	// [ENDIF_FULL]
+	
 	public static Font fontePlacar = Font.getFont(Font.FACE_PROPORTIONAL,
 			Font.STYLE_PLAIN, Font.SIZE_SMALL);
 
@@ -625,15 +633,15 @@ public class Mesa extends Canvas implements Runnable {
 		}
 
 		// Imprime, se necessario, o log de mensagens
-		if (MiniTruco.log != null) {
+		if (Jogo.log != null) {
 			g.setFont(fontePlacar);
 			g.setColor(0x00000000);
 			int alturaLog = fontePlacar.getHeight();
 			int alturaCanvas = this.getHeight();
-			for (int i = 0; (i < MiniTruco.log.length)
+			for (int i = 0; (i < Jogo.log.length)
 					&& ((i + 1) * alturaLog <= alturaCanvas); i++) {
-				if (MiniTruco.log[i] != null) {
-					g.drawString(MiniTruco.log[i], 0, i * alturaLog,
+				if (Jogo.log[i] != null) {
+					g.drawString(Jogo.log[i], 0, i * alturaLog,
 							Graphics.LEFT | Graphics.TOP);
 				}
 			}
