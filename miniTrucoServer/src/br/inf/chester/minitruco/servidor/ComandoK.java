@@ -1,12 +1,14 @@
 package br.inf.chester.minitruco.servidor;
 
+import mt.Jogador;
+
 /*
- * Copyright © 2006 Carlos Duarte do Nascimento (Chester)
+ * Copyright © 2006-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
  * Este programa é um software livre; você pode redistribui-lo e/ou 
  * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 2 da 
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
  * Licença, ou (na sua opnião) qualquer versão.
  *
  * Este programa é distribuido na esperança que possa ser util, 
@@ -19,7 +21,6 @@ package br.inf.chester.minitruco.servidor;
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-import br.inf.chester.minitruco.cliente.Jogador;
 
 /**
  * Expulsa (Kick) um jogador da sala.

@@ -1,12 +1,12 @@
 package br.inf.chester.minitruco.servidor;
 
 /*
- * Copyright © 2006 Carlos Duarte do Nascimento (Chester)
+ * Copyright © 2006-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
  * Este programa é um software livre; você pode redistribui-lo e/ou 
  * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 2 da 
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
  * Licença, ou (na sua opnião) qualquer versão.
  *
  * Este programa é distribuido na esperança que possa ser util, 
@@ -22,15 +22,15 @@ package br.inf.chester.minitruco.servidor;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
 
-import br.inf.chester.minitruco.cliente.Carta;
-import br.inf.chester.minitruco.cliente.Jogador;
-import br.inf.chester.minitruco.cliente.Jogo;
+import mt.Carta;
+import mt.Jogador;
 
 /**
  * Representa um cliente conectado, dentro ou fora de um jogo.
@@ -109,7 +109,7 @@ public class JogadorConectado extends Jogador implements Runnable {
 	}
 
 	private String[] ARQUIVOS_PERMITIDOS_HTTP = { "/applet.html",
-			"/miniTruco.jar", "/me-applet.jar", "/large.dev.jar",
+			"/miniTruco.jar", "/microemulator.jar", "/mtskin.jar",
 			"/favicon.ico" };
 
 	/*
@@ -213,7 +213,10 @@ public class JogadorConectado extends Jogador implements Runnable {
 					break;
 				}
 			}
-			if (!permitido) {
+
+			InputStream is = getClass().getResourceAsStream(nomeArq);
+
+			if (!permitido || (is == null)) {
 				ServerLogger.evento("404 Not Found: " + nomeArq);
 				out.println("HTTP/1.0 404 Not Found");
 				out.println("Content-Length: 14");
@@ -223,8 +226,7 @@ public class JogadorConectado extends Jogador implements Runnable {
 			}
 
 			ServerLogger.evento("200 Ok: " + nomeArq);
-			BufferedInputStream bis = new BufferedInputStream(getClass()
-					.getResourceAsStream(nomeArq));
+			BufferedInputStream bis = new BufferedInputStream(is);
 			out.println("HTTP/1.0 200 OK");
 			if (nomeArq.endsWith(".html")) {
 				out.println("Content-Type: text/html");
@@ -246,15 +248,18 @@ public class JogadorConectado extends Jogador implements Runnable {
 			while ((numBytes = bis.read(buf)) != -1) {
 				out.write(buf, 0, numBytes);
 			}
+			bis.close();
+			is.close();
 		} catch (IOException e) {
 			ServerLogger.evento(e, "Erro de I/O ao servir " + nomeArq);
 		}
 	}
 
-	@Override
-	public void jogadorAceito(Jogador j, Jogo jogo) {
-		println("Y " + j.getPosicao());
-	}
+	// TODO: ver se não vai fazer falta
+	// @Override
+	// public void jogadorAceito(Jogador j, Jogo jogo) {
+	// println("Y " + j.getPosicao());
+	// }
 
 	@Override
 	public void cartaJogada(Jogador j, Carta c) {
@@ -277,7 +282,7 @@ public class JogadorConectado extends Jogador implements Runnable {
 		for (int i = 0; i <= 2; i++)
 			comando.append(" " + getCartas()[i]);
 		if (!getSala().manilhaVelha) {
-			comando.append(" " + getSala().getJogo().getCartaDaMesa());
+			comando.append(" " + getSala().getJogo().cartaDaMesa);
 		}
 		println(comando.toString());
 	}
@@ -314,12 +319,12 @@ public class JogadorConectado extends Jogador implements Runnable {
 	}
 
 	@Override
-	public void maoFechada(int[] pontosEquipe) {
+	public void maoFechada(int[] pontosEquipe, int[] vaquinhasNoPasto) {
 		println("O " + pontosEquipe[0] + ' ' + pontosEquipe[1]);
 	}
 
 	@Override
-	public void jogoFechado(int numEquipeVencedora) {
+	public void jogoFechado(int numEquipeVencedora, int[] vaquinhasNoPasto) {
 		desvinculaJogo();
 		println("G " + numEquipeVencedora);
 	}
@@ -341,9 +346,9 @@ public class JogadorConectado extends Jogador implements Runnable {
 	}
 
 	@Override
-	public void jogoAbortado(Jogador j) {
+	public void jogoAbortado(int posicao) {
 		desvinculaJogo();
-		println("A " + j.getPosicao());
+		println("A " + posicao);
 	}
 
 	/**

@@ -1,12 +1,12 @@
 package br.inf.chester.minitruco.servidor;
 
 /*
- * Copyright © 2006 Carlos Duarte do Nascimento (Chester)
+ * Copyright © 2006-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
  * Este programa é um software livre; você pode redistribui-lo e/ou 
  * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 2 da 
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
  * Licença, ou (na sua opnião) qualquer versão.
  *
  * Este programa é distribuido na esperança que possa ser util, 
@@ -37,7 +37,7 @@ public class MiniTrucoServer {
 	/**
 	 * Versão do servidor
 	 */
-	public static final String VERSAO_SERVER = "1.0";
+	public static final String VERSAO_SERVER = "2.0";
 
 	public static String dataStartup;
 

@@ -1,12 +1,12 @@
 package br.inf.chester.minitruco.servidor;
 
 /*
- * Copyright © 2006 Carlos Duarte do Nascimento (Chester)
+ * Copyright © 2006-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
  * Este programa é um software livre; você pode redistribui-lo e/ou 
  * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 2 da 
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
  * Licença, ou (na sua opnião) qualquer versão.
  *
  * Este programa é distribuido na esperança que possa ser util, 
@@ -23,11 +23,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import br.inf.chester.minitruco.cliente.EstrategiaWillian;
-import br.inf.chester.minitruco.cliente.Jogador;
-import br.inf.chester.minitruco.cliente.JogadorCPU;
-import br.inf.chester.minitruco.cliente.Jogo;
-import br.inf.chester.minitruco.cliente.JogoLocal;
+import mt.Jogador;
+import mt.JogadorCPU;
+import mt.Jogo;
+import mt.JogoLocal;
+
+
 
 /**
  * Representa uma sala, onde ocorre um jogo
@@ -128,7 +129,7 @@ public class Sala {
 			if (jogadores[i] == j) {
 				// Finaliza jogo em andamento, se houver.
 				if (jogo != null) {
-					jogo.abortaJogo(j);
+					jogo.abortaJogo(j.getPosicao());
 					jogo = null;
 				}
 				// Desfaz link sala->jogador
@@ -214,7 +215,7 @@ public class Sala {
 		int n = 1;
 		for (int i = 0; i <= 3; i++) {
 			if (jogadores[i] == null) {
-				jogadores[i] = new JogadorCPU(new EstrategiaWillian());
+				jogadores[i] = new JogadorCPU("Sortear");
 				jogadores[i].setNome("[ROBO_" + (n++) + "]");
 			}
 		}

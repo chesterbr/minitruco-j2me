@@ -1,12 +1,12 @@
 package br.inf.chester.minitruco.servidor;
 
 /*
- * Copyright © 2006 Carlos Duarte do Nascimento (Chester)
+ * Copyright © 2006-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
  * Este programa é um software livre; você pode redistribui-lo e/ou 
  * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 2 da 
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
  * Licença, ou (na sua opnião) qualquer versão.
  *
  * Este programa é distribuido na esperança que possa ser util, 
@@ -23,7 +23,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import br.inf.chester.minitruco.cliente.Jogador;
+import mt.Jogador;
+
 
 /**
  * Efetua o log dos eventos do servidor.
@@ -90,7 +91,6 @@ public class ServerLogger {
 	 *            Mensagem do erro
 	 */
 	public static void evento(Exception e, String mensagem) {
-		// TODO: dar um jeito do stacktrace não estragar o log
 		evento((Jogador) null, mensagem + ". Detalhe do erro:");
 		e.printStackTrace();
 	}
