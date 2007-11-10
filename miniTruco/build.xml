@@ -1,0 +1,163 @@
+<project name="miniTruco" default="executa_microemulator2">
+
+	<!-- INFORMAR AQUI o diretório onde está instalado o J2ME SDK da Sun -->
+	<property name="wtk.home" value="C:\WTK2.5.1\" />
+
+	<!-- Definições das bibliotecas auxiliares -->
+	<taskdef resource="antenna.properties" classpath="lib/antenna-bin.jar" />
+	<taskdef resource="proguard/ant/task.properties" classpath="lib/proguard.jar" />
+	
+	<property name="JAR_PROGUARD" value="lib/proguard.jar" />
+	<property name="wtk.midpapi" value="lib/midp.jar" />
+	<property name="btapi" value="lib/btapi.jar" />
+	<property name="jax" value="/lang/jax61" />
+
+	<!-- Diretórios de trabalho -->
+	<property name="TMP_SRC" value="deploy/src" />
+	<property name="BIN" value="deploy/bin" />
+	<property name="RES" value="res" />
+	<property name="DEPLOY" value="deploy" />
+	<property name="WEBROOT" value="webroot" />
+	<property name="JAD_DIR" value="jad" />
+
+	<!-- Tasks principais (executar estas) -->
+
+	<target name="executa_me4se" depends="compilar_sem_wtk" description="Compila as classes e chama o jogo no microemulator (com suporte Bluetooth)">
+		<java classname="org.me4se.MIDletRunner" classpath="lib/me4se.jar:lib/bluecove.jar:${BIN}:${RES}" fork="yes">
+			<arg value="mt.MiniTruco" />
+		</java>
+		<delete dir="${BIN}" />
+	</target>
+
+	<target name="executa_microemulator2" depends="compilar_sem_wtk" description="Compila as classes e chama o jogo no emulador (bom para testes, pois exige apenas o emulador e as bibliotecas MIDP)">
+		<java classname="org.microemu.app.Main" classpath="lib/microemulator.jar:lib/bluecove.jar:${BIN}:${RES}" fork="yes">
+			<arg value="--appclassloader" />
+			<arg value="delegating" />
+			<arg value="mt.MiniTruco" />
+		</java>
+		<delete dir="${BIN}" />
+	</target>
+
+	<target name="gera_full" depends="prepara_full,dist,limpeza" description="Gera o .jar/.jad da versão completa" />
+	
+	<target name="gera_light" depends="prepara_light,dist,limpeza" description="Gera o .jar/.jad da versão 'light'" />
+
+	<target name="gera_server" description="Gera o .jar da versão servidor (exige o projeto miniTrucoServer no mesmo nível do miniTruco)" >
+		<delete file="${DEPLOY}/miniTrucoServer.jar" />
+		<delete dir="${DEPLOY}/tmpsrc" />
+		<mkdir dir="${DEPLOY}/tmpsrc" />
+		<copy todir="${DEPLOY}/tmpsrc">
+			<fileset dir="src" />
+			<fileset dir="../miniTrucoServer/src" />
+		</copy>
+		<delete dir="${BIN}" />
+		<mkdir dir="${BIN}" />
+		<javac target="1.5" classpath="${wtk.midpapi}:${btapi}" source="1.5" destdir="${BIN}" srcdir="${DEPLOY}/tmpsrc" debug="true" debuglevel="lines,vars,source" />
+		<jar basedir="${BIN}" destfile="${DEPLOY}/miniTrucoServer.jar">
+			<manifest>
+				<attribute name="Main-Class" value="br.inf.chester.minitruco.servidor.MiniTrucoServer" />
+			</manifest>
+			<fileset dir="../miniTrucoServer/res" />
+			<fileset dir="lib/" includes="microemulator.jar" />
+			<fileset dir="${DEPLOY}/" includes="miniTruco.jar" />
+		</jar>
+		<delete dir="${DEPLOY}/tmpsrc" />
+		<delete dir="${BIN}" />
+	</target>
+	
+	<target name="javadoc" description="Gera a documentação (Javadoc)">
+		<javadoc overview="docs/overview_javadoc.html" access="package" author="true" classpath="${wtk.midpapi}:${btapi}" destdir="docs/javadoc" doctitle="miniTruco 3 - Javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="mt" source="1.2" sourcepath="src" splitindex="true" use="true" version="true" />
+	</target>
+
+	<!-- Tasks de apoio -->
+
+	<target name="prepara_light">
+		<!-- O filterset remove da compilação o código entre "// [IF_FULL]" e "// [ENDIF_FULL]"
+		     Isso mesmo: compilação condicional em Java! Mega-power-dica do Andreas Schaaefer:
+		     http://weblogs.java.net/blog/schaefa/archive/2005/01/how_to_do_condi_1.html     
+		-->
+		<delete dir="${TMP_SRC}" />
+		<copy todir="${TMP_SRC}">
+			<fileset dir="src" excludes="**/*BT.java,**/JogadorBot.java,**/JogadorDummy.java,**/*TCP.java" />
+			<filterset begintoken="// [" endtoken="]">
+				<filter token="IF_FULL" value="/*" />
+				<filter token="ENDIF_FULL" value="*/" />
+			</filterset>
+		</copy>
+		<property name="NOME_APP" value="miniTrucoLight" />
+	</target>
+
+	<target name="prepara_full">
+		<delete dir="${TMP_SRC}" />
+		<copy todir="${TMP_SRC}">
+			<fileset dir="src" />
+		</copy>
+		<property name="NOME_APP" value="miniTruco" />
+	</target>
+
+	<target name="compilar_sem_wtk">
+		<delete dir="${BIN}" />
+		<mkdir dir="${BIN}" />
+		<javac target="1.1" source="1.2" bootclasspath="${wtk.midpapi}:${btapi}" destdir="${BIN}" srcdir="src" debug="true" debuglevel="lines,vars,source" />
+	</target>
+
+	<target name="compilar">
+		<delete dir="${BIN}" />
+		<mkdir dir="${BIN}" />
+		<wtkbuild classpath="${btapi}" destdir="${BIN}" srcdir="${TMP_SRC}" preverify="false" debug="true" debuglevel="lines,vars,source" source="1.2" />
+	</target>
+
+	<target name="ofuscar" depends="compilar">
+		<delete file="${DEPLOY}/temp.jar" />
+		<jar basedir="${BIN}" jarfile="${DEPLOY}/temp.jar" />
+		<delete dir="${BIN}" />
+		<mkdir dir="${BIN}" />
+		<proguard overloadaggressively="on" defaultpackage="" allowaccessmodification="on" printseeds="on" usemixedcaseclassnames="false">
+			<!-- On Windows, you can't use mixed case class names,
+		                 for the sake of the preverify tool.
+		            usemixedcaseclassnames="false">
+		            -->
+			<injar file="${DEPLOY}/temp.jar" />
+			<outjar file="${DEPLOY}/temp_o.jar" />
+			<libraryjar file="${wtk.midpapi}" />
+			<libraryjar file="${btapi}" />
+			<keep access="public" extends="javax.microedition.midlet.MIDlet" />
+			<keepclasseswithmembernames>
+				<method access="native" />
+			</keepclasseswithmembernames>
+		</proguard>
+		<unzip src="${DEPLOY}/temp_o.jar" dest="${BIN}" />
+		<delete file="${DEPLOY}/temp_o.jar" />
+		<delete file="${DEPLOY}/temp.jar" />
+	</target>
+
+	<target name="pre_verificar" depends="ofuscar">
+		<mkdir dir="${DEPLOY}/pre" />
+		<exec executable="${wtk.home}/bin/preverify">
+			<arg line="-classpath ${wtk.midpapi}${path.separator}${btapi}" />
+			<arg line="-d ${DEPLOY}/pre" />
+			<arg line="${BIN}" />
+		</exec>
+		<delete dir="${BIN}" />
+		<move file="${DEPLOY}/pre" tofile="${BIN}" />
+	</target>
+
+	<!-- Gera os .jar/.jad e o Javadoc -->
+	<target name="dist" depends="pre_verificar">
+		<mkdir dir="${DEPLOY}" />
+		<!-- .jar -->
+		<wtkpackage preverify="no" basedir="${BIN}" jarfile="${DEPLOY}/${NOME_APP}.jar" jadfile="${JAD_DIR}/${NOME_APP}.jad">
+			<fileset dir="${RES}" includes="*.png,*.txt" />
+		</wtkpackage>
+		<!-- .jad -->
+		<copy todir="${DEPLOY}" file="${JAD_DIR}/${NOME_APP}.jad" />
+		<!-- applet.html (para rodar no browser)-->
+		<copy todir="${DEPLOY}" file="${RES}/applet.html" />
+	</target>
+
+	<target name="limpeza">
+		<delete dir="${TMP_SRC}" />
+		<delete dir="${BIN}" />
+	</target>
+
+</project>
