@@ -26,8 +26,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
-import java.text.ParseException;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,7 +51,7 @@ import mt.Jogador;
  */
 public class JogadorConectado extends Jogador implements Runnable {
 
-	private static final String IF_MODIFIED_SINCE_HTTP_HEADER = "If-Modified-Since: ";
+	public static final String IF_MODIFIED_SINCE_HTTP_HEADER = "If-Modified-Since: ";
 
 	/**
 	 * Nomes de jogadores online (para evitar duplicidade)
