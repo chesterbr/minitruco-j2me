@@ -57,10 +57,12 @@
 			<manifest>
 				<attribute name="Main-Class" value="br.inf.chester.minitruco.servidor.MiniTrucoServer" />
 			</manifest>
-			<fileset dir="../miniTrucoServer/res" includes="*.html,*.jar" />
+			<fileset dir="../miniTrucoServer/res" />
+			<fileset dir="lib/" includes="microemulator.jar" />
 			<fileset dir="${DEPLOY}/" includes="miniTruco.jar" />
 		</jar>
 		<delete dir="${DEPLOY}/tmpsrc" />
+		<delete dir="${BIN}" />
 	</target>
 	
 	<target name="javadoc" description="Gera a documentação (Javadoc)">

@@ -9,7 +9,7 @@ package mt;
  * 
  * Este programa é um software livre; você pode redistribui-lo e/ou 
  * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 2 da 
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
  * Licença, ou (na sua opnião) qualquer versão.
  *
  * Este programa é distribuido na esperança que possa ser util, 

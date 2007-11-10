@@ -9,7 +9,7 @@ package mt;
  * 
  * Este programa é um software livre; você pode redistribui-lo e/ou 
  * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 2 da 
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
  * Licença, ou (na sua opnião) qualquer versão.
  *
  * Este programa é distribuido na esperança que possa ser util, 
@@ -1128,9 +1128,9 @@ public class Mesa extends Canvas implements Runnable {
 	/**
 	 * Ajusta o menu para quando a partida acaba.
 	 * <p>
-	 * Em jogos stand-alone e no sevidor Bluetooth, isso significa trocar o
+	 * Em jogos stand-alone e no sevidor TCP, isso significa trocar o
 	 * comando Encerrar (que pede confirmação) pelo Fim (que volta direto ao
-	 * menu, ou, no caso do servidor, à tela de configuração).
+	 * menu, ou, no caso do servidor, à tela da sala).
 	 * <p>
 	 * Em jogos onde o celular é um cliente Bluetooth, apenas removemos o
 	 * comando Encerrar - é quebra de padrão não dar uma opção de encerramento
@@ -1139,11 +1139,10 @@ public class Mesa extends Canvas implements Runnable {
 	 */
 	public void mostraMenuFimPartida() {
 		removeCommand(MiniTruco.sairPartidaCommand);
-		if (getJogador().jogo instanceof JogoLocal) {
-			// Tanto o jogo stand-alone quanto o servidor instanciam um
-			// JogoLocal (só o cliente instancia um JogoBT)
-			addCommand(MiniTruco.sairPartidaSemPerguntarCommand);
-		}
+		// [IF_FULL]
+		if (!(getJogador().jogo instanceof JogoBT))
+		// [ENDIF_FULL]
+			addCommand(MiniTruco.sairPartidaSemPerguntarCommand);		
 	}
 
 	String textoBalao;
