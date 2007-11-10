@@ -6,7 +6,7 @@ package mt;
  * 
  * Este programa é um software livre; você pode redistribui-lo e/ou 
  * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 2 da 
+ * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
  * Licença, ou (na sua opnião) qualquer versão.
  *
  * Este programa é distribuido na esperança que possa ser util, 
@@ -134,7 +134,8 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 	public void mostraFormApelido() {
 		String sugestao = apelido;
 		if (sugestao == null) {
-			sugestao = Configuracoes.getConfiguracoes().nomeJogador;			sugestao = "";
+			sugestao = Configuracoes.getConfiguracoes().nomeJogador;
+			sugestao = "";
 		}
 		Form formApelido = new Form("Apelido");
 		txtApelido = new TextField("Informe seu apelido", sugestao, 15,
@@ -482,7 +483,7 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 		mostraMsgAguarde();
 		if (cmd == okApelidoCommand) {
 			enviaComando("N " + txtApelido.getString());
-		} else if (cmd == entrarSalaCommand) {
+		} else if ((cmd == entrarSalaCommand) || (cmd == List.SELECT_COMMAND)) {
 			enviaComando("E " + (listSalas.getSelectedIndex() + 1));
 		} else if (cmd == atualizarListaCommand) {
 			enviaComando("L");
