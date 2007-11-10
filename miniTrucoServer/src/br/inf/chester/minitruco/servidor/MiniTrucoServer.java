@@ -22,6 +22,7 @@ package br.inf.chester.minitruco.servidor;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -34,18 +35,32 @@ import java.util.Locale;
  */
 public class MiniTrucoServer {
 
+	public static final int PORTA_SERVIDOR = 6912;
+
 	/**
 	 * Versão do servidor
 	 */
 	public static final String VERSAO_SERVER = "2.0";
 
-	public static String dataStartup;
+	public static DateFormat dfStartup;
+
+	public static Date dataStartup;
+
+	public static String strDataStartup;
 
 	public static void main(String[] args) {
 
-		dataStartup = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z",
-				Locale.US).format(new Date());
-		ServerLogger.evento("Servidor Inicializado");
+		// Guarda a data de início do servidor num formato apropriado para HTTP
+		// vide JogadorContectado.serveArquivosApplet
+		
+		dfStartup = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z",
+				Locale.US);
+		dataStartup = new Date();
+		strDataStartup = dfStartup.format(dataStartup);
+		
+		ServerLogger
+				.evento("Servidor Inicializado, pronto para escutar na porta "
+						+ PORTA_SERVIDOR);
 
 		try {
 
@@ -54,7 +69,7 @@ public class MiniTrucoServer {
 			Sala.inicializaSalas(numSalas);
 
 			try {
-				ServerSocket s = new ServerSocket(6912);
+				ServerSocket s = new ServerSocket(PORTA_SERVIDOR);
 				while (true) {
 					Socket sCliente = s.accept();
 					JogadorConectado j = new JogadorConectado(sCliente);

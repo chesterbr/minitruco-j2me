@@ -26,6 +26,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,6 +52,8 @@ import mt.Jogador;
  * 
  */
 public class JogadorConectado extends Jogador implements Runnable {
+
+	private static final String IF_MODIFIED_SINCE_HTTP_HEADER = "If-Modified-Since: ";
 
 	/**
 	 * Nomes de jogadores online (para evitar duplicidade)
@@ -146,9 +150,39 @@ public class JogadorConectado extends Jogador implements Runnable {
 					do {
 						ServerLogger.evento(this, "]" + s);
 						s = in.readLine();
+						/* TODO Arrumar esse código, não funciona a contento
+						// Se o cliente tiver uma cópia no cache, tenta usar
+						if (s.startsWith(IF_MODIFIED_SINCE_HTTP_HEADER)) {
+							try {
+								Date dataMax = MiniTrucoServer.dfStartup
+										.parse(s
+												.substring(IF_MODIFIED_SINCE_HTTP_HEADER
+														.length()));
+								System.out.println(MiniTrucoServer.dataStartup);
+								System.out.println(dataMax);
+								if (!MiniTrucoServer.dataStartup.after(dataMax)) {
+									ServerLogger.evento("304 Not Modified");
+									out.println("HTTP/1.0 304 Not Modified");
+									out.flush();
+									cliente.close();
+									return;									
+								}
+							} catch (ParseException e) {
+								// Se não conseguiu parsear, loga e desencana
+								ServerLogger.evento(this,
+										"!Cabecalho invalido: " + s
+												+ ". Erro: " + e.getMessage());
+							}
+						}
+						*/
 					} while ((s != null) && (!s.equals("")));
+					// Se livra dos parâmetros
+					String nomeArq = args[1];
+					int fimNome = nomeArq.indexOf('?');
+					if (fimNome != -1)
+						nomeArq = nomeArq.substring(0, fimNome);
 					// Serve o arquivo
-					serveArquivosApplet(args[1], out);
+					serveArquivosApplet(nomeArq, out);
 					cliente.close();
 					return;
 				}
@@ -240,7 +274,7 @@ public class JogadorConectado extends Jogador implements Runnable {
 			// Como não temos como recuperar as datas dos arquivos no JAR, vamos
 			// usar a data de startup do servidor (que é razoavelmente estável e
 			// só cresce nas CNTP)
-			out.println("Last-modified:" + MiniTrucoServer.dataStartup);
+			out.println("Last-modified:" + MiniTrucoServer.strDataStartup);
 			out.println("Content-Length: " + bis.available());
 			out.println();
 			byte[] buf = new byte[4096];
