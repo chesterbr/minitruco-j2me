@@ -1,1434 +1,1670 @@
 package mt;
 
 /*
- * Copyright © 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
- * 
- * Nota 1: parte do código (métodos de suporte) adaptada 
- * da Estratégia Sellani (Copyright © 2006 Leonardo Sellani)
- * Nota 2: lógica estratégica completamente nova
- *   
- * Este programa é um software livre; você pode redistribuí-lo e/ou 
- * modificá-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
- * Licença, ou (na sua opnião) qualquer versão.
+ * Copyright (c) 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
  *
- * Este programa é distribuído na esperança que possa ser útil, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implícita de ADEQUAÇÂO
- * a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença
- * Pública Geral GNU para maiores detalhes.
+ * Nota 1: parte do cÃ³digo (mÃ©todos de suporte) adaptada
+ * da EstratÃ©gia Sellani (Copyright (c) 2006 Leonardo Sellani)
+ * Nota 2: lÃ³gica estratÃ©gica completamente nova
  *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU
- * junto com este programa, se não, escreva para a Fundação do Software
+ * Este programa Ã© um software livre; vocÃª pode redistribuÃ­-lo e/ou
+ * modificÃ¡-lo dentro dos termos da LicenÃ§a PÃºblica Geral GNU como
+ * publicada pela FundaÃ§Ã£o do Software Livre (FSF); na versÃ£o 2 da
+ * LicenÃ§a, ou (na sua opniÃ£o) qualquer versÃ£o.
+ *
+ * Este programa Ã© distribuÃ­do na esperanÃ§a que possa ser Ãºtil,
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implÃ­cita de ADEQUAÃ‡Ã‚O
+ * a qualquer MERCADO ou APLICAÃ‡ÃƒO EM PARTICULAR. Veja a LicenÃ§a
+ * PÃºblica Geral GNU para maiores detalhes.
+ *
+ * VocÃª deve ter recebido uma cÃ³pia da LicenÃ§a PÃºblica Geral GNU
+ * junto com este programa, se nÃ£o, escreva para a FundaÃ§Ã£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+/**
+ * versÃ£o 1.2:
+ * alguns bugs corrigidos
+ * capacidade de fazer "cama"
+ * melhoria no algoritmo de decisÃ£o em algumas jogadas
+ * melhor fator de imprevisibilidade
+ * implementaÃ§Ã£o do mÃ©todo 'partidaGanhaParaAdversario'
+ * melhorias no algoritmo de decisÃ£o de aceite de truco
+ *
+ * versÃ£o 1.1:
+ * original
+ *
  */
 
 import java.util.Random;
 
 /**
- * Estratégia inteligente para jogadores CPU
+ * EstratÃ©gia inteligente para jogadores CPU
  * 
  * @author Sandro Gasparotto
  * 
  */
-public class EstrategiaGasparotto implements Estrategia 
-{
+public class EstrategiaGasparotto implements Estrategia {
 	private static Random rand = new Random();
-	
+
 	int[] C = new int[3];
-	
-	private static int LIXO      = 0;
-	private static int AS        = 1;
-	private static int DOIS      = 2;
-	private static int TRES      = 3;
-	private static int PICAFUMO  = 4;
+
+	private static int LIXO = 0;
+	private static int AS = 1;
+	private static int DOIS = 2;
+	private static int TRES = 3;
+	private static int PICAFUMO = 4;
 	private static int ESPADILHA = 5;
-	private static int ESCOPETA  = 6;
-	private static int ZAP       = 7;
-	
+	private static int ESCOPETA = 6;
+	private static int ZAP = 7;
+
 	/**
 	 * Retorna o nome "de tela" da Estrategia
 	 */
-	public String getNomeEstrategia() 
-	{
-		return "Gasparotto v1.1";
+	public String getNomeEstrategia() {
+		return "Gasparotto v1.2";
 	}
 
 	/**
-	 * Retorna informações de copyright e afins
+	 * Retorna informaÃ§Ãµes de copyright e afins
 	 */
-	public String getInfoEstrategia() 
-	{
-		return "Copyright © 2007 Sandro Gasparotto";
+	public String getInfoEstrategia() {
+		return "Copyright (c) 2007 Sandro Gasparotto";
 	}
-	
+
 	/**
-	 * Retorna verdadeiro ou falso a partir de um número randômico e um fator de dúvida/incerteza. 
-	 * f = 100: sem dúvida vou em frente; 
-	 * f = 50:  dúvida máxima
-	 * f = 0:   sem dúvida NÃO vou em frente;
-	 * Ou seja, qto maior esse fator, maior a chance de "mandarmos bala"
-	 * A idéia é gerar um pouco de aleatoriedade ao jogo
-	 * Para não ficar evidente as estratégias...
-	 * Confundir os adversários...
-	 * E dar um toque humano à CPU...
+	 * Retorna verdadeiro ou falso a partir de um nÃºmero randÃ´mico e um fator de
+	 * dÃºvida/incerteza. f = 100: sem dÃºvida vou em frente; f = 50: dÃºvida
+	 * mÃ¡xima f = 0: sem dÃºvida NÃƒO vou em frente; Ou seja, qto maior esse
+	 * fator, maior a chance de "mandarmos bala" A idÃ©ia Ã© gerar um pouco de
+	 * aleatoriedade ao jogo Para nÃ£o ficar evidente as estratÃ©gias... Confundir
+	 * os adversÃ¡rios... E dar um toque humano Ã  CPU...
 	 */
-		private boolean mandaBala(int fatorDeDuvida)
-		{
-			return (Math.abs(rand.nextInt())%100 + 1 <= fatorDeDuvida)?true:false;		
-		}
-	 
+	private boolean mandaBala(int fatorDeDuvida) {
+		return (Math.abs(rand.nextInt()) % 100 + 1 <= fatorDeDuvida) ? true
+				: false;
+	}
+
 	/**
-	 * Seta as variáveis C[0],C[1] e C[2] com o índice da maior para menor carta da minha mão
+	 * Seta as variÃ¡veis C[0],C[1] e C[2] com o Ã­ndice da maior para menor carta
+	 * da minha mÃ£o
 	 */
-	private void classificaCartas(SituacaoJogo s)
-	{
-		int i,i2,cAux;
-		
-		C[0]=0;
-		C[1]=1;
-		C[2]=2;
-		
-		for(i=0;i<s.cartasJogador.length;i++)
-		{
-			for(i2=i;i2<3;i2++)
-			{
-				if(i2>0 && i2>=s.cartasJogador.length)
-					C[i2]=C[i2-1];
-				else
-				if(s.cartasJogador[C[i2]].getValorTruco(s.manilha) >= s.cartasJogador[C[i]].getValorTruco(s.manilha))
-				{
-					cAux=C[i];
-					C[i]=C[i2];
-					C[i2]=cAux;
+	private void classificaCartas(SituacaoJogo s) {
+		int i, i2, cAux;
+
+		C[0] = 0;
+		C[1] = 1;
+		C[2] = 2;
+
+		for (i = 0; i < s.cartasJogador.length; i++) {
+			for (i2 = i; i2 < 3; i2++) {
+				if (i2 > 0 && i2 >= s.cartasJogador.length)
+					C[i2] = C[i2 - 1];
+				else if (s.cartasJogador[C[i2]].getValorTruco(s.manilha) >= s.cartasJogador[C[i]]
+						.getValorTruco(s.manilha)) {
+					cAux = C[i];
+					C[i] = C[i2];
+					C[i2] = cAux;
 				}
 			}
 		}
 	}
-	
 
 	/**
-	 * Retorna minha posição na rodada (0..3) (mão..pé)
+	 * Retorna minha posiÃ§Ã£o na rodada (0..3) (mÃ£o..pÃ©)
 	 */
-	private int minhaPosicao(SituacaoJogo s)
-	{
+	private int minhaPosicao(SituacaoJogo s) {
 		int mPos;
-		mPos = (eu(s) - (s.posJogadorQueAbriuRodada-1) + ((eu(s)>=(s.posJogadorQueAbriuRodada-1))?0:4));
+		mPos = (eu(s) - (s.posJogadorQueAbriuRodada - 1) + ((eu(s) >= (s.posJogadorQueAbriuRodada - 1)) ? 0
+				: 4));
 		return mPos;
 	}
 
 	/**
-	 * Retorna minha posição na mesa (0..3)
+	 * Retorna minha posiÃ§Ã£o na mesa (0..3)
 	 */
-	private int eu(SituacaoJogo s)
-	{
-		return s.posJogador-1;
+	private int eu(SituacaoJogo s) {
+		return s.posJogador - 1;
 	}
 
 	/**
 	 * Retorna a posicao do meu parceiro na mesa (0..3)
 	 */
-	private int parceiro(SituacaoJogo s)
-	{
-		return ((s.posJogador+1)%4);
+	private int parceiro(SituacaoJogo s) {
+		return ((s.posJogador + 1) % 4);
 	}
 
 	/**
-	 * Retorna a posicao do adversário 1 na mesa (0..3)
+	 * Retorna a posicao do adversÃ¡rio 1 na mesa (0..3)
 	 */
-	private int adversario1(SituacaoJogo s)
-	{
-		return ((s.posJogador+0)%4);
+	private int adversario1(SituacaoJogo s) {
+		return ((s.posJogador + 0) % 4);
 	}
 
 	/**
-	 * Retorna a posicao do adversário 2 na mesa (0..3)
+	 * Retorna a posicao do adversÃ¡rio 2 na mesa (0..3)
 	 */
-	private int adversario2(SituacaoJogo s)
-	{
-		return ((s.posJogador+2)%4);
+	private int adversario2(SituacaoJogo s) {
+		return ((s.posJogador + 2) % 4);
 	}
 
 	/**
-	 * Retorna o número da minha vez na rodada (0..3) (mão..pé)
+	 * Retorna o nÃºmero da minha vez na rodada (0..3) (mÃ£o..pÃ©)
 	 */
-	private int minhaVez(SituacaoJogo s)
-	{
-		return (eu(s) - (s.posJogadorQueAbriuRodada-1) + ((eu(s)>=(s.posJogadorQueAbriuRodada-1))?0:4));
+	private int minhaVez(SituacaoJogo s) {
+		return (eu(s) - (s.posJogadorQueAbriuRodada - 1) + ((eu(s) >= (s.posJogadorQueAbriuRodada - 1)) ? 0
+				: 4));
 	}
 
 	/**
-	 * Retorna o número da vez do trucador na rodada (0..3) (mão..pé)
+	 * Retorna o nÃºmero da vez do trucador na rodada (0..3) (mÃ£o..pÃ©)
 	 */
-	private int vezTrucador(SituacaoJogo s)
-	{
-		return ((s.posJogadorPedindoAumento-1) - (s.posJogadorQueAbriuRodada-1) + ((((s.posJogadorPedindoAumento-1))>=(s.posJogadorQueAbriuRodada-1))?0:4));
+	private int vezTrucador(SituacaoJogo s) {
+		return ((s.posJogadorPedindoAumento - 1)
+				- (s.posJogadorQueAbriuRodada - 1) + ((((s.posJogadorPedindoAumento - 1)) >= (s.posJogadorQueAbriuRodada - 1)) ? 0
+				: 4));
 	}
-	
-	/**
-	 *  Retorna o índice da maior carta da mesa na rodada atual
-	 */
-	private int maiorCartaMesa(SituacaoJogo s)
-	{
-		int maiorCarta=0;
 
-		for(int i=0;i<=3;i++)
-		{
-			if(s.cartasJogadas[s.numRodadaAtual-1][i]==null)
+	/**
+	 * Retorna o Ã­ndice da maior carta da mesa na rodada atual
+	 */
+	private int maiorCartaMesa(SituacaoJogo s) {
+		int maiorCarta = 0;
+
+		for (int i = 0; i <= 3; i++) {
+			if (s.cartasJogadas[s.numRodadaAtual - 1][i] == null)
 				continue;
-			if(s.cartasJogadas[s.numRodadaAtual-1][maiorCarta]==null)
-			{
-				maiorCarta=i;
+			if (s.cartasJogadas[s.numRodadaAtual - 1][maiorCarta] == null) {
+				maiorCarta = i;
 				continue;
 			}
-			if(s.cartasJogadas[s.numRodadaAtual-1][i].getValorTruco(s.manilha) > s.cartasJogadas[s.numRodadaAtual-1][maiorCarta].getValorTruco(s.manilha))
-				maiorCarta=i;
+			if (s.cartasJogadas[s.numRodadaAtual - 1][i]
+					.getValorTruco(s.manilha) > s.cartasJogadas[s.numRodadaAtual - 1][maiorCarta]
+					.getValorTruco(s.manilha))
+				maiorCarta = i;
 		}
 		return maiorCarta;
 	}
-	
+
 	/**
-	 * Retorna se a maior carta da mesa é a do meu parceiro ou não.
+	 * Retorna se a maior carta da mesa Ã© a do meu parceiro ou nÃ£o.
 	 */
-	private boolean maiorCartaEDoParceiro(SituacaoJogo s)
-	{
-		if(parceiro(s) == maiorCartaMesa(s) && !taMelado(s))
-			return true;		
-		return false;
-	}
-	
-	/**
-	 * Retorna se a maior carta da mesa é minha ou do meu parceiro ou não.
-	 */
-	private boolean maiorCartaENossa(SituacaoJogo s)
-	{
-		if((eu(s) == maiorCartaMesa(s) || parceiro(s) == maiorCartaMesa(s)) && !taMelado(s))
-			return true;		
-		return false;
-	}
-	
-	/**
-	 * Retorna se eu tenho na mão alguma carta para matar a do adversário
-	 */
-	private boolean matoAdversario(SituacaoJogo s,boolean consideraEmpate)
-	{
-		if(minhaPosicao(s)==0)
+	private boolean maiorCartaEDoParceiro(SituacaoJogo s) {
+		if (parceiro(s) == maiorCartaMesa(s) && !taMelado(s))
 			return true;
-		for(int i=0;i<s.cartasJogador.length;i++)
-		{
-			if(s.cartasJogador[i].getValorTruco(s.manilha) > s.cartasJogadas[s.numRodadaAtual-1][maiorCartaMesa(s)].getValorTruco(s.manilha))
+		return false;
+	}
+
+	/**
+	 * Retorna se a maior carta da mesa Ã© minha ou do meu parceiro ou nÃ£o.
+	 */
+	private boolean maiorCartaENossa(SituacaoJogo s) {
+		if ((eu(s) == maiorCartaMesa(s) || parceiro(s) == maiorCartaMesa(s))
+				&& !taMelado(s))
+			return true;
+		return false;
+	}
+
+	/**
+	 * Retorna se eu tenho na mÃ£o alguma carta para matar a do adversÃ¡rio
+	 */
+	private boolean matoAdversario(SituacaoJogo s, boolean consideraEmpate) {
+		if (minhaPosicao(s) == 0)
+			return true;
+		for (int i = 0; i < s.cartasJogador.length; i++) {
+			if (s.cartasJogador[i].getValorTruco(s.manilha) > s.cartasJogadas[s.numRodadaAtual - 1][maiorCartaMesa(s)]
+					.getValorTruco(s.manilha))
 				return true;
-			if((s.cartasJogador[i].getValorTruco(s.manilha) >= s.cartasJogadas[s.numRodadaAtual-1][maiorCartaMesa(s)].getValorTruco(s.manilha))&&
-				consideraEmpate)
+			if ((s.cartasJogador[i].getValorTruco(s.manilha) >= s.cartasJogadas[s.numRodadaAtual - 1][maiorCartaMesa(s)]
+					.getValorTruco(s.manilha))
+					&& consideraEmpate)
 				return true;
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Retorna o índice da menor carta que tenho na mão para matar a carta do adversário ou do parceiro na mesa,
-	 * se não tiver a carta retorna a menor.
+	 * Retorna o Ã­ndice da menor carta que tenho na mÃ£o para matar a carta do
+	 * adversÃ¡rio ou do parceiro na mesa, se nÃ£o tiver a carta retorna a menor.
 	 */
-	private int menorCartaParaMatar(SituacaoJogo s)
-	{
-		//se eu não puder matar a carta do adversário retorno a menor
-		if(!matoAdversario(s,false))
+	private int menorCartaParaMatar(SituacaoJogo s) {
+		// se eu nÃ£o puder matar a carta do adversÃ¡rio retorno a menor
+		if (!matoAdversario(s, false))
 			return C[2];
-		//procura pela primeira carta que mata a do adversário
-		for(int i=2;i>=0;i--)
-			if(s.cartasJogador[C[i]].getValorTruco(s.manilha) > s.cartasJogadas[s.numRodadaAtual-1][maiorCartaMesa(s)].getValorTruco(s.manilha))
-				return C[i]; //é essa!
-		//se não encontrou nenhuma, joga a menor
+		// procura pela primeira carta que mata a do adversÃ¡rio
+		for (int i = 2; i >= 0; i--)
+			if (s.cartasJogador[C[i]].getValorTruco(s.manilha) > s.cartasJogadas[s.numRodadaAtual - 1][maiorCartaMesa(s)]
+					.getValorTruco(s.manilha))
+				return C[i]; // Ã© essa!
+		// se nÃ£o encontrou nenhuma, joga a menor
 		return C[2];
 	}
-	
+
 	/**
-	 * Retorna o índice da menor carta que tenho na mão para matar ou pelo menos amarrar a carta do adversário ou do parceiro na mesa,
-	 * se não tiver a carta retorna a menor.
+	 * Retorna o Ã­ndice da menor carta que tenho na mÃ£o para matar ou pelo menos
+	 * amarrar a carta do adversÃ¡rio ou do parceiro na mesa, se nÃ£o tiver a
+	 * carta retorna a menor.
 	 */
-	private int menorCartaParaMatarOuAmarrar(SituacaoJogo s)
-	{
-		//se eu não puder matar ou amarrar a carta do adversário retorno a menor
-		if(!matoAdversario(s,true))
+	private int menorCartaParaMatarOuAmarrar(SituacaoJogo s) {
+		// se eu nÃ£o puder matar ou amarrar a carta do adversÃ¡rio retorno a
+		// menor
+		if (!matoAdversario(s, true))
 			return C[2];
-		//procura pela primeira carta que mata a do adversário
-		for(int i=2;i>=0;i--)
-			if(s.cartasJogador[C[i]].getValorTruco(s.manilha) > s.cartasJogadas[s.numRodadaAtual-1][maiorCartaMesa(s)].getValorTruco(s.manilha))
-				return C[i]; //é essa!
-		//procura pela primeira carta que amarra a do adversário
-		for(int i=2;i>=0;i--)
-			if(s.cartasJogador[C[i]].getValorTruco(s.manilha) == s.cartasJogadas[s.numRodadaAtual-1][maiorCartaMesa(s)].getValorTruco(s.manilha))
-				return C[i]; //é essa!
-		//se não encontrou nenhuma, joga a menor
+		// procura pela primeira carta que mata a do adversÃ¡rio
+		for (int i = 2; i >= 0; i--)
+			if (s.cartasJogador[C[i]].getValorTruco(s.manilha) > s.cartasJogadas[s.numRodadaAtual - 1][maiorCartaMesa(s)]
+					.getValorTruco(s.manilha))
+				return C[i]; // Ã© essa!
+		// procura pela primeira carta que amarra a do adversÃ¡rio
+		for (int i = 2; i >= 0; i--)
+			if (s.cartasJogador[C[i]].getValorTruco(s.manilha) == s.cartasJogadas[s.numRodadaAtual - 1][maiorCartaMesa(s)]
+					.getValorTruco(s.manilha))
+				return C[i]; // Ã© essa!
+		// se nÃ£o encontrou nenhuma, joga a menor
 		return C[2];
 	}
-	
+
 	/**
-	 * Verifica se eu tenho a maior carta do jogo na mão, (por exemplo, o 7 Copas já tendo saido o Zap), 
-	 * considerando apenas as manilhas. 
+	 * Verifica se eu tenho a maior carta do jogo na mÃ£o, (por exemplo, o 7
+	 * Copas jÃ¡ tendo saido o Zap), considerando apenas as manilhas.
 	 */
-	private boolean tenhoMaiorCarta(SituacaoJogo s)
-	{
-		boolean m12=false,m13=false,m14=false;
-		
-		if(s.cartasJogador.length==0)
+	private boolean tenhoMaiorCarta(SituacaoJogo s) {
+		boolean m12 = false, m13 = false, m14 = false;
+
+		if (s.cartasJogador.length == 0)
 			return false;
-		if(s.cartasJogador[C[0]].getValorTruco(s.manilha)<=10)
+		if (s.cartasJogador[C[0]].getValorTruco(s.manilha) <= 10)
 			return false;
 
-		//se eu estiver com o zap, então não tem nem o que pensar
-		if(s.cartasJogador[C[0]].getValorTruco(s.manilha)==14)
-			return true; 
+		// se eu estiver com o zap, entÃ£o nÃ£o tem nem o que pensar
+		if (s.cartasJogador[C[0]].getValorTruco(s.manilha) == 14)
+			return true;
 
-		//procura pelas manilhas que já sairam nas rodadas anteriores
-		for(int rodada=0;rodada<(s.numRodadaAtual-1);rodada++)
-			for(int jogador=0;jogador<=3;jogador++)
-			{
-				if(s.cartasJogadas[rodada][jogador]!=null)
-				{
-					switch(s.cartasJogadas[rodada][jogador].getValorTruco(s.manilha))
-					{
-						case 12: m12=true; break; //espadilha já saiu
-						case 13: m13=true; break; //copas já saiu
-						case 14: m14=true; break; //zap já saiu
+		// procura pelas manilhas que jÃ¡ sairam nas rodadas anteriores
+		for (int rodada = 0; rodada < (s.numRodadaAtual - 1); rodada++)
+			for (int jogador = 0; jogador <= 3; jogador++) {
+				if (s.cartasJogadas[rodada][jogador] != null) {
+					switch (s.cartasJogadas[rodada][jogador]
+							.getValorTruco(s.manilha)) {
+					case 12:
+						m12 = true;
+						break; // espadilha jÃ¡ saiu
+					case 13:
+						m13 = true;
+						break; // copas jÃ¡ saiu
+					case 14:
+						m14 = true;
+						break; // zap jÃ¡ saiu
 					}
 				}
 			}
-		//será que estou com a maior manilha do jogo na mão
-		if( (s.cartasJogador[C[0]].getValorTruco(s.manilha)==13 && m14) ||
-			(s.cartasJogador[C[0]].getValorTruco(s.manilha)==12 && m14 && m13) ||
-			(s.cartasJogador[C[0]].getValorTruco(s.manilha)==11 && m14 && m13 && m12))
-			return true; //ha!!!
-		return false;
-	}
-	
-	/**
-	 * Retorna se a partida já esta garantida ou não (por exemplo, se eu to com o Zap e a 1ª feita)
-	 */
-	private boolean partidaGanha(SituacaoJogo s)
-	{
-		if(s.numRodadaAtual==1 && s.cartasJogador.length>=2 && s.cartasJogador[C[0]].getValorTruco(s.manilha)==14 && s.cartasJogador[C[1]].getValorTruco(s.manilha)==13)
-			return true;
-		if(s.numRodadaAtual==2 && primeiraENossa(s) && tenhoMaiorCarta(s))
-			return true;		
-		if(s.numRodadaAtual==3 && tenhoMaiorCarta(s))
-			return true;		
+		// serÃ¡ que estou com a maior manilha do jogo na mÃ£o
+		if ((s.cartasJogador[C[0]].getValorTruco(s.manilha) == 13 && m14)
+				|| (s.cartasJogador[C[0]].getValorTruco(s.manilha) == 12 && m14 && m13)
+				|| (s.cartasJogador[C[0]].getValorTruco(s.manilha) == 11 && m14
+						&& m13 && m12))
+			return true; // ha!!!
 		return false;
 	}
 
 	/**
-	 * Retorna se a rodada atual esta empatada. 
+	 * Retorna se a partida jÃ¡ esta garantida ou nÃ£o (por exemplo, se eu to com
+	 * o Zap e a 1Âª feita)
 	 */
-	private boolean taMelado(SituacaoJogo s)
-	{
-		if(s.cartasJogadas[s.numRodadaAtual-1][parceiro(s)]==null)
+	private boolean partidaGanha(SituacaoJogo s) {
+		if (s.numRodadaAtual == 1 && s.cartasJogador.length >= 2
+				&& s.cartasJogador[C[0]].getValorTruco(s.manilha) == 14
+				&& s.cartasJogador[C[1]].getValorTruco(s.manilha) == 13)
+			return true;
+		if (s.numRodadaAtual == 2 && primeiraENossa(s) && tenhoMaiorCarta(s))
+			return true;
+		if (s.numRodadaAtual == 3 && tenhoMaiorCarta(s))
+			return true;
+		return false;
+	}
+
+	/**
+	 * Retorna se a partida jÃ¡ esta garantida ou nÃ£o para o adversÃ¡rio (com base
+	 * nas cartas jÃ¡ descartadas)
+	 */
+	private boolean partidaGanhaParaAdversario(SituacaoJogo s) {
+		// vamos verificar quais manilhas jÃ¡ sairam
+		boolean ZAPJaSaiu = false;
+		boolean ESCOPETAJaSaiu = false;
+		boolean ESPADILHAJaSaiu = false;
+		boolean PICAFUMOJaSaiu = false;
+		for (int rodada = 0; rodada < (s.numRodadaAtual - 1); rodada++)
+			for (int jogador = 0; jogador <= 3; jogador++) {
+				if (s.cartasJogadas[rodada][jogador] != null) {
+					switch (s.cartasJogadas[rodada][jogador]
+							.getValorTruco(s.manilha)) {
+					case 11:
+						PICAFUMOJaSaiu = true;
+						break; // PICAFUMO
+					// jÃ¡
+					// saiu
+					case 12:
+						ESPADILHAJaSaiu = true;
+						break; // ESPADILHA
+					// jÃ¡
+					// saiu
+					case 13:
+						ESCOPETAJaSaiu = true;
+						break; // ESCOPETA
+					// jÃ¡
+					// saiu
+					case 14:
+						ZAPJaSaiu = true;
+						break; // ZAP
+					// jÃ¡
+					// saiu
+					}
+				}
+			}
+
+		// AnÃ¡lise para 2a rodada
+		if (s.numRodadaAtual == 2 && !primeiraENossa(s) && !maiorCartaENossa(s)) {
+			if (qualidadeMaiorMesa(s) == ZAP)
+				return true;
+
+			if (qualidadeMaiorMesa(s) == ESCOPETA && ZAPJaSaiu)
+				return true;
+
+			if (qualidadeMaiorMesa(s) == ESPADILHA && ZAPJaSaiu
+					&& ESCOPETAJaSaiu)
+				return true;
+
+			if (qualidadeMaiorMesa(s) == PICAFUMO && ZAPJaSaiu
+					&& ESCOPETAJaSaiu && ESPADILHAJaSaiu)
+				return true;
+
+			if (qualidadeMaiorMesa(s) == TRES && ZAPJaSaiu && ESCOPETAJaSaiu
+					&& ESPADILHAJaSaiu && PICAFUMOJaSaiu)
+				return true;
+		}
+
+		// AnÃ¡lise para 3a rodada
+		if (s.numRodadaAtual == 3 && !maiorCartaENossa(s)) {
+			if (qualidadeMaiorMesa(s) == ZAP)
+				return true;
+
+			if (qualidadeMaiorMesa(s) == ESCOPETA && ZAPJaSaiu)
+				return true;
+
+			if (qualidadeMaiorMesa(s) == ESPADILHA && ZAPJaSaiu
+					&& ESCOPETAJaSaiu)
+				return true;
+
+			if (qualidadeMaiorMesa(s) == PICAFUMO && ZAPJaSaiu
+					&& ESCOPETAJaSaiu && ESPADILHAJaSaiu)
+				return true;
+
+			if (qualidadeMaiorMesa(s) == TRES && ZAPJaSaiu && ESCOPETAJaSaiu
+					&& ESPADILHAJaSaiu && PICAFUMOJaSaiu && !primeiraENossa(s))
+				return true;
+
+			// o correto seria checar se todos os 3s e manilhas
+			// sairam tambÃ©m, mas isso seria (quase que) impossÃ­vel...
+		}
+
+		return false;
+	}
+
+	/**
+	 * Retorna se a rodada atual esta empatada.
+	 */
+	private boolean taMelado(SituacaoJogo s) {
+		if (s.cartasJogadas[s.numRodadaAtual - 1][parceiro(s)] == null)
 			return false;
-		if(s.cartasJogadas[s.numRodadaAtual-1][adversario1(s)]!=null && s.cartasJogadas[s.numRodadaAtual-1][parceiro(s)].getValorTruco(s.manilha) == s.cartasJogadas[s.numRodadaAtual-1][adversario1(s)].getValorTruco(s.manilha))
+		if (s.cartasJogadas[s.numRodadaAtual - 1][adversario1(s)] != null
+				&& s.cartasJogadas[s.numRodadaAtual - 1][parceiro(s)]
+						.getValorTruco(s.manilha) == s.cartasJogadas[s.numRodadaAtual - 1][adversario1(s)]
+						.getValorTruco(s.manilha))
 			return true;
-		else
-		if(s.cartasJogadas[s.numRodadaAtual-1][adversario2(s)]!=null && s.cartasJogadas[s.numRodadaAtual-1][parceiro(s)].getValorTruco(s.manilha) == s.cartasJogadas[s.numRodadaAtual-1][adversario2(s)].getValorTruco(s.manilha))
+		else if (s.cartasJogadas[s.numRodadaAtual - 1][adversario2(s)] != null
+				&& s.cartasJogadas[s.numRodadaAtual - 1][parceiro(s)]
+						.getValorTruco(s.manilha) == s.cartasJogadas[s.numRodadaAtual - 1][adversario2(s)]
+						.getValorTruco(s.manilha))
 			return true;
 		return false;
 	}
-	
+
 	/**
-	 * Retorna a exata qualificação de uma carta
-	 * Talvez seja necessária alguma adaptação para o caso de "baralho limpo" 
+	 * Retorna a exata qualificaÃ§Ã£o de uma carta Talvez seja necessÃ¡ria alguma
+	 * adaptaÃ§Ã£o para o caso de "baralho limpo"
 	 */
-	private int qualidadeCarta(Carta carta,SituacaoJogo s)
-	{
-			// Declarações
-			int qcarta; // return do método
-			qcarta = LIXO; // apenas para ter a variável inicializada com algo
+	private int qualidadeCarta(Carta carta, SituacaoJogo s) {
+		// DeclaraÃ§Ãµes
+		int qcarta; // return do mÃ©todo
+		qcarta = LIXO; // apenas para ter a variÃ¡vel
+		// inicializada com algo
 
-			// 4, 5, 6, 7, Q, J, K
-			if(carta.getValorTruco(s.manilha)<=6)
-				qcarta = LIXO;
-			// A
-			else if(carta.getValorTruco(s.manilha)==7)
-				qcarta = AS;
-			// 2
-			else if(carta.getValorTruco(s.manilha)==8)
-				qcarta = DOIS;
-			// 3
-			else if(carta.getValorTruco(s.manilha)==9)
-				qcarta = TRES;
-			// 10 não é utilizado?
-			// Picafumo
-			else if(carta.getValorTruco(s.manilha)==11)
-				qcarta = PICAFUMO;
-			// Espadilha
-			else if(carta.getValorTruco(s.manilha)==12)
-				qcarta = ESPADILHA;
-			// Escopeta
-			else if(carta.getValorTruco(s.manilha)==13)
-				qcarta = ESCOPETA;
-			// Zap
-			else if(carta.getValorTruco(s.manilha)==14)
-				qcarta = ZAP;
-
-			//caso a manilha seja um 3, o 2 passa a ter qualidade de 3!
-			//e o A passa a ter valor de 2!
-			//Obs: logicamente isso não se aplica para o caso de manilha velha...
-
-			// Workaround devido ao fato da propriedade 'manilha' não poder ser utilizada diretamente
-			// Estas são cartas fictícias somente para os testes condicionais logo abaixo
-			Carta tres_testedemanilha = new Carta('3',3);
-			Carta dois_testedemanilha = new Carta('2',3);
-			if(qcarta==DOIS && tres_testedemanilha.getValorTruco(s.manilha)==14)
-				qcarta = TRES;
-			if(qcarta==AS && tres_testedemanilha.getValorTruco(s.manilha)==14)
-				qcarta = DOIS;			
-			//caso a manilha seja um 2, o A passa a ter valor de 2!
-			if(qcarta==AS && dois_testedemanilha.getValorTruco(s.manilha)==14)
+		// 4, 5, 6, 7, Q, J, K
+		if (carta.getValorTruco(s.manilha) <= 6)
+			qcarta = LIXO;
+		// A
+		else if (carta.getValorTruco(s.manilha) == 7)
+			qcarta = AS;
+		// 2
+		else if (carta.getValorTruco(s.manilha) == 8)
 			qcarta = DOIS;
-			
-			return qcarta;
-	}
-	
-	/**
-	 * Retorna a qualificação da maior carta da mesa na rodada atual
-	 */
-	private int qualidadeMaiorMesa(SituacaoJogo s)
-	{
-		if(s.cartasJogadas[s.numRodadaAtual-1][maiorCartaMesa(s)]==null)
-			return 0;
-		return qualidadeCarta(s.cartasJogadas[s.numRodadaAtual-1][maiorCartaMesa(s)],s);
+		// 3
+		else if (carta.getValorTruco(s.manilha) == 9)
+			qcarta = TRES;
+		// 10 nÃ£o Ã© utilizado?
+		// Picafumo
+		else if (carta.getValorTruco(s.manilha) == 11)
+			qcarta = PICAFUMO;
+		// Espadilha
+		else if (carta.getValorTruco(s.manilha) == 12)
+			qcarta = ESPADILHA;
+		// Escopeta
+		else if (carta.getValorTruco(s.manilha) == 13)
+			qcarta = ESCOPETA;
+		// Zap
+		else if (carta.getValorTruco(s.manilha) == 14)
+			qcarta = ZAP;
+
+		// caso a manilha seja um 3, o 2 passa a ter qualidade
+		// de 3!
+		// e o A passa a ter valor de 2!
+		// Obs: logicamente isso nÃ£o se aplica para o caso de
+		// manilha velha...
+
+		// Workaround devido ao fato da propriedade 'manilha'
+		// nÃ£o poder ser utilizada diretamente
+		// Estas sÃ£o cartas fictÃ­cias somente para os testes
+		// condicionais logo abaixo
+		Carta tres_testedemanilha = new Carta('3', 3);
+		Carta dois_testedemanilha = new Carta('2', 3);
+		if (qcarta == DOIS
+				&& tres_testedemanilha.getValorTruco(s.manilha) == 14)
+			qcarta = TRES;
+		if (qcarta == AS && tres_testedemanilha.getValorTruco(s.manilha) == 14)
+			qcarta = DOIS;
+		// caso a manilha seja um 2, o A passa a ter valor de 2!
+		if (qcarta == AS && dois_testedemanilha.getValorTruco(s.manilha) == 14)
+			qcarta = DOIS;
+
+		return qcarta;
 	}
 
 	/**
-	 * Retorna a qualificação da maior carta da minha mão.
+	 * Retorna a qualificaÃ§Ã£o da maior carta da mesa na rodada atual
 	 */
-	private int qualidadeMinhaMaior(SituacaoJogo s)
-	{
-		if(s.cartasJogador[C[0]]==null)
+	private int qualidadeMaiorMesa(SituacaoJogo s) {
+		if (s.cartasJogadas[s.numRodadaAtual - 1][maiorCartaMesa(s)] == null)
 			return 0;
-		return qualidadeCarta(s.cartasJogador[C[0]],s);
+		return qualidadeCarta(
+				s.cartasJogadas[s.numRodadaAtual - 1][maiorCartaMesa(s)], s);
 	}
-	
+
 	/**
-	 * Retorna se pode/compensa aumentar a aposta ou não, com input para o fator sorte. E considerando que se estiver com 9, não vou pedir 6 (e idéias similares)... 
-	 * Uma melhoria seria deixar este jogador mais agressivo caso estejamos perdendo...
+	 * Retorna a qualificaÃ§Ã£o da maior carta da minha mÃ£o.
 	 */
-	private boolean podeEValeAPenaAumentar(SituacaoJogo s, int fator3, int fator6, int fator9, int fator12)
-	{
-		//o valor da aposta vai ser maior do que eu preciso pra fechar o jogo?
-		if(12-s.pontosEquipe[eu(s)%2] < s.valorProximaAposta)
+	private int qualidadeMinhaMaior(SituacaoJogo s) {
+		if (s.cartasJogador[C[0]] == null)
+			return 0;
+		return qualidadeCarta(s.cartasJogador[C[0]], s);
+	}
+
+	/**
+	 * Retorna se pode/compensa aumentar a aposta ou nÃ£o, com input para o fator
+	 * sorte. E considerando que se estiver com 9, nÃ£o vou pedir 6 (e idÃ©ias
+	 * similares)... Uma melhoria seria deixar este jogador mais agressivo caso
+	 * estejamos perdendo...
+	 */
+	private boolean podeEValeAPenaAumentar(SituacaoJogo s, int fator3,
+			int fator6, int fator9, int fator12) {
+		// o valor da aposta vai ser maior do que eu preciso pra fechar o jogo?
+		if (12 - s.pontosEquipe[eu(s) % 2] < s.valorProximaAposta)
 			return false;
-		if(s.valorProximaAposta==3 && mandaBala(fator3))
+		if (s.valorProximaAposta == 3 && mandaBala(fator3))
 			return true;
-		if(s.valorProximaAposta==6 && mandaBala(fator6))
+		if (s.valorProximaAposta == 6 && mandaBala(fator6))
 			return true;
-		if(s.valorProximaAposta==9 && mandaBala(fator9))
-			return true;			
-		if(s.valorProximaAposta==12 && mandaBala(fator12))
+		if (s.valorProximaAposta == 9 && mandaBala(fator9))
+			return true;
+		if (s.valorProximaAposta == 12 && mandaBala(fator12))
 			return true;
 		return false;
 	}
-	
+
 	/**
 	 * Retorna se a primeira rodada foi feita por mim ou meu parceiro.
 	 */
-	private boolean primeiraENossa(SituacaoJogo s)
-	{
-		if(s.numRodadaAtual==0)
+	private boolean primeiraENossa(SituacaoJogo s) {
+		if (s.numRodadaAtual == 0)
 			return false;
-		return ((s.resultadoRodada[0]-1)==((s.posJogador+1)%4));
+		return ((s.resultadoRodada[0] - 1) == ((s.posJogador + 1) % 4));
 	}
-	
-	// Cérebro da estratégia (sem álcool no sangue!...)
-	private int joga_primeira_rodada_mao(SituacaoJogo s) 
-	{
-		// Esta é a pior posição da mesa
-		// E para piorar ainda mais, não temos como saber o que o parceiro tem...
-		// Temos que inventar um sistema de sinal cibernético! rsrsrs
-		// Então, pelos ensinamentos de meu avô, vamos tentar garantir a primeira
+
+	// CÃ©rebro da estratÃ©gia (sem Ã¡lcool no sangue!...)
+	private int joga_primeira_rodada_mao(SituacaoJogo s) {
+		// Esta Ã© a pior posiÃ§Ã£o da mesa
+		// E para piorar ainda mais, nÃ£o temos como saber o que o parceiro
+		// tem...
+		// Temos que inventar um sistema de sinal cibernÃ©tico! rsrsrs
+		// EntÃ£o, pelos ensinamentos de meu avÃ´, vamos tentar garantir a
+		// primeira
 		// Mas somente vale a pena se for o picafumo, espadilha ou escopeta
-		// Um 3 morre fácil, e pode ferrar o jogo do parceiro,
-		// a não ser que temos o zap também
-		// E o zap é sempre melhor guardar neste caso...
+		// Um 3 morre fÃ¡cil, e pode ferrar o jogo do parceiro,
+		// a nÃ£o ser que temos o zap tambÃ©m
+		// E o zap Ã© sempre melhor guardar neste caso...
 
 		if (mandaBala(95)) {
-			// Checa se temos zap e três
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-				qualidadeCarta(s.cartasJogador[C[1]],s)==TRES)
-					// Jogar o três
-					return C[1];
-			// Vai que temos uma manilha também (C[1]) (ou mesmo outro três),
-			// mesmo assim vamos jogar o três
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-				qualidadeCarta(s.cartasJogador[C[2]],s)==TRES)
-					// Jogar o três
-					return C[2];		
+			// Checa se temos zap e trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) == TRES)
+				// Jogar o trÃªs
+				return C[1];
+			// Vai que temos uma manilha tambÃ©m (C[1]) (ou mesmo outro trÃªs),
+			// mesmo assim vamos jogar o trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[2]], s) == TRES)
+				// Jogar o trÃªs
+				return C[2];
 			// Checa se temos o picafumo, espadilha ou escopeta
-			// Mas somente jogar caso não tenhamos o zap também
-			// Isto quer dizer que uma dessas tem que ser a maior carta na mão...
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==PICAFUMO ||
-				qualidadeCarta(s.cartasJogador[C[0]],s)==ESPADILHA ||
-				qualidadeCarta(s.cartasJogador[C[0]],s)==ESCOPETA)
-					// Jogar então
-					return C[0];
-			return C[2]; // retorna a menor então
+			// Mas somente jogar caso nÃ£o tenhamos o zap tambÃ©m
+			// Isto quer dizer que uma dessas tem que ser a maior carta na
+			// mÃ£o...
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == PICAFUMO
+					|| qualidadeCarta(s.cartasJogador[C[0]], s) == ESPADILHA
+					|| qualidadeCarta(s.cartasJogador[C[0]], s) == ESCOPETA)
+				// Jogar entÃ£o
+				return C[0];
+			return C[2]; // retorna a menor entÃ£o
 		} else {
 			// jogar a menor carta
 			return C[2];
 		}
 	}
 
-	private int joga_primeira_rodada_posmao(SituacaoJogo s) 
-	{
+	private int joga_primeira_rodada_posmao(SituacaoJogo s) {
 		// Caso esteja vindo manilha:
 		// Tentar matar a qualquer custo
-		// Caso esteja vindo um três:
-		// Se temos zap e três, jogar o três
-		// Senão tentar matar a qualquer custo
+		// Caso esteja vindo um trÃªs:
+		// Se temos zap e trÃªs, jogar o trÃªs
+		// SenÃ£o tentar matar a qualquer custo
 		// Caso esteja vindo um dois:
-		// Caso tenhamos zap e três, jogar o três
+		// Caso tenhamos zap e trÃªs, jogar o trÃªs
 		// Caso tenhamos zap e dois, jogar o dois
-		// Senão tentar matar com a menor manilha (menos o zap) ou um três pelo menos
-		// Caso esteja vindo um ás:
-		// Caso tenhamos zap e três, jogar o três
+		// SenÃ£o tentar matar com a menor manilha (menos o zap) ou um
+		// trÃªs pelo menos
+		// Caso esteja vindo um Ã¡s:
+		// Caso tenhamos zap e trÃªs, jogar o trÃªs
 		// Caso tenhamos zap e dois, jogar o dois
-		// Caso tenhamos zap e ás, jogar o ás
-		// Senão tentar matar com a menor manilha (menos o zap) ou um três ou dois pelo menos
-		// Senão deixar para o parceiro, ele deve se virar
+		// Caso tenhamos zap e Ã¡s, jogar o Ã¡s
+		// SenÃ£o tentar matar com a menor manilha (menos o zap) ou um
+		// trÃªs ou dois pelo menos
+		// SenÃ£o deixar para o parceiro, ele deve se virar
 		// Caso esteja vindo lixo:
 		// Jogar a menor manilha (menos o zap)
-		// Ou um três somente caso tenhamos o zap
-		// Senão deixar para o parceiro, ele deve se virar
-		
-		if(qualidadeMaiorMesa(s)>=PICAFUMO)
+		// Ou um trÃªs somente caso tenhamos o zap
+		// SenÃ£o deixar para o parceiro, ele deve se virar
+
+		if (qualidadeMaiorMesa(s) >= PICAFUMO)
 			return menorCartaParaMatar(s);
-		
-		if(qualidadeMaiorMesa(s)==TRES) {
-			// Checa se temos zap e três
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-				qualidadeCarta(s.cartasJogador[C[1]],s)==TRES)
-					// Jogar o três
-					return C[1];
-				// Vai que temos uma manilha também (C[1]) (ou mesmo outro três),
-				// mesmo assim vamos jogar o três
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-						qualidadeCarta(s.cartasJogador[C[2]],s)==TRES)
-						// Jogar o três
-						return C[2];
+
+		if (qualidadeMaiorMesa(s) == TRES) {
+			// Checa se temos zap e trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) == TRES)
+				// Jogar o trÃªs
+				return C[1];
+			// Vai que temos uma manilha tambÃ©m (C[1]) (ou
+			// mesmo outro trÃªs),
+			// mesmo assim vamos jogar o trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[2]], s) == TRES)
+				// Jogar o trÃªs
+				return C[2];
 			return menorCartaParaMatar(s);
 		}
-		
-		if(qualidadeMaiorMesa(s)==DOIS) {
-			// Checa se temos zap e três
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-				qualidadeCarta(s.cartasJogador[C[1]],s)==TRES)
-					// Jogar o três
-					return C[1];
-				// Vai que temos uma manilha também (C[1]) (ou mesmo outro três),
-				// mesmo assim vamos jogar o três
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-						qualidadeCarta(s.cartasJogador[C[2]],s)==TRES)
-						// Jogar o três
-						return C[2];
-			// Checa se temos zap e dois
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-				qualidadeCarta(s.cartasJogador[C[1]],s)==DOIS)
-					// Jogar o dois
-					return C[1];
-				// Vai que temos uma manilha também (C[1]) (ou mesmo outros três/dois),
-				// mesmo assim vamos jogar o dois
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-						qualidadeCarta(s.cartasJogador[C[2]],s)==DOIS)
-						// Jogar o dois
-						return C[2];
-			// Aqui vamos jogar a menor manilha (menos o zap)
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==PICAFUMO)
-				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==PICAFUMO)
+
+		if (qualidadeMaiorMesa(s) == DOIS) {
+			// Checa se temos zap e trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) == TRES)
+				// Jogar o trÃªs
 				return C[1];
-			if(qualidadeCarta(s.cartasJogador[C[2]],s)==PICAFUMO)
+			// Vai que temos uma manilha tambÃ©m (C[1]) (ou
+			// mesmo outro trÃªs),
+			// mesmo assim vamos jogar o trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[2]], s) == TRES)
+				// Jogar o trÃªs
 				return C[2];
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ESPADILHA)
-				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==ESPADILHA)
+			// Checa se temos zap e dois
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) == DOIS)
+				// Jogar o dois
 				return C[1];
-			if(qualidadeCarta(s.cartasJogador[C[2]],s)==ESPADILHA)
-				return C[0]; // hummmm... podemos jogar o zap para tentar enganar os adversários...
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ESCOPETA)
+			// Vai que temos uma manilha tambÃ©m (C[1]) (ou
+			// mesmo outros trÃªs/dois),
+			// mesmo assim vamos jogar o dois
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[2]], s) == DOIS)
+				// Jogar o dois
+				return C[2];
+			// Aqui vamos jogar a menor manilha (menos o zap)
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == PICAFUMO)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==ESCOPETA)
-				return C[0]; // hummmm.. podemos jogar o zap para tentar enganar os adversários...
-			// Aqui vamos jogar o três ou dois
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==TRES)
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == PICAFUMO)
+				return C[1];
+			if (qualidadeCarta(s.cartasJogador[C[2]], s) == PICAFUMO)
+				return C[2];
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ESPADILHA)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==DOIS)
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == ESPADILHA)
+				return C[1];
+			if (qualidadeCarta(s.cartasJogador[C[2]], s) == ESPADILHA)
+				return C[0]; // hummmm... podemos jogar o zap
+			// para tentar enganar os
+			// adversÃ¡rios...
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ESCOPETA)
+				return C[0];
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == ESCOPETA)
+				return C[0]; // hummmm.. podemos jogar o zap para
+			// tentar enganar os adversÃ¡rios...
+			// Aqui vamos jogar o trÃªs ou dois
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == TRES)
+				return C[0];
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == DOIS)
 				return C[0]; // ok se amarrar
-			return C[2]; // retorna a menor então
+			return C[2]; // retorna a menor entÃ£o
 		}
-		
-		if(qualidadeMaiorMesa(s)==AS) {
-			// Checa se temos zap e três
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-				qualidadeCarta(s.cartasJogador[C[1]],s)==TRES)
-					// Jogar o três
-					return C[1];
-				// Vai que temos uma manilha também (C[1]) (ou mesmo outro três),
-				// mesmo assim vamos jogar o três
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-						qualidadeCarta(s.cartasJogador[C[2]],s)==TRES)
-						// Jogar o três
-						return C[2];
-			// Checa se temos zap e dois
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-				qualidadeCarta(s.cartasJogador[C[1]],s)==DOIS)
-					// Jogar o dois
-					return C[1];
-				// Vai que temos uma manilha também (C[1]) (ou mesmo outros três/dois),
-				// mesmo assim vamos jogar o dois
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-						qualidadeCarta(s.cartasJogador[C[2]],s)==DOIS)
-						// Jogar o dois
-						return C[2];
-			// Checa se temos zap e ás
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-				qualidadeCarta(s.cartasJogador[C[1]],s)==AS)
-					// Jogar o ás
-					return C[1];
-				// Vai que temos uma manilha também (C[1]) (ou mesmo outos três/dois/ás),
-				// mesmo assim vamos jogar o ás
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-						qualidadeCarta(s.cartasJogador[C[2]],s)==AS)
-						// Jogar o ás
-						return C[2];
-			// Aqui vamos jogar a menor manilha (menos o zap)
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==PICAFUMO)
-				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==PICAFUMO)
+
+		if (qualidadeMaiorMesa(s) == AS) {
+			// Checa se temos zap e trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) == TRES)
+				// Jogar o trÃªs
 				return C[1];
-			if(qualidadeCarta(s.cartasJogador[C[2]],s)==PICAFUMO)
+			// Vai que temos uma manilha tambÃ©m (C[1]) (ou
+			// mesmo outro trÃªs),
+			// mesmo assim vamos jogar o trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[2]], s) == TRES)
+				// Jogar o trÃªs
 				return C[2];
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ESPADILHA)
-				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==ESPADILHA)
+			// Checa se temos zap e dois
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) == DOIS)
+				// Jogar o dois
 				return C[1];
-			if(qualidadeCarta(s.cartasJogador[C[2]],s)==ESPADILHA)
-				return C[0]; // hummmm... podemos jogar o zap para tentar enganar os adversários...
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ESCOPETA)
+			// Vai que temos uma manilha tambÃ©m (C[1]) (ou
+			// mesmo outros trÃªs/dois),
+			// mesmo assim vamos jogar o dois
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[2]], s) == DOIS)
+				// Jogar o dois
+				return C[2];
+			// Checa se temos zap e Ã¡s
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) == AS)
+				// Jogar o Ã¡s
+				return C[1];
+			// Vai que temos uma manilha tambÃ©m (C[1]) (ou
+			// mesmo outos trÃªs/dois/Ã¡s),
+			// mesmo assim vamos jogar o Ã¡s
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[2]], s) == AS)
+				// Jogar o Ã¡s
+				return C[2];
+			// Aqui vamos jogar a menor manilha (menos o zap)
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == PICAFUMO)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==ESCOPETA)
-				return C[0]; // hummmm... podemos jogar o zap para tentar enganar os adversários...
-			// Aqui vamos jogar o três ou dois
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==TRES)
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == PICAFUMO)
+				return C[1];
+			if (qualidadeCarta(s.cartasJogador[C[2]], s) == PICAFUMO)
+				return C[2];
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ESPADILHA)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==DOIS)
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == ESPADILHA)
+				return C[1];
+			if (qualidadeCarta(s.cartasJogador[C[2]], s) == ESPADILHA)
+				return C[0]; // hummmm... podemos jogar o zap
+			// para tentar enganar os adversÃ¡rios...
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ESCOPETA)
 				return C[0];
-			return C[2]; // retorna a menor então
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == ESCOPETA)
+				return C[0]; // hummmm... podemos jogar o zap
+			// para tentar enganar os
+			// adversÃ¡rios...
+			// Aqui vamos jogar o trÃªs ou dois
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == TRES)
+				return C[0];
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == DOIS)
+				return C[0];
+			return C[2]; // retorna a menor entÃ£o
 		}
-		
+
 		if (qualidadeMaiorMesa(s) == LIXO) {
 			// Aqui vamos jogar a menor manilha (menos o zap)
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==PICAFUMO)
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == PICAFUMO)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==PICAFUMO)
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == PICAFUMO)
 				return C[1];
-			if(qualidadeCarta(s.cartasJogador[C[2]],s)==PICAFUMO)
+			if (qualidadeCarta(s.cartasJogador[C[2]], s) == PICAFUMO)
 				return C[2];
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ESPADILHA)
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ESPADILHA)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==ESPADILHA)
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == ESPADILHA)
 				return C[1];
-			if(qualidadeCarta(s.cartasJogador[C[2]],s)==ESPADILHA)
-				return C[0]; // hummmm... podemos jogar o zap para tentar enganar os adversários...
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ESCOPETA)
+			if (qualidadeCarta(s.cartasJogador[C[2]], s) == ESPADILHA)
+				return C[0]; // hummmm... podemos jogar o zap
+			// para tentar enganar os
+			// adversÃ¡rios...
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ESCOPETA)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==ESCOPETA)
-				return C[0]; // hummmm... podemos jogar o zap para tentar enganar os adversários...
-			// Checa se temos zap e três
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-				qualidadeCarta(s.cartasJogador[C[1]],s)==TRES)
-					// Jogar o três
-					return C[1];
-				// Vai que temos uma manilha também (C[1]) (ou mesmo outro três),
-				// mesmo assim vamos jogar o três
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-						qualidadeCarta(s.cartasJogador[C[2]],s)==TRES)
-						// Jogar o três
-						return C[2];
-			return C[2]; // retorna a menor então
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == ESCOPETA)
+				return C[0]; // hummmm... podemos jogar o zap
+			// para tentar enganar os
+			// adversÃ¡rios...
+			// Checa se temos zap e trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) == TRES)
+				// Jogar o trÃªs
+				return C[1];
+			// Vai que temos uma manilha tambÃ©m (C[1]) (ou
+			// mesmo outro trÃªs),
+			// mesmo assim vamos jogar o trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[2]], s) == TRES)
+				// Jogar o trÃªs
+				return C[2];
+			return C[2]; // retorna a menor entÃ£o
 		}
-		return C[0]; // para satisfazer o corretor do método (Eclipse)...
+		return C[0]; // para satisfazer o corretor do mÃ©todo (Eclipse)...
 	}
-	
-	private int joga_primeira_rodada_parape(SituacaoJogo s) 
-	{
+
+	private int joga_primeira_rodada_parape(SituacaoJogo s) {
 		// 1) Caso a maior carta da mesa seja do parceiro:
-		// Se for maior ou igual a três, ok, deixar passar
+		// Se for maior ou igual a trÃªs, ok, deixar passar
 		// (apesar que aqui o correto seria "sinalizar" para o parceiro
 		// caso tenhamos uma manilha (menos o zap) para tentar fazer
-		// e não dar chance ao pé de amarrar...
+		// e nÃ£o dar chance ao pÃ© de amarrar...
 		// assim como outros casos... mas tudo bem...
-		// Se for um dois, vamos reforçar só se tivermos manilha (menos o zap) ou a menor, caso contrário
-		// Se for um ás, vamos reforçar, se temos zap e três, jogar o três, jogar manilha (menos o zap), três/dois ou a menor, caso contrário
-		// Se for lixo (menor que ás), vamos reforçar, se temos zap e três, jogar o três, jogar manilha (menos o zap) ou um três/dois/ás/zap (estamos secos?) ou a menor, caso contrário
-		// 2) Caso a maior que esteja vindo não seja a do parceiro:
+		// Se for um dois, vamos reforÃ§ar sÃ³ se tivermos manilha (menos
+		// o zap) ou a menor, caso contrÃ¡rio
+		// Se for um Ã¡s, vamos reforÃ§ar, se temos zap e trÃªs, jogar o
+		// trÃªs, jogar manilha (menos o zap), trÃªs/dois ou a menor, caso
+		// contrÃ¡rio
+		// Se for lixo (menor que Ã¡s), vamos reforÃ§ar, se temos zap e
+		// trÃªs, jogar o trÃªs, jogar manilha (menos o zap) ou um
+		// trÃªs/dois/Ã¡s/zap (estamos secos?) ou a menor, caso contrÃ¡rio
+		// 2) Caso a maior que esteja vindo nÃ£o seja a do parceiro:
 		// Caso esteja vindo manilha:
 		// Tentar matar a qualquer custo
-		// Caso esteja vindo um três:
-		// Se temos zap e três, jogar o três
-		// Senão tentar matar a qualquer custo
+		// Caso esteja vindo um trÃªs:
+		// Se temos zap e trÃªs, jogar o trÃªs
+		// SenÃ£o tentar matar a qualquer custo
 		// Caso esteja vindo um dois:
-		// Caso tenhamos zap e três, jogar o três
+		// Caso tenhamos zap e trÃªs, jogar o trÃªs
 		// Caso tenhamos zap e dois, jogar o dois
-		// Senão tentar matar com a menor manilha ou um três pelo menos
-		// Caso esteja vindo um ás/lixo:
-		// Caso tenhamos zap e três, jogar o três
+		// SenÃ£o tentar matar com a menor manilha ou um trÃªs pelo menos
+		// Caso esteja vindo um Ã¡s/lixo:
+		// Caso tenhamos zap e trÃªs, jogar o trÃªs
 		// Caso tenhamos zap e dois, jogar o dois
-		// Caso tenhamos zap e ás, jogar o ás
-		// Senão tentar matar com a menor manilha ou um três/dois/ás/...
+		// Caso tenhamos zap e Ã¡s, jogar o Ã¡s
+		// SenÃ£o tentar matar com a menor manilha ou um trÃªs/dois/Ã¡s/...
 
-		if(maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s) >= TRES)
+		if (maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s) >= TRES)
 			return C[2];
-		if(maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s) == DOIS) {
+		if (maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s) == DOIS) {
 			// Aqui vamos jogar a menor manilha (menos o zap)
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==PICAFUMO)
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == PICAFUMO)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==PICAFUMO)
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == PICAFUMO)
 				return C[1];
-			if(qualidadeCarta(s.cartasJogador[C[2]],s)==PICAFUMO)
+			if (qualidadeCarta(s.cartasJogador[C[2]], s) == PICAFUMO)
 				return C[2];
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ESPADILHA)
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ESPADILHA)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==ESPADILHA)
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == ESPADILHA)
 				return C[1];
-			if(qualidadeCarta(s.cartasJogador[C[2]],s)==ESPADILHA)
-				return C[0]; // hummmm... podemos jogar o zap para tentar enganar os adversários...
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ESCOPETA)
+			if (qualidadeCarta(s.cartasJogador[C[2]], s) == ESPADILHA)
+				return C[0]; // hummmm... podemos jogar o zap
+			// para tentar enganar os
+			// adversÃ¡rios...
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ESCOPETA)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==ESCOPETA)
-				return C[0]; // hummmm... podemos jogar o zap para tentar enganar os adversários...
-			return C[2];	
-		}
-		if(maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s) == AS) {
-			// Checa se temos zap e três
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-				qualidadeCarta(s.cartasJogador[C[1]],s)==TRES)
-					// Jogar o três
-					return C[1];
-				// Vai que temos uma manilha também (C[1]) (ou mesmo outro três),
-				// mesmo assim vamos jogar o três
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-						qualidadeCarta(s.cartasJogador[C[2]],s)==TRES)
-						// Jogar o três
-						return C[2];
-			// Aqui vamos jogar a menor manilha (menos o zap)
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==PICAFUMO)
-				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==PICAFUMO)
-				return C[1];
-			if(qualidadeCarta(s.cartasJogador[C[2]],s)==PICAFUMO)
-				return C[2];
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ESPADILHA)
-				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==ESPADILHA)
-				return C[1];
-			if(qualidadeCarta(s.cartasJogador[C[2]],s)==ESPADILHA)
-				return C[0]; // hummmm... podemos jogar o zap para tentar enganar os adversários...
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ESCOPETA)
-				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==ESCOPETA)
-				return C[0]; // hummmm... podemos jogar o zap para tentar enganar os adversários...
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==TRES)
-				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==DOIS)
-				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==DOIS)
-				return C[0];
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == ESCOPETA)
+				return C[0]; // hummmm... podemos jogar o zap
+			// para tentar enganar os
+			// adversÃ¡rios...
 			return C[2];
 		}
-		if(maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s) == LIXO) {
-			// Checa se temos zap e três
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-				qualidadeCarta(s.cartasJogador[C[1]],s)==TRES)
-					// Jogar o três
-					return C[1];
-				// Vai que temos uma manilha também (C[1]) (ou mesmo outro três),
-				// mesmo assim vamos jogar o três
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-						qualidadeCarta(s.cartasJogador[C[2]],s)==TRES)
-						// Jogar o três
-						return C[2];
-			// Aqui vamos jogar a menor manilha (menos o zap)
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==PICAFUMO)
-				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==PICAFUMO)
+		if (maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s) == AS) {
+			// Checa se temos zap e trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) == TRES)
+				// Jogar o trÃªs
 				return C[1];
-			if(qualidadeCarta(s.cartasJogador[C[2]],s)==PICAFUMO)
+			// Vai que temos uma manilha tambÃ©m (C[1]) (ou
+			// mesmo outro trÃªs),
+			// mesmo assim vamos jogar o trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[2]], s) == TRES)
+				// Jogar o trÃªs
 				return C[2];
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ESPADILHA)
+			// Aqui vamos jogar a menor manilha (menos o zap)
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == PICAFUMO)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==ESPADILHA)
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == PICAFUMO)
 				return C[1];
-			if(qualidadeCarta(s.cartasJogador[C[2]],s)==ESPADILHA)
-				return C[0]; // hummmm... podemos jogar o zap para tentar enganar os adversários...
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ESCOPETA)
+			if (qualidadeCarta(s.cartasJogador[C[2]], s) == PICAFUMO)
+				return C[2];
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ESPADILHA)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==ESCOPETA)
-				return C[0]; // hummmm... podemos jogar o zap para tentar enganar os adversários...
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==TRES)
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == ESPADILHA)
+				return C[1];
+			if (qualidadeCarta(s.cartasJogador[C[2]], s) == ESPADILHA)
+				return C[0]; // hummmm... podemos jogar o zap
+			// para tentar enganar os
+			// adversÃ¡rios...
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ESCOPETA)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==DOIS)
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == ESCOPETA)
+				return C[0]; // hummmm... podemos jogar o zap
+			// para tentar enganar os
+			// adversÃ¡rios...
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == TRES)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==DOIS)
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == DOIS)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==AS)
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == DOIS)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==AS)
+			return C[2];
+		}
+		if (maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s) == LIXO) {
+			// Checa se temos zap e trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) == TRES)
+				// Jogar o trÃªs
+				return C[1];
+			// Vai que temos uma manilha tambÃ©m (C[1]) (ou
+			// mesmo outro trÃªs),
+			// mesmo assim vamos jogar o trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[2]], s) == TRES)
+				// Jogar o trÃªs
+				return C[2];
+			// Aqui vamos jogar a menor manilha (menos o zap)
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == PICAFUMO)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP)
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == PICAFUMO)
+				return C[1];
+			if (qualidadeCarta(s.cartasJogador[C[2]], s) == PICAFUMO)
+				return C[2];
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ESPADILHA)
+				return C[0];
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == ESPADILHA)
+				return C[1];
+			if (qualidadeCarta(s.cartasJogador[C[2]], s) == ESPADILHA)
+				return C[0]; // hummmm... podemos jogar o zap
+			// para tentar enganar os
+			// adversÃ¡rios...
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ESCOPETA)
+				return C[0];
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == ESCOPETA)
+				return C[0]; // hummmm... podemos jogar o zap
+			// para tentar enganar os
+			// adversÃ¡rios...
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == TRES)
+				return C[0];
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == DOIS)
+				return C[0];
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == DOIS)
+				return C[0];
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == AS)
+				return C[0];
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == AS)
+				return C[0];
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP)
 				return C[0];
 			return C[2];
 		}
 
 		if (qualidadeMaiorMesa(s) >= PICAFUMO) {
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP)
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ESCOPETA &&
-				qualidadeMaiorMesa(s) != ZAP)
-					return C[0]; // melhoria: talvez pudesse desenvolver essa análise aprimorada para os demais casos abaixo (caso tenhamos mais que uma manilha)...
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ESCOPETA
+					&& qualidadeMaiorMesa(s) != ZAP)
+				return C[0]; // melhoria: talvez pudesse
+			// desenvolver essa anÃ¡lise
+			// aprimorada para os demais casos abaixo (caso tenhamos mais que
+			// uma
+			// manilha)...
 			return menorCartaParaMatar(s);
 		}
 		if (qualidadeMaiorMesa(s) == TRES) {
-			// Checa se temos zap e três
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-				qualidadeCarta(s.cartasJogador[C[1]],s)==TRES)
-					// Jogar o três
-					return C[1];
-				// Vai que temos uma manilha também (C[1]) (ou mesmo outro três),
-				// mesmo assim vamos jogar o três
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-						qualidadeCarta(s.cartasJogador[C[2]],s)==TRES)
-						// Jogar o três
-						return C[2];
+			// Checa se temos zap e trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) == TRES)
+				// Jogar o trÃªs
+				return C[1];
+			// Vai que temos uma manilha tambÃ©m (C[1]) (ou
+			// mesmo outro trÃªs),
+			// mesmo assim vamos jogar o trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[2]], s) == TRES)
+				// Jogar o trÃªs
+				return C[2];
 			return menorCartaParaMatar(s);
 		}
 		if (qualidadeMaiorMesa(s) == DOIS) {
-			// Checa se temos zap e três
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-				qualidadeCarta(s.cartasJogador[C[1]],s)==TRES)
-					// Jogar o três
-					return C[1];
-				// Vai que temos uma manilha também (C[1]) (ou mesmo outro três),
-				// mesmo assim vamos jogar o três
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-						qualidadeCarta(s.cartasJogador[C[2]],s)==TRES)
-						// Jogar o três
-						return C[2];
-			// Checa se temos zap e dois
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-				qualidadeCarta(s.cartasJogador[C[1]],s)==DOIS)
-					// Jogar o dois
-					return C[1];
-				// Vai que temos uma manilha também (C[1]) (ou mesmo outros três/dois),
-				// mesmo assim vamos jogar o dois
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-						qualidadeCarta(s.cartasJogador[C[2]],s)==DOIS)
-						// Jogar o dois
-						return C[2];
-			// Aqui vamos jogar a menor manilha
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==PICAFUMO)
-				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==PICAFUMO)
+			// Checa se temos zap e trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) == TRES)
+				// Jogar o trÃªs
 				return C[1];
-			if(qualidadeCarta(s.cartasJogador[C[2]],s)==PICAFUMO)
+			// Vai que temos uma manilha tambÃ©m (C[1]) (ou
+			// mesmo outro trÃªs),
+			// mesmo assim vamos jogar o trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[2]], s) == TRES)
+				// Jogar o trÃªs
 				return C[2];
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ESPADILHA)
-				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==ESPADILHA)
+			// Checa se temos zap e dois
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) == DOIS)
+				// Jogar o dois
 				return C[1];
-			if(qualidadeCarta(s.cartasJogador[C[2]],s)==ESPADILHA)
-				return C[0]; // hummmm... podemos jogar o zap para tentar enganar os adversários...
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ESCOPETA)
+			// Vai que temos uma manilha tambÃ©m (C[1]) (ou
+			// mesmo outros trÃªs/dois),
+			// mesmo assim vamos jogar o dois
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[2]], s) == DOIS)
+				// Jogar o dois
+				return C[2];
+			// Aqui vamos jogar a menor manilha
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == PICAFUMO)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==ESCOPETA)
-				return C[0]; // hummmm... podemos jogar o zap para tentar enganar os adversários...
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP)
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == PICAFUMO)
+				return C[1];
+			if (qualidadeCarta(s.cartasJogador[C[2]], s) == PICAFUMO)
+				return C[2];
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ESPADILHA)
 				return C[0];
-			// Aqui jogamos um três
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==TRES)
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == ESPADILHA)
+				return C[1];
+			if (qualidadeCarta(s.cartasJogador[C[2]], s) == ESPADILHA)
+				return C[0]; // hummmm... podemos jogar o zap
+			// para tentar enganar os
+			// adversÃ¡rios...
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ESCOPETA)
+				return C[0];
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == ESCOPETA)
+				return C[0]; // hummmm... podemos jogar o zap
+			// para tentar enganar os
+			// adversÃ¡rios...
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP)
+				return C[0];
+			// Aqui jogamos um trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == TRES)
 				return C[0];
 			return C[2];
 		}
 		if (qualidadeMaiorMesa(s) <= AS) {
-			// Checa se temos zap e três
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-				qualidadeCarta(s.cartasJogador[C[1]],s)==TRES)
-					// Jogar o três
-					return C[1];
-				// Vai que temos uma manilha também (C[1]) (ou mesmo outro três),
-				// mesmo assim vamos jogar o três
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-						qualidadeCarta(s.cartasJogador[C[2]],s)==TRES)
-						// Jogar o três
-						return C[2];
-			// Checa se temos zap e dois
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-				qualidadeCarta(s.cartasJogador[C[1]],s)==DOIS)
-					// Jogar o dois
-					return C[1];
-				// Vai que temos uma manilha também (C[1]) (ou mesmo outros três/dois),
-				// mesmo assim vamos jogar o dois
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-						qualidadeCarta(s.cartasJogador[C[2]],s)==DOIS)
-						// Jogar o dois
-						return C[2];
-			// Checa se temos zap e ás
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-				qualidadeCarta(s.cartasJogador[C[1]],s)==AS)
-					// Jogar o ás
-					return C[1];
-				// Vai que temos uma manilha também (C[1]) (ou mesmo outros três/dois/ás),
-				// mesmo assim vamos jogar o ás
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && 
-						qualidadeCarta(s.cartasJogador[C[2]],s)==AS)
-						// Jogar o ás
-						return C[2];				
-			// Aqui vamos jogar a menor manilha
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==PICAFUMO)
-				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==PICAFUMO)
+			// Checa se temos zap e trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) == TRES)
+				// Jogar o trÃªs
 				return C[1];
-			if(qualidadeCarta(s.cartasJogador[C[2]],s)==PICAFUMO)
+			// Vai que temos uma manilha tambÃ©m (C[1]) (ou
+			// mesmo outro trÃªs),
+			// mesmo assim vamos jogar o trÃªs
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[2]], s) == TRES)
+				// Jogar o trÃªs
 				return C[2];
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ESPADILHA)
-				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==ESPADILHA)
+			// Checa se temos zap e dois
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) == DOIS)
+				// Jogar o dois
 				return C[1];
-			if(qualidadeCarta(s.cartasJogador[C[2]],s)==ESPADILHA)
-				return C[0]; // hummmm... podemos jogar o zap para tentar enganar os adversários...
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ESCOPETA)
+			// Vai que temos uma manilha tambÃ©m (C[1]) (ou
+			// mesmo outros trÃªs/dois),
+			// mesmo assim vamos jogar o dois
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[2]], s) == DOIS)
+				// Jogar o dois
+				return C[2];
+			// Checa se temos zap e Ã¡s
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) == AS)
+				// Jogar o Ã¡s
+				return C[1];
+			// Vai que temos uma manilha tambÃ©m (C[1]) (ou
+			// mesmo outros trÃªs/dois/Ã¡s),
+			// mesmo assim vamos jogar o Ã¡s
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP
+					&& qualidadeCarta(s.cartasJogador[C[2]], s) == AS)
+				// Jogar o Ã¡s
+				return C[2];
+			// Aqui vamos jogar a menor manilha
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == PICAFUMO)
 				return C[0];
-			if(qualidadeCarta(s.cartasJogador[C[1]],s)==ESCOPETA)
-				return C[0]; // hummmm... podemos jogar o zap para tentar enganar os adversários...
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP)
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == PICAFUMO)
+				return C[1];
+			if (qualidadeCarta(s.cartasJogador[C[2]], s) == PICAFUMO)
+				return C[2];
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ESPADILHA)
 				return C[0];
-			// Aqui jogamos a melhor que temos então desde que não seja menor que a que está já na mesa
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)>=qualidadeMaiorMesa(s))
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == ESPADILHA)
+				return C[1];
+			if (qualidadeCarta(s.cartasJogador[C[2]], s) == ESPADILHA)
+				return C[0]; // hummmm... podemos jogar o zap
+			// para tentar enganar os adversÃ¡rios...
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ESCOPETA)
+				return C[0];
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) == ESCOPETA)
+				return C[0]; // hummmm... podemos jogar o zap
+			// para tentar enganar os adversÃ¡rios...
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP)
+				return C[0];
+			// Aqui jogamos a melhor que temos entÃ£o desde que nÃ£o
+			// seja menor que a que estÃ¡ jÃ¡ na mesa
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) >= qualidadeMaiorMesa(s))
 				return C[0];
 			return C[2];
 		}
-		return C[0]; // para satisfazer o corretor do método (Eclipse)...
+		return C[0]; // para satisfazer o corretor do mÃ©todo (Eclipse)...
 	}
-	
-	private int joga_primeira_rodada_pe(SituacaoJogo s) 
-	{
-		// Aqui é fácil...
-		// Tudo que o pé tem a fazer é garantir a primeira!
 
-		if(maiorCartaEDoParceiro(s))
-			return C[2]; //é isso aí parceiro!
-		return menorCartaParaMatarOuAmarrar(s); //deixa comigo
+	private int joga_primeira_rodada_pe(SituacaoJogo s) {
+		// Aqui Ã© fÃ¡cil...
+		// Tudo que o pÃ© tem a fazer Ã© garantir a primeira!
+
+		if (maiorCartaEDoParceiro(s))
+			return C[2]; // Ã© isso aÃ­ parceiro!
+		return menorCartaParaMatarOuAmarrar(s); // deixa comigo
 	}
-	
-	private int joga_segunda_rodada_mao(SituacaoJogo s) 
-	{
+
+	private int joga_segunda_rodada_mao(SituacaoJogo s) {
 		// Fiz a primeira
 		// Se estiver com a partida ganha, vou encobrir a menor!
-		// Se estiver com duas cartas acima ou igual a um três, jogar a menor aumentando a aposta (com alta probabilidade).
-		// Se estiver com duas cartas acima ou igual a um ás, jogar a menor.
-		// Se estiver com uma carta acima ou igual a um ás e um lixo, jogo o lixo encoberto (com alta probabilidade).
-		// Se estiver com dois lixos, jogo o lixo mais lixo encoberto (com baixa probabilidade).
+		// Se estiver com duas cartas acima ou igual a um trÃªs, jogar a menor
+		// aumentando a aposta (com alta probabilidade).
+		// Se estiver com duas cartas acima ou igual a um Ã¡s, jogar a
+		// menor.
+		// Se estiver com uma carta acima ou igual a um Ã¡s e um lixo,
+		// jogo o lixo encoberto (com alta probabilidade).
+		// Se estiver com dois lixos, jogo o lixo mais lixo encoberto
+		// (com baixa probabilidade).
 
-		if(partidaGanha(s))
-			return C[1]+10;
+		if (partidaGanha(s)) {
+			// "cama": jogar encoberto para nÃ£o fechar o adversÃ¡rio
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) >= AS)
+				return C[1] + 10;
+			// para nÃ£o ficar muito evidente toda hora a mesma
+			// jogada:
+			if (mandaBala(50))
+				return C[1] + 10;
+			return C[1];
+		}
 
-		if(qualidadeCarta(s.cartasJogador[C[0]],s)>=TRES &&
-			qualidadeCarta(s.cartasJogador[C[1]],s)>=TRES) {
-			if(podeEValeAPenaAumentar(s,70,10,1,0))
+		if (qualidadeCarta(s.cartasJogador[C[0]], s) >= TRES
+				&& qualidadeCarta(s.cartasJogador[C[1]], s) >= TRES) {
+			if (podeEValeAPenaAumentar(s, 70, 10, 1, 0))
 				return -1;
 			return C[1];
 		}
 
-		if(qualidadeCarta(s.cartasJogador[C[0]],s)>=AS &&
-				qualidadeCarta(s.cartasJogador[C[1]],s)>=AS) {
-				return C[1];
+		if (qualidadeCarta(s.cartasJogador[C[0]], s) >= AS
+				&& qualidadeCarta(s.cartasJogador[C[1]], s) >= AS) {
+			return C[1];
 		}
-	
-		if(qualidadeCarta(s.cartasJogador[C[0]],s)>=AS &&
-				qualidadeCarta(s.cartasJogador[C[1]],s)==LIXO) {
-				if(mandaBala(75))
-					return C[1]+10;
-				return C[1];		
+
+		if (qualidadeCarta(s.cartasJogador[C[0]], s) >= AS
+				&& qualidadeCarta(s.cartasJogador[C[1]], s) == LIXO) {
+			if (mandaBala(75))
+				return C[1] + 10;
+			return C[1];
 		}
-	
-		if(qualidadeCarta(s.cartasJogador[C[0]],s)==LIXO &&
-				qualidadeCarta(s.cartasJogador[C[1]],s)==LIXO) {
-				if(mandaBala(25))
-					return C[1]+10;
-				return C[1];		
+
+		if (qualidadeCarta(s.cartasJogador[C[0]], s) == LIXO
+				&& qualidadeCarta(s.cartasJogador[C[1]], s) == LIXO) {
+			if (mandaBala(25))
+				return C[1] + 10;
+			return C[1];
 		}
-		return C[0]; // para satisfazer o corretor do método (Eclipse)...
+		return C[0]; // para satisfazer o corretor do mÃ©todo (Eclipse)...
 	}
 
-	private int joga_segunda_rodada_posmao(SituacaoJogo s) 
-	{
-		// A primeira é deles
-		// Assim fica difícil
+	private int joga_segunda_rodada_posmao(SituacaoJogo s) {
+		// A primeira Ã© deles
+		// Assim fica difÃ­cil
 		// Vou deixar para o parceiro
 
 		return C[1];
 	}
-	
-	private int joga_segunda_rodada_parape(SituacaoJogo s) 
-	{
+
+	private int joga_segunda_rodada_parape(SituacaoJogo s) {
 		// O parceiro fez a primeira
 		// Se estiver com a partida ganha, vou jogar quieto a menor!
-		// Caso contrário, vou sempre jogar a maior no pé.
-		// A não ser que esteja vindo carta boa do parceiro...
-		// Se estiver com uma carta acima ou igual a um ás, jogar aumentando a aposta (com alta probabilidade).
-		// Se estiver com lixos, jogar aumentando a aposta (com baixa probabilidade - facão).
+		// Caso contrÃ¡rio, vou sempre jogar a maior no pÃ©.
+		// A nÃ£o ser que esteja vindo carta boa do parceiro...
+		// Se estiver com uma carta acima ou igual a um Ã¡s, jogar
+		// aumentando a aposta (com alta probabilidade).
+		// Se estiver com lixos, jogar aumentando a aposta (com baixa
+		// probabilidade - facÃ£o).
 
-		if(partidaGanha(s))
+		if (partidaGanha(s)) {
+			// "cama": jogar encoberto para nÃ£o fechar o pÃ©
+			if (qualidadeCarta(s.cartasJogador[C[1]], s) >= AS)
+				return C[1] + 10;
+			// para nÃ£o ficar muito evidente toda hora a mesma
+			// jogada:
+			if (mandaBala(50))
+				return C[1] + 10;
 			return C[1];
-		
-		if(maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s)>=TRES)
-			return C[1]+10;
-		if(qualidadeCarta(s.cartasJogador[C[0]],s)>=TRES) {
-				if(podeEValeAPenaAumentar(s,85,30,1,0))
-					return -1;
-				return C[0];
 		}
-		if(maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s)==DOIS)
-			return C[1]+10;
-		if(qualidadeCarta(s.cartasJogador[C[0]],s)==DOIS) {
-			if(podeEValeAPenaAumentar(s,80,20,1,0))
+
+		if (maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s) >= TRES)
+			return C[1] + 10;
+		if (qualidadeCarta(s.cartasJogador[C[0]], s) >= TRES) {
+			if (podeEValeAPenaAumentar(s, 90, 30, 1, 0)
+					&& !partidaGanhaParaAdversario(s))
+				return -1;
+			// se tenho zap fazer "cama"...
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == ZAP) {
+				return C[1] + 10;
+			} else {
+				return C[0];
+			}
+		}
+		if (maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s) == DOIS)
+			return C[1] + 10;
+		if (qualidadeCarta(s.cartasJogador[C[0]], s) == DOIS) {
+			if (podeEValeAPenaAumentar(s, 75, 20, 1, 0)
+					&& !partidaGanhaParaAdversario(s))
 				return -1;
 			return C[0];
 		}
-		if(maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s)==AS)
-			return C[1]+10;
-		if(qualidadeCarta(s.cartasJogador[C[0]],s)==AS) {
-			if(podeEValeAPenaAumentar(s,75,10,1,0))
+		if (maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s) == AS)
+			return C[1] + 10;
+		if (qualidadeCarta(s.cartasJogador[C[0]], s) == AS) {
+			if (podeEValeAPenaAumentar(s, 60, 10, 1, 0)
+					&& !partidaGanhaParaAdversario(s))
 				return -1;
 			return C[0];
 		}
 
-		if(qualidadeCarta(s.cartasJogador[C[0]],s)==LIXO) {
-			if(podeEValeAPenaAumentar(s,10,2,1,0))
+		if (qualidadeCarta(s.cartasJogador[C[0]], s) == LIXO) {
+			if (podeEValeAPenaAumentar(s, 10, 2, 1, 0)
+					&& !partidaGanhaParaAdversario(s))
 				return -1;
 			return C[0];
 		}
-		return C[0]; // para satisfazer o corretor do método (Eclipse)...
+		return C[0]; // para satisfazer o corretor do mÃ©todo (Eclipse)...
 	}
-	
-	private int joga_segunda_rodada_pe(SituacaoJogo s) 
-	{
-		// A primeira é deles
+
+	private int joga_segunda_rodada_pe(SituacaoJogo s) {
+		// A primeira Ã© deles
 		// Tenho que fazer de qualquer jeito
 
-		if(maiorCartaEDoParceiro(s))
-			return C[1]; //é isso aí parceiro!
-		return menorCartaParaMatar(s); //deixa comigo
+		if (maiorCartaEDoParceiro(s))
+			return C[1] + 10; // Ã© isso aÃ­ parceiro! Retornar encoberto, por
+		// quÃª revelar?...
+		return menorCartaParaMatar(s); // deixa comigo
 	}
-	
-	private int joga_terceira_rodada_mao(SituacaoJogo s) 
-	{
+
+	private int joga_terceira_rodada_mao(SituacaoJogo s) {
 		// Eles fizeram a primeira, eu fiz a segunda
-		// Se estiver com a partida ganha, arregaçar os caras!
-		// Se estiver com manilha, jogar aumentando a aposta (com média probabilidade).
-		// Se estiver com três ou menos, jogar quieto.
+		// Se estiver com a partida ganha, arregaÃ§ar os caras!
+		// Se estiver com manilha, jogar aumentando a aposta (com mÃ©dia
+		// probabilidade).
+		// Se estiver com trÃªs ou menos, jogar quieto.
 
-		if(partidaGanha(s) && podeEValeAPenaAumentar(s,100,100,100,100))
+		if (partidaGanha(s) && podeEValeAPenaAumentar(s, 100, 100, 100, 100))
 			return -1;
-		
-		if(qualidadeCarta(s.cartasJogador[C[0]],s)>TRES &&
-			podeEValeAPenaAumentar(s,45,5,1,0))
-				return -1;
+
+		if (qualidadeCarta(s.cartasJogador[C[0]], s) > TRES
+				&& podeEValeAPenaAumentar(s, 45, 5, 1, 0))
+			return -1;
 
 		return C[0];
 	}
 
-	private int joga_terceira_rodada_posmao(SituacaoJogo s) 
-	{
-		// Nós fizemos a primeira, eles fizeram a segunda
-		// Se estiver com a partida ganha, arregaçar os caras!
-		// Se não puder com a que estiver vindo, jogar encoberta.
-		// Se estiver com manilha, jogar aumentando a aposta (com média probabilidade).
-		// Se estiver com três ou menos, jogar quieto.
+	private int joga_terceira_rodada_posmao(SituacaoJogo s) {
+		// NÃ³s fizemos a primeira, eles fizeram a segunda
+		// Se estiver com a partida ganha, arregaÃ§ar os caras!
+		// Se nÃ£o puder com a que estiver vindo, jogar encoberta.
+		// Se estiver com manilha, jogar aumentando a aposta (com mÃ©dia
+		// probabilidade).
+		// Se estiver com trÃªs ou menos, jogar quieto.
 
-		if(partidaGanha(s) && podeEValeAPenaAumentar(s,100,100,100,100))
+		if (partidaGanha(s) && podeEValeAPenaAumentar(s, 100, 100, 100, 100))
 			return -1;
-		
-		if(qualidadeCarta(s.cartasJogador[C[0]],s)<qualidadeMaiorMesa(s))
-			return C[0]+10;
-		
-		if(qualidadeCarta(s.cartasJogador[C[0]],s)>TRES &&
-			podeEValeAPenaAumentar(s,45,5,1,0))
-				return -1;
-		
+
+		if (qualidadeCarta(s.cartasJogador[C[0]], s) < qualidadeMaiorMesa(s))
+			return C[0] + 10;
+
+		if (qualidadeCarta(s.cartasJogador[C[0]], s) > TRES
+				&& podeEValeAPenaAumentar(s, 45, 5, 1, 0)
+				&& !partidaGanhaParaAdversario(s))
+			return -1;
+
 		return C[0];
 	}
-	
-	private int joga_terceira_rodada_parape(SituacaoJogo s) 
-	{
+
+	private int joga_terceira_rodada_parape(SituacaoJogo s) {
 		// Eles fizeram a primeira, meu parceiro fez a segunda
-		// Agora é a hora da verdade...
-		// Se estiver com a partida ganha, arregaçar os caras!
-		// Se não puder com a que estiver vindo, jogar aumentando a aposta no facão (com baixa probabilidade).
-		// Se estiver com manilha, jogar aumentando a aposta (com média-alta probabilidade).
-		// Se estiver com três, jogar aumentando a aposta (com média-baixa probabilidade)
+		// Agora Ã© a hora da verdade...
+		// Se estiver com a partida ganha, arregaÃ§ar os caras!
+		// Se a maior for do parceiro, e for manilha ou trÃªs, deixar
+		// passar (c/ alta prob.) (jÃ¡ que ele nÃ£o trucou nÃ£o vou trucar tambÃ©m)
+		// Se nÃ£o puder com a que estiver vindo, jogar aumentando a
+		// aposta no facÃ£o (com baixa probabilidade).
+		// Se puder com a que estiver vindo, e estiver com manilha,
+		// jogar aumentando a aposta (com mÃ©dia-alta probabilidade).
+		// Se puder com a que estiver vindo, e estiver com trÃªs, jogar
+		// aumentando a aposta (com mÃ©dia-baixa probabilidade)
 		// Se estiver com dois ou menos, jogar quieto.
 
-		if(partidaGanha(s) && podeEValeAPenaAumentar(s,100,100,100,100))
+		if (partidaGanha(s) && podeEValeAPenaAumentar(s, 100, 100, 100, 100))
 			return -1;
-		
-		if(qualidadeCarta(s.cartasJogador[C[0]],s)<=qualidadeMaiorMesa(s) &&
-			podeEValeAPenaAumentar(s,20,5,1,0))
-				return -1;
-		
-		if(qualidadeCarta(s.cartasJogador[C[0]],s)>TRES &&
-			podeEValeAPenaAumentar(s,60,5,1,0))
-				return -1;
-	
-		if(qualidadeCarta(s.cartasJogador[C[0]],s)==TRES &&
-			podeEValeAPenaAumentar(s,30,8,1,0))
-				return -1;
-		
-		return C[0];	
-	}
-	
-	private int joga_terceira_rodada_pe(SituacaoJogo s) 
-	{
-		// Nós fizemos a primeira, eles fizeram a segunda	
-		// Se estiver com a partida ganha, arregaçar os caras!
-		// Se não puder com a que estiver vindo, jogar aumentando a aposta no facão (com média probabilidade).
-		// Se puder com a que estiver vindo (pelo menos amarrar), arregaçar os caras!
 
-		if(partidaGanha(s) && podeEValeAPenaAumentar(s,100,100,100,100))
-			return -1;
-		
-		if(qualidadeCarta(s.cartasJogador[C[0]],s)<qualidadeMaiorMesa(s) &&
-			podeEValeAPenaAumentar(s,45,5,1,0))
+		if (maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s) >= TRES) {
+			if (podeEValeAPenaAumentar(s, 10, 2, 1, 0))
 				return -1;
-		
-		if(podeEValeAPenaAumentar(s,100,100,100,100))
-				return -1;
-		
-		return C[0];	
+		} else {
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) <= qualidadeMaiorMesa(s)) {
+				if (podeEValeAPenaAumentar(s, 20, 5, 1, 0)
+						&& qualidadeMaiorMesa(s) != ZAP
+						&& !partidaGanhaParaAdversario(s))
+					return -1;
+			} else {
+				if (qualidadeCarta(s.cartasJogador[C[0]], s) > TRES
+						&& podeEValeAPenaAumentar(s, 50, 5, 1, 0))
+					return -1;
+
+				if (qualidadeCarta(s.cartasJogador[C[0]], s) == TRES
+						&& podeEValeAPenaAumentar(s, 25, 8, 1, 0))
+					return -1;
+			}
+		}
+
+		return C[0];
 	}
-	
-	// Somente para facilitar organização do código
-	private int joga_primeira_rodada(SituacaoJogo s) 
-	{
+
+	private int joga_terceira_rodada_pe(SituacaoJogo s) {
+		// NÃ³s fizemos a primeira, eles fizeram a segunda
+		// Se estiver com a partida ganha, arregaÃ§ar os caras!
+		// Se nÃ£o puder com a que estiver vindo, jogar aumentando a
+		// aposta no facÃ£o (com mÃ©dia probabilidade).
+		// Se puder com a que estiver vindo (pelo menos amarrar),
+		// arregaÃ§ar os caras!
+
+		if (partidaGanha(s) && podeEValeAPenaAumentar(s, 100, 100, 100, 100))
+			return -1;
+
+		if (qualidadeCarta(s.cartasJogador[C[0]], s) < qualidadeMaiorMesa(s)
+				&& podeEValeAPenaAumentar(s, 20, 5, 1, 0)
+				&& !partidaGanhaParaAdversario(s))
+			return -1; // esse Ã© o espÃ­rito do jogo!!!!!
+
+		if (podeEValeAPenaAumentar(s, 100, 100, 100, 100))
+			return -1;
+
+		return C[0];
+	}
+
+	// Somente para facilitar organizaÃ§Ã£o do cÃ³digo
+	private int joga_primeira_rodada(SituacaoJogo s) {
 		switch (minhaPosicao(s)) {
-		// Mão
+		// MÃ£o
 		case 0:
 			return this.joga_primeira_rodada_mao(s);
-		// Pós mão
+			// PÃ³s mÃ£o
 		case 1:
 			return this.joga_primeira_rodada_posmao(s);
-		// Para pé
+			// Para pÃ©
 		case 2:
 			return this.joga_primeira_rodada_parape(s);
-		// Pé
+			// PÃ©
 		case 3:
-			return this.joga_primeira_rodada_pe(s);		
+			return this.joga_primeira_rodada_pe(s);
 		}
-		return C[0]; // para satisfazer o corretor do método (Eclipse)...
+		return C[0]; // para satisfazer o corretor do mÃ©todo (Eclipse)...
 	}
-	
-	private int joga_segunda_rodada(SituacaoJogo s) 
-	{
+
+	private int joga_segunda_rodada(SituacaoJogo s) {
 		switch (minhaPosicao(s)) {
-		// Mão
+		// MÃ£o
 		case 0:
 			return this.joga_segunda_rodada_mao(s);
-		// Pós mão
+			// PÃ³s mÃ£o
 		case 1:
 			return this.joga_segunda_rodada_posmao(s);
-		// Para pé
+			// Para pÃ©
 		case 2:
 			return this.joga_segunda_rodada_parape(s);
-		// Pé
+			// PÃ©
 		case 3:
-			return this.joga_segunda_rodada_pe(s);		
+			return this.joga_segunda_rodada_pe(s);
 		}
-		return C[0]; // para satisfazer o corretor do método (Eclipse)...
+		return C[0]; // para satisfazer o corretor do mÃ©todo (Eclipse)...
 	}
-	
-	private int joga_terceira_rodada(SituacaoJogo s) 
-	{
+
+	private int joga_terceira_rodada(SituacaoJogo s) {
 		switch (minhaPosicao(s)) {
-		// Mão
+		// MÃ£o
 		case 0:
 			return this.joga_terceira_rodada_mao(s);
-		// Pós mão
+			// PÃ³s mÃ£o
 		case 1:
 			return this.joga_terceira_rodada_posmao(s);
-		// Para pé
+			// Para pÃ©
 		case 2:
 			return this.joga_terceira_rodada_parape(s);
-		// Pé
+			// PÃ©
 		case 3:
-			return this.joga_terceira_rodada_pe(s);		
+			return this.joga_terceira_rodada_pe(s);
 		}
-		return C[0]; // para satisfazer o corretor do método (Eclipse)...
+		return C[0]; // para satisfazer o corretor do mÃ©todo (Eclipse)...
 	}
-	
+
 	/**
 	 * Executa uma jogada.
 	 * <p>
-	 * Observe que, ao pedir aumento, o sistema irá interagir com a outra dupla.
-	 * Se a partida seguir, o método será chamado novamente para efetivar a real
+	 * Observe que, ao pedir aumento, o sistema irÃ¡ interagir com a outra dupla.
+	 * Se a partida seguir, o mÃ©todo serÃ¡ chamado novamente para efetivar a real
 	 * jogada.
 	 * <p>
-	 * A estratégia é responsável por checar se o valor da próxima aposta é
-	 * diferente de 0 e só pedir aumento nesta situação.
+	 * A estratÃ©gia Ã© responsÃ¡vel por checar se o valor da prÃ³xima aposta Ã©
+	 * diferente de 0 e sÃ³ pedir aumento nesta situaÃ§Ã£o.
 	 * <p>
 	 * 
 	 * @param s
-	 *            Situação do jogo no momento
-	 * @return posição da carta na mão a jogar (em letrasCartasJogador), ou -1
+	 *            SituaÃ§Ã£o do jogo no momento
+	 * @return posiÃ§Ã£o da carta na mÃ£o a jogar (em letrasCartasJogador), ou -1
 	 *         para pedir truco
 	 */
-	public int joga(SituacaoJogo s) 
-	{
-		// Classifica as cartas que tenho na mão, da maior para a menor,
+	public int joga(SituacaoJogo s) {
+		// Classifica as cartas que tenho na mÃ£o, da maior para a menor,
 		// de maneira que vamos ter:
-		// C[0] = maior carta (1a, 2a e 3a mão); 
-		// C[1] = carta intermediária (1a mão) OU
-		// C[1] = menor carta (2a mão);
-		// C[2] = menor carta (1a mão)
+		// C[0] = maior carta (1a, 2a e 3a mÃ£o);
+		// C[1] = carta intermediÃ¡ria (1a mÃ£o) OU
+		// C[1] = menor carta (2a mÃ£o);
+		// C[2] = menor carta (1a mÃ£o)
 		classificaCartas(s);
 
 		switch (s.numRodadaAtual) {
 		// Primeira rodada
 		case 1:
 
-			//Debug
-			//System.out.println("Cartas: " + s.cartasJogador[C[0]].toString() + ">" + s.cartasJogador[C[0]].getValorTruco(s.manilha) + ">" + qualidadeCarta(s.cartasJogador[C[0]],s) + " " + s.cartasJogador[C[1]].toString() + ">" + s.cartasJogador[C[1]].getValorTruco(s.manilha) + ">" + qualidadeCarta(s.cartasJogador[C[1]],s) + " " + s.cartasJogador[C[2]].toString() + ">" + s.cartasJogador[C[2]].getValorTruco(s.manilha) + ">" + qualidadeCarta(s.cartasJogador[C[2]],s) + "\n");
+			// Debug
+			// System.out.println("Cartas: " + s.cartasJogador[C[0]].toString()
+			// + ">" + s.cartasJogador[C[0]].getValorTruco(s.manilha)
+			// + ">" + qualidadeCarta(s.cartasJogador[C[0]], s) + " "
+			// + s.cartasJogador[C[1]].toString() + ">"
+			// + s.cartasJogador[C[1]].getValorTruco(s.manilha) + ">"
+			// + qualidadeCarta(s.cartasJogador[C[1]], s) + " "
+			// + s.cartasJogador[C[2]].toString() + ">"
+			// + s.cartasJogador[C[2]].getValorTruco(s.manilha) + ">"
+			// + qualidadeCarta(s.cartasJogador[C[2]], s) + "\n");
 
 			return this.joga_primeira_rodada(s);
-		// Segunda rodada
+			// Segunda rodada
 		case 2:
-			//Checar se está tudo amarrado
-			if(s.resultadoRodada[0]==3)
-			{
-				if((partidaGanha(s) && podeEValeAPenaAumentar(s,100,100,100,100)) ||
-					(matoAdversario(s,false) && (qualidadeMinhaMaior(s)==PICAFUMO || qualidadeMinhaMaior(s)==ESPADILHA || qualidadeMinhaMaior(s)==ESCOPETA) && podeEValeAPenaAumentar(s,45,5,1,0)) )
-					return -1; //Aumentar aposta					
+			// Checar se estÃ¡ tudo amarrado
+			if (s.resultadoRodada[0] == 3) {
+				if ((partidaGanha(s) && podeEValeAPenaAumentar(s, 100, 100,
+						100, 100))
+						|| (matoAdversario(s, false)
+								&& (qualidadeMinhaMaior(s) == PICAFUMO
+										|| qualidadeMinhaMaior(s) == ESPADILHA || qualidadeMinhaMaior(s) == ESCOPETA) && podeEValeAPenaAumentar(
+								s, 45, 5, 1, 0)))
+					return -1; // Aumentar aposta
 				return C[0]; // temos que jogar a maior
 			}
 			return this.joga_segunda_rodada(s);
-		// Terceira rodada
+			// Terceira rodada
 		case 3:
-			//Checar se está tudo amarrado
-			if(s.resultadoRodada[1]==3)
-			{
-				if((partidaGanha(s) && podeEValeAPenaAumentar(s,100,100,100,100)) ||
-					(matoAdversario(s,false) && (qualidadeMinhaMaior(s)==PICAFUMO || qualidadeMinhaMaior(s)==ESPADILHA || qualidadeMinhaMaior(s)==ESCOPETA) && podeEValeAPenaAumentar(s,50,10,1,0)) )
-					return -1; //Aumentar aposta					
+			// Checar se estÃ¡ tudo amarrado
+			if (s.resultadoRodada[1] == 3) {
+				if ((partidaGanha(s) && podeEValeAPenaAumentar(s, 100, 100,
+						100, 100))
+						|| (matoAdversario(s, false)
+								&& (qualidadeMinhaMaior(s) == PICAFUMO
+										|| qualidadeMinhaMaior(s) == ESPADILHA || qualidadeMinhaMaior(s) == ESCOPETA) && podeEValeAPenaAumentar(
+								s, 50, 10, 1, 0)))
+					return -1; // Aumentar aposta
 				return C[0]; // temos que jogar a maior
 			}
 			return this.joga_terceira_rodada(s);
 		}
-		return 0; // para satisfazer o corretor do método (Eclipse)...
+		return 0; // para satisfazer o corretor do mÃ©todo (Eclipse)...
 	}
-	
+
 	/**
-	 * Retorna se eu aceito o aumento da aposta dos adversários ou não. 
-	 * Uma melhoria seria checar se estão pedindo truco, seis, ... e tomar as decisões de acordo
+	 * Retorna se eu aceito o aumento da aposta dos adversÃ¡rios ou nÃ£o. Uma
+	 * melhoria seria checar se estÃ£o pedindo truco, seis, ... e tomar as
+	 * decisÃµes de acordo
 	 */
-	public boolean aceitaTruco(SituacaoJogo s) 
-	{
+	public boolean aceitaTruco(SituacaoJogo s) {
 		classificaCartas(s);
 
-		//não vai nem ter graça...
-		if(partidaGanha(s))
+		// nÃ£o vai nem ter graÃ§a...
+		if (partidaGanha(s))
 			return true;
-		
-		switch (s.numRodadaAtual) 
-		{
 
-		//primeira rodada
+		switch (s.numRodadaAtual) {
+
+		// primeira rodada
 		case 1:
 
-			//se eu tiver uma manilha e na mesa já estiver pelo menos um 3 nosso, aceito
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)>=TRES &&
-				maiorCartaENossa(s) && 
-				qualidadeMaiorMesa(s)>=TRES)
-					return true;
-			//se eu tiver uma três e na mesa já estiver pelo menos um 3 nosso, aceito
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==TRES &&
-				maiorCartaENossa(s) && 
-				qualidadeMaiorMesa(s)>=TRES)
-					return true;
-			//se eu tiver manilha e três pelo menos, aceito sem pensar
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)>TRES && 
-				qualidadeCarta(s.cartasJogador[C[1]],s)>=TRES)
-					return true;
-			//se eu tiver uma manilha seca, aceito (alta prob.)
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)>TRES &&
-				qualidadeCarta(s.cartasJogador[C[1]],s)<TRES &&
-				mandaBala(80))
-					return true;			
-			//se eu tiver dois três, aceito (alta prob.)
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==TRES && 
-				qualidadeCarta(s.cartasJogador[C[1]],s)==TRES &&
-				mandaBala(80))
-					return true;
-			//se eu tiver um três, aceito (média prob.)
-			if(qualidadeCarta(s.cartasJogador[C[0]],s)==TRES &&
-				qualidadeCarta(s.cartasJogador[C[1]],s)<TRES &&
-				mandaBala(50))
-					return true;				
+			// se eu tiver uma manilha e na mesa jÃ¡ estiver pelo
+			// menos um 3 nosso, aceito
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) >= TRES
+					&& maiorCartaENossa(s) && qualidadeMaiorMesa(s) >= TRES)
+				return true;
+			// se eu tiver uma trÃªs e na mesa jÃ¡ estiver pelo menos
+			// um 3 nosso, aceito
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == TRES
+					&& maiorCartaENossa(s) && qualidadeMaiorMesa(s) >= TRES)
+				return true;
+			// se eu tiver manilha e trÃªs pelo menos, aceito sem
+			// pensar
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) > TRES
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) >= TRES)
+				return true;
+			// se eu tiver uma manilha seca, aceito (alta prob.)
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) > TRES
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) < TRES
+					&& mandaBala(80))
+				return true;
+			// se eu tiver dois trÃªs, aceito (alta prob.)
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == TRES
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) == TRES
+					&& mandaBala(80))
+				return true;
+			// se eu tiver um trÃªs, aceito (mÃ©dia prob.)
+			if (qualidadeCarta(s.cartasJogador[C[0]], s) == TRES
+					&& qualidadeCarta(s.cartasJogador[C[1]], s) < TRES
+					&& mandaBala(50))
+				return true;
 			return false;
-			
-		//segunda rodada
+
+			// segunda rodada
 		case 2:
 
-			//se a primeira for nossa:
-			if(primeiraENossa(s)) {
-				//se na mesa já estiver pelo menos um 3 nosso, aceito
-				if(maiorCartaENossa(s) && 
-						qualidadeMaiorMesa(s)>=TRES)
-						return true;
-				//se eu tiver pelo menos um três, aceito
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)>=TRES)
+			// se a primeira for nossa:
+			if (primeiraENossa(s)) {
+				// se na mesa jÃ¡ estiver pelo menos um 3 nosso,
+				// aceito
+				if (maiorCartaENossa(s) && qualidadeMaiorMesa(s) >= TRES)
+					return true;
+				// se eu tiver pelo menos um trÃªs, aceito
+				if (qualidadeCarta(s.cartasJogador[C[0]], s) >= TRES)
 					return true;
 			} else {
-				//se a primeira NÃO for nossa (pode tbm estar amarrado):
-				//se eu tiver uma manilha e na mesa já estiver pelo menos um 3 nosso, aceito
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)>=TRES &&
-						maiorCartaENossa(s) && 
-						qualidadeMaiorMesa(s)>=TRES)
-						return true;
-				//se eu tiver manilha e três pelo menos, aceito
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)>TRES && 
-						qualidadeCarta(s.cartasJogador[C[1]],s)>=TRES)
-						return true;
-				//se eu tiver uma manilha seca, aceito (baixa prob.)
-				if(qualidadeCarta(s.cartasJogador[C[0]],s)>TRES &&
-						qualidadeCarta(s.cartasJogador[C[1]],s)<TRES &&
-						mandaBala(30))
-						return true;			
+				// se a primeira NÃƒO for nossa (pode tbm estar
+				// amarrado):
+				// se eu tiver uma manilha e na mesa jÃ¡ estiver
+				// pelo menos um 3 nosso, aceito
+				if (qualidadeCarta(s.cartasJogador[C[0]], s) >= TRES
+						&& maiorCartaENossa(s) && qualidadeMaiorMesa(s) >= TRES)
+					return true;
+				// se eu tiver manilha e trÃªs pelo menos, aceito
+				if (qualidadeCarta(s.cartasJogador[C[0]], s) > TRES
+						&& qualidadeCarta(s.cartasJogador[C[1]], s) >= TRES
+						&& !partidaGanhaParaAdversario(s))
+					return true;
+				// se eu tiver uma manilha seca, aceito (baixa
+				// prob.)
+				if (qualidadeCarta(s.cartasJogador[C[0]], s) > TRES
+						&& qualidadeCarta(s.cartasJogador[C[1]], s) < TRES
+						&& !partidaGanhaParaAdversario(s) && mandaBala(30))
+					return true;
 			}
 			return false;
-			
-		//terceira rodada
+
+			// terceira rodada
 		case 3:
 
-			//se a primeira for nossa:
-			if(primeiraENossa(s)) {
-				//se na mesa já estiver uma manilha nossa, aceito com alta prob.
-				if(maiorCartaENossa(s) && 
-					qualidadeMaiorMesa(s)>TRES &&
-					mandaBala(80))
+			// se eu jÃ¡ joguei, e meu parceiro ainda nÃ£o, vou deixar
+			// para ele decidir
+			if ((minhaVez(s) == 0 && vezTrucador(s) == 1)
+					|| (minhaVez(s) == 1 && vezTrucador(s) == 2))
+				return false;
+
+			// se a primeira for nossa:
+			if (primeiraENossa(s)) {
+				// se na mesa jÃ¡ estiver uma manilha nossa,
+				// aceito com alta prob.
+				if (maiorCartaENossa(s) && qualidadeMaiorMesa(s) > TRES
+						&& mandaBala(80))
+					return true;
+				// se na mesa jÃ¡ estiver um 3 nosso, aceito com
+				// mÃ©dia-alta prob.
+				if (maiorCartaENossa(s) && qualidadeMaiorMesa(s) == TRES
+						&& mandaBala(50))
+					return true;
+				// se na mesa jÃ¡ estiver um 2 nosso, aceito com
+				// mÃ©dia-baixa prob.
+				if (maiorCartaENossa(s) && qualidadeMaiorMesa(s) == DOIS
+						&& mandaBala(30))
+					return true;
+				// checar se ainda tenho cartas na mÃ£o...
+				if (minhaVez(s) > vezTrucador(s)) {
+					// se eu tiver uma manilha, aceito com
+					// alta prob.
+					if (qualidadeCarta(s.cartasJogador[C[0]], s) > TRES
+							&& mandaBala(80))
 						return true;
-				//se na mesa já estiver um 3 nosso, aceito com média-alta prob.
-				if(maiorCartaENossa(s) && 
-					qualidadeMaiorMesa(s)==TRES &&
-					mandaBala(60))
+					// se eu tiver um trÃªs, aceito com
+					// mÃ©dia-alta prob.
+					if (qualidadeCarta(s.cartasJogador[C[0]], s) == TRES
+							&& mandaBala(50))
 						return true;
-				//se na mesa já estiver um 2 nosso, aceito com média-baixa prob.
-				if(maiorCartaENossa(s) && 
-					qualidadeMaiorMesa(s)==DOIS &&
-					mandaBala(40))
+					// se eu tiver um dois, aceito com
+					// mÃ©dia-baixa prob.
+					if (qualidadeCarta(s.cartasJogador[C[0]], s) == DOIS
+							&& mandaBala(30))
 						return true;
-				//checar se ainda tenho cartas na mão...
-				if(minhaVez(s)>vezTrucador(s)) {
-					//se eu tiver uma manilha, aceito com alta prob.
-					if(qualidadeCarta(s.cartasJogador[C[0]],s)>TRES &&
-						mandaBala(80))
-							return true;
-					//se eu tiver um três, aceito com média-alta prob.
-					if(qualidadeCarta(s.cartasJogador[C[0]],s)==TRES &&
-						mandaBala(60))
-							return true;
-					//se eu tiver um dois, aceito com média-baixa prob.
-					if(qualidadeCarta(s.cartasJogador[C[0]],s)==DOIS &&
-						mandaBala(40))
-							return true;
 				}
 			} else {
-				//se a primeira NÃO for nossa (pode tbm estar amarrado):
-				//se na mesa já estiver uma manilha nossa, aceito com alta prob.
-				if(maiorCartaENossa(s) && 
-					qualidadeMaiorMesa(s)>TRES &&
-					mandaBala(80))
+				// se a primeira NÃƒO for nossa (pode tbm estar
+				// amarrado):
+				// se na mesa jÃ¡ estiver uma manilha nossa,
+				// aceito com alta prob.
+				if (maiorCartaENossa(s) && qualidadeMaiorMesa(s) > TRES
+						&& mandaBala(75))
+					return true;
+				// se na mesa jÃ¡ estiver um 3 nosso, aceito com
+				// mÃ©dia-alta prob.
+				if (maiorCartaENossa(s) && qualidadeMaiorMesa(s) == TRES
+						&& mandaBala(45))
+					return true;
+				// se na mesa jÃ¡ estiver um 2 nosso, aceito com
+				// mÃ©dia-baixa prob.
+				if (maiorCartaENossa(s) && qualidadeMaiorMesa(s) == DOIS
+						&& mandaBala(25))
+					return true;
+				// se na mesa estiver um lixo nosso, aceito com
+				// baixa prob. - devem estar blefando...
+				if (maiorCartaENossa(s) && qualidadeMaiorMesa(s) <= AS
+						&& mandaBala(8))
+					return true;
+				// checar se ainda tenho cartas na mÃ£o...
+				if (minhaVez(s) > vezTrucador(s)
+						&& !partidaGanhaParaAdversario(s)) {
+					// se eu tiver uma manilha, aceito com
+					// alta prob.
+					if (qualidadeCarta(s.cartasJogador[C[0]], s) > TRES
+							&& mandaBala(75))
 						return true;
-				//se na mesa já estiver um 3 nosso, aceito com média-alta prob.
-				if(maiorCartaENossa(s) && 
-					qualidadeMaiorMesa(s)==TRES &&
-					mandaBala(60))
+					// se eu tiver um trÃªs, aceito com
+					// mÃ©dia-alta prob.
+					if (qualidadeCarta(s.cartasJogador[C[0]], s) == TRES
+							&& mandaBala(45))
 						return true;
-				//se na mesa já estiver um 2 nosso, aceito com média-baixa prob.
-				if(maiorCartaENossa(s) && 
-					qualidadeMaiorMesa(s)==DOIS &&
-					mandaBala(40))
+					// se eu tiver um dois, aceito com
+					// mÃ©dia-baixa prob.
+					if (qualidadeCarta(s.cartasJogador[C[0]], s) == DOIS
+							&& mandaBala(25))
 						return true;
-				//se na mesa estiver um lixo nosso, aceito com baixa prob. - devem estar blefando...
-				if(maiorCartaENossa(s) && 
-					qualidadeMaiorMesa(s)<=AS &&
-					mandaBala(20))
-						return true;
-				//checar se ainda tenho cartas na mão...
-				if(minhaVez(s)>vezTrucador(s)) {
-					//se eu tiver uma manilha, aceito com alta prob.
-					if(qualidadeCarta(s.cartasJogador[C[0]],s)>TRES &&
-						mandaBala(80))
-							return true;
-					//se eu tiver um três, aceito com média-alta prob.
-					if(qualidadeCarta(s.cartasJogador[C[0]],s)==TRES &&
-						mandaBala(60))
-							return true;
-					//se eu tiver um dois, aceito com média-baixa prob.
-					if(qualidadeCarta(s.cartasJogador[C[0]],s)==DOIS &&
-						mandaBala(40))
-							return true;
 				}
 			}
 			return false;
-			
+
 		}
 		return false;
 	}
 
 	/**
-	 * Retorna se eu aceito jogar ou não esta mão de 11.
+	 * Retorna se eu aceito jogar ou nÃ£o esta mÃ£o de 11.
 	 */
-	public boolean aceitaMao11(Carta[] cartasParceiro, SituacaoJogo s) 
-	{
-		// Não vamos pensar muito...
-		
-		int q3=0,q2=0,qManilhas=0;
+	public boolean aceitaMao11(Carta[] cartasParceiro, SituacaoJogo s) {
+		// NÃ£o vamos pensar muito...
 
-		for(int i=0;i<=2;i++)
-		{
-			//quantidade de manilhas
-			if(qualidadeCarta(s.cartasJogador[i],s) > TRES)
+		int q3 = 0, q2 = 0, qManilhas = 0;
+
+		for (int i = 0; i <= 2; i++) {
+			// quantidade de manilhas
+			if (qualidadeCarta(s.cartasJogador[i], s) > TRES)
 				qManilhas++;
-			//quantidade de 3
-			if(qualidadeCarta(s.cartasJogador[i],s) == TRES)
+			// quantidade de 3
+			if (qualidadeCarta(s.cartasJogador[i], s) == TRES)
 				q3++;
-			//quantidade de 2
-			if(qualidadeCarta(s.cartasJogador[i],s) == DOIS)
+			// quantidade de 2
+			if (qualidadeCarta(s.cartasJogador[i], s) == DOIS)
 				q2++;
-			//quantidade de manilhas do parceiro
-			if(qualidadeCarta(cartasParceiro[i],s) > TRES)
+			// quantidade de manilhas do parceiro
+			if (qualidadeCarta(cartasParceiro[i], s) > TRES)
 				qManilhas++;
-			//quantidade de 3 do parceiro
-			if(qualidadeCarta(cartasParceiro[i],s) == TRES)
+			// quantidade de 3 do parceiro
+			if (qualidadeCarta(cartasParceiro[i], s) == TRES)
 				q3++;
-			//quantidade de 2 do parceiro
-			if(qualidadeCarta(cartasParceiro[i],s) == DOIS)
+			// quantidade de 2 do parceiro
+			if (qualidadeCarta(cartasParceiro[i], s) == DOIS)
 				q2++;
 		}
-	
-		//vamos analisar!
-		if(qManilhas>=2 || q3>=3 || (q3>=2 && q2>=1) || (qManilhas>=1 && q3>=1))
-			return true;		
+
+		// vamos analisar!
+		if (qManilhas >= 2 || q3 >= 3 || (q3 >= 2 && q2 >= 1)
+				|| (qManilhas >= 1 && q3 >= 1))
+			return true;
 		return false;
 	}
 
-	public void inicioPartida() {}
-	public void inicioMao() {}
-	public void pediuAumentoAposta(int posJogador, int valor) {}
-	public void aceitouAumentoAposta(int posJogador, int valor) {}
-	public void recusouAumentoAposta(int posJogador) {}
+	public void inicioPartida() {
+	}
+
+	public void inicioMao() {
+	}
+
+	public void pediuAumentoAposta(int posJogador, int valor) {
+	}
+
+	public void aceitouAumentoAposta(int posJogador, int valor) {
+	}
+
+	public void recusouAumentoAposta(int posJogador) {
+	}
 }

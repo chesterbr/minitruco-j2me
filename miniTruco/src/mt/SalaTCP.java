@@ -1,21 +1,21 @@
 package mt;
 
 /*
- * Copyright © 2006 Carlos Duarte do Nascimento (Chester)
+ * Copyright Â© 2006 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Este programa é um software livre; você pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
- * Licença, ou (na sua opnião) qualquer versão.
+ * Este programa Ã© um software livre; vocÃª pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da LicenÃ§a PÃºblica Geral GNU como 
+ * publicada pela FundaÃ§Ã£o do Software Livre (FSF); na versÃ£o 3 da 
+ * LicenÃ§a, ou (na sua opniÃ£o) qualquer versÃ£o.
  *
- * Este programa é distribuido na esperança que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÇÂO
- * a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença
- * Pública Geral GNU para maiores detalhes.
+ * Este programa Ã© distribuido na esperanÃ§a que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÃ‡Ã‚O
+ * a qualquer MERCADO ou APLICAÃ‡ÃƒO EM PARTICULAR. Veja a LicenÃ§a
+ * PÃºblica Geral GNU para maiores detalhes.
  *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU
- * junto com este programa, se não, escreva para a Fundação do Software
+ * VocÃª deve ter recebido uma cÃ³pia da LicenÃ§a PÃºblica Geral GNU
+ * junto com este programa, se nÃ£o, escreva para a FundaÃ§Ã£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
@@ -27,42 +27,42 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
 /**
- * Sala que está sendo exibida neste momento pelo servidor (fora do jogo).
+ * Sala que estÃ¡ sendo exibida neste momento pelo servidor (fora do jogo).
  * <p>
- * Por uma questão de performance, o servidor usa um único objeto sala,
+ * Por uma questÃ£o de performance, o servidor usa um Ãºnico objeto sala,
  * mesmo que o jogador troque de sala.
  * <p>
- * Pela mesma razão os campos públicos não foram encapsulados.
+ * Pela mesma razÃ£o os campos pÃºblicos nÃ£o foram encapsulados.
  * 
  */
 public class SalaTCP extends Canvas implements CommandListener {
 
 	private static final Command queroJogarCommand = new Command(
-			"Quero jogar!", Command.SCREEN, 1);
+			Messages.getString("querojogar"), Command.SCREEN, 1); //$NON-NLS-1$
 
-	private static final Command sairSalaCommand = new Command("Sair da Sala",
+	private static final Command sairSalaCommand = new Command(Messages.getString("sairsala"), //$NON-NLS-1$
 			Command.SCREEN, 2);
 
-	private static final Command desconectarCommand = new Command("Desconectar",
+	private static final Command desconectarCommand = new Command(Messages.getString("desconectar"), //$NON-NLS-1$
 			Command.STOP, 999);
 
-	private static final Command okEspiarCommand = new Command("Ok",
+	private static final Command okEspiarCommand = new Command(Messages.getString("ok"), //$NON-NLS-1$
 			Command.SCREEN, 1);
 
 	private static final Command trocaParceiroCommand = new Command(
-			"Troca de Parceiro", Command.SCREEN, 10);
+			Messages.getString("troca_parceiro"), Command.SCREEN, 10); //$NON-NLS-1$
 
 	private static final Command inverteAdversariosCommand = new Command(
-			"Inverte Advers\u00E1rios", Command.SCREEN, 11);
+			Messages.getString("inverte_adv"), Command.SCREEN, 11); //$NON-NLS-1$
 
 	private static final Command expulsaParceiroCommand = new Command(
-			"Expulsa Parceiro", Command.SCREEN, 12);
+			Messages.getString("expulsaparceiro"), Command.SCREEN, 12); //$NON-NLS-1$
 
 	private static final Command regraManilhaCommand = new Command(
-			"Muda Tipo de Manilha", Command.SCREEN, 13);
+			Messages.getString("mudamanilha"), Command.SCREEN, 13); //$NON-NLS-1$
 
 	private static final Command regraBaralhoCommand = new Command(
-			"Muta Tipo de Baralho", Command.SCREEN, 14);
+			Messages.getString("mudabaralho"), Command.SCREEN, 14); //$NON-NLS-1$
 
 	public SalaTCP(ServidorTCP servidor) {
 		super();
@@ -72,7 +72,7 @@ public class SalaTCP extends Canvas implements CommandListener {
 	}
 
 	/**
-	 * Faz com que a sala reflita as atualizações nas propriedades
+	 * Faz com que a sala reflita as atualizaÃ§Ãµes nas propriedades
 	 * 
 	 */
 	public void atualizaSala() {
@@ -83,7 +83,7 @@ public class SalaTCP extends Canvas implements CommandListener {
 			this.addCommand(okEspiarCommand);
 		} else {
 			this.addCommand(sairSalaCommand);
-			// Menu 'quero jogar' só aparece se o jogador tiver essa opção
+			// Menu 'quero jogar' sÃ³ aparece se o jogador tiver essa opÃ§Ã£o
 			if (queroJogar.charAt(getPosicao(servidor.apelido) - 1) == 'F')
 				addCommand(queroJogarCommand);
 		}
@@ -110,23 +110,23 @@ public class SalaTCP extends Canvas implements CommandListener {
 	}
 
 	/**
-	 * Servidor que está exibindo esta sala
+	 * Servidor que estÃ¡ exibindo esta sala
 	 */
 	private ServidorTCP servidor;
 
 	/**
-	 * Nomes dos jogadores que estão na sala (atual ou espiada)
+	 * Nomes dos jogadores que estÃ£o na sala (atual ou espiada)
 	 */
 	public String[] jogadores;
 
 	/**
-	 * Status de "quero jogar" dos jogadores que estão na sala (atual ou
+	 * Status de "quero jogar" dos jogadores que estÃ£o na sala (atual ou
 	 * espiada) (string de 4 caracteres "T" ou "F")
 	 */
 	public String queroJogar;
 
 	/**
-	 * Posição do gerente (usuário mais antigo) na sala (atual ou espiada), de 1
+	 * PosiÃ§Ã£o do gerente (usuÃ¡rio mais antigo) na sala (atual ou espiada), de 1
 	 * a 4
 	 */
 	public int posGerente;
@@ -138,7 +138,7 @@ public class SalaTCP extends Canvas implements CommandListener {
 	public String regras;
 
 	/**
-	 * Número da sala em que o jogador está, ou que está sendo espiada
+	 * NÃºmero da sala em que o jogador estÃ¡, ou que estÃ¡ sendo espiada
 	 * (0=nenhuma)
 	 */
 	public int numSala = 0;
@@ -150,18 +150,18 @@ public class SalaTCP extends Canvas implements CommandListener {
 			Font.STYLE_PLAIN, Font.SIZE_SMALL);
 
 	/**
-	 * Fonte para o quadro de informações da sala
+	 * Fonte para o quadro de informaÃ§Ãµes da sala
 	 */
 	private static final Font fonteInfo = Font.getFont(Font.FACE_PROPORTIONAL,
 			Font.STYLE_ITALIC, Font.SIZE_SMALL);
 
 	/**
-	 * Retorna a posição de um jogador na sala (remota)
+	 * Retorna a posiÃ§Ã£o de um jogador na sala (remota)
 	 * 
 	 * @param nome
 	 *            apelido do jogador
-	 * @return posição na ordem do servidor (1 a 4), ou 0 se não estiver na sala
-	 *         recém-consultada.
+	 * @return posiÃ§Ã£o na ordem do servidor (1 a 4), ou 0 se nÃ£o estiver na sala
+	 *         recÃ©m-consultada.
 	 */
 	public int getPosicao(String nome) {
 		for (int i = 0; i <= 3; i++) {
@@ -172,15 +172,15 @@ public class SalaTCP extends Canvas implements CommandListener {
 	}
 
 	/**
-	 * Retorna a posição de um jogador na mesa (local)
+	 * Retorna a posiÃ§Ã£o de um jogador na mesa (local)
 	 * 
 	 * @param nome
 	 *            apelido do jogador consultado
-	 * @return posição (de 1 a 4), relativa ao jogador atual (que está sempre na
-	 *         1), ou absoluta se este não estiver na sala recém-consultada.
+	 * @return posiÃ§Ã£o (de 1 a 4), relativa ao jogador atual (que estÃ¡ sempre na
+	 *         1), ou absoluta se este nÃ£o estiver na sala recÃ©m-consultada.
 	 */
 	private int getPosicaoMesa(String nome) {
-		// Recupera as posições do jogador atual e do jogador consultado
+		// Recupera as posiÃ§Ãµes do jogador atual e do jogador consultado
 		int posJogador = 0;
 		int posJogadorConsultado = 0;
 		for (int i = 0; i <= 3; i++) {
@@ -192,11 +192,11 @@ public class SalaTCP extends Canvas implements CommandListener {
 			}
 		}
 		if (posJogador == 0) {
-			// Se o jogador atual não está na sala, usa a posição remota mesmo
+			// Se o jogador atual nÃ£o estÃ¡ na sala, usa a posiÃ§Ã£o remota mesmo
 			return posJogadorConsultado;
 		} else {
-			// Caso ele esteja, retorna a posição relativa (considerando o atual
-			// como posição 1)
+			// Caso ele esteja, retorna a posiÃ§Ã£o relativa (considerando o atual
+			// como posiÃ§Ã£o 1)
 			int pos = posJogadorConsultado - posJogador + 1;
 			while (pos < 1)
 				pos += 4;
@@ -206,7 +206,7 @@ public class SalaTCP extends Canvas implements CommandListener {
 	}
 
 	/**
-	 * Processa os comandos enviados para os diálogos do servidor
+	 * Processa os comandos enviados para os diÃ¡logos do servidor
 	 * 
 	 * @param cmd
 	 * @param disp
@@ -242,7 +242,7 @@ public class SalaTCP extends Canvas implements CommandListener {
 	}
 
 	/**
-	 * Recuper a posição (na sala remota) do parceiro do jogador que está no
+	 * Recuper a posiÃ§Ã£o (na sala remota) do parceiro do jogador que estÃ¡ no
 	 * celular
 	 * 
 	 * @return
@@ -255,9 +255,9 @@ public class SalaTCP extends Canvas implements CommandListener {
 	}
 
 	/**
-	 * Recupera a posição (na sala remota) do jogador que está no celular
+	 * Recupera a posiÃ§Ã£o (na sala remota) do jogador que estÃ¡ no celular
 	 * 
-	 * @return posição de 1 a 4
+	 * @return posiÃ§Ã£o de 1 a 4
 	 */
 	private int getPosicao() {
 		for (int i = 0; i <= 3; i++) {
@@ -295,9 +295,9 @@ public class SalaTCP extends Canvas implements CommandListener {
 					g.setColor(queroJogar.charAt(i) == 'T' ? 0x00000000
 							: 0x00FF0000);
 
-					// Indica se é gerente (pelo texto)
+					// Indica se Ã© gerente (pelo texto)
 					if ((i + 1) == posGerente) {
-						nome += " (gerente)";
+						nome += Messages.getString("(gerente)"); //$NON-NLS-1$
 					}
 
 					// Escreve
@@ -329,10 +329,10 @@ public class SalaTCP extends Canvas implements CommandListener {
 			g.setColor(0x00C0C0C0);
 			g.fillRect(0, 0, getWidth(), topoNomes);
 
-			String linha1 = "SALA " + numSala;
-			String linha2 = (regras.charAt(0) == 'T' ? "b.limpo / "
-					: "b.sujo /")
-					+ (regras.charAt(1) == 'T' ? "m.velha " : "m.nova");
+			String linha1 = Messages.getString("SALA") + numSala; //$NON-NLS-1$
+			String linha2 = (regras.charAt(0) == 'T' ? Messages.getString("b_limpo") //$NON-NLS-1$
+					: Messages.getString("b_sujo")) //$NON-NLS-1$
+					+ (regras.charAt(1) == 'T' ? Messages.getString("m_velha") : Messages.getString("m_nova")); //$NON-NLS-1$ //$NON-NLS-2$
 
 			g.setColor(0x00000000);
 			g.setFont(fonteInfo);
@@ -341,14 +341,14 @@ public class SalaTCP extends Canvas implements CommandListener {
 					| Graphics.RIGHT);
 
 		} else {
-			// Se não tiver nada pra mostrar, manda a mensagem de aguarde
+			// Se nÃ£o tiver nada pra mostrar, manda a mensagem de aguarde
 			servidor.paint(g);
 		}
 
 	}
 
 	/**
-	 * Determina se o jogador no celular é o gerente da sala
+	 * Determina se o jogador no celular Ã© o gerente da sala
 	 * 
 	 * @return true se for gerente
 	 */

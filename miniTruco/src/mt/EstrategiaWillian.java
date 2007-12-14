@@ -1,27 +1,27 @@
 package mt;
 
 /*
- * Copyright © 2006 Willian Gigliotti - wgigliotti@gmail.com
+ * Copyright ¬© 2006 Willian Gigliotti - wgigliotti@gmail.com
  * 
- * Este programa È um software livre; vocÍ pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da LicenÁa P˙blica Geral GNU como 
- * publicada pela FundaÁ„o do Software Livre (FSF); na vers„o 3 da 
- * LicenÁa, ou (na sua opni„o) qualquer vers„o.
+ * Este programa √© um software livre; voc√™ pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da Licen√ßa P√∫blica Geral GNU como 
+ * publicada pela Funda√ß√£o do Software Livre (FSF); na vers√£o 3 da 
+ * Licen√ßa, ou (na sua opni√£o) qualquer vers√£o.
  *
- * Este programa È distribuido na esperanÁa que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA«¬O
- * a qualquer MERCADO ou APLICA«√O EM PARTICULAR. Veja a LicenÁa
- * P˙blica Geral GNU para maiores detalhes.
+ * Este programa √© distribuido na esperan√ßa que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA√á√ÇO
+ * a qualquer MERCADO ou APLICA√á√ÉO EM PARTICULAR. Veja a Licen√ßa
+ * P√∫blica Geral GNU para maiores detalhes.
  *
- * VocÍ deve ter recebido uma cÛpia da LicenÁa P˙blica Geral GNU
- * junto com este programa, se n„o, escreva para a FundaÁ„o do Software
+ * Voc√™ deve ter recebido uma c√≥pia da Licen√ßa P√∫blica Geral GNU
+ * junto com este programa, se n√£o, escreva para a Funda√ß√£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 import java.util.Random;
 
 /**
- * EstratÈgia inteligente para jogadores CPU
+ * Estrat√©gia inteligente para jogadores CPU
  * 
  * @author Willian
  * 
@@ -31,8 +31,8 @@ public class EstrategiaWillian implements Estrategia {
 	private static Random r = new Random();
 
 	/**
-	 * Vari·vel usada para saber se È possÌvel ou n„o jogar uma carta virada
-	 * para baixo... 10 -> pode; 0 -> n„o pode;
+	 * Vari√°vel usada para saber se √© poss√≠vel ou n√£o jogar uma carta virada
+	 * para baixo... 10 -> pode; 0 -> n√£o pode;
 	 */
 	private static int descarte = 10;
 
@@ -124,11 +124,11 @@ public class EstrategiaWillian implements Estrategia {
 
 	/**
 	 * 
-	 * Julga se eu preciso, ou n„o jogar! Usando o segundo critÈrio:
+	 * Julga se eu preciso, ou n√£o jogar! Usando o segundo crit√©rio:
 	 * 
 	 * @param s
-	 *            Situac„o do jogo!
-	 * @return Parceiro ainda n„o jogou -> false; Parceiro jogou fraco -> true;
+	 *            Situac√£o do jogo!
+	 * @return Parceiro ainda n√£o jogou -> false; Parceiro jogou fraco -> true;
 	 *         Parceiro jogou bem -> false;
 	 * 
 	 */
@@ -139,7 +139,7 @@ public class EstrategiaWillian implements Estrategia {
 		int valorCritico = 7; /* 7 = K */
 
 		/*
-		 * parceiro ainda nao jogou, N„o estragarei um A. ele ser· macho!
+		 * parceiro ainda nao jogou, N√£o estragarei um A. ele ser√° macho!
 		 */
 		if (s.cartasJogadas[mao][posicao] == null)
 			return false;
@@ -147,7 +147,7 @@ public class EstrategiaWillian implements Estrategia {
 		/* maior carta da mesa */
 		int maior = maiorCarta(s.cartasJogadas[mao], s.manilha);
 
-		/* maior carta da mesa È do parceiro */
+		/* maior carta da mesa √© do parceiro */
 		if (maior == posicao) {
 			/* se a carta do parceiro for boa, deixa a dele :) */
 			if (s.cartasJogadas[mao][maior].getValorTruco(s.manilha) <= valorCritico
@@ -159,11 +159,11 @@ public class EstrategiaWillian implements Estrategia {
 		return true;
 	}
 
-	// Willian: comentei esse mÈtodo, ele sobrou. No dia que tivermos CVS eu
+	// Willian: comentei esse m√©todo, ele sobrou. No dia que tivermos CVS eu
 	// capo. Ass: Chester
 	//
 	// /**
-	// * Diz se a equipe fez ou n„o a primeira rodada
+	// * Diz se a equipe fez ou n√£o a primeira rodada
 	// *
 	// * @param s
 	// * @return
@@ -206,12 +206,12 @@ public class EstrategiaWillian implements Estrategia {
 			/* se eu for capaz de melhorar as jogadas */
 			if (s.cartasJogadas[rodada][maiorMesa].getValorTruco(s.manilha) < s.cartasJogador[maiorMao]
 					.getValorTruco(s.manilha)) {
-				/* se eu sou um antes do pÈ, vamos com tudo */
+				/* se eu sou um antes do p√©, vamos com tudo */
 				if (minhaVez == 3) {
-					// TODO parapÈ
+					// TODO parap√©
 					return maiorMao;
 				}
-				/* se eu for pÈ, vamos analizar */
+				/* se eu for p√©, vamos analizar */
 				else
 					return minimoMaior(s.cartasJogador,
 							s.cartasJogadas[rodada][maiorMesa]
@@ -247,7 +247,7 @@ public class EstrategiaWillian implements Estrategia {
 			if (s.cartasJogadas[rodada][maiorMesa].getValorTruco(s.manilha) < s.cartasJogador[maiorMao]
 					.getValorTruco(s.manilha)) {
 
-				/* se for um antes do pÈ, vou com tudo! */
+				/* se for um antes do p√©, vou com tudo! */
 				if (minhaVez == 3) {
 					if (pegarVez(s, s.posJogador) == 3
 							&& s.valorProximaAposta != 0) {
@@ -260,7 +260,7 @@ public class EstrategiaWillian implements Estrategia {
 
 					return maiorMao;
 				}
-				/* sou pÈ, vamos analizar :) */
+				/* sou p√©, vamos analizar :) */
 				else {
 
 					/* menor carta que mata a dele */
@@ -269,8 +269,8 @@ public class EstrategiaWillian implements Estrategia {
 									.getValorTruco(s.manilha), s.manilha);
 
 					/*
-					 * parapÈ È algo que vai ficar mais legal nas proximas
-					 * versoes do Estrategia, por enquanto esse if n„o muda
+					 * parap√© √© algo que vai ficar mais legal nas proximas
+					 * versoes do Estrategia, por enquanto esse if n√£o muda
 					 * muito
 					 */
 					if (s.valorProximaAposta == 0
@@ -301,7 +301,7 @@ public class EstrategiaWillian implements Estrategia {
 		case 3:
 			return this.joga3(s);
 		}
-		/* se n„o for a rodada 1, nem a rodada 2, nem a 3, EU TRUCO */
+		/* se n√£o for a rodada 1, nem a rodada 2, nem a 3, EU TRUCO */
 		return 0;
 	}
 
@@ -326,14 +326,14 @@ public class EstrategiaWillian implements Estrategia {
 	 * da um valor de 0-100 para as cartas
 	 * 
 	 * @param s
-	 *            SituaÁ„o atual do jogo
+	 *            Situa√ß√£o atual do jogo
 	 * @param indiceCarta
-	 *            Ìndice (0 a 2) da carta do jogador que estamos avaliando
+	 *            √≠ndice (0 a 2) da carta do jogador que estamos avaliando
 	 * @return
 	 */
 	int getChances(SituacaoJogo s, int indiceCarta) {
-		// Se ainda nao descartamos, a carta est· em m„os (cartasJogador), caso
-		// contr·rio est· na mesa (cartasJogadas)
+		// Se ainda nao descartamos, a carta est√° em m√£os (cartasJogador), caso
+		// contr√°rio est√° na mesa (cartasJogadas)
 		Carta c;
 		if (indiceCarta < s.cartasJogador.length) {
 			c = s.cartasJogador[indiceCarta];
@@ -353,7 +353,7 @@ public class EstrategiaWillian implements Estrategia {
 
 	private boolean aceitaTruco1(SituacaoJogo s) {
 		/*
-		 * apenas avalios as chances de se dar bem, e rolo os dados n„o tem
+		 * apenas avalios as chances de se dar bem, e rolo os dados n√£o tem
 		 * muito o que fazer n aprimeira rodada :)
 		 * 
 		 */
@@ -383,7 +383,7 @@ public class EstrategiaWillian implements Estrategia {
 				// TODO observar parceiro
 				Jogo.log("Analizando, truco2 -> 4");
 
-				/* n„o tornou trucando ... */
+				/* n√£o tornou trucando ... */
 				if (trucador != 1 && precisoJogar(s)) {
 					Jogo.log("Analizando, truco2 -> 5");
 					int maiorMao = maiorCarta(s.cartasJogador, s.manilha);
@@ -470,7 +470,7 @@ public class EstrategiaWillian implements Estrategia {
 	}
 
 	/**
-	 * Diz se eu aceito o truco ou n„o!
+	 * Diz se eu aceito o truco ou n√£o!
 	 */
 	public boolean aceitaTruco(SituacaoJogo s) {
 		switch (s.numRodadaAtual) {

@@ -1,32 +1,32 @@
 package mt;
 
 /*
- * Copyright © 2006 Carlos Duarte do Nascimento (Chester)
+ * Copyright Â© 2006 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Este programa é um software livre; você pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
- * Licença, ou (na sua opnião) qualquer versão.
+ * Este programa Ã© um software livre; vocÃª pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da LicenÃ§a PÃºblica Geral GNU como 
+ * publicada pela FundaÃ§Ã£o do Software Livre (FSF); na versÃ£o 3 da 
+ * LicenÃ§a, ou (na sua opniÃ£o) qualquer versÃ£o.
  *
- * Este programa é distribuido na esperança que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÇÂO
- * a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença
- * Pública Geral GNU para maiores detalhes.
+ * Este programa Ã© distribuido na esperanÃ§a que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÃ‡Ã‚O
+ * a qualquer MERCADO ou APLICAÃ‡ÃƒO EM PARTICULAR. Veja a LicenÃ§a
+ * PÃºblica Geral GNU para maiores detalhes.
  *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU
- * junto com este programa, se não, escreva para a Fundação do Software
+ * VocÃª deve ter recebido uma cÃ³pia da LicenÃ§a PÃºblica Geral GNU
+ * junto com este programa, se nÃ£o, escreva para a FundaÃ§Ã£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 /**
- * Jogo online no qual o usuário celular está conectado e jogando.
+ * Jogo online no qual o usuÃ¡rio celular estÃ¡ conectado e jogando.
  * <p>
- * A classe atua como um proxy da classe JogoLocal que está efetivamente rodando
- * no servidor. Ela transforma as chamadas de métodos em comandos remotos.
+ * A classe atua como um proxy da classe JogoLocal que estÃ¡ efetivamente rodando
+ * no servidor. Ela transforma as chamadas de mÃ©todos em comandos remotos.
  * <p>
- * Das notificações recebidas, parte é usada para popular coleções locais (ex.:
- * as cartas da mesa, que podem ser solicitadas pelo jogador), e parte é
+ * Das notificaÃ§Ãµes recebidas, parte Ã© usada para popular coleÃ§Ãµes locais (ex.:
+ * as cartas da mesa, que podem ser solicitadas pelo jogador), e parte Ã©
  * convertida em chamadas aos objetos Jogador.
  * 
  * @author Chester
@@ -35,16 +35,16 @@ package mt;
 public class JogoTCP extends Jogo {
 
 	/**
-	 * Valor dummy para os pontos do modo conflito de estratégias
-	 * (que não é suportado no jogo remoto anyway)
+	 * Valor dummy para os pontos do modo conflito de estratÃ©gias
+	 * (que nÃ£o Ã© suportado no jogo remoto anyway)
 	 */
 	private static final int[] VAQUINHAS_DUMMY = null;
 
 	private ServidorTCP servidor;
 
 	/**
-	 * Esse baralho é apenas para sortear cartas quando alguém joga uma fechada
-	 * (as cartas, mesmo fechadas, têm que ser únicas)
+	 * Esse baralho Ã© apenas para sortear cartas quando alguÃ©m joga uma fechada
+	 * (as cartas, mesmo fechadas, tÃªm que ser Ãºnicas)
 	 */
 	private Baralho baralho;
 
@@ -53,7 +53,7 @@ public class JogoTCP extends Jogo {
 	 */
 	public void abortaJogo(int posicao) {
 		super.abortaJogo(posicao);
-		// Sair da sala aborta o jogo automaticamente. Lei do menor esforço,
+		// Sair da sala aborta o jogo automaticamente. Lei do menor esforÃ§o,
 		// esteja sempre ao meu lado.
 		servidor.enviaComando("S");
 	}
@@ -64,7 +64,7 @@ public class JogoTCP extends Jogo {
 	}
 
 	public void run() {
-		// Notifica o jogador humano que a partida começou
+		// Notifica o jogador humano que a partida comeÃ§ou
 		getJogadorHumano().inicioPartida();
 	}
 
@@ -97,12 +97,12 @@ public class JogoTCP extends Jogo {
 	}
 
 	/**
-	 * Não implementado em jogo remoto (apenas o JogadorCPU usa isso, e ele não
+	 * NÃ£o implementado em jogo remoto (apenas o JogadorCPU usa isso, e ele nÃ£o
 	 * participa desses jogos).
 	 * <p>
-	 * Se no futuro quisermos ter bots locais em jogos online, uma idéia seria
-	 * mover a implementação em <code>JogoLocal</code> para <code>Jogo</code>,
-	 * fazendo os ajustes necessários.
+	 * Se no futuro quisermos ter bots locais em jogos online, uma idÃ©ia seria
+	 * mover a implementaÃ§Ã£o em <code>JogoLocal</code> para <code>Jogo</code>,
+	 * fazendo os ajustes necessÃ¡rios.
 	 */
 	public void atualizaSituacao(SituacaoJogo s, Jogador j) {
 
@@ -117,7 +117,7 @@ public class JogoTCP extends Jogo {
 	}
 
 	/**
-	 * Processa uma notificação "in-game", gerando o evento apropriado no
+	 * Processa uma notificaÃ§Ã£o "in-game", gerando o evento apropriado no
 	 * jogador humano
 	 * 
 	 * @param tipoNotificacao
@@ -134,7 +134,7 @@ public class JogoTCP extends Jogo {
 
 		switch (tipoNotificacao) {
 		case 'M':
-			// Início da mão
+			// InÃ­cio da mÃ£o
 			numRodadaAtual = 1;
 			cartasJogadasPorRodada = new Carta[3][4];
 			baralho = new Baralho(isBaralhoLimpo());
@@ -190,7 +190,7 @@ public class JogoTCP extends Jogo {
 			getJogadorHumano().cartaJogada(j, c);
 			break;
 		case 'V':
-			// Informa o jogador humano que é a vez de alguém
+			// Informa o jogador humano que Ã© a vez de alguÃ©m
 			getJogadorHumano().vez(getJogador(Integer.parseInt(tokens[0])),
 					tokens[1].equals("T"));
 			break;
@@ -209,13 +209,13 @@ public class JogoTCP extends Jogo {
 					getJogador(Integer.parseInt(tokens[0])));
 			break;
 		case 'H':
-			// Alguém aceitou mão de 11, informa
+			// AlguÃ©m aceitou mÃ£o de 11, informa
 			getJogadorHumano().decidiuMao11(
 					getJogador(Integer.parseInt(tokens[0])),
 					tokens[1].equals("T"));
 			break;
 		case 'F':
-			// Mão de 11. Recupera as cartas do parceiro e informa o jogador
+			// MÃ£o de 11. Recupera as cartas do parceiro e informa o jogador
 			Carta[] cartasMao11 = new Carta[3];
 			for (int i = 0; i <= 2; i++) {
 				cartasMao11[i] = new Carta(tokens[i]);
@@ -230,7 +230,7 @@ public class JogoTCP extends Jogo {
 			numRodadaAtual++;
 			break;
 		case 'O':
-			// Fim de mão, recupera os placares
+			// Fim de mÃ£o, recupera os placares
 			pontosEquipe[0] = Integer.parseInt(tokens[0]);
 			pontosEquipe[1] = Integer.parseInt(tokens[1]);
 			getJogadorHumano().maoFechada(pontosEquipe, VAQUINHAS_DUMMY);
@@ -244,7 +244,7 @@ public class JogoTCP extends Jogo {
 	private JogadorHumano jogadorHumano;
 
 	/**
-	 * Retorna o jogador humano que está no jogo
+	 * Retorna o jogador humano que estÃ¡ no jogo
 	 * 
 	 * @return objeto que representa o humano
 	 */

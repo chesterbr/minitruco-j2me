@@ -1,21 +1,21 @@
 package mt;
 
 /*
- * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright Â© 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Este programa é um software livre; você pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
- * Licença, ou (na sua opnião) qualquer versão.
+ * Este programa Ã© um software livre; vocÃª pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da LicenÃ§a PÃºblica Geral GNU como 
+ * publicada pela FundaÃ§Ã£o do Software Livre (FSF); na versÃ£o 3 da 
+ * LicenÃ§a, ou (na sua opniÃ£o) qualquer versÃ£o.
  *
- * Este programa é distribuido na esperança que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÇÂO
- * a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença
- * Pública Geral GNU para maiores detalhes.
+ * Este programa Ã© distribuido na esperanÃ§a que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÃ‡Ã‚O
+ * a qualquer MERCADO ou APLICAÃ‡ÃƒO EM PARTICULAR. Veja a LicenÃ§a
+ * PÃºblica Geral GNU para maiores detalhes.
  *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU
- * junto com este programa, se não, escreva para a Fundação do Software
+ * VocÃª deve ter recebido uma cÃ³pia da LicenÃ§a PÃºblica Geral GNU
+ * junto com este programa, se nÃ£o, escreva para a FundaÃ§Ã£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
@@ -35,8 +35,8 @@ import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 
 /**
- * Conecta-se (via Bluetooth) num celular-servidor, exibindo a configuração da
- * mesa, além de cria o proxy do jogo (JogoBT) e o JogadorHumano conectado nele.
+ * Conecta-se (via Bluetooth) num celular-servidor, exibindo a configuraÃ§Ã£o da
+ * mesa, alÃ©m de cria o proxy do jogo (JogoBT) e o JogadorHumano conectado nele.
  * 
  * @author Chester
  * 
@@ -50,7 +50,7 @@ public class ClienteBT extends TelaBT {
 	private JogoBT jogo;
 
 	/**
-	 * Indica que a busca (de serviço ou no celular) foi concluída
+	 * Indica que a busca (de serviÃ§o ou no celular) foi concluÃ­da
 	 */
 	boolean terminou = false;	
 
@@ -60,34 +60,34 @@ public class ClienteBT extends TelaBT {
 	Vector devs = new Vector();
 
 	/**
-	 * Serviço "servidor miniTruco" encontrado
+	 * ServiÃ§o "servidor miniTruco" encontrado
 	 */
 	ServiceRecord srServidor = null;
 
 	/**
-	 * Conexão com o servidor
+	 * ConexÃ£o com o servidor
 	 */
 	public StreamConnection conn = null;
 
 	/**
-	 * Posição que o jogador local ocupa no jogo (do servidor)
+	 * PosiÃ§Ã£o que o jogador local ocupa no jogo (do servidor)
 	 * <p>
-	 * A posição dele na mesa é diferente.
+	 * A posiÃ§Ã£o dele na mesa Ã© diferente.
 	 * 
 	 * @see ClienteBT#getPosicaoMesa(int)
 	 */
 	private int posJogador;
 
 	/**
-	 * Recupera a posição "visual" correspondente a uma posição de jogo (i.e.,
-	 * uma posição no servidor)
+	 * Recupera a posiÃ§Ã£o "visual" correspondente a uma posiÃ§Ã£o de jogo (i.e.,
+	 * uma posiÃ§Ã£o no servidor)
 	 * <p>
-	 * A idéia é que o jogador local fique sempre na parte inferior da tela,
-	 * então o método retorna 1 para o jogador local, 2 para quem está à direita
+	 * A idÃ©ia Ã© que o jogador local fique sempre na parte inferior da tela,
+	 * entÃ£o o mÃ©todo retorna 1 para o jogador local, 2 para quem estÃ¡ Ã  direita
 	 * dele, etc.
 	 * 
 	 * @param i
-	 *            posição (no servidor) do jogador que queremos consultar
+	 *            posiÃ§Ã£o (no servidor) do jogador que queremos consultar
 	 */
 	public int getPosicaoMesa(int i) {
 		int retorno = i - posJogador + 1;
@@ -99,17 +99,17 @@ public class ClienteBT extends TelaBT {
 	boolean estaVivo = true;
 
 	/**
-	 * Agente que iniciou a busca por celular ou serviço
+	 * Agente que iniciou a busca por celular ou serviÃ§o
 	 */
 	private DiscoveryAgent agente;
 
 	/**
-	 * Responde aos eventos gerados pela busca por celular ou serviço
+	 * Responde aos eventos gerados pela busca por celular ou serviÃ§o
 	 */
 	private DiscoveryListener listener;
 
 	/**
-	 * ID da busca de serviço iniciada (necessário para cancelar se o usuário
+	 * ID da busca de serviÃ§o iniciada (necessÃ¡rio para cancelar se o usuÃ¡rio
 	 * volta para o menu antes de terminar)
 	 */
 	private int idBuscaServico;
@@ -121,15 +121,15 @@ public class ClienteBT extends TelaBT {
 	public void run() {
 
 		// Inicia a busca por celulares remotos
-		setTelaMsg("Procurando celulares...");
+		setTelaMsg(Messages.getString("procurando_cels")); //$NON-NLS-1$
 		agente = localDevice.getDiscoveryAgent();
 		listener = new ClienteBTListener();
 		terminou = false;
-		log("Iniciando busca de servidores");
+		log(Messages.getString("iniciando_busca")); //$NON-NLS-1$
 		try {
 			agente.startInquiry(DiscoveryAgent.GIAC, listener);
 		} catch (BluetoothStateException re) {
-			setTelaMsg("Erro:" + re.getMessage());
+			setTelaMsg(Messages.getString("erro") + re.getMessage()); //$NON-NLS-1$
 			return;
 		}
 
@@ -137,12 +137,12 @@ public class ClienteBT extends TelaBT {
 		while (!terminou) {
 			Thread.yield();
 			if (!estaVivo) {
-				return; // Usuário cancelou
+				return; // UsuÃ¡rio cancelou
 			}
 		}
-		log("finalizou busca de servidores");
+		log(Messages.getString("fim_busca")); //$NON-NLS-1$
 
-		// Para cada celular encontrado, verifica se é um servidor e conecta
+		// Para cada celular encontrado, verifica se Ã© um servidor e conecta
 		for (int i = 0; i < devs.size(); i++) {
 			RemoteDevice remdev = (RemoteDevice) devs.elementAt(i);
 			try {
@@ -154,9 +154,9 @@ public class ClienteBT extends TelaBT {
 					nome = null;
 				}
 				if (nome == null)
-					nome = "celular";
-				// Dá um feedback
-				setTelaMsg("Consultando " + nome);
+					nome = Messages.getString("celular"); //$NON-NLS-1$
+				// DÃ¡ um feedback
+				setTelaMsg(Messages.getString("consultando") + nome); //$NON-NLS-1$
 				log("Consultando " + nome);
 				terminou = false;
 				idBuscaServico = agente.searchServices(null,
@@ -164,14 +164,14 @@ public class ClienteBT extends TelaBT {
 				while (!terminou) {
 					Thread.yield();
 					if (!estaVivo) {
-						return; // Usuário cancelou
+						return; // UsuÃ¡rio cancelou
 					}
 				}
 			} catch (BluetoothStateException e) {
-				setTelaMsg("Erro:" + e.getMessage());
+				setTelaMsg(Messages.getString("erro") + e.getMessage()); //$NON-NLS-1$
 				return;
 			}
-			// Se conectou num jogo, não precisa mais procurar
+			// Se conectou num jogo, nÃ£o precisa mais procurar
 			if (conn != null)
 				break;
 		}
@@ -179,13 +179,14 @@ public class ClienteBT extends TelaBT {
 		if (conn == null) {
 			if (estaVivo) {
 				display.setCurrent(midlet.mesa);
+				midlet.mostraMenuAbertura(true);
 				midlet
 						.alerta(
-								"Jogo n\u00E3o encontrado",
-								"Nenhum celular com jogo Bluetooth criado foi encontrado. Crie um jogo ou tente novamente");
+								Messages.getString("jogo_nao_encontrado"), //$NON-NLS-1$
+								Messages.getString("nenhum_celular_bt")); //$NON-NLS-1$
 			}
 		} else {
-			// Loop principal: decodifica as notificações recebidas e as
+			// Loop principal: decodifica as notificaÃ§Ãµes recebidas e as
 			// processa (ou encaminha ao JogoBT, se estivermos em jogo)
 			int c;
 			StringBuffer sbLinha = new StringBuffer();
@@ -207,7 +208,7 @@ public class ClienteBT extends TelaBT {
 									display.setCurrent(this);
 									jogo = null;
 								}
-								// Exibe as informações recebidas fora do jogo
+								// Exibe as informaÃ§Ãµes recebidas fora do jogo
 								String[] tokens = split(parametros, ' ');
 								apelidos = split(tokens[0], '|');
 								regras = tokens[1];
@@ -217,7 +218,7 @@ public class ClienteBT extends TelaBT {
 							case 'P':
 								// Cria um o jogo remoto
 								jogo = new JogoBT(this);
-								// Adiciona o jogador na posição correta
+								// Adiciona o jogador na posiÃ§Ã£o correta
 								// (preenchendo as outras com dummies)
 								for (int i = 1; i <= 4; i++) {
 									if (i == posJogador) {
@@ -232,7 +233,7 @@ public class ClienteBT extends TelaBT {
 								midlet.iniciaJogo(jogo);
 								break;
 							// Os outros eventos ocorrem durante o jogo,
-							// i.e., quando o Jogador local já existe, logo,
+							// i.e., quando o Jogador local jÃ¡ existe, logo,
 							// vamos encaminhar para o objeto JogoRemoto
 							default:
 								jogo.processaNotificacao(tipoNotificacao,
@@ -246,14 +247,14 @@ public class ClienteBT extends TelaBT {
 				}
 			} catch (IOException e) {
 				if (estaVivo) {
-					alerta("Erro de I/O", e.getMessage(), true);
+					alerta(Messages.getString("erro_io"), e.getMessage(), true); //$NON-NLS-1$
 				}
 			} finally {
 				log("saiu do loop");
-				// Se a desconexão foi forçada, avisa e sai
+				// Se a desconexÃ£o foi forÃ§ada, avisa e sai
 				if (estaVivo) {
-					alerta("Desconectado",
-							"Você foi desconectado do servidor.", true);
+					alerta(Messages.getString("desconectado"), //$NON-NLS-1$
+							Messages.getString("desconectado_msg"), true); //$NON-NLS-1$
 					super.commandAction(voltarCommand, this);
 				}
 			}
@@ -270,11 +271,11 @@ public class ClienteBT extends TelaBT {
 		agente.cancelInquiry(listener);
 		agente.cancelServiceSearch(idBuscaServico);
 
-		// Fecha a conexão, se existir
+		// Fecha a conexÃ£o, se existir
 		if (conn != null) {
 			try {
 				// Obs.: fechar o conn invalida o in() e out() (cujos close()
-				// não fazem nada, cf. Javadoc do MIDP), por isso não fiz try...
+				// nÃ£o fazem nada, cf. Javadoc do MIDP), por isso nÃ£o fiz try...
 				// catch spearados
 				in.close();
 				out.close();
@@ -288,14 +289,14 @@ public class ClienteBT extends TelaBT {
 
 	/**
 	 * Responde ao eventos gerados pela busca por aparelhos (e, para cada
-	 * aparelho, pela busca do serviço "servidor de miniTruco").
+	 * aparelho, pela busca do serviÃ§o "servidor de miniTruco").
 	 * 
 	 * @author Chester
 	 */
 	class ClienteBTListener implements DiscoveryListener {
 
 		/**
-		 * Achou um celular (potencialmente servidor), adiciona à lista
+		 * Achou um celular (potencialmente servidor), adiciona Ã  lista
 		 */
 		public void deviceDiscovered(RemoteDevice arg0, DeviceClass arg1) {
 			if (estaVivo) {
@@ -305,11 +306,11 @@ public class ClienteBT extends TelaBT {
 		}
 
 		/**
-		 * Achou um serviço (potencialmente um jogo miniTruco aberto), tenta
+		 * Achou um serviÃ§o (potencialmente um jogo miniTruco aberto), tenta
 		 * conectar
 		 */
 		public void servicesDiscovered(int idBusca, ServiceRecord[] servicos) {
-			// Só vai haver um serviço de truco por celular mesmo
+			// SÃ³ vai haver um serviÃ§o de truco por celular mesmo
 			if (estaVivo && servicos.length > 0) {
 				log("Encontrou servico truco");
 				String url = servicos[0].getConnectionURL(
@@ -320,15 +321,15 @@ public class ClienteBT extends TelaBT {
 					String nome;
 					if (dev != null) {
 						nome = dev.getFriendlyName(false);
-						setTelaMsg("Tentando " + nome + ", url="+ url);
+						setTelaMsg(Messages.getString("tentando") + nome + ", url="+ url); //$NON-NLS-1$
 						conn = (StreamConnection) Connector.open(url);
 						log("conectou em "+nome+", cancelando busca");
-						setTelaMsg("Conectado em " + nome + "!");
+						setTelaMsg(Messages.getString("conectado_em") + nome + "!"); //$NON-NLS-1$
 						agente.cancelServiceSearch(idBusca);
 						log("cancelou busca");
 					}
 				} catch (IOException e) {
-					// Deu errado, desencana e vai pro próximo
+					// Deu errado, desencana e vai pro prÃ³ximo
 					log(e.getMessage());
 					log(url);					
 				}
@@ -336,14 +337,14 @@ public class ClienteBT extends TelaBT {
 		}
 
 		/**
-		 * Notifica conclusão da busca de dispositivos
+		 * Notifica conclusÃ£o da busca de dispositivos
 		 */
 		public void inquiryCompleted(int arg0) {
 			terminou = true;
 		}
 
 		/**
-		 * Notifica conclusão da busca de serviço
+		 * Notifica conclusÃ£o da busca de serviÃ§o
 		 */
 		public void serviceSearchCompleted(int arg0, int arg1) {
 			terminou = true;

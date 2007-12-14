@@ -1,40 +1,40 @@
 package mt;
 
 /*
- * Copyright © 2006 Leonardo Sellani
+ * Copyright ¬© 2006 Leonardo Sellani
  *   
- * Este cÛdigo fonte È um "software livre", podendo ser copiado,
- * distribuÌdo ou mesmo modificado.
+ * Este c√≥digo fonte √© um "software livre", podendo ser copiado,
+ * distribu√≠do ou mesmo modificado.
  *
- * Esta classe faz parte no software MiniTruco, minha intenÁ„o
- * È auxiliar a quem esteja interessado em implementar novos
+ * Esta classe faz parte no software MiniTruco, minha inten√ß√£o
+ * √© auxiliar a quem esteja interessado em implementar novos
  * jogadores a fim de criarmos um jogo mais rico e inteligente.
- * Mesmo sem conhecer muito a linguagem Java vocÍ ter· facilidade
+ * Mesmo sem conhecer muito a linguagem Java voc√™ ter√° facilidade
  * em criar um novo jogador, basta utilizar a estrutura e os
- * mÈtodos existentes e apenas modificar ou aprimorar a
- * "inteligÍncia" do jogador.
+ * m√©todos existentes e apenas modificar ou aprimorar a
+ * "intelig√™ncia" do jogador.
  * 
  * ------
  *
- * Este programa È um software livre; vocÍ pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da LicenÁa P˙blica Geral GNU como 
- * publicada pela FundaÁ„o do Software Livre (FSF); na vers„o 3 da 
- * LicenÁa, ou (na sua opni„o) qualquer vers„o.
+ * Este programa √© um software livre; voc√™ pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da Licen√ßa P√∫blica Geral GNU como 
+ * publicada pela Funda√ß√£o do Software Livre (FSF); na vers√£o 3 da 
+ * Licen√ßa, ou (na sua opni√£o) qualquer vers√£o.
  *
- * Este programa È distribuido na esperanÁa que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA«¬O
- * a qualquer MERCADO ou APLICA«√O EM PARTICULAR. Veja a LicenÁa
- * P˙blica Geral GNU para maiores detalhes.
+ * Este programa √© distribuido na esperan√ßa que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA√á√ÇO
+ * a qualquer MERCADO ou APLICA√á√ÉO EM PARTICULAR. Veja a Licen√ßa
+ * P√∫blica Geral GNU para maiores detalhes.
  *
- * VocÍ deve ter recebido uma cÛpia da LicenÁa P˙blica Geral GNU
- * junto com este programa, se n„o, escreva para a FundaÁ„o do Software
+ * Voc√™ deve ter recebido uma c√≥pia da Licen√ßa P√∫blica Geral GNU
+ * junto com este programa, se n√£o, escreva para a Funda√ß√£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 import java.util.Random;
 
 /**
- * EstratÈgia inteligente para jogadores CPU
+ * Estrat√©gia inteligente para jogadores CPU
  * 
  * @author Leonardo Sellani
  * 
@@ -50,17 +50,17 @@ public class EstrategiaSellani implements Estrategia
 	
 	public String getNomeEstrategia() 
 	{
-		return "Leonardo Sellani";
+		return "Sellani";
 	}
 
 	public String getInfoEstrategia() 
 	{
-		return "vers„o 1.0";
+		return "Leonardo Sellani, vers√£o 1.0";
 	}
 	
 	/**
-	 * Retorna verdadeiro ou falso a partir de um n˙mero randÙmico e uma porcentaem. 
-	 * Esta funÁ„o È utilizada quando o jogador fica na d˙vida, assim o jogador fica mais din‚mico.
+	 * Retorna verdadeiro ou falso a partir de um n√∫mero rand√¥mico e uma porcentaem. 
+	 * Esta fun√ß√£o √© utilizada quando o jogador fica na d√∫vida, assim o jogador fica mais din√¢mico.
 	 */
 	private boolean vouOuNaoVou(int Porcentagem)
 	{
@@ -68,7 +68,7 @@ public class EstrategiaSellani implements Estrategia
 	}
 	
 	/**
-	 * Seta as vari·veis C[0],C[1] e C[2] com o Ìndice da maior para menor carta da minha m„o
+	 * Seta as vari√°veis C[0],C[1] e C[2] com o √≠ndice da maior para menor carta da minha m√£o
 	 */
 	private void classificaCartas(SituacaoJogo s)
 	{
@@ -102,7 +102,7 @@ public class EstrategiaSellani implements Estrategia
 	
 
 	/**
-	 * Retorna o n˙mero da minha vez na rodada (0..3) (m„o..pÈ)
+	 * Retorna o n√∫mero da minha vez na rodada (0..3) (m√£o..p√©)
 	 */
 	private int minhaVez(SituacaoJogo s)
 	{
@@ -110,7 +110,7 @@ public class EstrategiaSellani implements Estrategia
 	}
 
 	/**
-	 * Retorna o n˙mero da vez do trucador na rodada (0..3) (m„o..pÈ)
+	 * Retorna o n√∫mero da vez do trucador na rodada (0..3) (m√£o..p√©)
 	 */
 	private int vezTrucador(SituacaoJogo s)
 	{
@@ -118,7 +118,7 @@ public class EstrategiaSellani implements Estrategia
 	}
 
 	/**
-	 * Retorna minha posiÁ„o na mesa (0..3)
+	 * Retorna minha posi√ß√£o na mesa (0..3)
 	 */
 	private int eu(SituacaoJogo s)
 	{
@@ -134,7 +134,7 @@ public class EstrategiaSellani implements Estrategia
 	}
 
 	/**
-	 * Retorna a posicao do advers·rio 1 na mesa (0..3)
+	 * Retorna a posicao do advers√°rio 1 na mesa (0..3)
 	 */
 	private int adversario1(SituacaoJogo s)
 	{
@@ -142,7 +142,7 @@ public class EstrategiaSellani implements Estrategia
 	}
 
 	/**
-	 * Retorna a posicao do advers·rio 2 na mesa (0..3)
+	 * Retorna a posicao do advers√°rio 2 na mesa (0..3)
 	 */
 	private int adversario2(SituacaoJogo s)
 	{
@@ -150,7 +150,7 @@ public class EstrategiaSellani implements Estrategia
 	}
 
 	/**
-	 *  Retorna o Ìndice da maior carta da mesa na rodada atual.
+	 *  Retorna o √≠ndice da maior carta da mesa na rodada atual.
 	 */
 	private int maiorCartaMesa(SituacaoJogo s)
 	{
@@ -172,7 +172,7 @@ public class EstrategiaSellani implements Estrategia
 	}
 	
 	/**
-	 * Retorna se a maior carta da mesa È a do meu parceiro ou n„o.
+	 * Retorna se a maior carta da mesa √© a do meu parceiro ou n√£o.
 	 */
 	private boolean maiorCartaEDoParceiro(SituacaoJogo s)
 	{
@@ -182,7 +182,7 @@ public class EstrategiaSellani implements Estrategia
 	}
 	
 	/**
-	 * Retorna se a maior carta da mesa È minha ou do meu parceiro ou n„o.
+	 * Retorna se a maior carta da mesa √© minha ou do meu parceiro ou n√£o.
 	 */
 	private boolean maiorCartaENossa(SituacaoJogo s)
 	{
@@ -192,7 +192,7 @@ public class EstrategiaSellani implements Estrategia
 	}
 	
 	/**
-	 * Retorna se eu tenho na m„o alguma carta para matar a do advers·rio.
+	 * Retorna se eu tenho na m√£o alguma carta para matar a do advers√°rio.
 	 */
 	private boolean matoAdversario(SituacaoJogo s,boolean consideraEmpate)
 	{
@@ -210,47 +210,47 @@ public class EstrategiaSellani implements Estrategia
 	}
 	
 	/**
-	 * Retorna o Ìndice da menor carta que tenho na m„o para matar a carta do advers·rio ou do parceiro na mesa,
-	 * se n„o tiver a carta retorna a menor.
+	 * Retorna o √≠ndice da menor carta que tenho na m√£o para matar a carta do advers√°rio ou do parceiro na mesa,
+	 * se n√£o tiver a carta retorna a menor.
 	 */
 	private int menorCartaParaMatar(SituacaoJogo s)
 	{
-		//se eu n„o puder matar a carta do advers·rio retorno a menor
+		//se eu n√£o puder matar a carta do advers√°rio retorno a menor
 		if(!matoAdversario(s,false))
 			return C[2];
-		//procura pela primeira carta que mata a do advers·rio
+		//procura pela primeira carta que mata a do advers√°rio
 		for(int i=2;i>=0;i--)
 			if(s.cartasJogador[C[i]].getValorTruco(s.manilha) > s.cartasJogadas[s.numRodadaAtual-1][maiorCartaMesa(s)].getValorTruco(s.manilha))
-				return C[i]; //È essa!
-		//se n„o encontrou nenhuma, joga a menor
+				return C[i]; //√© essa!
+		//se n√£o encontrou nenhuma, joga a menor
 		return C[2];
 	}
 	
 	/**
-	 * Retorna o Ìndice da melhor carta para tentar fazer a m„o, se n„o tiver uma carta boa retorna a menor.
+	 * Retorna o √≠ndice da melhor carta para tentar fazer a m√£o, se n√£o tiver uma carta boa retorna a menor.
 	 */
 	private int melhorCartaParaTentarFazer(SituacaoJogo s)
 	{
-		//se eu n„o puder matar a carta do advers·rio retorno a menor
+		//se eu n√£o puder matar a carta do advers√°rio retorno a menor
 		if(!matoAdversario(s,false))
 			return C[2];
-		//procura pela primeira carta que mata a do advers·rio
+		//procura pela primeira carta que mata a do advers√°rio
 		for(int i=2;i>=0;i--)
 			if(s.cartasJogador[C[i]].getValorTruco(s.manilha) > s.cartasJogadas[s.numRodadaAtual-1][maiorCartaMesa(s)].getValorTruco(s.manilha))
 			{
-				//ser· que esta È uma boa carta? se n„o for vou tentar outra. SÛ vou jogar uma manilha em cima de uma carta boa
+				//ser√° que esta √© uma boa carta? se n√£o for vou tentar outra. S√≥ vou jogar uma manilha em cima de uma carta boa
 				if( (qualidadeCarta(s.cartasJogador[C[i]],s)==CARTA_BOA) ||
 					(qualidadeCarta(s.cartasJogador[C[i]],s)==CARTA_EXCELENTE && qualidadeMaiorMesa(s) >= CARTA_BOA))
 					return C[i];
 			}
-		//se n„o encontrou nenhuma, n„o vou gastar uma manilha na primeira
+		//se n√£o encontrou nenhuma, n√£o vou gastar uma manilha na primeira
 		if(qualidadeMinhaMaior(s)==CARTA_EXCELENTE)
 			return C[1]; //vou jogar minha carta do meio
 		return C[0]; //vou jogar minha maior
 	}
 
 	/**
-	 * Verifica se eu tenho a maior carta do jogo na m„o, (por exemplo, o 7 Copas j· tendo saido o Zap), 
+	 * Verifica se eu tenho a maior carta do jogo na m√£o, (por exemplo, o 7 Copas j√° tendo saido o Zap), 
 	 * considerando apenas as manilhas. 
 	 */
 	private boolean tenhoMaiorCarta(SituacaoJogo s)
@@ -262,11 +262,11 @@ public class EstrategiaSellani implements Estrategia
 		if(s.cartasJogador[C[0]].getValorTruco(s.manilha)<=10)
 			return false;
 
-		//se eu estiver com o zap, ent„o n„o tem nem o que pensar
+		//se eu estiver com o zap, ent√£o n√£o tem nem o que pensar
 		if(s.cartasJogador[C[0]].getValorTruco(s.manilha)==14)
 			return true; 
 
-		//procura pelas manilhas que j· sairam nas rodadas anteriores
+		//procura pelas manilhas que j√° sairam nas rodadas anteriores
 		for(int rodada=0;rodada<(s.numRodadaAtual-1);rodada++)
 			for(int jogador=0;jogador<=3;jogador++)
 			{
@@ -274,13 +274,13 @@ public class EstrategiaSellani implements Estrategia
 				{
 					switch(s.cartasJogadas[rodada][jogador].getValorTruco(s.manilha))
 					{
-						case 12: m12=true; break; //espadilha j· saiu
-						case 13: m13=true; break; //copas j· saiu
-						case 14: m14=true; break; //zap j· saiu
+						case 12: m12=true; break; //espadilha j√° saiu
+						case 13: m13=true; break; //copas j√° saiu
+						case 14: m14=true; break; //zap j√° saiu
 					}
 				}
 			}
-		//ser· que estou com a maior manilha do jogo na m„o
+		//ser√° que estou com a maior manilha do jogo na m√£o
 		if( (s.cartasJogador[C[0]].getValorTruco(s.manilha)==13 && m14) ||
 			(s.cartasJogador[C[0]].getValorTruco(s.manilha)==12 && m14 && m13) ||
 			(s.cartasJogador[C[0]].getValorTruco(s.manilha)==11 && m14 && m13 && m12))
@@ -289,7 +289,7 @@ public class EstrategiaSellani implements Estrategia
 	}
 	
 	/**
-	 * Retorna se a partida j· esta garantida ou n„o (por exemplo, se eu to com o Zap e a 1™ feita)
+	 * Retorna se a partida j√° esta garantida ou n√£o (por exemplo, se eu to com o Zap e a 1¬™ feita)
 	 */
 	private boolean partidaGanha(SituacaoJogo s)
 	{
@@ -318,7 +318,7 @@ public class EstrategiaSellani implements Estrategia
 	}
 	
 	/**
-	 * Retorna a qualificaÁ„o de uma carta.
+	 * Retorna a qualifica√ß√£o de uma carta.
 	 * Mudando as faixas das cartas para cada qualidade, podemos variar a agrecividade, ou maluquice do jogador 
 	 */
 	private int qualidadeCarta(Carta carta,SituacaoJogo s)
@@ -354,7 +354,7 @@ public class EstrategiaSellani implements Estrategia
 	}
 	
 	/**
-	 * Retorna a qualificaÁ„o da maior carta da mesa na rodada atual.
+	 * Retorna a qualifica√ß√£o da maior carta da mesa na rodada atual.
 	 */
 	private int qualidadeMaiorMesa(SituacaoJogo s)
 	{
@@ -364,7 +364,7 @@ public class EstrategiaSellani implements Estrategia
 	}
 
 	/**
-	 * Retorna a qualificaÁ„o da maior carta da minha m„o.
+	 * Retorna a qualifica√ß√£o da maior carta da minha m√£o.
 	 */
 	private int qualidadeMinhaMaior(SituacaoJogo s)
 	{
@@ -374,7 +374,7 @@ public class EstrategiaSellani implements Estrategia
 	}
 	
 	/**
-	 * Retorna se compensa aumentar a aposta ou n„o. Se eu estiver com 9, n„o vou pedir 6 nÈ cabeÁ„o! 
+	 * Retorna se compensa aumentar a aposta ou n√£o. Se eu estiver com 9, n√£o vou pedir 6 n√© cabe√ß√£o! 
 	 */
 	private boolean valeAPenaAumentar(SituacaoJogo s,boolean consideraSorte)
 	{
@@ -399,11 +399,11 @@ public class EstrategiaSellani implements Estrategia
 	}
 
 	/**
-	 * Efetua uma jogada. SÈrio?!? Se t· brincando!
+	 * Efetua uma jogada. S√©rio?!? Se t√° brincando!
 	 */
 	public int joga(SituacaoJogo s) 
 	{
-//		System.out.println("\njoga() posiÁ„o:" + eu(s) + " vez:" + minhaVez(s) + (minhaVez(s)==0?" m„o":minhaVez(s)==3?" pÈ":"") + (s.posJogador==3?" Parceiro":" Advers·rio"));
+//		System.out.println("\njoga() posi√ß√£o:" + eu(s) + " vez:" + minhaVez(s) + (minhaVez(s)==0?" m√£o":minhaVez(s)==3?" p√©":"") + (s.posJogador==3?" Parceiro":" Advers√°rio"));
 		classificaCartas(s);
 
 		switch (s.numRodadaAtual) 
@@ -413,21 +413,21 @@ public class EstrategiaSellani implements Estrategia
 			switch(minhaVez(s))
 			{
 			case 0:
-				return C[2]; //vuo jogar a menor carta, ainda n„o tem muito o que fazer, nÈ?
+				return C[2]; //vuo jogar a menor carta, ainda n√£o tem muito o que fazer, n√©?
 			case 1:
 				if(qualidadeMaiorMesa(s)>=CARTA_BOA)
-					return menorCartaParaMatar(s); //o cara j· saiu forÁando, vou tentar fazer
+					return menorCartaParaMatar(s); //o cara j√° saiu for√ßando, vou tentar fazer
 				else
-					return C[2];//vou jogar uma carta baixa tambÈm
+					return C[2];//vou jogar uma carta baixa tamb√©m
 			case 2:
-				//ser· que meu parceiro j· comeÁou bem?
+				//ser√° que meu parceiro j√° come√ßou bem?
 				if(maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s) >= CARTA_BOA)
 					return C[2]; //jogo minha pior carta, deixa a do parceiro
 				return melhorCartaParaTentarFazer(s); //vou fazer minha parte, quem sabe passa!
 			case 3:
-				//ser· que meu parceiro j· fez?
+				//ser√° que meu parceiro j√° fez?
 				if(maiorCartaEDoParceiro(s))
-					return C[2]; //meu parceiro È duca, vou jogar minha menor carta
+					return C[2]; //meu parceiro √© duca, vou jogar minha menor carta
 				return menorCartaParaMatar(s); //tudo bem parceiro, deixa comigo, vou tentar fazer
 			}
 		break;
@@ -445,16 +445,16 @@ public class EstrategiaSellani implements Estrategia
 			}			
 			switch(minhaVez(s))
 			{
-			//j· fizemos a primeira
+			//j√° fizemos a primeira
 			case 0:
 			case 2:
-				//se estou com o jogo ganho, n„o tenho nem o que pensar, vou deixar passar, hehehe!!!
+				//se estou com o jogo ganho, n√£o tenho nem o que pensar, vou deixar passar, hehehe!!!
 				if(partidaGanha(s))
-					return C[2]+10; //vou esconder a outra, faz a segunda ai pat„o!!!
+					return C[2]+10; //vou esconder a outra, faz a segunda ai pat√£o!!!
 				//vou dar uma olhada na que meu parceiro jogou
 				if(minhaVez(s)==2 && maiorCartaEDoParceiro(s) && qualidadeCarta(s.cartasJogador[C[2]],s)<=qualidadeMaiorMesa(s))
 					return C[2]+10; //vou esconder e deixar passar a do parceiro
-				//ser· que eu tenho uma manilha
+				//ser√° que eu tenho uma manilha
 				if(qualidadeMinhaMaior(s)==CARTA_EXCELENTE)
 				{
 					//vou dar uma olhada na minha outra carta, se for boa vou trucar, num quero nem saber...
@@ -462,15 +462,15 @@ public class EstrategiaSellani implements Estrategia
 					{
 						if(s.valorProximaAposta>0 && valeAPenaAumentar(s,true) && vouOuNaoVou(80))
 							return -1; //TRUCO!!!
-						return C[2]; //o cara aceitou, vou passar a menorzinha sÛ pra arrancar
+						return C[2]; //o cara aceitou, vou passar a menorzinha s√≥ pra arrancar
 					}
-					return C[2]+10; //minha outra carta n„o È das melhores, vou esconder a pior e ir com a manilha pra ˙ltima
+					return C[2]+10; //minha outra carta n√£o √© das melhores, vou esconder a pior e ir com a manilha pra √∫ltima
 				}
 				else
-				//tÙ sem manilha, mas vamos ver o que da pra fazer...
+				//t√¥ sem manilha, mas vamos ver o que da pra fazer...
 				if(qualidadeMinhaMaior(s)==CARTA_BOA)
 				{
-					//vou dar uma olhada na minha outra carta, se tambÈm for boa vou trucar 
+					//vou dar uma olhada na minha outra carta, se tamb√©m for boa vou trucar 
 					if(qualidadeCarta(s.cartasJogador[C[1]],s)>=CARTA_BOA)
 					{
 						if(s.valorProximaAposta>0 && valeAPenaAumentar(s,true) && vouOuNaoVou(50))
@@ -483,22 +483,22 @@ public class EstrategiaSellani implements Estrategia
 					else
 						return C[2]+(maiorCartaEDoParceiro(s)?10:!matoAdversario(s,true)?10:0);
 				}
-				//Ù m„o ruim sÙ, n„o tem muito o que fazer, pelo menos j· garantimos a primeira
+				//√¥ m√£o ruim s√¥, n√£o tem muito o que fazer, pelo menos j√° garantimos a primeira
 				if(minhaVez(s)==0)
 					return C[2]+(qualidadeCarta(s.cartasJogador[C[2]],s)==CARTA_RUIM?10:0);
 				else
 					return C[2]+(maiorCartaEDoParceiro(s)?10:!matoAdversario(s,true)?10:0);
 			case 1:
-				//n„o vou gastar uma manilha em cima de porcaria, vou deixar pro parceiro e jogar minha pior carta
+				//n√£o vou gastar uma manilha em cima de porcaria, vou deixar pro parceiro e jogar minha pior carta
 				if(qualidadeCarta(s.cartasJogador[menorCartaParaMatar(s)],s)==CARTA_EXCELENTE && qualidadeMaiorMesa(s)<=CARTA_MEDIA)
 					return C[2]+(matoAdversario(s,true)?0:10);
 				//vou tentar fazer essa
 				return menorCartaParaMatar(s)+(matoAdversario(s,true)?0:10);
 			case 3:
-				//vamos ver se meu parceiro j· garantiu essa ou se eu estou muito ruim
+				//vamos ver se meu parceiro j√° garantiu essa ou se eu estou muito ruim
 				if(maiorCartaEDoParceiro(s) || !matoAdversario(s,false))
-					return C[2]+10; //vou atÈ esconder
-				return menorCartaParaMatar(s)+(matoAdversario(s,true)?0:10); //tÙ no pÈ, vou tentar fazer essa
+					return C[2]+10; //vou at√© esconder
+				return menorCartaParaMatar(s)+(matoAdversario(s,true)?0:10); //t√¥ no p√©, vou tentar fazer essa
 			}
 		break;
 
@@ -513,7 +513,7 @@ public class EstrategiaSellani implements Estrategia
 					return -1; //TRUCO!!!
 				return C[0];
 			}
-			//se j· estou garantido vou trucar, n„o vai nem ter graÁa, hehehe!!!
+			//se j√° estou garantido vou trucar, n√£o vai nem ter gra√ßa, hehehe!!!
 			if(partidaGanha(s))
 			{					
 				if(s.valorProximaAposta>0 && valeAPenaAumentar(s,false))
@@ -523,30 +523,30 @@ public class EstrategiaSellani implements Estrategia
 			switch(minhaVez(s))
 			{
 			case 0:
-				//se eu estiver com uma carta ruim, vou jogar fechada pra fazer uma mÈdia e deixar para o parceiro 
+				//se eu estiver com uma carta ruim, vou jogar fechada pra fazer uma m√©dia e deixar para o parceiro 
 				if(qualidadeMinhaMaior(s)==CARTA_RUIM)
 					return C[0]+10;
-				//minha carta n„o È l· estas coisas, vou jogar e ver o que da
+				//minha carta n√£o √© l√° estas coisas, vou jogar e ver o que da
 				if(qualidadeMinhaMaior(s)==CARTA_MEDIA)
 					return C[0];
-				//opa, minha carta atÈ que da pra alguma coisa 
+				//opa, minha carta at√© que da pra alguma coisa 
 				if( s.valorProximaAposta>0 && valeAPenaAumentar(s,true) && 
 					((vouOuNaoVou(40) && qualidadeMinhaMaior(s) == CARTA_BOA) ||
 					 (vouOuNaoVou(90) && qualidadeMinhaMaior(s) == CARTA_EXCELENTE)))
 					return -1; //TRUCO!!!
 				return C[0];
 			case 1:
-				//eu tÙ mal, espero que o parceiro faÁa alguma coisa
+				//eu t√¥ mal, espero que o parceiro fa√ßa alguma coisa
 				if(!matoAdversario(s,false))
 					return C[0]+10;
-				//minha carta atÈ que È boa, vou arriscar
+				//minha carta at√© que √© boa, vou arriscar
 				if( s.valorProximaAposta>0 && valeAPenaAumentar(s,true) && matoAdversario(s,true) &&
 					((vouOuNaoVou(40) && qualidadeMinhaMaior(s) == CARTA_BOA) ||
 					 (vouOuNaoVou(90) && qualidadeMinhaMaior(s) == CARTA_EXCELENTE)))
 					return -1; //TRUCO!!!
 				return C[0];
 			case 2:
-				//eu n„o melhoro a do parceiro, mas acho que vou trucar com a carta dele
+				//eu n√£o melhoro a do parceiro, mas acho que vou trucar com a carta dele
 				if(maiorCartaEDoParceiro(s) && !matoAdversario(s,false) && qualidadeMaiorMesa(s) >= CARTA_BOA && vouOuNaoVou(40) && s.valorProximaAposta>0 && valeAPenaAumentar(s,true))
 					return -1; //TRUCO!!!
 				if(matoAdversario(s,false) && s.valorProximaAposta>0 && valeAPenaAumentar(s,true) &&
@@ -559,12 +559,12 @@ public class EstrategiaSellani implements Estrategia
 					return -1; //TRUCO!!!
 				return C[0]+(matoAdversario(s,true)?0:10);
 			case 3:
-				//tÙ no pÈ, vamos ver se eu ganho
+				//t√¥ no p√©, vamos ver se eu ganho
 				if(matoAdversario(s,false) || maiorCartaEDoParceiro(s) || (primeiraENossa(s) && matoAdversario(s,true)))
 				{
 					if(s.valorProximaAposta>0 && valeAPenaAumentar(s,true))
-						return -1; //TRUCO!!! sÛ troxa pra aceitar
-					return C[0]+(matoAdversario(s,true)?0:10); //aeheh, o manÈ aceitou!!!
+						return -1; //TRUCO!!! s√≥ troxa pra aceitar
+					return C[0]+(matoAdversario(s,true)?0:10); //aeheh, o man√© aceitou!!!
 				}				
 				//deixar eles ganharem com uma carta lixo? nem pensar, vou trucar essa merda
 				if( s.valorProximaAposta>0 && valeAPenaAumentar(s,true) && 
@@ -572,22 +572,22 @@ public class EstrategiaSellani implements Estrategia
 					 (vouOuNaoVou(20) && qualidadeMaiorMesa(s) == CARTA_MEDIA) ||
 					 (vouOuNaoVou(5)  && qualidadeMaiorMesa(s) == CARTA_BOA)))
 					return -1; //TRUCO!!! foge ai.
-				return C[0]; //n„o acredito, tomei uma piaba!!!
+				return C[0]; //n√£o acredito, tomei uma piaba!!!
 			}
 		break;
 		}
-		return C[2]; //se alguma combinaÁ„o ficou de fora, joga a menor
+		return C[2]; //se alguma combina√ß√£o ficou de fora, joga a menor
 	}
 
 	/**
-	 * Retorna se eu aceito o aumento da aposta dos advers·rios ou n„o. 
+	 * Retorna se eu aceito o aumento da aposta dos advers√°rios ou n√£o. 
 	 */
 	public boolean aceitaTruco(SituacaoJogo s) 
 	{
-//		System.out.println("\naceitaTruco() vez:" + minhaVez(s) + " posiÁ„o:" + eu(s) + (eu(s)==0?" m„o":eu(s)==3?" pÈ":"") + (s.posJogador==3?" Parceiro":" Advers·rio"));
+//		System.out.println("\naceitaTruco() vez:" + minhaVez(s) + " posi√ß√£o:" + eu(s) + (eu(s)==0?" m√£o":eu(s)==3?" p√©":"") + (s.posJogador==3?" Parceiro":" Advers√°rio"));
 		classificaCartas(s);
 
-		//se estou com o casal maior n„o vai nem ter graÁa...
+		//se estou com o casal maior n√£o vai nem ter gra√ßa...
 		if(partidaGanha(s))
 			return true;
 		
@@ -598,32 +598,32 @@ public class EstrategiaSellani implements Estrategia
 			//se eu tiver pelo menos uma manilha e uma carta boa eu aceito
 			if(qualidadeMinhaMaior(s)==CARTA_EXCELENTE && qualidadeCarta(s.cartasJogador[C[1]],s)>=CARTA_BOA)
 				return true;
-			//eu:SIM  parceiro:SIM - considerando quem j· jogou
+			//eu:SIM  parceiro:SIM - considerando quem j√° jogou
 			if((minhaVez(s)==0 && vezTrucador(s)==3) ||	(minhaVez(s)==2 && vezTrucador(s)==3))
 			{
-				//o pÈ trucando na primeira, esse cara t· de sacanagem
+				//o p√© trucando na primeira, esse cara t√° de sacanagem
 				if(maiorCartaENossa(s) && qualidadeMaiorMesa(s) == CARTA_EXCELENTE)
-					return true; //esse cara t· blefando
+					return true; //esse cara t√° blefando
 				if(maiorCartaENossa(s) && qualidadeMaiorMesa(s) >= CARTA_BOA)
 				{
-					//vou dar uma olhada na minha m„o
+					//vou dar uma olhada na minha m√£o
 					if(qualidadeMinhaMaior(s)>=CARTA_BOA)
 						return true;
-					//temos uma carta boa na mesa, ent„o vamos nessa!
+					//temos uma carta boa na mesa, ent√£o vamos nessa!
 					if(vouOuNaoVou(20))
 						return true;
 				}
 			}
 			else
-			//eu:N√O  parceiro:N√O - considerando quem j· jogou
+			//eu:N√ÉO  parceiro:N√ÉO - considerando quem j√° jogou
 			if((minhaVez(s)==1 && vezTrucador(s)==0) || (minhaVez(s)==3 && vezTrucador(s)==0))
 			{
-				//nem comeÁou e o m„o j· trucou?!? vamos pensar
+				//nem come√ßou e o m√£o j√° trucou?!? vamos pensar
 				if(qualidadeMinhaMaior(s)>=CARTA_BOA && qualidadeCarta(s.cartasJogador[C[1]],s)>=CARTA_BOA)
 					return true;
 			}
 			else
-			//eu:SIM  parceiro:N√O - considerando quem j· jogou
+			//eu:SIM  parceiro:N√ÉO - considerando quem j√° jogou
 			if((minhaVez(s)==0 && vezTrucador(s)==1) || (minhaVez(s)==1 && vezTrucador(s)==2))
 			{
 				if(minhaVez(s)==1 && maiorCartaENossa(s) && qualidadeMaiorMesa(s) == CARTA_EXCELENTE && vouOuNaoVou(50))
@@ -632,7 +632,7 @@ public class EstrategiaSellani implements Estrategia
 					return true;
 			}
 			else
-			//eu:N√O  parceiro:SIM - considerando quem j· jogou
+			//eu:N√ÉO  parceiro:SIM - considerando quem j√° jogou
 			if((minhaVez(s)==2 && vezTrucador(s)==1) || (minhaVez(s)==3 && vezTrucador(s)==2))
 			{
 				if(maiorCartaENossa(s) && qualidadeMaiorMesa(s) >= CARTA_BOA && qualidadeMinhaMaior(s)>=CARTA_BOA && vouOuNaoVou(40))
@@ -645,52 +645,52 @@ public class EstrategiaSellani implements Estrategia
 			   (qualidadeMinhaMaior(s)==CARTA_EXCELENTE ||
 			   (qualidadeMinhaMaior(s)==CARTA_BOA && vouOuNaoVou(50))) )
 				return true;
-			//eu:SIM  parceiro:SIM - considerando quem j· jogou
+			//eu:SIM  parceiro:SIM - considerando quem j√° jogou
 			if((minhaVez(s)==0 && vezTrucador(s)==3) ||	(minhaVez(s)==2 && vezTrucador(s)==3))
 			{
-				//o pÈ ainda tem que fazer duas, e eu ainda tenho uma boa carta na mesa?!? Ser· que t· blefando?
+				//o p√© ainda tem que fazer duas, e eu ainda tenho uma boa carta na mesa?!? Ser√° que t√° blefando?
 				if(maiorCartaENossa(s) && qualidadeMaiorMesa(s) >= CARTA_BOA && vouOuNaoVou(70))
 					return true;
-				//o pÈ trucando e tem que fazer duas, ele pode estar blefando
+				//o p√© trucando e tem que fazer duas, ele pode estar blefando
 				if(primeiraENossa(s) &&  vouOuNaoVou(40))
 					return true;
 			}
 			else
-			//eu:N√O  parceiro:N√O - considerando quem j· jogou
+			//eu:N√ÉO  parceiro:N√ÉO - considerando quem j√° jogou
 			if((minhaVez(s)==1 && vezTrucador(s)==0) || (minhaVez(s)==3 && vezTrucador(s)==0))
 			{
 				if(qualidadeMinhaMaior(s)>=CARTA_BOA && qualidadeCarta(s.cartasJogador[C[1]],s)>=CARTA_BOA && vouOuNaoVou(50))
 					return true;
 			}
 			else
-			//eu:SIM  parceiro:N√O - considerando quem j· jogou
+			//eu:SIM  parceiro:N√ÉO - considerando quem j√° jogou
 			if((minhaVez(s)==0 && vezTrucador(s)==1) || (minhaVez(s)==1 && vezTrucador(s)==2))
 			{
-				//eu j· fiz a primeira, vou dar uma olhada na minha m„o
+				//eu j√° fiz a primeira, vou dar uma olhada na minha m√£o
 				if(minhaVez(s)==0 && (qualidadeMinhaMaior(s)>=CARTA_EXCELENTE || (qualidadeMinhaMaior(s)>=CARTA_BOA && vouOuNaoVou(40))))
 					return true;
 			}
 			else
-			//eu:N√O  parceiro:SIM - considerando quem j· jogou
+			//eu:N√ÉO  parceiro:SIM - considerando quem j√° jogou
 			if((minhaVez(s)==2 && vezTrucador(s)==1) || (minhaVez(s)==3 && vezTrucador(s)==2))
 			{
-				//j· fiz a primeira e tÙ com uma boa na m„o, vamo embora!
+				//j√° fiz a primeira e t√¥ com uma boa na m√£o, vamo embora!
 				if(minhaVez(s)==2 && (qualidadeMinhaMaior(s)>=CARTA_EXCELENTE || (qualidadeMinhaMaior(s)>=CARTA_BOA && vouOuNaoVou(50))))
 					return true;
 			}
 		//terceira rodada
 		case 3:
-			//eu:SIM  parceiro:SIM - considerando quem j· jogou
+			//eu:SIM  parceiro:SIM - considerando quem j√° jogou
 			if((minhaVez(s)==0 && vezTrucador(s)==3) ||	(minhaVez(s)==2 && vezTrucador(s)==3))
 			{
-				//o pÈ t· trucando, vamos ver!
+				//o p√© t√° trucando, vamos ver!
 				if(maiorCartaENossa(s) &&
 					((qualidadeMaiorMesa(s)==CARTA_EXCELENTE) || 
 					 (qualidadeMaiorMesa(s)==CARTA_BOA && vouOuNaoVou(70))) )
 					return true;
 			}
 			else
-			//eu:N√O  parceiro:N√O - considerando quem j· jogou
+			//eu:N√ÉO  parceiro:N√ÉO - considerando quem j√° jogou
 			if((minhaVez(s)==1 && vezTrucador(s)==0) || (minhaVez(s)==3 && vezTrucador(s)==0))
 			{
 				//se eu tiver pelo menos uma manilha e uma carta boa eu aceito
@@ -699,7 +699,7 @@ public class EstrategiaSellani implements Estrategia
 					return true;
 			}
 			else
-			//eu:SIM  parceiro:N√O - considerando quem j· jogou
+			//eu:SIM  parceiro:N√ÉO - considerando quem j√° jogou
 			if((minhaVez(s)==0 && vezTrucador(s)==1) || (minhaVez(s)==1 && vezTrucador(s)==2))
 			{
 				if(maiorCartaENossa(s) &&
@@ -708,7 +708,7 @@ public class EstrategiaSellani implements Estrategia
 					return true;
 			}
 			else
-			//eu:N√O  parceiro:SIM - considerando quem j· jogou
+			//eu:N√ÉO  parceiro:SIM - considerando quem j√° jogou
 			if((minhaVez(s)==2 && vezTrucador(s)==1) || (minhaVez(s)==3 && vezTrucador(s)==2))
 			{
 				//se eu tiver pelo menos uma manilha e uma carta boa eu aceito
@@ -725,7 +725,7 @@ public class EstrategiaSellani implements Estrategia
 	}
 
 	/**
-	 * Retorna se eu aceito jogar ou n„o esta m„o de 11.
+	 * Retorna se eu aceito jogar ou n√£o esta m√£o de 11.
 	 */
 	public boolean aceitaMao11(Carta[] cartasParceiro, SituacaoJogo s) 
 	{

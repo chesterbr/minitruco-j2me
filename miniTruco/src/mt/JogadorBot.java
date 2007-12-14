@@ -1,23 +1,23 @@
 package mt;
 
 /*
- * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright Â© 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Copyright © 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * Copyright Â© 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
  * 
- * Este programa é um software livre; você pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
- * Licença, ou (na sua opnião) qualquer versão.
+ * Este programa Ã© um software livre; vocÃª pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da LicenÃ§a PÃºblica Geral GNU como 
+ * publicada pela FundaÃ§Ã£o do Software Livre (FSF); na versÃ£o 3 da 
+ * LicenÃ§a, ou (na sua opniÃ£o) qualquer versÃ£o.
  *
- * Este programa é distribuido na esperança que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÇÂO
- * a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença
- * Pública Geral GNU para maiores detalhes.
+ * Este programa Ã© distribuido na esperanÃ§a que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÃ‡Ã‚O
+ * a qualquer MERCADO ou APLICAÃ‡ÃƒO EM PARTICULAR. Veja a LicenÃ§a
+ * PÃºblica Geral GNU para maiores detalhes.
  *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU
- * junto com este programa, se não, escreva para a Fundação do Software
+ * VocÃª deve ter recebido uma cÃ³pia da LicenÃ§a PÃºblica Geral GNU
+ * junto com este programa, se nÃ£o, escreva para a FundaÃ§Ã£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
@@ -29,14 +29,14 @@ import javax.microedition.lcdui.Display;
 /**
  * Jogador controlado pelo celular ou pelo servidor.
  * <p>
- * É preciso "plugar" uma estratégia para que o jogador funcione.
+ * Ã‰ preciso "plugar" uma estratÃ©gia para que o jogador funcione.
  * 
  * Este jogador vai interagir com a mesa no papel 
- * do jogador humano, porém mantendo a funcionalidade
+ * do jogador humano, porÃ©m mantendo a funcionalidade
  * do jogador CPU.
  * 
- * Esta classe foi criada para não "zonear" com as
- * outras classes que estão redondas...
+ * Esta classe foi criada para nÃ£o "zonear" com as
+ * outras classes que estÃ£o redondas...
  * 
  * @author Chester / Sandro
  * @see Estrategia
@@ -49,13 +49,13 @@ public class JogadorBot extends Jogador implements Runnable {
 	int valorProximaAposta = 0;
 	
 	/**
-	 * Para interação com a mesa
+	 * Para interaÃ§Ã£o com a mesa
 	 */
 	private Mesa mesa;
 	private Display display;
 	
 	/**
-	 * Estrategia que está controlando este jogador
+	 * Estrategia que estÃ¡ controlando este jogador
 	 */
 	private Estrategia estrategia;
 
@@ -66,69 +66,56 @@ public class JogadorBot extends Jogador implements Runnable {
 	private int numRespostasAguardando = 0;
 
 	/**
-	 * Sinaliza se os adversários aceitaram um pedido de truco
+	 * Sinaliza se os adversÃ¡rios aceitaram um pedido de truco
 	 */
 	private boolean aceitaramTruco;
 	
 	/**
-	 * Cartas que ainda não foram jogadas
+	 * Cartas que ainda nÃ£o foram jogadas
 	 */
 	private Vector cartasRestantes = new Vector(3);
 	
 	/**
-	 * Pontos da mão
+	 * Pontos da mÃ£o
 	 */	
 	private int pontosNos, pontosEles;
 	
 	/**
-	 * Pontos com relação ao número de partidas
+	 * Pontos com relaÃ§Ã£o ao nÃºmero de partidas
 	 */	
 	private int vaquinhasNoPastoDplA, vaquinhasNoPastoDplB;
 	
 	/**
-	 * Situação atual do jogo (para o estrategia)
+	 * SituaÃ§Ã£o atual do jogo (para o estrategia)
 	 */
 	SituacaoJogo situacaoJogo = new SituacaoJogo();
 	
 	/**
-	 * Cria um novo jogador CPU (BOT), buscando a estratégia pelo nome.
+	 * Cria um novo jogador CPU (BOT), buscando a estratÃ©gia pelo nome.
 	 * 
 	 * @param nomeEstrategia
-	 *            Nome da estratégia
+	 *            Nome da estratÃ©gia
 	 */
 	public JogadorBot(String nomeEstrategia, Display display, Mesa mesa) {
-		while (nomeEstrategia.equals("Sortear")) {
-			nomeEstrategia = JogadorCPU.OPCOES_ESTRATEGIAS[(random.nextInt() >>> 1)
-					% (JogadorCPU.OPCOES_ESTRATEGIAS.length)];
-		}
-		if (nomeEstrategia.equals("Sellani")) {
-			this.estrategia = new EstrategiaSellani();
-		} else if (nomeEstrategia.equals("Willian")) {
-			this.estrategia = new EstrategiaWillian();
-		} else if (nomeEstrategia.equals("Gasparotto v1.1")) {
-			this.estrategia = new EstrategiaGasparotto();
-		} else {
-			Jogo.log("estrategia invalida:" + nomeEstrategia);
-		}
-
+		this.estrategia = criaEstrategiaPeloNome(nomeEstrategia);
 		this.setDisplay(display);
 		this.mesa = mesa;
 		mesa.setJogadorBot(this);
 	}
 
-	// Sorteia um número inteiro entre 1 e o argumento do método
+	// Sorteia um nÃºmero inteiro entre 1 e o argumento do mÃ©todo
 	private int sorteio(int maxNumero)
 	{
 		return (Math.abs(random.nextInt())%maxNumero + 1);		
 	}
 
 	/**
-	 * Retorna a posição do jogador na tela (assumindo que o jogador humano está
-	 * na posição inferior, i.e., 1).
+	 * Retorna a posiÃ§Ã£o do jogador na tela (assumindo que o jogador humano estÃ¡
+	 * na posiÃ§Ã£o inferior, i.e., 1).
 	 * <p>
 	 * 
 	 * @param j
-	 * @return 1 para a posição inferior, 2 para a direita, 3 para cima, 4 para
+	 * @return 1 para a posiÃ§Ã£o inferior, 2 para a direita, 3 para cima, 4 para
 	 *         esquerda
 	 */
 	private int posicaoNaTela(Jogador j) {
@@ -140,7 +127,7 @@ public class JogadorBot extends Jogador implements Runnable {
 	}
 
 	/**
-	 * Atualiza a situação do jogo (para as estratégias)
+	 * Atualiza a situaÃ§Ã£o do jogo (para as estratÃ©gias)
 	 */
 	private void atualizaSituacaoJogo() {
 		jogo.atualizaSituacao(situacaoJogo, this);
@@ -159,7 +146,7 @@ public class JogadorBot extends Jogador implements Runnable {
 	}
 	
 	/**
-	 * Habilita (ou desliga) a escolha de cartas, dependendo de ser ou não a vez
+	 * Habilita (ou desliga) a escolha de cartas, dependendo de ser ou nÃ£o a vez
 	 * do jogador
 	 */
 	public void vez(Jogador j, boolean podeFechada) {
@@ -169,25 +156,25 @@ public class JogadorBot extends Jogador implements Runnable {
 		
 		if (this.equals(j)) {
 			
-			// Dá um tempinho, pra fingir que está "pensando"
+			// DÃ¡ um tempinho, pra fingir que estÃ¡ "pensando"
 			try {
 				Thread.sleep(Math.abs(random.nextInt()) % 250 + 200);
 			} catch (InterruptedException e) {
 				// Nada, apenas timing...
 			}
 
-			// Atualiza a situação do jogo (incluindo as cartas na mão)
+			// Atualiza a situaÃ§Ã£o do jogo (incluindo as cartas na mÃ£o)
 			atualizaSituacaoJogo();
 			situacaoJogo.podeFechada = podeFechada;
 
 			// Solicita que o estrategia jogue
 			int posCarta = estrategia.joga(situacaoJogo);
 
-			// Se houve truco, processa, e, após tudo resolvido, repete a jogada
+			// Se houve truco, processa, e, apÃ³s tudo resolvido, repete a jogada
 			if (posCarta == -1) {
 
-				// Faz a solicitação de truco numa nova thread
-				// (usando o próprio JogadorCPU como Runnable - era uma inner
+				// Faz a solicitaÃ§Ã£o de truco numa nova thread
+				// (usando o prÃ³prio JogadorCPU como Runnable - era uma inner
 				// class, mas otimizei para reduzir o .jar)
 				aceitaramTruco = false;
 				numRespostasAguardando = 2;
@@ -197,16 +184,16 @@ public class JogadorBot extends Jogador implements Runnable {
 				while (numRespostasAguardando > 0) {
 					Thread.yield();
 				}
-				// Se não aceitaram, desencana...
+				// Se nÃ£o aceitaram, desencana...
 				if (!aceitaramTruco)
 					return;
-				// ...caso contrário, vamos seguir o jogo
+				// ...caso contrÃ¡rio, vamos seguir o jogo
 				// atualizaSituacaoJogo();
 				situacaoJogo.valorProximaAposta = 0;
 				posCarta = estrategia.joga(situacaoJogo);
 			}
 
-			// Joga a carta selecionada e remove ela da mão
+			// Joga a carta selecionada e remove ela da mÃ£o
 			boolean isFechada = posCarta >= 10;
 			if (isFechada) {
 				posCarta -= 10;
@@ -223,9 +210,9 @@ public class JogadorBot extends Jogador implements Runnable {
 	}
 
 	/**
-	 * Envia a notificação de aumento de aposta.
+	 * Envia a notificaÃ§Ã£o de aumento de aposta.
 	 * <p>
-	 * É feito em thread separada para que o vez() aguarde as respostas sem se
+	 * Ã‰ feito em thread separada para que o vez() aguarde as respostas sem se
 	 * perder.
 	 */
 	public void run() {
@@ -234,20 +221,20 @@ public class JogadorBot extends Jogador implements Runnable {
 
 	public void pediuAumentoAposta(Jogador j, int valor) {
 
-		// Mostra o balãozinho com o pedido
+		// Mostra o balÃ£ozinho com o pedido
 		String texto = "";
 		switch (valor) {
 		case 3:
-			texto = BALAO_TEXTOS_TRUCO[sorteio(BALAO_TEXTOS_TRUCO.length)-1];
+			texto = MiniTruco.BALAO_TEXTOS_TRUCO[sorteio(MiniTruco.BALAO_TEXTOS_TRUCO.length)-1];
 			break;
 		case 6:
-			texto = BALAO_TEXTOS_SEIS[sorteio(BALAO_TEXTOS_SEIS.length)-1];
+			texto = MiniTruco.BALAO_TEXTOS_SEIS[sorteio(MiniTruco.BALAO_TEXTOS_SEIS.length)-1];
 			break;
 		case 9:
-			texto = BALAO_TEXTOS_NOVE[sorteio(BALAO_TEXTOS_NOVE.length)-1];
+			texto = MiniTruco.BALAO_TEXTOS_NOVE[sorteio(MiniTruco.BALAO_TEXTOS_NOVE.length)-1];
 			break;
 		default:
-			texto = BALAO_TEXTOS_DOZE[sorteio(BALAO_TEXTOS_DOZE.length)-1];
+			texto = MiniTruco.BALAO_TEXTOS_DOZE[sorteio(MiniTruco.BALAO_TEXTOS_DOZE.length)-1];
 			break;
 		}
 		mesa.balao(posicaoNaTela(j), texto, 1000 + 200 * (valor / 3));
@@ -259,7 +246,7 @@ public class JogadorBot extends Jogador implements Runnable {
 		if (j.getEquipe() == this.getEquipeAdversaria()) {
 			atualizaSituacaoJogo();
 			// O if e o synchronzied garantem que, se um jogador aceitar o
-			// truco, o estrategia do outro não é consultado (caso o fosse, ele
+			// truco, o estrategia do outro nÃ£o Ã© consultado (caso o fosse, ele
 			// receberia informacoes posteriores ao aceite)
 			synchronized (jogo) {
 				if (situacaoJogo.posJogadorPedindoAumento != 0) {
@@ -284,9 +271,9 @@ public class JogadorBot extends Jogador implements Runnable {
 		}
 
 		if (j.getEquipe() == this.getEquipe()) {
-			// Nós aceitamos um truco, então podemos aumentar
+			// NÃ³s aceitamos um truco, entÃ£o podemos aumentar
 			// (i.e., se foi truco, podemos pedir 6, se for 6, podemos pedir 9,
-			// etc.) até o limite de 12
+			// etc.) atÃ© o limite de 12
 			if (valor != 12) {
 				valorProximaAposta = valor + 3;
 			}
@@ -295,9 +282,9 @@ public class JogadorBot extends Jogador implements Runnable {
 			valorProximaAposta = 0;
 		}
 
-		// Balãozinho
+		// BalÃ£ozinho
 		String texto = "";
-		texto = BALAO_TEXTOS_DESCE[sorteio(BALAO_TEXTOS_DESCE.length)-1];
+		texto = MiniTruco.BALAO_TEXTOS_DESCE[sorteio(MiniTruco.BALAO_TEXTOS_DESCE.length)-1];
 		mesa.balao(posicaoNaTela(j), texto, 800);
 		
 		// Caso tenha sido eu quem pediu o truco, retoma a vez
@@ -310,22 +297,22 @@ public class JogadorBot extends Jogador implements Runnable {
 		// Notifica o estrategia
 		estrategia.recusouAumentoAposta(j.getPosicao());
 
-		// Se estivermos aguardando resposta, contabiliza (e deixa o adversário
+		// Se estivermos aguardando resposta, contabiliza (e deixa o adversÃ¡rio
 		// perceber)
 		if (numRespostasAguardando > 0) {
 			numRespostasAguardando--;
 			Thread.yield();
 		}
 
-		// Balãozinho
+		// BalÃ£ozinho
 		String texto = "";
-		texto = BALAO_TEXTOS_RECUSA[sorteio(BALAO_TEXTOS_RECUSA.length)-1];
+		texto = MiniTruco.BALAO_TEXTOS_RECUSA[sorteio(MiniTruco.BALAO_TEXTOS_RECUSA.length)-1];
 		mesa.balao(posicaoNaTela(j), texto, 500);
 	}
 
 	public void jogadaRecusada(int numJogadores, int equipeTrucando,
 			Jogador jogadorDaVez) {
-		// Não faz nada
+		// NÃ£o faz nada
 	}
 
 	public void rodadaFechada(int numRodada, int resultado, Jogador jogadorQueTorna) {
@@ -338,11 +325,11 @@ public class JogadorBot extends Jogador implements Runnable {
 					.getPosicao() - 1];
 		}
 
-		// Atualiza o placar (considerando as equipes do jogo, não a posição na
+		// Atualiza o placar (considerando as equipes do jogo, nÃ£o a posiÃ§Ã£o na
 		// mesa)
 		int icone;
 		if (resultado == getEquipe()) {
-			icone = 1; // Vitória
+			icone = 1; // VitÃ³ria
 		} else if (resultado == 3) {
 			icone = 3; // Empate
 		} else {
@@ -350,7 +337,7 @@ public class JogadorBot extends Jogador implements Runnable {
 		}
 		mesa.setStatusMao(numRodada, icone);
 
-		// Uma vez atualizado o placar (e concluída a animação), escurece as
+		// Uma vez atualizado o placar (e concluÃ­da a animaÃ§Ã£o), escurece as
 		// cartas jogadas, deixando a tela "limpa"
 		mesa.cartaVencedora = null;
 
@@ -373,13 +360,13 @@ public class JogadorBot extends Jogador implements Runnable {
 
 	public void jogoFechado(int numEquipeVencedora, int[] vaquinhasNoPasto) {
 
-		// Balãozinho
+		// BalÃ£ozinho
 		String texto = "";
 		if (numEquipeVencedora == this.getEquipe()) {
-			texto = BALAO_TEXTOS_VENCEDOR[sorteio(BALAO_TEXTOS_VENCEDOR.length)-1];
+			texto = MiniTruco.BALAO_TEXTOS_VENCEDOR[sorteio(MiniTruco.BALAO_TEXTOS_VENCEDOR.length)-1];
 		}
 		else {
-			texto = BALAO_TEXTOS_DERROTADO[sorteio(BALAO_TEXTOS_DERROTADO.length)-1];
+			texto = MiniTruco.BALAO_TEXTOS_DERROTADO[sorteio(MiniTruco.BALAO_TEXTOS_DERROTADO.length)-1];
 		}
 		mesa.balao(1, texto, 5000);
 		mesa.mostraResultadoFinalModoCE(vaquinhasNoPasto[0], vaquinhasNoPasto[1]);
@@ -387,8 +374,8 @@ public class JogadorBot extends Jogador implements Runnable {
 	}
 
 	public void cartaJogada(Jogador j, Carta c) {
-		// Troca a primeira carta não-jogada
-		// do jogador na tela (que era um dummy, já que não sabíamos ainda o
+		// Troca a primeira carta nÃ£o-jogada
+		// do jogador na tela (que era um dummy, jÃ¡ que nÃ£o sabÃ­amos ainda o
 		// valor) por ela
 			int posPrimeira = (posicaoNaTela(j) - 1) * 3;
 			for (int i = posPrimeira; i <= posPrimeira + 2; i++) {
@@ -404,20 +391,20 @@ public class JogadorBot extends Jogador implements Runnable {
 				}
 			}
 			// Desliga o indicador de "vez" e anima a carta sendo jogada
-			// para a mesa (a animação vai virar a carta e setar como jogada)
+			// para a mesa (a animaÃ§Ã£o vai virar a carta e setar como jogada)
 			mesa.descarta(c, posicaoNaTela(j));
 			mesa.setPosicaoDaVez(0);
 	}
 
 	public void inicioMao() {
 
-		// Melhor não sair enquanto estiver distriubindo...
+		// Melhor nÃ£o sair enquanto estiver distriubindo...
 		mesa.removeCommand(MiniTruco.sairPartidaCommand);
 
 		// Limpa a mesa
 		mesa.limpa();
 
-		// Distribui as cartas em círculo
+		// Distribui as cartas em cÃ­rculo
 		for (int i = 0; i <= 2; i++) {
 			for (int j = 1; j <= 4; j++) {
 				mesa.distribui(new Carta(), j, i);
@@ -432,7 +419,7 @@ public class JogadorBot extends Jogador implements Runnable {
 		// Atualiza o placar
 		mesa.atualizaPlacarComVaquinhasInfo(pontosNos, pontosEles, vaquinhasNoPastoDplA, vaquinhasNoPastoDplB);
 
-		// Informa que ninguém aceitou mão de 11 (para não duplicar o balão)
+		// Informa que ninguÃ©m aceitou mÃ£o de 11 (para nÃ£o duplicar o balÃ£o)
 		jaAceitou = false;
 
 		// Permite sair novamente
@@ -441,7 +428,7 @@ public class JogadorBot extends Jogador implements Runnable {
 		// Notifica o estrategia
 		estrategia.inicioMao();
 
-		// Guarda as cartas que estão na mão do jogador
+		// Guarda as cartas que estÃ£o na mÃ£o do jogador
 		cartasRestantes.removeAllElements();
 		for (int i = 0; i <= 2; i++) {
 			cartasRestantes.addElement(this.getCartas()[i]);
@@ -464,19 +451,19 @@ public class JogadorBot extends Jogador implements Runnable {
 		// Avisa o estrategia
 		estrategia.inicioPartida();
 		
-		// Início
+		// InÃ­cio
 		mesa.setAberturaVisivel(false);
 	}
 
 	public void decidiuMao11(Jogador j, boolean aceita) {
-		// Mostra o balão (no caso do balão de aceitar, apenas se for o 1o.
+		// Mostra o balÃ£o (no caso do balÃ£o de aceitar, apenas se for o 1o.
 		// aceite)
 		if (!aceita || (aceita && !jaAceitou)) {
 			String texto = "";
 			if(aceita)
-				texto = BALAO_TEXTOS_ACEITAMAO11[sorteio(BALAO_TEXTOS_ACEITAMAO11.length)-1];
+				texto = MiniTruco.BALAO_TEXTOS_ACEITAMAO11[sorteio(MiniTruco.BALAO_TEXTOS_ACEITAMAO11.length)-1];
 			else
-				texto = BALAO_TEXTOS_RECUSAMAO11[sorteio(BALAO_TEXTOS_RECUSAMAO11.length)-1];
+				texto = MiniTruco.BALAO_TEXTOS_RECUSAMAO11[sorteio(MiniTruco.BALAO_TEXTOS_RECUSAMAO11.length)-1];
 			mesa.balao(posicaoNaTela(j), texto, 1000);
 		}
 		
@@ -485,7 +472,7 @@ public class JogadorBot extends Jogador implements Runnable {
 	}
 
 	public void informaMao11(Carta[] cartasParceiro) {
-		// Pergunta ao estrategia se ele topa a mão de 11, devolvendo
+		// Pergunta ao estrategia se ele topa a mÃ£o de 11, devolvendo
 		// a resposta para o jogo
 		atualizaSituacaoJogo();
 		Jogo.log("J" + getPosicao() + " decidindo mao 11, com cartas "
@@ -500,7 +487,7 @@ public class JogadorBot extends Jogador implements Runnable {
 	}
 
 	public void jogoAbortado(int posicao) {
-		// Não precisa tratar
+		// NÃ£o precisa tratar
 	}
 
 }

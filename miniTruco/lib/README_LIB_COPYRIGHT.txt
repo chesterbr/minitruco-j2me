@@ -1,4 +1,4 @@
-About miniTruco Libraries and Tools
+ÔªøAbout miniTruco Libraries and Tools
 -----------------------------------
 
 miniTruco is an open-source (GPL) implementation of a Brazilian card game
@@ -28,29 +28,29 @@ field, or if you have any questions/comments, feel free to contact me:
 Sobre as Bibliotecas e Ferraemntas do miniTruco
 -----------------------------------------------
 
-Como qualquer projeto Java, o miniTruco depende de v·rias bibliotecas (.jar)
+Como qualquer projeto Java, o miniTruco depende de v√°rias bibliotecas (.jar)
 para ser compilado e testado.
 
-As versıes anteriores ‡ 3 exigiam que estas fossem baixadas, descompactadas
+As vers√µes anteriores √† 3 exigiam que estas fossem baixadas, descompactadas
 e instaladas separadamente, o que dificultava para quem queria apenas baixar
 o projeto e experimentar com ele.
 
-O kit de desenvolvimento MIDP È um desses casos complicados. Embora ele
-seja necess·rio para dar o build final, È possÌvel trabalhar apenas tendo
-o midp.jar e btapi.jar, que contÈm as classes (apenas o "esqueleto", n„o a
-implementaÁ„o) que compıem, respectivamente, MIDP 1.0 e JSR 82 (Bluetooth).
+O kit de desenvolvimento MIDP √© um desses casos complicados. Embora ele
+seja necess√°rio para dar o build final, √© poss√≠vel trabalhar apenas tendo
+o midp.jar e btapi.jar, que cont√©m as classes (apenas o "esqueleto", n√£o a
+implementa√ß√£o) que comp√µem, respectivamente, MIDP 1.0 e JSR 82 (Bluetooth).
 
 Verifiquei que as bibliotecas usadas eram (quase) todas LGPL ou de alguma
-licenÁa compatÌvel. Ent„o resolvi incluÌ-las, junto com os esqueletos
+licen√ßa compat√≠vel. Ent√£o resolvi inclu√≠-las, junto com os esqueletos
 mencionados (que compilei a partir de fontes que achei na web, provavelmente
-gerados a partir das especificaÁıes).
+gerados a partir das especifica√ß√µes).
 
-Segue uma relaÁ„o dos arquivos .jar que acompanham este projeto, informando
+Segue uma rela√ß√£o dos arquivos .jar que acompanham este projeto, informando
 os nomes das bibliotecas, suas URLs de download e notas de copyright, em
-conformidade com as normas da LGPL e licenÁas equivalentes das bibliotecas.
+conformidade com as normas da LGPL e licen√ßas equivalentes das bibliotecas.
 
-Recomendo que qualquer projeto que v· utiliz·-las faÁa-o com versıes
-atualizadas (e completas, com documentaÁ„o, licenÁa e outros itens importantes)
+Recomendo que qualquer projeto que v√° utiliz√°-las fa√ßa-o com vers√µes
+atualizadas (e completas, com documenta√ß√£o, licen√ßa e outros itens importantes)
 a partir dos sites relacionados.
 
 
@@ -60,7 +60,7 @@ Tools/Libraries List (Lista de Bibliotecas/Ferramentas)
 antenna-bin.jar
   Antenna
   An Ant end-to-end Solution For Wireless Java
-  (c) 2002-2006 Jˆrg Pleumann (LGPL)
+  (c) 2002-2006 J√∂rg Pleumann (LGPL)
   http://antenna.sourceforge.net/
 
 proguard.jar
@@ -91,7 +91,7 @@ bt-api.jar
 me4se.jar
   ME4SE
   J2ME Device Emulator
-  (C) 2005 Stefan Haustein, Michael Kroll, Jˆrg Pleumann.
+  (C) 2005 Stefan Haustein, Michael Kroll, J√∂rg Pleumann.
   http://kobjects.sourceforge.net/me4se/index.shtml
 
 bluecove.jar

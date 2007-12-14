@@ -3,13 +3,14 @@
 <wml>
 <card title="miniTruco">
 <p>
-Selecione a versao apropriada:
+Selecione a vers&atilde;o:<br/>
+(ENGLISH SPEAKERS: download <a href="miniTruco.jad">this</a> one)
 </p>
 <p>
-<a href="miniTrucoLight.jad">Light</a>: Para celulares com pouca memoria.
+<a href="miniTrucoLight.jad">Light</a>: Para celulares com pouca mem&oacute;ria.
 </p>
 <p>
-<a href="miniTruco.jad">Completa</a>: Inclui jogo via Bluetooth (em desenvolvimento).
+<a href="miniTruco.jad">Completa</a>: Inclui Bluetooth e confronto de estrat&eacute;gias.
 </p>
 
 </card>

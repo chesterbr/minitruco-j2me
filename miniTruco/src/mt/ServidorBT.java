@@ -1,21 +1,21 @@
 package mt;
 
 /*
- * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright ¬© 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Este programa È um software livre; vocÍ pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da LicenÁa P˙blica Geral GNU como 
- * publicada pela FundaÁ„o do Software Livre (FSF); na vers„o 3 da 
- * LicenÁa, ou (na sua opni„o) qualquer vers„o.
+ * Este programa √© um software livre; voc√™ pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da Licen√ßa P√∫blica Geral GNU como 
+ * publicada pela Funda√ß√£o do Software Livre (FSF); na vers√£o 3 da 
+ * Licen√ßa, ou (na sua opni√£o) qualquer vers√£o.
  *
- * Este programa È distribuido na esperanÁa que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA«¬O
- * a qualquer MERCADO ou APLICA«√O EM PARTICULAR. Veja a LicenÁa
- * P˙blica Geral GNU para maiores detalhes.
+ * Este programa √© distribuido na esperan√ßa que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA√á√ÇO
+ * a qualquer MERCADO ou APLICA√á√ÉO EM PARTICULAR. Veja a Licen√ßa
+ * P√∫blica Geral GNU para maiores detalhes.
  *
- * VocÍ deve ter recebido uma cÛpia da LicenÁa P˙blica Geral GNU
- * junto com este programa, se n„o, escreva para a FundaÁ„o do Software
+ * Voc√™ deve ter recebido uma c√≥pia da Licen√ßa P√∫blica Geral GNU
+ * junto com este programa, se n√£o, escreva para a Funda√ß√£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
@@ -31,8 +31,8 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 
 /**
- * Recebe conexıes (via Bluetooth) de outros celulares-cliente, exibe suas
- * posiÁıes, configura e inicia a partida (criando os proxies JogadorBT para
+ * Recebe conex√µes (via Bluetooth) de outros celulares-cliente, exibe suas
+ * posi√ß√µes, configura e inicia a partida (criando os proxies JogadorBT para
  * cada jogador remoto).
  * 
  * @author Chester
@@ -41,7 +41,7 @@ import javax.microedition.lcdui.Displayable;
 public class ServidorBT extends TelaBT {
 
 	/**
-	 * Notificador do servidor (atravÈs do qual vamos aceitar as conexıes)
+	 * Notificador do servidor (atrav√©s do qual vamos aceitar as conex√µes)
 	 */
 	private StreamConnectionNotifier scnServidor;
 
@@ -59,11 +59,11 @@ public class ServidorBT extends TelaBT {
 	 * Inicializa o servidor
 	 * 
 	 * @param midlet
-	 *            referÍncia ao programa principal
+	 *            refer√™ncia ao programa principal
 	 */
 	public ServidorBT(MiniTruco midlet) {
 		super(midlet);
-		// Usa as regras escolhidas pelo usu·rio
+		// Usa as regras escolhidas pelo usu√°rio
 		this.regras = (midlet.cgRegras.isSelected(0) ? "T" : "F")
 				+ (midlet.cgRegras.isSelected(1) ? "T" : "F");
 	}
@@ -71,15 +71,15 @@ public class ServidorBT extends TelaBT {
 	/**
 	 * Envia uma linha de texto para o cliente no slot especificado.
 	 * <p>
-	 * Se o slot espedificado estiver vazio, n„o faz nada.
+	 * Se o slot espedificado estiver vazio, n√£o faz nada.
 	 * <p>
-	 * Se o cliente der erro, processa sua desconex„o (principal motivo do
+	 * Se o cliente der erro, processa sua desconex√£o (principal motivo do
 	 * synchronized).
 	 * 
 	 * @param slot
-	 *            Ìndice do cliente em connClientes/outClientes
+	 *            √≠ndice do cliente em connClientes/outClientes
 	 * @param comando
-	 *            texto do comando/notificaÁ„o a enviar
+	 *            texto do comando/notifica√ß√£o a enviar
 	 */
 	public synchronized void enviaMensagem(int slot, String comando) {
 		if (outClientes[slot] != null) {
@@ -88,16 +88,16 @@ public class ServidorBT extends TelaBT {
 				outClientes[slot].write(SEPARADOR_ENV);
 				outClientes[slot].flush();
 			} catch (IOException e) {
-				// Processa desconex„o
+				// Processa desconex√£o
 				try {
 					outClientes[slot].close();
 				} catch (IOException ioe) {
-					// No prob, j· deve ter morrido
+					// No prob, j√° deve ter morrido
 				}
 				try {
 					connClientes[slot].close();
 				} catch (IOException ioe) {
-					// No prob, j· deve ter morrido
+					// No prob, j√° deve ter morrido
 				}
 				// Libera o slot e encerra o jogo em andamento
 				desconecta(slot);
@@ -106,12 +106,12 @@ public class ServidorBT extends TelaBT {
 	}
 
 	/**
-	 * Desconecta um jogador (ou notifica desistÍncia do servidor) e exibe a
+	 * Desconecta um jogador (ou notifica desist√™ncia do servidor) e exibe a
 	 * tela de jogadores
 	 * 
 	 * @param slot
 	 *            slot do jogador a desconectar (0 a 2). Se for -1, notifica
-	 *            desistÍncia do servidor. Se for -2, n„o notifica nada (apenas
+	 *            desist√™ncia do servidor. Se for -2, n√£o notifica nada (apenas
 	 *            encerra e vai para a tela).
 	 */
 	void desconecta(int slot) {
@@ -121,8 +121,8 @@ public class ServidorBT extends TelaBT {
 			outClientes[slot] = null;
 			apelidos[slot + 1] = APELIDOS_CPU[slot];
 		}
-		// -1 vai notificar que o servidor (posiÁ„o -1+2=1) desistiu
-		// -2 n„o notifica ninguÈm (posiÁ„o -2+2=0)
+		// -1 vai notificar que o servidor (posi√ß√£o -1+2=1) desistiu
+		// -2 n√£o notifica ningu√©m (posi√ß√£o -2+2=0)
 		midlet.encerraJogo(slot + 2, false);
 		setModoSetup(true);
 		atualizaServidor();
@@ -130,7 +130,7 @@ public class ServidorBT extends TelaBT {
 	}
 
 	/**
-	 * Determina a situaÁ„o atual do servidor, a saber:
+	 * Determina a situa√ß√£o atual do servidor, a saber:
 	 * <p>
 	 * J = Jogo em andamento<br>
 	 * L = Lotado, aguardando inicio de jogo<br>
@@ -139,34 +139,34 @@ public class ServidorBT extends TelaBT {
 	 */
 	private char status;
 
-	private static final Command iniciarJogoCommand = new Command("Iniciar",
+	private static final Command iniciarJogoCommand = new Command(Messages.getString("iniciar"), //$NON-NLS-1$
 			Command.SCREEN, 1);
 
 	private static final Command trocaParceiroCommand = new Command(
-			"Troca Parceiro", Command.SCREEN, 2);
+			Messages.getString("troca_parceiro"), Command.SCREEN, 2); //$NON-NLS-1$
 
 	private static final Command inverteAdversariosCommand = new Command(
-			"Inverte Advers\u00E1rios", Command.SCREEN, 3);
+			Messages.getString("inverte_adv"), Command.SCREEN, 3); //$NON-NLS-1$
 
 	/**
-	 * Loop da thread principal (que recebe e processa as conexıes dos clientes)
+	 * Loop da thread principal (que recebe e processa as conex√µes dos clientes)
 	 */
 	public void run() {
 
-		Thread.yield(); // O ME2SE d· uma zica planet·ria sem isso
+		Thread.yield(); // O ME2SE d√° uma zica planet√°ria sem isso
 
-		// Inicializa os apelidos (servidor na 1a. posiÁ„o)
+		// Inicializa os apelidos (servidor na 1a. posi√ß√£o)
 		apelidos[0] = localDevice.getFriendlyName();
 		for (int i = 1; i <= 3; i++)
 			apelidos[i] = APELIDOS_CPU[i - 1];
 
-		// Coloca o servidor em modo "setup", e a thread secund·ria para
-		// monitorar desconexıes
+		// Coloca o servidor em modo "setup", e a thread secund√°ria para
+		// monitorar desconex√µes
 		setModoSetup(true);
 		Thread tm = new ThreadMonitoraClientes();
 		tm.start();
 
-		// Loop principal (executa enquanto o servidor n„o for encerrado)
+		// Loop principal (executa enquanto o servidor n√£o for encerrado)
 		while (status != 'X') {
 
 			// Se estivermos em jogo, aguarda o encerramento
@@ -174,37 +174,37 @@ public class ServidorBT extends TelaBT {
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
-					// n„o precisa tratar
+					// n√£o precisa tratar
 				}
 				continue; // checa novamente X
 			}
 
-			// SaÌmos do modo jogo, atualiza o display (local e remoto)
+			// Sa√≠mos do modo jogo, atualiza o display (local e remoto)
 			atualizaServidor();
 			atualizaClientes();
 
-			// Se estiver lotado, aguarda desconex„o ou inÌcio de jogo
+			// Se estiver lotado, aguarda desconex√£o ou in√≠cio de jogo
 			if (status == 'L') {
 				do {
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
-						// n„o precisa tratar
+						// n√£o precisa tratar
 					}
 				} while (status == 'L');
 				continue; // checa novamente J/X
 			}
 
 			// Se chegou aqui, estamos ativos, fora do jogo e com vaga
-			// disponÌvel, logo, vamos aguardar uma conex„o (ou um
+			// dispon√≠vel, logo, vamos aguardar uma conex√£o (ou um
 			// encerramento, que interrompe o acceptAndOpen())
 			StreamConnection c = null;
 			try {
 				c = scnServidor.acceptAndOpen();
 				log("recebeu conexao ");
-				// Encaixa na primeira vaga disponÌvel
-				// (o synchronized È pra n„o fazer isso enquanto estiver
-				// mexendo nas posiÁıes via menu)
+				// Encaixa na primeira vaga dispon√≠vel
+				// (o synchronized √© pra n√£o fazer isso enquanto estiver
+				// mexendo nas posi√ß√µes via menu)
 				synchronized (this) {
 					for (int i = 0; i <= 2; i++) {
 						if (connClientes[i] == null) {
@@ -217,7 +217,7 @@ public class ServidorBT extends TelaBT {
 						}
 					}
 				}
-				// Continua recebendo conexıes (a menos que lote)
+				// Continua recebendo conex√µes (a menos que lote)
 				setModoSetup(true);
 			} catch (IOException e) {
 				log(e.getMessage());
@@ -238,7 +238,7 @@ public class ServidorBT extends TelaBT {
 	 */
 	private void atualizaServidor() {
 		if (getNumClientes() == 0) {
-			setTelaMsg("Aguardando jogadores...");
+			setTelaMsg(Messages.getString("aguardando_jog")); //$NON-NLS-1$
 			this.removeCommand(iniciarJogoCommand);
 			this.removeCommand(trocaParceiroCommand);
 			this.removeCommand(inverteAdversariosCommand);
@@ -251,7 +251,7 @@ public class ServidorBT extends TelaBT {
 	}
 
 	/**
-	 * Thread secundd·ria (verifica se houve desconex„o de algum cliente).
+	 * Thread secundd√°ria (verifica se houve desconex√£o de algum cliente).
 	 * <p>
 	 * Tem que ser feito em outra thread, porque a principal bloqueia enquanto
 	 * agurada clientes
@@ -262,26 +262,26 @@ public class ServidorBT extends TelaBT {
 	class ThreadMonitoraClientes extends Thread {
 
 		public void run() {
-			// Executa enquanto o servidor n„o for encerrado
+			// Executa enquanto o servidor n√£o for encerrado
 			while (status != 'X') {
-				// Envia um comando vazio (apenas para testar a conex„o, e
-				// processar qualquer desconex„o que tenha ocorrido)
+				// Envia um comando vazio (apenas para testar a conex√£o, e
+				// processar qualquer desconex√£o que tenha ocorrido)
 				for (int i = 0; i <= 2; i++) {
 					enviaMensagem(i, "");
 				}
 				try {
 					sleep(2000);
 				} catch (InterruptedException e) {
-					// n„o precisa tratar
+					// n√£o precisa tratar
 				}
 			}
 		}
 	}
 
 	/**
-	 * Conta quantos clientes est„o conectados
+	 * Conta quantos clientes est√£o conectados
 	 * 
-	 * @return N˙mero de clientes
+	 * @return N√∫mero de clientes
 	 */
 	public int getNumClientes() {
 		int numClientes = 0;
@@ -294,10 +294,10 @@ public class ServidorBT extends TelaBT {
 	}
 
 	/**
-	 * Interrompe as threads e quaisquer conexıes existentes
+	 * Interrompe as threads e quaisquer conex√µes existentes
 	 */
 	public void encerraSessaoBT() {
-		setTelaMsg("Encerrando...");
+		setTelaMsg(Messages.getString("Encerrando")); //$NON-NLS-1$
 		for (int i = 0; i <= 2; i++) {
 			if (connClientes[i] != null) {
 				try {
@@ -310,7 +310,7 @@ public class ServidorBT extends TelaBT {
 					outClientes[i].close();
 					connClientes[i].close();
 				} catch (IOException e) {
-					// J· estava fechada, desencana
+					// J√° estava fechada, desencana
 				}
 			}
 		}
@@ -319,13 +319,13 @@ public class ServidorBT extends TelaBT {
 	}
 
 	/**
-	 * Coloca o servidor no modo "jogo" (n„o aceita conexıes e exibe a mesa de
-	 * jogo) ou "setup" (exibe os usu·rios conectados e aceita novas conexıes
+	 * Coloca o servidor no modo "jogo" (n√£o aceita conex√µes e exibe a mesa de
+	 * jogo) ou "setup" (exibe os usu√°rios conectados e aceita novas conex√µes
 	 * apenas se houver vaga).
 	 * <p>
-	 * Esta operaÁ„o atualiza o indicador <code>status</code> para A ou L (no
-	 * modo setup) ou J (no modo jogo). Caso ele j· esteja previamente em X
-	 * (encerramento), o notifier È desligado, independente de
+	 * Esta opera√ß√£o atualiza o indicador <code>status</code> para A ou L (no
+	 * modo setup) ou J (no modo jogo). Caso ele j√° esteja previamente em X
+	 * (encerramento), o notifier √© desligado, independente de
 	 * <code>isSetup</code>
 	 * <p>
 	 * 
@@ -336,20 +336,20 @@ public class ServidorBT extends TelaBT {
 
 		if ((!isSetup) || (status == 'X')) {
 
-			// Se n„o for encerramento, È novo jogo
+			// Se n√£o for encerramento, √© novo jogo
 			if (status != 'X') {
 				status = 'J';
 				display.setCurrent(midlet.mesa);
 			}
 
-			// Desativa o notifier, impedindo novas conexıes
+			// Desativa o notifier, impedindo novas conex√µes
 			if (scnServidor != null) {
 				try {
 					localDevice
 							.setDiscoverable(DiscoveryAgent.NOT_DISCOVERABLE);
 					scnServidor.close();
 				} catch (IOException e) {
-					// J· fechou, nada a fazer
+					// J√° fechou, nada a fazer
 				}
 				scnServidor = null;
 			}
@@ -366,7 +366,7 @@ public class ServidorBT extends TelaBT {
 			int modo = localDevice.getDiscoverable();
 			status = n < 3 ? 'A' : 'L';
 
-			// Se h· vaga e n„o estamos em listen, ativa o listen
+			// Se h√° vaga e n√£o estamos em listen, ativa o listen
 			if ((n < 3) && (scnServidor == null)) {
 				try {
 					localDevice.setDiscoverable(DiscoveryAgent.GIAC);
@@ -376,12 +376,12 @@ public class ServidorBT extends TelaBT {
 				} catch (IOException e) {
 					log("Erro server:");
 					log(e.toString());
-					alerta("Erro Bluetooth", e.getMessage(), true);
+					alerta(Messages.getString("erro_bt"), e.getMessage(), true); //$NON-NLS-1$
 					encerraSessaoBT();
 				}
 			}
 
-			// Se n„o h· vaga e estamos em listen, desativa
+			// Se n√£o h√° vaga e estamos em listen, desativa
 			if ((n == 3) && (scnServidor != null)
 					&& (modo != DiscoveryAgent.NOT_DISCOVERABLE)) {
 				try {
@@ -389,7 +389,7 @@ public class ServidorBT extends TelaBT {
 							.setDiscoverable(DiscoveryAgent.NOT_DISCOVERABLE);
 					scnServidor.close();
 				} catch (IOException e) {
-					// J· fechou, nada a fazer
+					// J√° fechou, nada a fazer
 				}
 				scnServidor = null;
 			}
@@ -414,14 +414,14 @@ public class ServidorBT extends TelaBT {
 		sbComando.append(regras);
 		sbComando.append(' ');
 		String comando = sbComando.toString();
-		// Envia a notificaÁ„o para cada jogador (com sua posiÁ„o)
+		// Envia a notifica√ß√£o para cada jogador (com sua posi√ß√£o)
 		for (int i = 0; i <= 2; i++) {
 			enviaMensagem(i, comando + (i + 2));
 		}
 	}
 
 	public int getPosicaoMesa(int i) {
-		// O servidor È sempre o primeiro, ent„o t· f·cil:
+		// O servidor √© sempre o primeiro, ent√£o t√° f√°cil:
 		return i;
 	}
 
@@ -431,9 +431,9 @@ public class ServidorBT extends TelaBT {
 	public void commandAction(Command cmd, Displayable arg1) {
 		super.commandAction(cmd, arg1);
 		if (cmd.equals(ServidorBT.iniciarJogoCommand)) {
-			// Bloqueia novas conexıes
+			// Bloqueia novas conex√µes
 			setModoSetup(false);
-			// Cria um novo jogo e adiciona o jogador que est· no servidor
+			// Cria um novo jogo e adiciona o jogador que est√° no servidor
 			Jogo jogo = new JogoLocal(regras.charAt(0) == 'T',
 					regras.charAt(1) == 'T');
 			midlet.jogadorHumano = new JogadorHumano(display, midlet.mesa);
@@ -441,18 +441,18 @@ public class ServidorBT extends TelaBT {
 			// Adiciona jogadores para os outros slots
 			for (int i = 0; i <= 2; i++) {
 				if (connClientes[i] != null) {
-					// Se h· alguÈm neste slot, cria um JogadorBT para
-					// represent·-lo
+					// Se h√° algu√©m neste slot, cria um JogadorBT para
+					// represent√°-lo
 					jogo.adiciona(new JogadorBT(this));
 				} else {
-					// Se n„o h·, preenche com um JogadorCPU
-					jogo.adiciona(new JogadorCPU("Sortear"));
+					// Se n√£o h√°, preenche com um JogadorCPU
+					jogo.adiciona(new JogadorCPU()); //$NON-NLS-1$
 				}
 			}
 			midlet.iniciaJogo(jogo);
 		} else if (cmd.equals(ServidorBT.trocaParceiroCommand)) {
-			// Enquanto rola essa danÁa da cadeira, n„o queremos ninguÈm
-			// se conectando, daÌ o synchornized.
+			// Enquanto rola essa dan√ßa da cadeira, n√£o queremos ningu√©m
+			// se conectando, da√≠ o synchornized.
 			synchronized (this) {
 				Object temp;
 				temp = connClientes[2];

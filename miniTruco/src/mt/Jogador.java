@@ -1,42 +1,44 @@
 package mt;
 
+import java.util.Random;
+
 /*
- * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright ¬© 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Copyright © 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
- * (modo confronto de estratÈgias e frases aleatÛrias para balıes)
+ * Copyright ¬© 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * (modo confronto de estrat√©gias e frases aleat√≥rias para bal√µes)
  * 
- * Este programa È um software livre; vocÍ pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da LicenÁa P˙blica Geral GNU como 
- * publicada pela FundaÁ„o do Software Livre (FSF); na vers„o 3 da 
- * LicenÁa, ou (na sua opni„o) qualquer vers„o.
+ * Este programa √© um software livre; voc√™ pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da Licen√ßa P√∫blica Geral GNU como 
+ * publicada pela Funda√ß√£o do Software Livre (FSF); na vers√£o 3 da 
+ * Licen√ßa, ou (na sua opni√£o) qualquer vers√£o.
  *
- * Este programa È distribuido na esperanÁa que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA«¬O
- * a qualquer MERCADO ou APLICA«√O EM PARTICULAR. Veja a LicenÁa
- * P˙blica Geral GNU para maiores detalhes.
+ * Este programa √© distribuido na esperan√ßa que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA√á√ÇO
+ * a qualquer MERCADO ou APLICA√á√ÉO EM PARTICULAR. Veja a Licen√ßa
+ * P√∫blica Geral GNU para maiores detalhes.
  *
- * VocÍ deve ter recebido uma cÛpia da LicenÁa P˙blica Geral GNU
- * junto com este programa, se n„o, escreva para a FundaÁ„o do Software
+ * Voc√™ deve ter recebido uma c√≥pia da Licen√ßa P√∫blica Geral GNU
+ * junto com este programa, se n√£o, escreva para a Funda√ß√£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 /**
  * Base para os diversos tipos de jogador que podem participar de um jogo.
  * <p>
- * A classe Jogo se conecta em quatro inst‚ncias desta classe para iniciar uma
- * partida. Ela informa os eventos do jogo (ex.: uma carta foi jogada, È a vez
- * do jogador, fim de rodada, etc.) chamando os mÈtodos apropriados. Estes
- * mÈtodos devem ser encarados como mensagens, e, sempre que necess·rio,
- * processados assÌncronamente.
+ * A classe Jogo se conecta em quatro inst√¢ncias desta classe para iniciar uma
+ * partida. Ela informa os eventos do jogo (ex.: uma carta foi jogada, √© a vez
+ * do jogador, fim de rodada, etc.) chamando os m√©todos apropriados. Estes
+ * m√©todos devem ser encarados como mensagens, e, sempre que necess√°rio,
+ * processados ass√≠ncronamente.
  * <p>
- * … importante notar que os mÈtodos s„o acionados independente do jogador. Por
- * exemplo, se o jogador quer jogar uma carta (chaamndo o mÈtodo jogaCarta do
- * Jogo), e a jogada È v·lida, todos os jogadores (inclusive quem jogou)
- * receber„o a mensagem cartaJogada().
+ * √â importante notar que os m√©todos s√£o acionados independente do jogador. Por
+ * exemplo, se o jogador quer jogar uma carta (chaamndo o m√©todo jogaCarta do
+ * Jogo), e a jogada √© v√°lida, todos os jogadores (inclusive quem jogou)
+ * receber√£o a mensagem cartaJogada().
  * <p>
- * O tipo de subclasse determina se o jogador È o usu·rio do celular, um jogador
+ * O tipo de subclasse determina se o jogador √© o usu√°rio do celular, um jogador
  * virtual ou um jogador de outro celular conectado remotamente.
  * 
  * @author Chester
@@ -44,14 +46,14 @@ package mt;
  */
 public abstract class Jogador {
 
-	// Vari·veis / MÈtodos ˙teis
+	// Vari√°veis / M√©todos √∫teis
 
 	private int posicao = 0;
 
 	private Carta[] cartas;
-	
+
 	/**
-	 * Jogo que est· sendo jogado por este jogador
+	 * Jogo que est√° sendo jogado por este jogador
 	 */
 	protected Jogo jogo;
 
@@ -59,20 +61,21 @@ public abstract class Jogador {
 
 	/**
 	 * Nome do jogador (em jogos multiplayer)
+	 * 
 	 * @return
 	 */
 	public String getNome() {
 		return nome;
 	}
-	
+
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
 
 	/**
-	 * Recupera a posiÁ„o do jogador no jogo
+	 * Recupera a posi√ß√£o do jogador no jogo
 	 * 
-	 * @return n˙mero de 1 a 4 (n„o necessariamente a posiÁ„o dele na mesa)
+	 * @return n√∫mero de 1 a 4 (n√£o necessariamente a posi√ß√£o dele na mesa)
 	 */
 	public int getPosicao() {
 		return posicao;
@@ -83,7 +86,7 @@ public abstract class Jogador {
 	}
 
 	/**
-	 * Recupera a equipe em que este jogador est· (assumindo que ele j· esteja
+	 * Recupera a equipe em que este jogador est√° (assumindo que ele j√° esteja
 	 * aceito em um jogo)
 	 * 
 	 * @return 1 ou 2
@@ -93,9 +96,9 @@ public abstract class Jogador {
 	}
 
 	/**
-	 * Recupera a posiÁ„o do parceiro
+	 * Recupera a posi√ß√£o do parceiro
 	 * 
-	 * @return n˙mero de 1 a 4
+	 * @return n√∫mero de 1 a 4
 	 */
 	public int getParceiro() {
 		return 1 + ((posicao + 1) % 4);
@@ -136,26 +139,26 @@ public abstract class Jogador {
 	public abstract void cartaJogada(Jogador j, Carta c);
 
 	/**
-	 * Informa ao jogador que uma nova m„o est· iniciando.
+	 * Informa ao jogador que uma nova m√£o est√° iniciando.
 	 * <p>
-	 * Ao receber esta mensagem, as cartas do jogador j· foram atribuÌdas via
-	 * setCartas(), e a carta virada j· est· disponÌvel via getCarta().
+	 * Ao receber esta mensagem, as cartas do jogador j√° foram atribu√≠das via
+	 * setCartas(), e a carta virada j√° est√° dispon√≠vel via getCarta().
 	 */
 	public abstract void inicioMao();
 
 	/**
-	 * Informa que uma partida comeÁou. N„o È obrigatÛrio tratar - atÈ porque o
-	 * inicioMao ser· chamado logo em seguida.
+	 * Informa que uma partida come√ßou. N√£o √© obrigat√≥rio tratar - at√© porque o
+	 * inicioMao ser√° chamado logo em seguida.
 	 */
 	public abstract void inicioPartida();
 
 	/**
-	 * Informa que È a vez de um jogador jogar.
+	 * Informa que √© a vez de um jogador jogar.
 	 * 
 	 * @param j
 	 *            Jogador cuja vez chegou
 	 * @param podeFechada
-	 *            true se o jogador pode jogar carta fechada, false se n„o pod
+	 *            true se o jogador pode jogar carta fechada, false se n√£o pod
 	 */
 	public abstract void vez(Jogador j, boolean podeFechada);
 
@@ -165,7 +168,7 @@ public abstract class Jogador {
 	 * @param j
 	 *            Jogador que pediu o aumento
 	 * @param valor
-	 *            Quanto a m„o passar· a valar se algum advers·rio aceitar
+	 *            Quanto a m√£o passar√° a valar se algum advers√°rio aceitar
 	 */
 	public abstract void pediuAumentoAposta(Jogador j, int valor);
 
@@ -175,16 +178,16 @@ public abstract class Jogador {
 	 * @param j
 	 *            Jogador que aceitou o aumento
 	 * @param valor
-	 *            Quanto a m„o est· valendo agora
+	 *            Quanto a m√£o est√° valendo agora
 	 */
 	public abstract void aceitouAumentoAposta(Jogador j, int valor);
 
 	/**
 	 * Informa que o jogador recusou um pedido de aumento de aposta.
 	 * <p>
-	 * Obs.: isso n„o impede que o outro jogador da dupla aceite o pedido, È
-	 * apenas para notificaÁ„o visual. Se o segundo jogdor recusar o pedido, a
-	 * mensagem de derrota da dupla ser· enviada logo em seguida.
+	 * Obs.: isso n√£o impede que o outro jogador da dupla aceite o pedido, √©
+	 * apenas para notifica√ß√£o visual. Se o segundo jogdor recusar o pedido, a
+	 * mensagem de derrota da dupla ser√° enviada logo em seguida.
 	 * 
 	 * @param j
 	 *            Jogador que recusou o pedido.
@@ -200,36 +203,39 @@ public abstract class Jogador {
 	 *            1 se a equipe 1+3 venceu, 2 se a equipe 2+4 venceu, 3 se
 	 *            empatou
 	 * @param jogadorQueTorna
-	 *            jogador que venceu a rodada (e que ir· "tornar"), ou null se
+	 *            jogador que venceu a rodada (e que ir√° "tornar"), ou null se
 	 *            for empate
 	 */
 	public abstract void rodadaFechada(int numRodada, int resultado,
 			Jogador jogadorQueTorna);
 
 	/**
-	 * Informa que a m„o foi concluÌda
+	 * Informa que a m√£o foi conclu√≠da
 	 * 
 	 * @param pontosEquipe
-	 *            Array com os pontos da equipe 1 e 2 (Ìndices 0 e 1)
-	 *         
+	 *            Array com os pontos da equipe 1 e 2 (√≠ndices 0 e 1)
+	 * 
 	 * @param vaquinhasNoPasto
-	 * 			  Array com os pontos com relaÁ„o ao n˙mero de partidas das equipes 1 e 2 (Ìndices 0 e 1)
+	 *            Array com os pontos com rela√ß√£o ao n√∫mero de partidas das
+	 *            equipes 1 e 2 (√≠ndices 0 e 1)
 	 */
 	public abstract void maoFechada(int[] pontosEquipe, int[] vaquinhasNoPasto);
 
 	/**
-	 * Informa que o jogo foi concluÌdo
+	 * Informa que o jogo foi conclu√≠do
 	 * 
 	 * @param numEquipeVencedora
 	 *            Equipe que ganhou o jogo (1 ou 2)
-	 *           
+	 * 
 	 * @param vaquinhasNoPasto
-	 * 			  Array com os pontos com relaÁ„o ao n˙mero de partidas das equipes 1 e 2 (Ìndices 0 e 1)
+	 *            Array com os pontos com rela√ß√£o ao n√∫mero de partidas das
+	 *            equipes 1 e 2 (√≠ndices 0 e 1)
 	 */
-	public abstract void jogoFechado(int numEquipeVencedora, int[] vaquinhasNoPasto);
+	public abstract void jogoFechado(int numEquipeVencedora,
+			int[] vaquinhasNoPasto);
 
 	/**
-	 * Informa que um jogador fez sua escolha de topar ou n„o uma rodada quando
+	 * Informa que um jogador fez sua escolha de topar ou n√£o uma rodada quando
 	 * sua equipe tinha 11 pontos
 	 * 
 	 * @param j
@@ -240,8 +246,8 @@ public abstract class Jogador {
 	public abstract void decidiuMao11(Jogador j, boolean aceita);
 
 	/**
-	 * Informa que o jogador È benefici·rio de uma "m„o de 11", e, portanto,
-	 * deve decidir se aceita ou n„o esta rodada (se aceitar vale 3 pontos, se
+	 * Informa que o jogador √© benefici√°rio de uma "m√£o de 11", e, portanto,
+	 * deve decidir se aceita ou n√£o esta rodada (se aceitar vale 3 pontos, se
 	 * ambos recusarem perde 1)
 	 * 
 	 * @param cartasParceiro
@@ -256,77 +262,64 @@ public abstract class Jogador {
 	 * jogador desistiu)
 	 * 
 	 * @param posicao
-	 *            PosiÁ„o do jogador que abortou
+	 *            Posi√ß√£o do jogador que abortou
 	 */
 	public abstract void jogoAbortado(int posicao);
-	
+
 	/**
-	 * Textos para a gritaria
-	 * Aqui pode-se incluir livremente novas opÁıes
-	 * uma vez que o algoritmo checa o array todo
-	 */	
-	public static final String[] BALAO_TEXTOS_TRUCO = {
-		"Truco!",
-		"Truco ladr\u00E3o!", 
-		"\u00c9 truco mesmo!",
-		"Truuuco!",
-		"Truco na cabe\u00e7a!",
-		"\u00c9 truco!"
-	};
-	public static final String[] BALAO_TEXTOS_SEIS = {
-		"Seis!",
-		"Meio-pau!",
-		"Seeeeeis!",
-		"Seeeeis na lata!",
-		"Toma seis!",
-		"SEEEEEEEEIS"
-	};
-	public static final String[] BALAO_TEXTOS_NOVE = {
-		"Nove!",
-		"Nooooove!",
-		"Nove na cabe\u00e7a!",
-		"\u00c9 nove!"
-	};
-	public static final String[] BALAO_TEXTOS_DOZE = {
-		"Doze!",
-		"\u00c9 doze!",
-		"Doze sem piedade!"
-	};
-	public static final String[] BALAO_TEXTOS_DESCE = {
-		"Desce!",
-		"Manda bala!",
-		"Vamos nessa!",
-		"Vamos ver.",
-		"Quero ver.",
-		"Desce ladr\u00E3o!"
-	};
-	public static final String[] BALAO_TEXTOS_RECUSA = {
-		"T\u00f4 fora.",
-		"N\u00e3o quero.",
-		"N\u00e3o.",
-		"Nem pensar."
-	};
-	public static final String[] BALAO_TEXTOS_VENCEDOR = {
-		"Foi f\u00e1cil demais!!!",
-		"Toooooomem!",
-		"Que lavada!"
-	};
-	public static final String[] BALAO_TEXTOS_DERROTADO = {
-		":-(",
-		"Ok...",
-		"Raios!..."
-	};
-	public static final String[] BALAO_TEXTOS_ACEITAMAO11 = {
-		"Vamos jogar!",
-		"Vamos nessa!",
-		"T\u00f4 dentro."
-	};
-	public static final String[] BALAO_TEXTOS_RECUSAMAO11 = {
-		"N\u00E3o quero.",
-		"Que lixo!",
-		"N\u00e3o.",
-		"Nem pensar.",
-		"T\u00f4 fora."		
-	};
-	
+	 * Estrat√©gias suportadas pelos jogadores autom√°tico (CPU e Bot)
+	 */
+	static Estrategia[] ESTRATEGIAS = { new EstrategiaWillian(),
+			new EstrategiaSellani(), new EstrategiaGasparotto() };
+
+	/**
+	 * Lista de op√ß√µes de estrat√©gia para comboboxes (tem os nomes e a √∫ltima
+	 * op√ß√£o √© a de sorteio
+	 */
+	static String[] opcoesEstrategia = new String[ESTRATEGIAS.length + 1];
+
+	static {
+		// Preenche a lista de op√ß√µes usando o array de estrat√©gias
+		// (o √∫ltimo elemento √© preenchido depois de carregar o idioma,
+		// pois √© a frase "sortear estrat√©gia")		
+		for (int i = 0; i < ESTRATEGIAS.length; i++)
+			opcoesEstrategia[i] = ESTRATEGIAS[i].getNomeEstrategia();
+	}
+
+	/**
+	 * Instancia uma estrat√©gia (para uso em jogadores que precisam disso, como
+	 * o <code>JogadorBot</code> ou o <code>JogadorCPU</code>).
+	 * 
+	 * @param nomeEstrategia
+	 *            Nome da estrat√©gia (ex.: "Willian"). Se nenhuma estrat√©gia se
+	 *            identificar por aquele nome, sorteia uma aleat√≥ria
+	 * @return nova inst√¢ncia da estrat√©gia
+	 */
+	public static Estrategia criaEstrategiaPeloNome(String nomeEstrategia) {
+		// Procura uma classe de estrat√©gia com aquele nome
+		int numEstrategia = -1;
+		for (int i = 0; i < ESTRATEGIAS.length; i++) {
+			if (ESTRATEGIAS[i].getNomeEstrategia().equals(nomeEstrategia)) {
+				numEstrategia = i;
+				break;
+			}
+		}
+		// Se n√£o houver nenhuma, sorteia
+		if (numEstrategia == -1) {
+			numEstrategia = ((new Random()).nextInt() >>> 1)
+					% ESTRATEGIAS.length;
+		}
+
+		// Cria uma nova inst√¢ncia
+		try {
+			return (Estrategia) ESTRATEGIAS[numEstrategia].getClass()
+					.newInstance();
+		} catch (InstantiationException e) {
+			Jogo.log(e.getMessage());
+			throw new Error(e.getMessage());
+		} catch (IllegalAccessException e) {
+			Jogo.log(e.getMessage());
+			throw new Error(e.getMessage());
+		}
+	}
 }

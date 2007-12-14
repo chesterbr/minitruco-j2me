@@ -1,21 +1,21 @@
 package mt;
 
 /*
- * Copyright © 2006 Carlos Duarte do Nascimento (Chester)
+ * Copyright ¬© 2006 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Este programa È um software livre; vocÍ pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da LicenÁa P˙blica Geral GNU como 
- * publicada pela FundaÁ„o do Software Livre (FSF); na vers„o 3 da 
- * LicenÁa, ou (na sua opni„o) qualquer vers„o.
+ * Este programa √© um software livre; voc√™ pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da Licen√ßa P√∫blica Geral GNU como 
+ * publicada pela Funda√ß√£o do Software Livre (FSF); na vers√£o 3 da 
+ * Licen√ßa, ou (na sua opni√£o) qualquer vers√£o.
  *
- * Este programa È distribuido na esperanÁa que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA«¬O
- * a qualquer MERCADO ou APLICA«√O EM PARTICULAR. Veja a LicenÁa
- * P˙blica Geral GNU para maiores detalhes.
+ * Este programa √© distribuido na esperan√ßa que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA√á√ÇO
+ * a qualquer MERCADO ou APLICA√á√ÉO EM PARTICULAR. Veja a Licen√ßa
+ * P√∫blica Geral GNU para maiores detalhes.
  *
- * VocÍ deve ter recebido uma cÛpia da LicenÁa P˙blica Geral GNU
- * junto com este programa, se n„o, escreva para a FundaÁ„o do Software
+ * Voc√™ deve ter recebido uma c√≥pia da Licen√ßa P√∫blica Geral GNU
+ * junto com este programa, se n√£o, escreva para a Funda√ß√£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 import java.io.IOException;
@@ -38,15 +38,15 @@ import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.TextField;
 
 /**
- * Servidor no qual o celular est· conectado.
+ * Servidor no qual o celular est√° conectado.
  * <p>
- * O tempo de vida dessa classe È o tempo de vida da conex„o com o servidor.
+ * O tempo de vida dessa classe √© o tempo de vida da conex√£o com o servidor.
  * <p>
- * Ela tambÈm cuida da interaÁ„o com o cliente quando o jogo n„o est· rolando,
+ * Ela tamb√©m cuida da intera√ß√£o com o cliente quando o jogo n√£o est√° rolando,
  * exibindo listas de salas, prompts, etc., e atuando como CommandListener
- * destes di·logos
+ * destes di√°logos
  * <p>
- * A tela dentro da sala È o Canvas em si. Os outros elementos s„o Forms e
+ * A tela dentro da sala √© o Canvas em si. Os outros elementos s√£o Forms e
  * Alerts
  * 
  * @author Chester
@@ -54,26 +54,26 @@ import javax.microedition.lcdui.TextField;
  */
 public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 
-	private static final Command entrarSalaCommand = new Command("Entrar",
+	private static final Command entrarSalaCommand = new Command(Messages.getString("entrar"), //$NON-NLS-1$
 			Command.SCREEN, 1);
 
-	private static final Command espiarSalaCommand = new Command("Espiar",
+	private static final Command espiarSalaCommand = new Command(Messages.getString("espiar"), //$NON-NLS-1$
 			Command.SCREEN, 2);
 
 	private static final Command atualizarListaCommand = new Command(
-			"Atualizar", Command.SCREEN, 3);
+			Messages.getString("atualizar"), Command.SCREEN, 3); //$NON-NLS-1$
 
-	private static final Command apelidoCommand = new Command("Mudar Apelido",
+	private static final Command apelidoCommand = new Command(Messages.getString("mudarapelido"), //$NON-NLS-1$
 			Command.SCREEN, 4);
 
-	private static final Command okApelidoCommand = new Command("Ok",
+	private static final Command okApelidoCommand = new Command(Messages.getString("ok"), //$NON-NLS-1$
 			Command.SCREEN, 1);
 
 	private static final Command desconectarCommand = new Command(
-			"Desconectar", Command.STOP, 999);
+			Messages.getString("desconectar"), Command.STOP, 999); //$NON-NLS-1$
 
 	/**
-	 * Conex„o com o servidor remoto
+	 * Conex√£o com o servidor remoto
 	 */
 	private StreamConnection conn;
 
@@ -92,26 +92,26 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 	private JogoTCP jogo;
 
 	/**
-	 * Apelido atual do usu·rio
+	 * Apelido atual do usu√°rio
 	 */
 	public String apelido;
 
 	private MiniTruco midlet;
 
 	/**
-	 * Cria o objeto, iniciando a conex„o com o servidor e botando uma thread
-	 * pra monitorar essa conex„o
+	 * Cria o objeto, iniciando a conex√£o com o servidor e botando uma thread
+	 * pra monitorar essa conex√£o
 	 * 
 	 * @param endereco
-	 *            EndereÁo do servidor, no formato host:porta
+	 *            Endere√ßo do servidor, no formato host:porta
 	 * @throws IOException
-	 *             Caso n„o seja possÌvel conectar
+	 *             Caso n√£o seja poss√≠vel conectar
 	 */
 	public ServidorTCP(String endereco, MiniTruco midlet) {
 
 		// Guarda o display da MIDlet (vamos precisar dele pra mostrar forms e
-		// alerts) e uma referÍncia a ela (que vamos usar para devolver o
-		// controle quando a sess„o acabar)
+		// alerts) e uma refer√™ncia a ela (que vamos usar para devolver o
+		// controle quando a sess√£o acabar)
 		this.display = Display.getDisplay(midlet);
 		this.midlet = midlet;
 
@@ -122,7 +122,7 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 		repaint();
 		serviceRepaints();
 
-		// Inicia a thread que ir· se conectar ao servidor e monitorar a conex„o
+		// Inicia a thread que ir√° se conectar ao servidor e monitorar a conex√£o
 		this.URL = "socket://" + endereco;
 		Thread t = new Thread(this);
 		t.start();
@@ -137,8 +137,8 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 			sugestao = Configuracoes.getConfiguracoes().nomeJogador;
 			sugestao = "";
 		}
-		Form formApelido = new Form("Apelido");
-		txtApelido = new TextField("Informe seu apelido", sugestao, 15,
+		Form formApelido = new Form(Messages.getString("apelido")); //$NON-NLS-1$
+		txtApelido = new TextField(Messages.getString("apelido_msg"), sugestao, 15, //$NON-NLS-1$
 				TextField.ANY);
 		formApelido.append(txtApelido);
 		formApelido.setCommandListener(this);
@@ -150,33 +150,33 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 	List listSalas;
 
 	/**
-	 * Exibe o formul·rio de escolha de sala
+	 * Exibe o formul√°rio de escolha de sala
 	 * 
 	 * @param lista
 	 *            retorno do comando "L" (qtde de pessoas em cada sala)
 	 */
 	public void mostraFormSalas(String lista) {
-		listSalas = new List("Salas Disponiveis", List.IMPLICIT);
+		listSalas = new List(Messages.getString("salas_disp"), List.IMPLICIT); //$NON-NLS-1$
 		StringBuffer sbDescSala = new StringBuffer();
 		for (int i = 0; i < lista.length(); i += 2) {
 			sbDescSala.setLength(0);
-			sbDescSala.append("Sala ");
+			sbDescSala.append(Messages.getString("sala")); //$NON-NLS-1$
 			sbDescSala.append(i / 2 + 1);
 			sbDescSala.append(": ");
 			char c = lista.charAt(i);
 			switch (c) {
 			case '0':
-				sbDescSala.append("vazia");
+				sbDescSala.append(Messages.getString("vazia")); //$NON-NLS-1$
 				break;
 			case '1':
-				sbDescSala.append("1 pessoa");
+				sbDescSala.append(Messages.getString("1pessoa")); //$NON-NLS-1$
 				break;
 			case '4':
-				sbDescSala.append("lotada");
+				sbDescSala.append(Messages.getString("lotada")); //$NON-NLS-1$
 				break;
 			default:
 				sbDescSala.append(c);
-				sbDescSala.append(" pessoas");
+				sbDescSala.append(Messages.getString("_pessoas")); //$NON-NLS-1$
 			}
 			listSalas.append(sbDescSala.toString(), null);
 		}
@@ -191,30 +191,30 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 	}
 
 	/**
-	 * Flag para permitir a finalizaÁ„o da thread via menu
+	 * Flag para permitir a finaliza√ß√£o da thread via menu
 	 */
 	private boolean estaVivo = true;
 
 	private SalaTCP sala = new SalaTCP(this);
 
 	/**
-	 * EndereÁo do servidor, no formato socket://host:porta
+	 * Endere√ßo do servidor, no formato socket://host:porta
 	 */
 	private String URL;
 
 	/**
-	 * @return Sala em que estamos (ou que est· sendo espiada)
+	 * @return Sala em que estamos (ou que est√° sendo espiada)
 	 */
 	public SalaTCP getSala() {
 		return sala;
 	}
 
 	/**
-	 * Monitora a conex„o, acionando os eventos conforme a necessidade
+	 * Monitora a conex√£o, acionando os eventos conforme a necessidade
 	 */
 	public void run() {
 
-		// Conecta no servidor. Se der erro, d· o alerta e volta.
+		// Conecta no servidor. Se der erro, d√° o alerta e volta.
 		try {
 			conn = (StreamConnection) Connector.open(this.URL);
 			in = conn.openInputStream();
@@ -222,14 +222,14 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 		} catch (IOException e) {
 			midlet.novaMesa(false);
 			midlet.startApp();
-			alerta("Erro ao conectar", e.getMessage());
+			alerta(Messages.getString("erro_conectar"), e.getMessage()); //$NON-NLS-1$
 			return;
 		}
 
-		// Recupera as informaÁıes do serivdor
+		// Recupera as informa√ß√µes do serivdor
 		enviaComando("W");
 
-		// Loop principal: decodifica as notificaÁıes recebidas e as
+		// Loop principal: decodifica as notifica√ß√µes recebidas e as
 		// processa ou encaminha ao jogador, conforme o caso
 		int c;
 		StringBuffer sbLinha = new StringBuffer();
@@ -242,18 +242,18 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 						String parametros = sbLinha.delete(0, 2).toString();
 						switch (tipoNotificacao) {
 						case 'W':
-							// Se n„o tiver recuperado a vers„o, desencana
+							// Se n√£o tiver recuperado a vers√£o, desencana
 							if (MiniTruco.versaoMidlet == null) {
 								mostraFormApelido();
 								break;
 							}
-							// Verifica se a vers„o È maior ou igual ‡ exigida
+							// Verifica se a vers√£o √© maior ou igual √† exigida
 							// pelo servidor
 							String vMin = parametros;
 							if (MiniTruco.versaoMidlet.compareTo(vMin) < 0) {
 								alerta(
-										"Jogo desatualizado",
-										"Instale uma nova vers\u00E3o para jogar online",
+										Messages.getString("erro_versao"), //$NON-NLS-1$
+										Messages.getString("erro_versao_msg"), //$NON-NLS-1$
 										true);
 								estaVivo = false;
 							} else {
@@ -277,13 +277,13 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 							mostraFormSalas(parametros);
 							break;
 						case 'E':
-							// Entrou na sala, atualiza o n˙mero e mostra o
-							// formul·rio (um I vai preencher os dados logo em
+							// Entrou na sala, atualiza o n√∫mero e mostra o
+							// formul√°rio (um I vai preencher os dados logo em
 							// seguida)
 							sala.numSala = Integer.parseInt(parametros);
 							break;
 						case 'S':
-							// Saiu da sala: atualiza o n˙mero, mata qualquer
+							// Saiu da sala: atualiza o n√∫mero, mata qualquer
 							// jogo em andamento e vai para a lista de salas
 							sala.numSala = 0;
 							jogo = null;
@@ -291,7 +291,7 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 							break;
 						case 'I':
 							// Recebeu info da sala. Enserra qualquer jogo em
-							// andamento e limpa totalmente a mesa (pra n„o dar
+							// andamento e limpa totalmente a mesa (pra n√£o dar
 							// sombra no jogo seuginte)
 							if (jogo != null) {
 								jogo = null;
@@ -301,8 +301,8 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 							// Valida e decodifica
 							String[] tokens = split(parametros, ' ');
 							if (tokens.length != 5) {
-								alerta("Erro",
-										"Status de sala invalido, verifique servidor: "
+								alerta(Messages.getString("erro"), //$NON-NLS-1$
+										Messages.getString("erro_status_msg") //$NON-NLS-1$
 												+ parametros);
 								break;
 							}
@@ -312,7 +312,7 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 							sala.jogadores = split(tokens[1], '|');
 							// status de "quero jogar"
 							sala.queroJogar = tokens[2];
-							// posiÁ„o do gerente
+							// posi√ß√£o do gerente
 							sala.posGerente = Integer.parseInt(tokens[3]);
 							// regras
 							sala.regras = tokens[4];
@@ -324,7 +324,7 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 
 							break;
 						case 'P':
-							// InÌcio de partida, cria um jogo remoto e binda os
+							// In√≠cio de partida, cria um jogo remoto e binda os
 							// objetos-jogador apropriados a ele
 							jogo = new JogoTCP(this);
 							for (int i = 0; i <= 3; i++) {
@@ -354,7 +354,7 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 						case 'G':
 						case 'F':
 						case 'H':
-							// Estes eventos s„o do jogo, encaminha para ele (se
+							// Estes eventos s√£o do jogo, encaminha para ele (se
 							// existir)
 							if (jogo != null) {
 								jogo.processaNotificacao(tipoNotificacao,
@@ -364,26 +364,26 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 						case 'X':
 							if (parametros.equals("NE")) {
 								mostraFormApelido();
-								alerta("Erro",
-										"Apelido j\u00E1 est\u00E1 em uso");
+								alerta(Messages.getString("erro"), //$NON-NLS-1$
+										Messages.getString("erro_apelido_msg_emuso")); //$NON-NLS-1$
 							} else if (parametros.equals("NI")) {
 								mostraFormApelido();
-								alerta("Erro", "Apelido inv\u00E1lido");
+								alerta(Messages.getString("erro"), Messages.getString("erro_apelido_msg_invalido")); //$NON-NLS-1$ //$NON-NLS-2$
 							} else if (parametros.equals("NO")) {
 								display.setCurrent(this);
 								mostraFormApelido();
 							} else if (parametros.equals("CH")) {
 								display.setCurrent(listSalas);
-								alerta("Erro", "Sala lotada");
+								alerta(Messages.getString("erro"), Messages.getString("erro_sala_lotada")); //$NON-NLS-1$ //$NON-NLS-2$
 							} else if (parametros.equals("TT")) {
 								alerta(
-										"Conflito",
-										"A manilha velha (fixa) exige baralho sujo.",
+										Messages.getString("conflito_man_bar"), //$NON-NLS-1$
+										Messages.getString("conflito_man_bar_txt"), //$NON-NLS-1$
 										true);
 								enviaComando("I");
 							} else {
-								// Em caso de erro n„o-esperado, aborta o jogo
-								alerta("Erro Inesperado", sbLinha.toString(),
+								// Em caso de erro n√£o-esperado, aborta o jogo
+								alerta(Messages.getString("erro_inesperado"), sbLinha.toString(), //$NON-NLS-1$
 										true);
 								finalizaServidor();
 							}
@@ -396,17 +396,17 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 				}
 			}
 		} catch (IOException e) {
-			// … normal dar um erro de I/O quando o usu·rio pede pra desconectar
-			// (pq o loop vai tentar ler a ˙ltima linha). SÛ vamos alertar se a
-			// desconex„o foi forÁada.
+			// √â normal dar um erro de I/O quando o usu√°rio pede pra desconectar
+			// (pq o loop vai tentar ler a √∫ltima linha). S√≥ vamos alertar se a
+			// desconex√£o foi for√ßada.
 			if (estaVivo) {
-				alerta("Erro de I/O", e.getMessage(), true);
+				alerta(Messages.getString("erro_io"), e.getMessage(), true); //$NON-NLS-1$
 			}
 			return;
 		} finally {
 			// Se saiu do loop e ainda estava "vivo", foi desconectado, avisa
 			if (estaVivo) {
-				alerta("Desconectado", "VocÍ foi desconectado do servidor.",
+				alerta(Messages.getString("erro_desconect"), Messages.getString("erro_desconect_msg"), //$NON-NLS-1$ //$NON-NLS-2$
 						true);
 			}
 			finalizaServidor();
@@ -414,7 +414,7 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 	}
 
 	public void finalizaServidor() {
-		// Fecha tudo o que tem que fechar (se È que tem)
+		// Fecha tudo o que tem que fechar (se √© que tem)
 		try {
 			if (in != null)
 				in.close();
@@ -423,10 +423,10 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 			if (conn != null)
 				conn.close();
 		} catch (IOException e) {
-			alerta("Erro Interno", e.getMessage());
+			alerta(Messages.getString("erro_interno"), e.getMessage()); //$NON-NLS-1$
 		}
 
-		// Sinaliza a finalizaÁ„o para a thread
+		// Sinaliza a finaliza√ß√£o para a thread
 		estaVivo = false;
 
 		// Volta para o menu principal
@@ -469,7 +469,7 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 			out.flush();
 			Jogo.log(comando);
 		} catch (IOException e) {
-			alerta("Erro ao enviar", e.getMessage());
+			alerta(Messages.getString("erro_envio"), e.getMessage()); //$NON-NLS-1$
 		}
 	}
 
@@ -510,8 +510,8 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 	 * Divide uma string com base em um separador (como o <code>split()</code>)
 	 * da classe <code>String</code> do J2SE.
 	 * <p>
-	 * Ele efetua a operaÁ„o em dois passos, mas esta abordagem tem a vantagem
-	 * de n„o alocar nenhum objeto alÈm das strings n„o-nulas do array.
+	 * Ele efetua a opera√ß√£o em dois passos, mas esta abordagem tem a vantagem
+	 * de n√£o alocar nenhum objeto al√©m das strings n√£o-nulas do array.
 	 */
 	public static String[] split(String original, char separador) {
 		// Fase 1: Contagem dos tokens (para dimensionar o array)
@@ -543,19 +543,19 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 			Font.FACE_PROPORTIONAL, Font.STYLE_BOLD, Font.SIZE_SMALL);
 
 	/**
-	 * Desenha a mensagem de "aguarde" (quando n„o houver outro di·logo)
+	 * Desenha a mensagem de "aguarde" (quando n√£o houver outro di√°logo)
 	 */
 	protected void paint(Graphics g) {
 		g.setColor(0x0000FF00);
 		g.fillRect(0, 0, getWidth(), getHeight());
 		g.setColor(0x00FF0000);
 		g.setFont(fonteAguarde);
-		g.drawString("AGUARDE", getWidth() / 2, getHeight() / 2,
+		g.drawString(Messages.getString("AGUARDE"), getWidth() / 2, getHeight() / 2, //$NON-NLS-1$
 				Graphics.HCENTER | Graphics.BASELINE);
 	}
 
 	/**
-	 * Permite que a mensagem de aguarde apareÁa
+	 * Permite que a mensagem de aguarde apare√ßa
 	 */
 	public void mostraMsgAguarde() {
 		display.setCurrent(this);
@@ -564,7 +564,7 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 	/**
 	 * Faz o jogo em andamento, se houver, ser abortado.
 	 * <p>
-	 * O processo de abort ir· levar o jogador ao lugar certo.
+	 * O processo de abort ir√° levar o jogador ao lugar certo.
 	 */
 	public void abortaJogoAtual() {
 		if (jogo != null) {

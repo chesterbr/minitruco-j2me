@@ -1,24 +1,24 @@
 package mt;
 
 /*
- * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright ¬© 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Copyright © 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
- * (modo confronto de estratÈgias)
+ * Copyright ¬© 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * (modo confronto de estrat√©gias)
  * 
- * Este programa È um software livre; vocÍ pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da LicenÁa P˙blica Geral GNU como 
- * publicada pela FundaÁ„o do Software Livre (FSF); na vers„o 3 da 
- * LicenÁa, ou (na sua opni„o) qualquer vers„o.
+ * Este programa √© um software livre; voc√™ pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da Licen√ßa P√∫blica Geral GNU como 
+ * publicada pela Funda√ß√£o do Software Livre (FSF); na vers√£o 3 da 
+ * Licen√ßa, ou (na sua opni√£o) qualquer vers√£o.
  *
- * Este programa È distribuido na esperanÁa que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA«¬O
- * a qualquer MERCADO ou APLICA«√O EM PARTICULAR. Veja a LicenÁa
- * P˙blica Geral GNU para maiores detalhes.
+ * Este programa √© distribuido na esperan√ßa que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA√á√ÇO
+ * a qualquer MERCADO ou APLICA√á√ÉO EM PARTICULAR. Veja a Licen√ßa
+ * P√∫blica Geral GNU para maiores detalhes.
  *
- * VocÍ deve ter recebido uma cÛpia da LicenÁa P˙blica Geral GNU
- * junto com este programa, se n„o, escreva para a FundaÁ„o do Software
+ * Voc√™ deve ter recebido uma c√≥pia da Licen√ßa P√∫blica Geral GNU
+ * junto com este programa, se n√£o, escreva para a Funda√ß√£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
@@ -32,12 +32,12 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 /**
- * Mostra a mesa de jogo (fundo verde, cartas, placares, etc.), alÈm da animaÁ„o
+ * Mostra a mesa de jogo (fundo verde, cartas, placares, etc.), al√©m da anima√ß√£o
  * de abertura.
  * <p>
  * Obs.: O ideal seria que a abertura estivesse em uma classe separada - e que
- * ambas respondessem por seus eventos de menu (ao invÈs de deixar a classe
- * MiniTruco fazer isso). SÛ percebi isso quando fui adicionar uma terceira tela (<code>Sala</code>,
+ * ambas respondessem por seus eventos de menu (ao inv√©s de deixar a classe
+ * MiniTruco fazer isso). S√≥ percebi isso quando fui adicionar uma terceira tela (<code>Sala</code>,
  * do multiplayer). Coisas do aprendizado - um dia desses eu separo.
  * 
  * 
@@ -57,7 +57,7 @@ public class Mesa extends Canvas implements Runnable {
 	private Vector cartasJogadas = new Vector(12);
 
 	/**
-	 * Guarda todas as cartas na mesa (jogadas, n„o-jogadas e a virada)
+	 * Guarda todas as cartas na mesa (jogadas, n√£o-jogadas e a virada)
 	 */
 	private Vector cartas = new Vector(13);
 
@@ -67,14 +67,14 @@ public class Mesa extends Canvas implements Runnable {
 	private Vector cartasSelecionaveis = null;
 
 	/**
-	 * Carta que est· sob o cursor (e que ser· jogada se selecionada)
+	 * Carta que est√° sob o cursor (e que ser√° jogada se selecionada)
 	 */
 	private Carta cartaSelecionada = null;
 
 	/**
-	 * Cartas que compıem o baralhinho desenhado no cen·rio.
+	 * Cartas que comp√µem o baralhinho desenhado no cen√°rio.
 	 * <p>
-	 * (n„o confundir com a classe Baralho, usada pela classe Jogo para sortear
+	 * (n√£o confundir com a classe Baralho, usada pela classe Jogo para sortear
 	 * cartas)
 	 */
 	public Vector baralhoCenario = new Vector(3);
@@ -88,7 +88,7 @@ public class Mesa extends Canvas implements Runnable {
 	private boolean baralhoPorCima = true;
 
 	/**
-	 * Este objeto vai cuidar das animaÁıes (È uma thread).
+	 * Este objeto vai cuidar das anima√ß√µes (√© uma thread).
 	 */
 	private Animador animador;
 
@@ -96,15 +96,7 @@ public class Mesa extends Canvas implements Runnable {
 
 	private int topCartaDaMesa, leftCartaDaMesa;
 
-	public static final String TEXTO_TRUCO = "Truco!";
-
-	public static final String TEXTO_SEIS = "Seis!";
-
-	public static final String TEXTO_NOVE = "NOVE!";
-
-	public static final String TEXTO_DOZE = "DOZE!!!";
-
-	// Vari·veis ligadas ‡ abertura
+	// Vari√°veis ligadas √† abertura
 	private boolean aberturaVisivel = true;
 
 	public int aberturaAlturaSas;
@@ -117,8 +109,8 @@ public class Mesa extends Canvas implements Runnable {
 	 * Cria uma nova mesa
 	 * 
 	 * @param vaiAnimar
-	 *            Se true, esconde a abertura (para mostrar na animaÁ„o). Se
-	 *            false, j· mostra a abertura finalizada.
+	 *            Se true, esconde a abertura (para mostrar na anima√ß√£o). Se
+	 *            false, j√° mostra a abertura finalizada.
 	 * 
 	 * 
 	 */
@@ -143,7 +135,7 @@ public class Mesa extends Canvas implements Runnable {
 	}
 
 	/**
-	 * Executa a animaÁ„o de abertura
+	 * Executa a anima√ß√£o de abertura
 	 * 
 	 */
 	public void animaAbertura() {
@@ -156,7 +148,7 @@ public class Mesa extends Canvas implements Runnable {
 	}
 
 	public void montaBaralhoCenario() {
-		// Desenha o baralho do cen·rio (e guarda as coordenadas para
+		// Desenha o baralho do cen√°rio (e guarda as coordenadas para
 		// cartas que entram ou saem dele
 		baralhoCenario.setSize(3);
 		for (int i = 0; i <= 2; i++) {
@@ -184,7 +176,7 @@ public class Mesa extends Canvas implements Runnable {
 	}
 
 	/**
-	 * Verifica se uma carta j· foi jogada na mesa
+	 * Verifica se uma carta j√° foi jogada na mesa
 	 * 
 	 * @param c
 	 *            Carta a verificar
@@ -194,9 +186,9 @@ public class Mesa extends Canvas implements Runnable {
 	}
 
 	/**
-	 * Informa a mesa o jogador que est· acoplado a ela.
+	 * Informa a mesa o jogador que est√° acoplado a ela.
 	 * <p>
-	 * Isso È feito quando o JogadorHumano È construÌdo
+	 * Isso √© feito quando o JogadorHumano √© constru√≠do
 	 * 
 	 * @param jogador
 	 */
@@ -211,53 +203,55 @@ public class Mesa extends Canvas implements Runnable {
 	private JogadorHumano jogador;
 
 	/**
-	 * Informa a mesa o JogadorBot que est· acoplado a ela (isto acontece
-	 * somente no modo confronto de estratÈgias)
+	 * Informa a mesa o JogadorBot que est√° acoplado a ela (isto acontece
+	 * somente no modo confronto de estrat√©gias)
 	 * 
 	 * @param jogador
 	 */
 
-	// [IF_FULL]	
+	// [IF_FULL]
 	private JogadorBot jogadorBot;
 	// [ENDIF_FULL]
 
 	private boolean modoCE = false;
 
 	/**
-	 * Informa ‡ mesa o bot que jogar· nela (mudando o modo para Confronto de
-	 * EstratÈgias)
+	 * Informa √† mesa o bot que jogar√° nela (mudando o modo para Confronto de
+	 * Estrat√©gias)
 	 * 
 	 * @param jogador
 	 */
-	// [IF_FULL]	
+	// [IF_FULL]
 	public void setJogadorBot(JogadorBot jogador) {
 		this.jogadorBot = jogador;
 		this.modoCE = true;
 	}
+
 	// [ENDIF_FULL]
 
 	/**
 	 * Ajusta a mesa para o modo normal ou confronto.
 	 * 
 	 * @param modoCE
-	 *            true para modo Confronto de EstratÈgias, false para jogo
+	 *            true para modo Confronto de Estrat√©gias, false para jogo
 	 *            normal
 	 */
 	public void setModoCE(boolean modoCE) {
 		this.modoCE = modoCE;
-		// [IF_FULL]	
+		// [IF_FULL]
 		if (modoCE == false) {
 			this.jogadorBot = null;
 		}
 		// [ENDIF_FULL]
 	}
 
-	// [IF_FULL]	
+	// [IF_FULL]
 	JogadorBot getJogadorBot() {
 		return jogadorBot;
 	}
+
 	// [ENDIF_FULL]
-	
+
 	public static Font fontePlacar = Font.getFont(Font.FACE_PROPORTIONAL,
 			Font.STYLE_PLAIN, Font.SIZE_SMALL);
 
@@ -326,7 +320,7 @@ public class Mesa extends Canvas implements Runnable {
 
 	/**
 	 * Mostra o placar das partidas (somente para o modo confronto de
-	 * estratÈgias)
+	 * estrat√©gias)
 	 * 
 	 * @param jogador
 	 */
@@ -336,8 +330,8 @@ public class Mesa extends Canvas implements Runnable {
 		// Mostra placar final
 		// TO DO
 		// Aqui o legal seria mostrar o resultado final
-		// assim como o nome das estratÈgias??
-		// hummm talvez n„o... o resultado j· aparece na mesa...
+		// assim como o nome das estrat√©gias??
+		// hummm talvez n√£o... o resultado j√° aparece na mesa...
 
 		// Mostra menu final
 		removeCommand(MiniTruco.sairPartidaCommand);
@@ -345,9 +339,9 @@ public class Mesa extends Canvas implements Runnable {
 
 	}
 
-	static final String STRING_NOS = "N\u00F3s: ";
+	static final String STRING_NOS = Messages.getString("nos"); //$NON-NLS-1$
 
-	static final String STRING_ELES = "Eles: ";
+	static final String STRING_ELES = Messages.getString("eles"); //$NON-NLS-1$
 
 	static final String STRING_DA = "A: ";
 
@@ -369,22 +363,22 @@ public class Mesa extends Canvas implements Runnable {
 	}
 
 	/**
-	 * Buffer usado para fazer o double buffering (caso o devide n„o suporte
+	 * Buffer usado para fazer o double buffering (caso o devide n√£o suporte
 	 * fazer isso automaticamente)
 	 */
 	private Image offscreen = (isDoubleBuffered() ? null : Image.createImage(
 			getWidth(), getHeight()));
 
 	/**
-	 * Ìcones que mostram o status das rodadas jogadas (vitÛria, empate, derrota
-	 * ou n„o-jogada)
+	 * √≠cones que mostram o status das rodadas jogadas (vit√≥ria, empate, derrota
+	 * ou n√£o-jogada)
 	 */
 	protected Image[] iconesRodadas = { getIconeRodada(0), getIconeRodada(0),
 			getIconeRodada(0) };
 
 	/**
-	 * Texto que aparece piscando para indicar aÁıes possÌveis do jogador (tudo
-	 * por causa do $*!# menu do Series 60, que bagunÁa tudo)
+	 * Texto que aparece piscando para indicar a√ß√µes poss√≠veis do jogador (tudo
+	 * por causa do $*!# menu do Series 60, que bagun√ßa tudo)
 	 */
 	private String textoPiscando;
 
@@ -394,7 +388,7 @@ public class Mesa extends Canvas implements Runnable {
 	private boolean isAguardandoAceite;
 
 	/**
-	 * Indica que estamos aguardando resposta sobre jogar ou n„o uma m„o de 11
+	 * Indica que estamos aguardando resposta sobre jogar ou n√£o uma m√£o de 11
 	 */
 	private boolean isAguardandoMao11;
 
@@ -410,7 +404,7 @@ public class Mesa extends Canvas implements Runnable {
 	private Image imgLogoCartas2;
 
 	/**
-	 * Largura dos Ìcones de status
+	 * Largura dos √≠cones de status
 	 */
 	private static final int LARG_ICONE = getIconeRodada(0).getWidth();
 
@@ -419,7 +413,7 @@ public class Mesa extends Canvas implements Runnable {
 	 */
 	protected void paint(Graphics g) {
 
-		// Se for preciso double-buffering, faz as operaÁıes usarem o buffer
+		// Se for preciso double-buffering, faz as opera√ß√µes usarem o buffer
 		Graphics saved = g;
 		if (offscreen != null) {
 			g = offscreen.getGraphics();
@@ -429,8 +423,8 @@ public class Mesa extends Canvas implements Runnable {
 		g.setColor(0x0000FF00);
 		g.fillRect(0, 0, getWidth(), getHeight());
 
-		// Se a abertura estiver visÌvel, desenha sua fase atual (ela È uma
-		// animaÁ„o, tem v·rias fases)
+		// Se a abertura estiver vis√≠vel, desenha sua fase atual (ela √© uma
+		// anima√ß√£o, tem v√°rias fases)
 
 		if (aberturaVisivel) {
 			// Inicializa imagens
@@ -442,7 +436,10 @@ public class Mesa extends Canvas implements Runnable {
 					imgLogoCartas = Image.createImage("/logotipo.png");
 				}
 				if (imgLogoCartas2 == null) {
+					imgLogoCartas2 = imgLogoCartas; // para vers√£o light
+					// [IF_FULL]
 					imgLogoCartas2 = Image.createImage("/logotipo2.png");
+					// [ENDIF_FULL]
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -480,9 +477,11 @@ public class Mesa extends Canvas implements Runnable {
 					g.setColor(0x990033);
 					g.setFont(Font.getFont(Font.FACE_PROPORTIONAL,
 							Font.STYLE_BOLD, Font.SIZE_SMALL));
-					g.drawString("modo confronto", getWidth() / 2,
-							getHeight() - 12, Graphics.HCENTER
-									| Graphics.BOTTOM);
+					g
+							.drawString(
+									Messages.getString("modo_confronto"), getWidth() / 2, //$NON-NLS-1$
+									getHeight() - 12, Graphics.HCENTER
+											| Graphics.BOTTOM);
 					g
 							.drawString("<S. Gasparoto>", getWidth() / 2,
 									getHeight() - 2, Graphics.HCENTER
@@ -491,11 +490,11 @@ public class Mesa extends Canvas implements Runnable {
 			}
 		}
 
-		// Desenha o placar, se j· houver
+		// Desenha o placar, se j√° houver
 		// (e antes do indicador de vez - em celulares pequenos eles encavalam,
-		// e este ˙ltimo È mais relevante quando se est· aguardando)
+		// e este √∫ltimo √© mais relevante quando se est√° aguardando)
 		if (stringPlacar[0] != null && !aberturaVisivel) {
-			// PontuaÁ„o
+			// Pontua√ß√£o
 			g.setFont(fontePlacar);
 			g.setColor(0x00000000);
 			if (stringPlacar[0] != null) {
@@ -506,7 +505,7 @@ public class Mesa extends Canvas implements Runnable {
 				g.drawString(stringPlacar[1], getWidth(), MARGEM, Graphics.TOP
 						| Graphics.RIGHT);
 			}
-			// Ìcones das rodadas
+			// √≠cones das rodadas
 			for (int i = 0; i <= 2; i++) {
 				g.drawImage(iconesRodadas[i], MARGEM + i * LARG_ICONE, MARGEM,
 						Graphics.TOP | Graphics.LEFT);
@@ -514,12 +513,12 @@ public class Mesa extends Canvas implements Runnable {
 		}
 
 		// Desenha o indicador de "vez" (antes das cartas, para evitar
-		// sobrepÙ-las se a tela for pequena demais)
+		// sobrep√¥-las se a tela for pequena demais)
 		int leftVez, topVez;
-		g.setColor(0xFFFF00);
+		g.setColor(0xFF0000);
 
 		switch (posicaoDaVez) {
-		case 1: // Baixo (somente no modo confronto de estratÈgias)
+		case 1: // Baixo (somente no modo confronto de estrat√©gias)
 			if (this.modoCE) {
 				// TO DO
 				// Chester: help here!
@@ -559,7 +558,7 @@ public class Mesa extends Canvas implements Runnable {
 			}
 		}
 
-		// Desenha o texto piscando, com sombra (mesma linha do bal„o)
+		// Desenha o texto piscando, com sombra (mesma linha do bal√£o)
 		if (textoPiscando != null && (System.currentTimeMillis() % 2000 > 1000)) {
 			g.setColor(0x00000000);
 			g.setFont(fontePlacar);
@@ -575,10 +574,10 @@ public class Mesa extends Canvas implements Runnable {
 					Graphics.HCENTER | Graphics.TOP);
 		}
 
-		// Desenha, se houver, o bal„o de texto para um jogador
+		// Desenha, se houver, o bal√£o de texto para um jogador
 		if (posicaoBalao != 0) {
 
-			// Determina o tamanho e a posiÁ„o do bal„o e o quadrante da ponta
+			// Determina o tamanho e a posi√ß√£o do bal√£o e o quadrante da ponta
 			final int MARGEM_BALAO_LEFT = 10;
 			final int MARGEM_BALAO_TOP = 3;
 			int largBalao = fonteBalao.stringWidth(textoBalao) + 2
@@ -609,10 +608,10 @@ public class Mesa extends Canvas implements Runnable {
 				break;
 			}
 
-			// O bal„o tem que ser branco, com uma borda preta. Como
-			// ele sÛ aparece em um refresh, vamos pela forÁa bruta,
-			// desenhando ele deslocado em torno da posiÁ„o final em
-			// preto e em seguida desenhando ele em branco na posiÁ„o
+			// O bal√£o tem que ser branco, com uma borda preta. Como
+			// ele s√≥ aparece em um refresh, vamos pela for√ßa bruta,
+			// desenhando ele deslocado em torno da posi√ß√£o final em
+			// preto e em seguida desenhando ele em branco na posi√ß√£o
 			g.setColor(0x00000000);
 			for (int i = -1; i <= 1; i++) {
 				for (int j = -1; j <= 1; j++) {
@@ -625,7 +624,7 @@ public class Mesa extends Canvas implements Runnable {
 			g.setColor(0x00FFFFFF);
 			desenhaBalao(g, x, y, largBalao, altBalao, quadrantePonta);
 
-			// Finalmente, escreve o texto do bal„o
+			// Finalmente, escreve o texto do bal√£o
 			g.setColor(0x00000000);
 			g.drawString(textoBalao, x + MARGEM_BALAO_LEFT, y
 					+ MARGEM_BALAO_TOP, Graphics.LEFT | Graphics.TOP);
@@ -641,13 +640,13 @@ public class Mesa extends Canvas implements Runnable {
 			for (int i = 0; (i < Jogo.log.length)
 					&& ((i + 1) * alturaLog <= alturaCanvas); i++) {
 				if (Jogo.log[i] != null) {
-					g.drawString(Jogo.log[i], 0, i * alturaLog,
-							Graphics.LEFT | Graphics.TOP);
+					g.drawString(Jogo.log[i], 0, i * alturaLog, Graphics.LEFT
+							| Graphics.TOP);
 				}
 			}
 		}
 
-		// Descarrega, se necess·rio, o buffer
+		// Descarrega, se necess√°rio, o buffer
 		if (g != saved) {
 			saved.drawImage(offscreen, 0, 0, Graphics.LEFT | Graphics.TOP);
 		}
@@ -655,7 +654,7 @@ public class Mesa extends Canvas implements Runnable {
 	}
 
 	/**
-	 * Desenha o bal„o de texto do cen·rio
+	 * Desenha o bal√£o de texto do cen√°rio
 	 * 
 	 * @param g
 	 * @param x
@@ -663,7 +662,7 @@ public class Mesa extends Canvas implements Runnable {
 	 * @param largBalao
 	 * @param altBalao
 	 * @param quadrantePonta
-	 *            Quadrante (cartesiano) onde aparece a ponat do bal„o
+	 *            Quadrante (cartesiano) onde aparece a ponat do bal√£o
 	 */
 	private void desenhaBalao(Graphics g, int x, int y, int largBalao,
 			int altBalao, int quadrantePonta) {
@@ -678,13 +677,13 @@ public class Mesa extends Canvas implements Runnable {
 
 		// Elipse principal
 		g.fillArc(x, y, largBalao, altBalao, 0, 360);
-		// Ponta (desenhada como uma fraÁ„o de elipse)
+		// Ponta (desenhada como uma fra√ß√£o de elipse)
 		g.fillArc(x + deltaX, y + deltaY, largBalao, altBalao * 2,
 				(90 * quadrantePonta) + 120, 25);
 	}
 
 	/**
-	 * Desenha o baralho do cen·rio
+	 * Desenha o baralho do cen√°rio
 	 * 
 	 * @param g
 	 */
@@ -702,7 +701,7 @@ public class Mesa extends Canvas implements Runnable {
 	 */
 	private void desenhaCartas(Graphics g) {
 
-		// Desenha as cartas que j· foram jogadas (se houverem),
+		// Desenha as cartas que j√° foram jogadas (se houverem),
 		// na ordem em que foram jogadas
 		for (int i = 0; i < cartasJogadas.size(); i++) {
 			Carta c = ((Carta) cartasJogadas.elementAt(i));
@@ -755,14 +754,14 @@ public class Mesa extends Canvas implements Runnable {
 		case FIRE:
 		case DOWN:
 			if (cartasSelecionaveis != null && cartaSelecionada != null) {
-				// Impede que joguqemos carta fechada quando n„o devemos
+				// Impede que joguqemos carta fechada quando n√£o devemos
 				if (gameAction == DOWN && !podeFechada) {
 					break;
 				}
 				// Remove a borda da carta selecionada (mas guarda ela antes)
 				Carta c = cartaSelecionada;
 				cartaSelecionada = null;
-				// Se for DOWN È pra jogar a carta fechada
+				// Se for DOWN √© pra jogar a carta fechada
 				if (gameAction == DOWN) {
 					c.setFechada(true);
 				}
@@ -773,7 +772,7 @@ public class Mesa extends Canvas implements Runnable {
 			}
 			break;
 		default:
-			// Se n„o for tecla de jogo, tenta os atalhos
+			// Se n√£o for tecla de jogo, tenta os atalhos
 			switch (tecla) {
 			case KEY_NUM1:
 				if (isAguardandoAceite) {
@@ -798,7 +797,7 @@ public class Mesa extends Canvas implements Runnable {
 	 * Troca a carta selecionada (em resposta a uma tecla)
 	 * 
 	 * @param proxima
-	 *            true vai para a prÛxima carta, false vai para a anterior
+	 *            true vai para a pr√≥xima carta, false vai para a anterior
 	 */
 	private void trocaCartaSelecionada(boolean proxima) {
 		int numCarta = cartasSelecionaveis.indexOf(cartaSelecionada)
@@ -835,7 +834,7 @@ public class Mesa extends Canvas implements Runnable {
 	 */
 	public void descarta(Carta c, int posicao) {
 
-		// Coloca a carta no meio da tela, mas "puxando" na direÁ„o
+		// Coloca a carta no meio da tela, mas "puxando" na dire√ß√£o
 		// de quem jogou
 		int topFinal, leftFinal;
 		topFinal = getHeight() / 2 - Carta.alturaCartas / 2;
@@ -855,14 +854,14 @@ public class Mesa extends Canvas implements Runnable {
 			break;
 		}
 
-		// Insere um ligeiro fator aleatÛrio, para dar uma bagunÁada na mesa
+		// Insere um ligeiro fator aleat√≥rio, para dar uma bagun√ßada na mesa
 		topFinal += System.currentTimeMillis() % 5 - 2;
 		leftFinal += System.currentTimeMillis() % 5 - 2;
 
 		// Sinaliza para evitar escolhas futuras desta carta;
 		cartasJogadas.addElement(c);
 
-		// Executa a animaÁ„o
+		// Executa a anima√ß√£o
 		animador.moveCarta(c, topFinal, leftFinal, 200);
 
 	}
@@ -872,13 +871,13 @@ public class Mesa extends Canvas implements Runnable {
 	}
 
 	/**
-	 * Entrega uma carta na posiÁ„o apropriada
+	 * Entrega uma carta na posi√ß√£o apropriada
 	 * <p>
 	 * 
 	 * @param numJogador
-	 *            PosiÁ„o do jogador, de 1 a 4 (1 = humano).
+	 *            Posi√ß√£o do jogador, de 1 a 4 (1 = humano).
 	 * @param i
-	 *            posiÁ„o da carta na m„o do jogador (0 a 2)
+	 *            posi√ß√£o da carta na m√£o do jogador (0 a 2)
 	 */
 	public void distribui(Carta c, int numJogador, int i) {
 
@@ -913,8 +912,8 @@ public class Mesa extends Canvas implements Runnable {
 			break;
 		}
 
-		// Para o jogador da posiÁ„o superior, inverte a ordem
-		// (sen„o a exibiÁ„o na m„o de 11 fica bagunÁada)
+		// Para o jogador da posi√ß√£o superior, inverte a ordem
+		// (sen√£o a exibi√ß√£o na m√£o de 11 fica bagun√ßada)
 		if (numJogador == 3) {
 			i = 2 - i;
 		}
@@ -925,7 +924,7 @@ public class Mesa extends Canvas implements Runnable {
 		c.setTop(topBaralho);
 		c.setLeft(leftBaralho);
 
-		// Anima a carta atÈ a posiÁ„o correta
+		// Anima a carta at√© a posi√ß√£o correta
 		baralhoPorCima = false;
 		animador.moveCarta(c, topFinal, leftFinal, 100);
 		baralhoPorCima = true;
@@ -933,14 +932,14 @@ public class Mesa extends Canvas implements Runnable {
 	}
 
 	/**
-	 * Mostra as cartas do parceiro (em uma m„o de 11)
+	 * Mostra as cartas do parceiro (em uma m√£o de 11)
 	 * 
 	 * @param cartasParceiro
 	 *            Cartas do parceiro
 	 */
 
 	public void mostraCartasParceiro(Carta[] cartasParceiro) {
-		// O parceiro È sempre a posiÁ„o 3, i.e., os elementos 6-8 do cartas.
+		// O parceiro √© sempre a posi√ß√£o 3, i.e., os elementos 6-8 do cartas.
 		// Vamos copiar letra/naipe e exibir
 		for (int i = 0; i <= 2; i++) {
 			Carta c = (Carta) cartas.elementAt(6 + i);
@@ -951,7 +950,7 @@ public class Mesa extends Canvas implements Runnable {
 	}
 
 	/**
-	 * Esconde as cartas do parceiro (usado apÛs definir se a m„o de 11 segue)
+	 * Esconde as cartas do parceiro (usado ap√≥s definir se a m√£o de 11 segue)
 	 * 
 	 */
 	public void escondeCartasParceiro() {
@@ -970,8 +969,8 @@ public class Mesa extends Canvas implements Runnable {
 	 */
 	private void recolhe(Carta c) {
 
-		// Tecnicamente n„o deveria ocorrer, mas em alguns celulares,
-		// algumas cartas chegam nulas, ent„o
+		// Tecnicamente n√£o deveria ocorrer, mas em alguns celulares,
+		// algumas cartas chegam nulas, ent√£o
 		if (c == null)
 			return;
 
@@ -988,7 +987,7 @@ public class Mesa extends Canvas implements Runnable {
 
 	public void limpa() {
 
-		// Limpa os Ìcones das m„os
+		// Limpa os √≠cones das m√£os
 		for (int i = 0; i <= 2; i++) {
 			iconesRodadas[i] = getIconeRodada(0);
 		}
@@ -1021,19 +1020,19 @@ public class Mesa extends Canvas implements Runnable {
 	}
 
 	/**
-	 * Cache dos Ìcones que informam o resultado das rodadas
+	 * Cache dos √≠cones que informam o resultado das rodadas
 	 */
 	private static Image[] iconesResult;
 
 	/**
 	 * Atualiza o placar informando o status de uma rodada
 	 * <p>
-	 * Tem uma animaÁ„ozinha aqui.
+	 * Tem uma anima√ß√£ozinha aqui.
 	 * 
 	 * @param numRodada
 	 *            rodada que queremos informar (1, 2 ou 3)
 	 * @param status
-	 *            1=vitÛria, 2=derrota, 3=empate (0=limpa, mas a mesa limpa
+	 *            1=vit√≥ria, 2=derrota, 3=empate (0=limpa, mas a mesa limpa
 	 *            sozinha)
 	 */
 
@@ -1043,10 +1042,10 @@ public class Mesa extends Canvas implements Runnable {
 	}
 
 	/**
-	 * Recupera o Ìcone correspondente ao resultado da rodada
+	 * Recupera o √≠cone correspondente ao resultado da rodada
 	 * 
 	 * @param i
-	 *            0=vazio; 1=vitÛria; 2=derrota; 3=empate
+	 *            0=vazio; 1=vit√≥ria; 2=derrota; 3=empate
 	 * @return
 	 */
 	protected static Image getIconeRodada(int tipo) {
@@ -1097,7 +1096,7 @@ public class Mesa extends Canvas implements Runnable {
 		isAguardandoAceite = true;
 		addCommand(MiniTruco.aceitaCommand);
 		addCommand(MiniTruco.recusaCommand);
-		mostraTextoPiscando("[1]-Desce    [3]-Corre");
+		mostraTextoPiscando(Messages.getString("1desce_3corre")); //$NON-NLS-1$
 		removeCommand(MiniTruco.sairPartidaCommand);
 	}
 
@@ -1113,7 +1112,7 @@ public class Mesa extends Canvas implements Runnable {
 		isAguardandoMao11 = true;
 		addCommand(MiniTruco.aceitaMao11Command);
 		addCommand(MiniTruco.recusaMao11Command);
-		mostraTextoPiscando("[1]-Joga    [3]-Desiste");
+		mostraTextoPiscando(Messages.getString("1joga_3desiste")); //$NON-NLS-1$
 		removeCommand(MiniTruco.sairPartidaCommand);
 	}
 
@@ -1128,21 +1127,21 @@ public class Mesa extends Canvas implements Runnable {
 	/**
 	 * Ajusta o menu para quando a partida acaba.
 	 * <p>
-	 * Em jogos stand-alone e no sevidor TCP, isso significa trocar o
-	 * comando Encerrar (que pede confirmaÁ„o) pelo Fim (que volta direto ao
-	 * menu, ou, no caso do servidor, ‡ tela da sala).
+	 * Em jogos stand-alone e no sevidor TCP, isso significa trocar o comando
+	 * Encerrar (que pede confirma√ß√£o) pelo Fim (que volta direto ao menu, ou,
+	 * no caso do servidor, √† tela da sala).
 	 * <p>
-	 * Em jogos onde o celular È um cliente Bluetooth, apenas removemos o
-	 * comando Encerrar - È quebra de padr„o n„o dar uma opÁ„o de encerramento
-	 * *apenas* neste momento, mas È melhor que arriscar que o jogador se
+	 * Em jogos onde o celular √© um cliente Bluetooth, apenas removemos o
+	 * comando Encerrar - √© quebra de padr√£o n√£o dar uma op√ß√£o de encerramento
+	 * *apenas* neste momento, mas √© melhor que arriscar que o jogador se
 	 * desconecte sem querer.
 	 */
 	public void mostraMenuFimPartida() {
 		removeCommand(MiniTruco.sairPartidaCommand);
 		// [IF_FULL]
 		if (!(getJogador().jogo instanceof JogoBT))
-		// [ENDIF_FULL]
-			addCommand(MiniTruco.sairPartidaSemPerguntarCommand);		
+			// [ENDIF_FULL]
+			addCommand(MiniTruco.sairPartidaSemPerguntarCommand);
 	}
 
 	String textoBalao;
@@ -1158,7 +1157,7 @@ public class Mesa extends Canvas implements Runnable {
 	public boolean isAppRodando = true;
 
 	/**
-	 * Carta em destaque (È desenhada em primeiro lugar com uma firula)
+	 * Carta em destaque (√© desenhada em primeiro lugar com uma firula)
 	 */
 	public Carta cartaVencedora;
 
@@ -1223,7 +1222,7 @@ public class Mesa extends Canvas implements Runnable {
 	private int posicaoDaVez;
 
 	/**
-	 * Guarda as cartas selecion·veis quando o jogador pede truco (para
+	 * Guarda as cartas selecion√°veis quando o jogador pede truco (para
 	 * recuperar depois que os outros responderem)
 	 * 
 	 * @see Mesa#suspendeVezParaAumento()
@@ -1231,8 +1230,8 @@ public class Mesa extends Canvas implements Runnable {
 	private Vector cartasSelecionaveisSuspensas;
 
 	/**
-	 * Determina qual posiÁ„o da tela (n„o confundir com n˙mero do jogador no
-	 * jogo) est· com a "vez" (para desenhar o indicador)
+	 * Determina qual posi√ß√£o da tela (n√£o confundir com n√∫mero do jogador no
+	 * jogo) est√° com a "vez" (para desenhar o indicador)
 	 * 
 	 * @param posicaoDaVez
 	 *            1=inferior, 2=direita, 3=superior, 4=esquerda
@@ -1243,7 +1242,7 @@ public class Mesa extends Canvas implements Runnable {
 	}
 
 	/**
-	 * Impede que o jogador descarte enquanto est· aguardando uma resposta de
+	 * Impede que o jogador descarte enquanto est√° aguardando uma resposta de
 	 * pedido de aumento de aposta
 	 * 
 	 */
@@ -1255,7 +1254,7 @@ public class Mesa extends Canvas implements Runnable {
 	}
 
 	/**
-	 * Permite ao jogador fazer o seu descarte apÛs a situaÁ„o de aumento de
+	 * Permite ao jogador fazer o seu descarte ap√≥s a situa√ß√£o de aumento de
 	 * aposta ter se resolvido.
 	 * 
 	 */
@@ -1273,7 +1272,7 @@ public class Mesa extends Canvas implements Runnable {
 	}
 
 	/**
-	 * Mostra a tela final da abertura, com os elementos j· posicionados
+	 * Mostra a tela final da abertura, com os elementos j√° posicionados
 	 * 
 	 */
 	public void mostraFinalAbertura() {
@@ -1291,9 +1290,9 @@ public class Mesa extends Canvas implements Runnable {
 
 	/**
 	 * Executa comandos do jogo a partir de uma nova thread (permitindo que o
-	 * jogador responda assÌncronamente com os outros).
+	 * jogador responda ass√≠ncronamente com os outros).
 	 * <p>
-	 * Era parte da classe ThreadComandoMenu (foi movido para c· para reduzir o
+	 * Era parte da classe ThreadComandoMenu (foi movido para c√° para reduzir o
 	 * .jar)
 	 */
 	public void executaComando(Command cmd) {

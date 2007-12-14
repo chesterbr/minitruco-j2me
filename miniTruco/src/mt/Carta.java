@@ -1,21 +1,21 @@
 package mt;
 
 /*
- * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright ¬© 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Este programa È um software livre; vocÍ pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da LicenÁa P˙blica Geral GNU como 
- * publicada pela FundaÁ„o do Software Livre (FSF); na vers„o 3 da 
- * LicenÁa, ou (na sua opni„o) qualquer vers„o.
+ * Este programa √© um software livre; voc√™ pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da Licen√ßa P√∫blica Geral GNU como 
+ * publicada pela Funda√ß√£o do Software Livre (FSF); na vers√£o 3 da 
+ * Licen√ßa, ou (na sua opni√£o) qualquer vers√£o.
  *
- * Este programa È distribuido na esperanÁa que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA«¬O
- * a qualquer MERCADO ou APLICA«√O EM PARTICULAR. Veja a LicenÁa
- * P˙blica Geral GNU para maiores detalhes.
+ * Este programa √© distribuido na esperan√ßa que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA√á√ÇO
+ * a qualquer MERCADO ou APLICA√á√ÉO EM PARTICULAR. Veja a Licen√ßa
+ * P√∫blica Geral GNU para maiores detalhes.
  *
- * VocÍ deve ter recebido uma cÛpia da LicenÁa P˙blica Geral GNU
- * junto com este programa, se n„o, escreva para a FundaÁ„o do Software
+ * Voc√™ deve ter recebido uma c√≥pia da Licen√ßa P√∫blica Geral GNU
+ * junto com este programa, se n√£o, escreva para a Funda√ß√£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
@@ -33,12 +33,12 @@ import javax.microedition.lcdui.Image;
 public class Carta {
 
 	static {
-		// InicializaÁ„o da classe
+		// Inicializa√ß√£o da classe
 		setCartasGrandes(false);
 	}
 
 	/**
-	 * Determina se as cartas s„o do modelo pequeno (13x20) ou grande (tbd)
+	 * Determina se as cartas s√£o do modelo pequeno (13x20) ou grande (tbd)
 	 */
 	private static boolean cartasGrandes;
 
@@ -53,12 +53,12 @@ public class Carta {
 	public static int larguraCartas;
 
 	/**
-	 * Dist‚ncia entre o topo da carta e o naipe
+	 * Dist√¢ncia entre o topo da carta e o naipe
 	 */
 	private static int offset_topo_naipe;
 
 	/**
-	 * Dist‚ncia entre o topo da carta e o valor
+	 * Dist√¢ncia entre o topo da carta e o valor
 	 */
 	private static int offset_topo_valor;
 
@@ -76,7 +76,7 @@ public class Carta {
 	private static Image[][] valores;
 
 	/**
-	 * Imagem cacheada do fundo da carta (quando n„o est· virada)
+	 * Imagem cacheada do fundo da carta (quando n√£o est√° virada)
 	 */
 	private static Image fundoCarta;
 
@@ -107,12 +107,12 @@ public class Carta {
 			NAIPE_OUROS, NAIPE_PAUS };
 
 	/**
-	 * Indica que o naipe da carta n„o foi escolhido
+	 * Indica que o naipe da carta n√£o foi escolhido
 	 */
 	public static final int NAIPE_NENHUM = 4;
 
 	/**
-	 * Indica que a letra da carta n„o foi escolhida
+	 * Indica que a letra da carta n√£o foi escolhida
 	 */
 	public static final char LETRA_NENHUMA = 'X';
 
@@ -133,7 +133,7 @@ public class Carta {
 	private boolean fechada = false;
 
 	/**
-	 * Cria uma carta com letra e naipe definidos, j· "virada" (visÌvel)
+	 * Cria uma carta com letra e naipe definidos, j√° "virada" (vis√≠vel)
 	 * 
 	 * @param letra
 	 * @param naipe
@@ -145,7 +145,7 @@ public class Carta {
 	}
 
 	/**
-	 * Cria uma carta baseado em sua representaÁ„o string
+	 * Cria uma carta baseado em sua representa√ß√£o string
 	 * 
 	 * @param sCarta
 	 *            letra e naipe da carta, conforme retornado por <code>toString()</code>
@@ -156,10 +156,10 @@ public class Carta {
 	}
 
 	/**
-	 * Cria uma carta vazia na posiÁ„o especificada
+	 * Cria uma carta vazia na posi√ß√£o especificada
 	 * <p>
-	 * Obs.: a carta aparece desvirada, e n„o pode ser virada enquanto n„o forem
-	 * atribuÌdos naipe e letra
+	 * Obs.: a carta aparece desvirada, e n√£o pode ser virada enquanto n√£o forem
+	 * atribu√≠dos naipe e letra
 	 */
 	public Carta(int left, int top) {
 		setTop(top);
@@ -179,7 +179,7 @@ public class Carta {
 	/**
 	 * Muda o tamanho das cartas.
 	 * <p>
-	 * … importante dar um repaint na mesa depois de setar isto
+	 * √â importante dar um repaint na mesa depois de setar isto
 	 * 
 	 * @param isCartasGrandes
 	 *            true para cartas grandes, false para pequenas
@@ -217,8 +217,8 @@ public class Carta {
 	/**
 	 * Determina a letra (valor facial) da carta.
 	 * <p>
-	 * Letras v·lidas s„o as da constante LETRAS_VALIDAS. Se a letra for
-	 * inv·lida, a propriedade n„o È alterda.
+	 * Letras v√°lidas s√£o as da constante LETRAS_VALIDAS. Se a letra for
+	 * inv√°lida, a propriedade n√£o √© alterda.
 	 * 
 	 * @param letra
 	 */
@@ -235,7 +235,7 @@ public class Carta {
 	/**
 	 * Seta o naipe da carta.
 	 * <p>
-	 * Caso o naipe seja inv·lido, n„o È alterado
+	 * Caso o naipe seja inv√°lido, n√£o √© alterado
 	 * 
 	 * @param naipe
 	 *            Naipe de acordo com as constantes
@@ -272,11 +272,11 @@ public class Carta {
 	}
 
 	/**
-	 * Determina se uma carta est· virdada (mostrando o valor) ou n„o (mostrando
+	 * Determina se uma carta est√° virdada (mostrando o valor) ou n√£o (mostrando
 	 * o desenho).
 	 * <p>
-	 * Obs.: cartas tÍm que ter uma letra e naipe para serem viradas, e cartas
-	 * fechadas n„o podem ser viradas
+	 * Obs.: cartas t√™m que ter uma letra e naipe para serem viradas, e cartas
+	 * fechadas n√£o podem ser viradas
 	 * 
 	 * @param virada
 	 */
@@ -286,9 +286,9 @@ public class Carta {
 	}
 
 	/**
-	 * Determina se uma carta est· virada (mostrando o valor)
+	 * Determina se uma carta est√° virada (mostrando o valor)
 	 * 
-	 * @return True se a carta est· mostrando o valor, false caso contr·rio
+	 * @return True se a carta est√° mostrando o valor, false caso contr√°rio
 	 */
 	public boolean isVirada() {
 		return virada;
@@ -302,7 +302,7 @@ public class Carta {
 	 */
 	public void setFechada(boolean fechada) {
 		this.fechada = fechada;
-		// Se uma carta for fechada, n„o pode estar virada (visÌvel)
+		// Se uma carta for fechada, n√£o pode estar virada (vis√≠vel)
 		if (fechada)
 			this.virada = false;
 	}
@@ -347,8 +347,8 @@ public class Carta {
 
 	/**
 	 * Larguras dos bitmaps recortados dos valores para as cartas grandes (as
-	 * pequenas s„o monoespaÁadas, e eu n„o tive saco de fazer isso acontecer
-	 * nas grandes via editor gr·fico)
+	 * pequenas s√£o monoespa√ßadas, e eu n√£o tive saco de fazer isso acontecer
+	 * nas grandes via editor gr√°fico)
 	 */
 	private static final int[] largurasCartasGrandes = { 13, 12, 11, 12, 11,
 			12, 11, 12, 11, 12, 12, 14 };
@@ -360,7 +360,7 @@ public class Carta {
 	 */
 	private synchronized Image getImgValor() {
 		// Inicializa, se necessario, os bitmaps dos valores
-		// (s„o 13 para os naipes vermelhos e 13 para os naipes pretos)
+		// (s√£o 13 para os naipes vermelhos e 13 para os naipes pretos)
 		if (valores == null) {
 			try {
 				Image imgValores = Image
@@ -376,7 +376,7 @@ public class Carta {
 					if (cartasGrandes) {
 						alturaValor = 17;
 						larguraValor = largurasCartasGrandes[i];
-						// "Volta" os valores correspondentes ‡s cartas
+						// "Volta" os valores correspondentes √†s cartas
 						// anteriores
 						posValor = 0;
 						for (int j = 0; j < i; j++)
@@ -395,7 +395,7 @@ public class Carta {
 							.createImage(larguraValor, alturaValor);
 					valores[i][1].getGraphics().drawImage(imgValores, posValor,
 							-alturaValor, Graphics.TOP | Graphics.LEFT);
-					// Faz o mesmo recorte para a vers„o "escura"
+					// Faz o mesmo recorte para a vers√£o "escura"
 					valores[i + 12][0] = Image.createImage(larguraValor,
 							alturaValor);
 					valores[i + 12][0].getGraphics().drawImage(
@@ -430,10 +430,10 @@ public class Carta {
 	}
 
 	/**
-	 * Mostra que a carta em quest„o È a carta selecionada pelo usu·rio
+	 * Mostra que a carta em quest√£o √© a carta selecionada pelo usu√°rio
 	 * 
 	 * @param g
-	 *            Local onde ser· desenhada a marca de seleÁ„o
+	 *            Local onde ser√° desenhada a marca de sele√ß√£o
 	 */
 	public void desenhaCursor(Graphics g) {
 		// Borda vermelha
@@ -452,7 +452,7 @@ public class Carta {
 	 * Renderiza a carta
 	 * 
 	 * @param g
-	 *            Local onde a carta ser· desenhada
+	 *            Local onde a carta ser√° desenhada
 	 */
 	public void desenhaCarta(Graphics g) {
 
@@ -516,14 +516,14 @@ public class Carta {
 	}
 
 	/**
-	 * Retorna true se um clique do apontador nesta posiÁ„o corresponde a esta
+	 * Retorna true se um clique do apontador nesta posi√ß√£o corresponde a esta
 	 * carta
 	 * 
 	 * @param x
-	 *            posiÁ„o horizontal na tela
+	 *            posi√ß√£o horizontal na tela
 	 * @param y
-	 *            posiÁ„o vertical na tela
-	 * @return true se a carta È atingida pelo clique (n„o considerando z-order)
+	 *            posi√ß√£o vertical na tela
+	 * @return true se a carta √© atingida pelo clique (n√£o considerando z-order)
 	 */
 	public boolean isClicado(int x, int y) {
 		return (x >= left) && (y >= top) && (x <= left + larguraCartas)
@@ -531,11 +531,11 @@ public class Carta {
 	}
 
 	/**
-	 * RepresentaÁ„o em 2 caracteres da carta, formada por letra (em
+	 * Representa√ß√£o em 2 caracteres da carta, formada por letra (em
 	 * "A234567QJK") e naipe ([c]opas, [o]uro, [e]spadas,[p]aus ou [x] para
 	 * nenhum).
 	 * <p>
-	 * Esta representaÁ„o È usada na comunicaÁ„o cliente-servidor, ent„o n„o
+	 * Esta representa√ß√£o √© usada na comunica√ß√£o cliente-servidor, ent√£o n√£o
 	 * deve ser alterada (ou, se for, o construtor baseado em caractere deve ser
 	 * alterado de acordo).
 	 */
@@ -544,7 +544,7 @@ public class Carta {
 	}
 
 	/**
-	 * Escurece/clareia uma carta para indicar que ela n„o est·/est· em jogo
+	 * Escurece/clareia uma carta para indicar que ela n√£o est√°/est√° em jogo
 	 * 
 	 * @param cartaEmJogo
 	 *            true para clarear, false para escurecer
@@ -554,8 +554,8 @@ public class Carta {
 	}
 
 	/**
-	 * Indica se a carta est· em jogo, e, portanto, deve ficar "clarinha" (as
-	 * cartas de rodadas passadas s„o escurecidas
+	 * Indica se a carta est√° em jogo, e, portanto, deve ficar "clarinha" (as
+	 * cartas de rodadas passadas s√£o escurecidas
 	 */
 	public boolean isCartaEmJogo() {
 		return cartaEmJogo;

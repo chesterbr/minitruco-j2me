@@ -1,21 +1,21 @@
 package mt;
 
 /*
- * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright Â© 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Este programa é um software livre; você pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
- * Licença, ou (na sua opnião) qualquer versão.
+ * Este programa Ã© um software livre; vocÃª pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da LicenÃ§a PÃºblica Geral GNU como 
+ * publicada pela FundaÃ§Ã£o do Software Livre (FSF); na versÃ£o 3 da 
+ * LicenÃ§a, ou (na sua opniÃ£o) qualquer versÃ£o.
  *
- * Este programa é distribuido na esperança que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÇÂO
- * a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença
- * Pública Geral GNU para maiores detalhes.
+ * Este programa Ã© distribuido na esperanÃ§a que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÃ‡Ã‚O
+ * a qualquer MERCADO ou APLICAÃ‡ÃƒO EM PARTICULAR. Veja a LicenÃ§a
+ * PÃºblica Geral GNU para maiores detalhes.
  *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU
- * junto com este programa, se não, escreva para a Fundação do Software
+ * VocÃª deve ter recebido uma cÃ³pia da LicenÃ§a PÃºblica Geral GNU
+ * junto com este programa, se nÃ£o, escreva para a FundaÃ§Ã£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
@@ -25,16 +25,16 @@ import java.io.InputStream;
 /**
  * Representa o jogador conectado em um servidor bluetooth.
  * <p>
- * Ele converte as notificações do jogo local em mensagens de texto (enviando-as
+ * Ele converte as notificaÃ§Ãµes do jogo local em mensagens de texto (enviando-as
  * para o cliente) e converte as mensagens de texto vindas do cliente em
- * notificações para o jogo local.
+ * notificaÃ§Ãµes para o jogo local.
  * <p>
- * A ida é feita através do ServidorBT (que detém a conexão e os outputstreams),
- * mas a volta é feita por um InputStream local, criado só para isso.
+ * A ida Ã© feita atravÃ©s do ServidorBT (que detÃ©m a conexÃ£o e os outputstreams),
+ * mas a volta Ã© feita por um InputStream local, criado sÃ³ para isso.
  * <p>
  * Desta forma, objeto "vive" enquanto este InputStream local estiver aberto,
- * mas a conexão/saída ficam disponíveis para novas partidas com o mesmo
- * cliente. que não é gerado por esta classe, pois ocorre antes do
+ * mas a conexÃ£o/saÃ­da ficam disponÃ­veis para novas partidas com o mesmo
+ * cliente. que nÃ£o Ã© gerado por esta classe, pois ocorre antes do
  * 
  * @author chester
  * 
@@ -52,11 +52,11 @@ public class JogadorBT extends Jogador implements Runnable {
 	InputStream in;
 
 	/**
-	 * Cria uma instância que representa um jogador conectado no servidor via
+	 * Cria uma instÃ¢ncia que representa um jogador conectado no servidor via
 	 * Bluetooth
 	 * 
 	 * @param servidor
-	 *            Servidor que fará o meio-de-campo
+	 *            Servidor que farÃ¡ o meio-de-campo
 	 */
 	public JogadorBT(ServidorBT servidor) {
 		this.servidor = servidor;
@@ -70,7 +70,7 @@ public class JogadorBT extends Jogador implements Runnable {
 	 * remoto), transformando-as novamente em eventos no Jogo local
 	 */
 	public void run() {
-		// Aguarda a definição da posição (importante, pois ela determina o slot
+		// Aguarda a definiÃ§Ã£o da posiÃ§Ã£o (importante, pois ela determina o slot
 		// no servidor para o envio de mensagens)
 		while (getPosicao() == 0) {
 			Thread.yield();
@@ -80,8 +80,8 @@ public class JogadorBT extends Jogador implements Runnable {
 		StringBuffer sbLinha = new StringBuffer();
 		try {
 			in = servidor.connClientes[getPosicao() - 2].openInputStream();
-			// O loop dura enquanto o InputStream não for null. Sim, eu poderia
-			// usar uma leitura mais eficiente, com blocking, mas aí não consigo
+			// O loop dura enquanto o InputStream nÃ£o for null. Sim, eu poderia
+			// usar uma leitura mais eficiente, com blocking, mas aÃ­ nÃ£o consigo
 			// detectar o fim da partida (sem perder o primeiro caractere do
 			// primeiro comando da partida seguinte)
 			do {
@@ -89,18 +89,18 @@ public class JogadorBT extends Jogador implements Runnable {
 					try {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
-						// Alguém já tratou isso um dia?
+						// AlguÃ©m jÃ¡ tratou isso um dia?
 					}
 				}
 				if (in == null)
 					break;
-				// Lê o próximo caractre
+				// LÃª o prÃ³ximo caractre
 				c = in.read();
 				if (c != TelaBT.SEPARADOR_REC) {
-					// Acumula caracteres até formar uma linha
+					// Acumula caracteres atÃ© formar uma linha
 					sbLinha.append((char) c);
 				} else {
-					// Processa linhas (não-vazias)
+					// Processa linhas (nÃ£o-vazias)
 					if (sbLinha.length() > 0) {
 						Jogo.log("Linha acumulada: " + sbLinha.toString());
 						char tipoNotificacao = sbLinha.charAt(0);
@@ -108,7 +108,7 @@ public class JogadorBT extends Jogador implements Runnable {
 								' ');
 						switch (tipoNotificacao) {
 						case 'J':
-							// Procura a carta correspondente ao parâmetro
+							// Procura a carta correspondente ao parÃ¢metro
 							Carta[] cartas = getCartas();
 							for (int i = 0; i < cartas.length; i++) {
 								if (cartas[i] != null
@@ -137,7 +137,7 @@ public class JogadorBT extends Jogador implements Runnable {
 				}
 			} while (in != null);
 		} catch (IOException e) {
-			// Não precisa tratar - ou é fim de jogo, ou o servidor cuida
+			// NÃ£o precisa tratar - ou Ã© fim de jogo, ou o servidor cuida
 		}
 		Jogo.log("encerrando loop JogadorBT");
 	}
@@ -146,8 +146,8 @@ public class JogadorBT extends Jogador implements Runnable {
 	 * Encerra a thread principal, efetivamente finalizando o JogadorBT
 	 */
 	void finaliza() {
-		// O in.close "does nothing", segundo a especificação (
-		// http://tinyurl.com/2r59cp#close() ), então eu anulo o objeto e
+		// O in.close "does nothing", segundo a especificaÃ§Ã£o (
+		// http://tinyurl.com/2r59cp#close() ), entÃ£o eu anulo o objeto e
 		// monitoro isso no loop (mas fecho anyway)
 		if (in != null) {
 			try {
@@ -170,11 +170,11 @@ public class JogadorBT extends Jogador implements Runnable {
 		servidor.enviaMensagem(getPosicao() - 2, linha);
 	}
 
-	// Os métodos restantes convertem as notificações do JogoLocal em mensagens
-	// de texto, que serão reconvertidas em solicitações no cliente para o
+	// Os mÃ©todos restantes convertem as notificaÃ§Ãµes do JogoLocal em mensagens
+	// de texto, que serÃ£o reconvertidas em solicitaÃ§Ãµes no cliente para o
 	// JogadorHumano.
 	//
-	// As únicas exceções são os eventos de fim-de-jogo, que finalizam o
+	// As Ãºnicas exceÃ§Ãµes sÃ£o os eventos de fim-de-jogo, que finalizam o
 	// JogadorBT
 
 	public void cartaJogada(Jogador j, Carta c) {
@@ -195,7 +195,7 @@ public class JogadorBT extends Jogador implements Runnable {
 		StringBuffer comando = new StringBuffer("M");
 		for (int i = 0; i <= 2; i++)
 			comando.append(" " + getCartas()[i]);
-		// Se for manilha nova, também envia o "vira"
+		// Se for manilha nova, tambÃ©m envia o "vira"
 		if (!jogo.isManilhaVelha()) {
 			comando.append(" " + jogo.cartaDaMesa);
 		}

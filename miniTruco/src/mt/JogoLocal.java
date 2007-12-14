@@ -1,36 +1,36 @@
 package mt;
 
 /*
- * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright Â© 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  *
- * Copyright © 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
- * (modo confronto de estratégias)
+ * Copyright Â© 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * (modo confronto de estratÃ©gias)
  * 
- * Este programa é um software livre; você pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
- * Licença, ou (na sua opnião) qualquer versão.
+ * Este programa Ã© um software livre; vocÃª pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da LicenÃ§a PÃºblica Geral GNU como 
+ * publicada pela FundaÃ§Ã£o do Software Livre (FSF); na versÃ£o 3 da 
+ * LicenÃ§a, ou (na sua opniÃ£o) qualquer versÃ£o.
  *
- * Este programa é distribuido na esperança que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÇÂO
- * a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença
- * Pública Geral GNU para maiores detalhes.
+ * Este programa Ã© distribuido na esperanÃ§a que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÃ‡Ã‚O
+ * a qualquer MERCADO ou APLICAÃ‡ÃƒO EM PARTICULAR. Veja a LicenÃ§a
+ * PÃºblica Geral GNU para maiores detalhes.
  *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU
- * junto com este programa, se não, escreva para a Fundação do Software
+ * VocÃª deve ter recebido uma cÃ³pia da LicenÃ§a PÃºblica Geral GNU
+ * junto com este programa, se nÃ£o, escreva para a FundaÃ§Ã£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 /**
  * Jogo rodando no celular.
  * <p>
- * Um jogador só passa a fazer parte do jogo se for adicionado a ele pelo método
+ * Um jogador sÃ³ passa a fazer parte do jogo se for adicionado a ele pelo mÃ©todo
  * <code>adiciona()</code>.
  * <p>
  * A classe notifica aos jogadores participantes os eventos relevantes (ex.:
- * início da partida, vez passando para um jogador, carta jogada, pedido de
- * truco), e os jogadores podem usar os métodos de entrada (ex.:
+ * inÃ­cio da partida, vez passando para um jogador, carta jogada, pedido de
+ * truco), e os jogadores podem usar os mÃ©todos de entrada (ex.:
  * <code>jogaCarta()</code>, <code>aumentaAposta</code>, etc.) para
  * interagir com o jogo.
  * <p>
@@ -41,19 +41,19 @@ package mt;
 public class JogoLocal extends Jogo {
 
 	/**
-	 * Resultados de cada rodada (1 para vitória da equipe 1/3, 2 para vitória
+	 * Resultados de cada rodada (1 para vitÃ³ria da equipe 1/3, 2 para vitÃ³ria
 	 * da equipe 2/4 e 3 para empate)
 	 */
 	private int resultadoRodada[] = new int[3];
 
 	/**
-	 * Valor atual da mão (1, 3, 6, 9 ou 12)
+	 * Valor atual da mÃ£o (1, 3, 6, 9 ou 12)
 	 */
 	private int valorMao;
 
 	/**
-	 * Jogador que está pedindo aumento de aposta (pedindo truco, 6, 9 ou 12).
-	 * Se for null, ninguém está pedindo
+	 * Jogador que estÃ¡ pedindo aumento de aposta (pedindo truco, 6, 9 ou 12).
+	 * Se for null, ninguÃ©m estÃ¡ pedindo
 	 */
 	private Jogador jogadorPedindoAumento;
 
@@ -61,12 +61,12 @@ public class JogoLocal extends Jogo {
 	 * Status das respsotas para um pedido de aumento de aposta para cada
 	 * jogador.
 	 * <p>
-	 * false signfica que não respondeu ainda, true que respondeu recusando
+	 * false signfica que nÃ£o respondeu ainda, true que respondeu recusando
 	 */
 	private boolean[] recusouAumento = new boolean[4];
 
 	/**
-	 * Posição (1 a 4) do jogador da vez
+	 * PosiÃ§Ã£o (1 a 4) do jogador da vez
 	 */
 	private int posJogadorDaVez;
 
@@ -76,12 +76,12 @@ public class JogoLocal extends Jogo {
 	private Jogador jogadorAbriuRodada;
 
 	/**
-	 * Jogador que abriu a mão
+	 * Jogador que abriu a mÃ£o
 	 */
 	private Jogador jogadorAbriuMao;
 
 	/**
-	 * Indica, para cada jogador, se estamos aguardando a resposta para uma mão
+	 * Indica, para cada jogador, se estamos aguardando a resposta para uma mÃ£o
 	 * de 11
 	 */
 	private boolean[] aguardandoRespostaMaoDe11 = new boolean[4];
@@ -93,7 +93,7 @@ public class JogoLocal extends Jogo {
 	/**
 	 * Cria um novo jogo.
 	 * <p>
-	 * O jogo é criado, mas apenas inicia quando forem adicionados jogadores
+	 * O jogo Ã© criado, mas apenas inicia quando forem adicionados jogadores
 	 * 
 	 * @param manilhaVelha
 	 *            true para jogo com manilhas fixas, false para jogar ocm "vira"
@@ -108,9 +108,9 @@ public class JogoLocal extends Jogo {
 	}
 
 	/**
-	 * Cria um novo jogo no modo confronto de estratégias
+	 * Cria um novo jogo no modo confronto de estratÃ©gias
 	 * <p>
-	 * O jogo é criado, mas apenas inicia quando forem adicionados jogadores
+	 * O jogo Ã© criado, mas apenas inicia quando forem adicionados jogadores
 	 * 
 	 * @param manilhaVelha
 	 *            true para jogo com manilhas fixas, false para jogar ocm "vira"
@@ -134,16 +134,16 @@ public class JogoLocal extends Jogo {
 	 */
 	public void run() {
 
-		// Avisa os jogadores que o jogo vai começar
+		// Avisa os jogadores que o jogo vai comeÃ§ar
 		for (int i = 1; i <= numJogadores; i++) {
 			getJogador(i).inicioPartida();
 		}
 
-		// Descomentar para debug da mão de 11, conforme o caso
+		// Descomentar para debug da mÃ£o de 11, conforme o caso
 		// pontosEquipe[0] = 11;
 		// pontosEquipe[1] = 11;
 
-		// Inicia a primeira rodada, usando o jogador na posição 1
+		// Inicia a primeira rodada, usando o jogador na posiÃ§Ã£o 1
 		iniciaMao(getJogador(1));
 	}
 
@@ -154,8 +154,8 @@ public class JogoLocal extends Jogo {
 	 */
 	public synchronized void jogaCarta(Jogador j, Carta c) {
 
-		// Se o jogo acabou, a mesa não estiver completa, já houver alguém
-		// trucando, estivermos aguardando ok da mão de 11 ou não for a vez do
+		// Se o jogo acabou, a mesa nÃ£o estiver completa, jÃ¡ houver alguÃ©m
+		// trucando, estivermos aguardando ok da mÃ£o de 11 ou nÃ£o for a vez do
 		// cara, recusa
 		if (jogoFinalizado || numJogadores < 4 || jogadorPedindoAumento != null
 				|| (isAguardandoRespostaMao11())
@@ -163,7 +163,7 @@ public class JogoLocal extends Jogo {
 			return;
 		}
 
-		// Verifica se a carta já não foi jogada anteriormente (normalmente não
+		// Verifica se a carta jÃ¡ nÃ£o foi jogada anteriormente (normalmente nÃ£o
 		// deve acontecer - mesmo caso do check anterior)
 		for (int i = 0; i <= 2; i++) {
 			for (int k = 0; k <= 3; k++) {
@@ -180,13 +180,13 @@ public class JogoLocal extends Jogo {
 
 		Jogo.log("J" + j.getPosicao() + " joga " + c);
 
-		// Dá a carta como jogada, notificando os jogadores
+		// DÃ¡ a carta como jogada, notificando os jogadores
 		cartasJogadasPorRodada[numRodadaAtual - 1][j.getPosicao() - 1] = c;
 		for (int i = 1; i <= 4; i++) {
 			getJogador(i).cartaJogada(j, c);
 		}
 
-		// Passa a vez para o próximo jogador
+		// Passa a vez para o prÃ³ximo jogador
 		posJogadorDaVez++;
 		if (posJogadorDaVez == 5) {
 			posJogadorDaVez = 1;
@@ -201,7 +201,7 @@ public class JogoLocal extends Jogo {
 			}
 
 			// Determina a equipe vencedora (1/2= equipe 1 ou 2; 3=empate) e o
-			// jogador que vai "tornar", i.e., abrir a próxima rodada
+			// jogador que vai "tornar", i.e., abrir a prÃ³xima rodada
 			setResultadoRodada(numRodadaAtual, 0);
 			Jogador jogadorQueTorna = null;
 			for (int i = 0; i <= 3; i++) {
@@ -223,28 +223,28 @@ public class JogoLocal extends Jogo {
 					+ getResultadoRodada(numRodadaAtual));
 
 			// Se houve vencedor, passa a vez para o jogador que fechou a
-			// vitória, senão deixa quem abriu a mão anterior abrir a próxima
+			// vitÃ³ria, senÃ£o deixa quem abriu a mÃ£o anterior abrir a prÃ³xima
 			if (getResultadoRodada(numRodadaAtual) != 3) {
 				posJogadorDaVez = jogadorQueTorna.getPosicao();
 			} else {
 				jogadorQueTorna = getJogadorDaVez();
 			}
 
-			// Notifica os jogadores que a mão foi feita
+			// Notifica os jogadores que a mÃ£o foi feita
 			for (int i = 1; i <= 4; i++) {
 				getJogador(i).rodadaFechada(numRodadaAtual,
 						getResultadoRodada(numRodadaAtual), jogadorQueTorna);
 			}
 
-			// Verifica se já temos vencedor na rodada
+			// Verifica se jÃ¡ temos vencedor na rodada
 			int resultadoRodada = 0;
 			if (numRodadaAtual == 2) {
 				if (getResultadoRodada(1) == 3 && getResultadoRodada(2) != 3) {
-					// Empate na 1a. mão, quem fez a 2a. leva
+					// Empate na 1a. mÃ£o, quem fez a 2a. leva
 					resultadoRodada = getResultadoRodada(2);
 				} else if (getResultadoRodada(1) != 3
 						&& getResultadoRodada(2) == 3) {
-					// Empate na 2a. mão, quem fez a 1a. leva
+					// Empate na 2a. mÃ£o, quem fez a 1a. leva
 					resultadoRodada = getResultadoRodada(1);
 				} else if (getResultadoRodada(1) == getResultadoRodada(2)
 						&& getResultadoRodada(1) != 3) {
@@ -261,10 +261,10 @@ public class JogoLocal extends Jogo {
 				}
 			}
 
-			// Se já tivermos vencedor (ou empate final), notifica e abre uma
-			// nova mao, senão segue a vida na mão seguinte
+			// Se jÃ¡ tivermos vencedor (ou empate final), notifica e abre uma
+			// nova mao, senÃ£o segue a vida na mÃ£o seguinte
 			if (resultadoRodada != 0) {
-				// Soma os pontos (se não deu emptate)
+				// Soma os pontos (se nÃ£o deu emptate)
 				if (resultadoRodada != 3) {
 					pontosEquipe[resultadoRodada - 1] += valorMao;
 				}
@@ -287,16 +287,16 @@ public class JogoLocal extends Jogo {
 	 */
 	public synchronized void decideMao11(Jogador j, boolean aceita) {
 
-		// Só entra se estivermos jogando e se estivermos agurardando resposta
-		// daquele jogador para a pergunta (isso é importante para evitar duplo
-		// início)
+		// SÃ³ entra se estivermos jogando e se estivermos agurardando resposta
+		// daquele jogador para a pergunta (isso Ã© importante para evitar duplo
+		// inÃ­cio)
 		if (jogoFinalizado || !aguardandoRespostaMaoDe11[j.getPosicao() - 1])
 			return;
 
 		Jogo.log("J" + j.getPosicao() + (aceita ? "" : " nao")
 				+ " quer jogar mao de 11 ");
 
-		// Avisa os outros jogadores da decisão
+		// Avisa os outros jogadores da decisÃ£o
 		for (int i = 1; i <= 4; i++) {
 			getJogador(i).decidiuMao11(j, aceita);
 		}
@@ -310,8 +310,8 @@ public class JogoLocal extends Jogo {
 			valorMao = 3;
 			notificaVez();
 		} else {
-			// Se recusou (e o parceiro também), a equipe perde um ponto e
-			// recomeça a mao
+			// Se recusou (e o parceiro tambÃ©m), a equipe perde um ponto e
+			// recomeÃ§a a mao
 			if (!aguardandoRespostaMaoDe11[j.getParceiro() - 1]) {
 				pontosEquipe[j.getEquipeAdversaria() - 1]++;
 				fechaMao();
@@ -321,9 +321,9 @@ public class JogoLocal extends Jogo {
 	}
 
 	/**
-	 * Verifica se estamos aguardando resposta para mão de 11
+	 * Verifica se estamos aguardando resposta para mÃ£o de 11
 	 * 
-	 * @return true se falta alguém responder, false caso contrário
+	 * @return true se falta alguÃ©m responder, false caso contrÃ¡rio
 	 */
 	private boolean isAguardandoRespostaMao11() {
 		for (int i = 0; i <= 3; i++) {
@@ -341,8 +341,8 @@ public class JogoLocal extends Jogo {
 	 */
 	public void aumentaAposta(Jogador j) {
 
-		// Se o jogo estiver fianlizado, a mesa não estiver completa, já houver
-		// alguém trucando, estivermos aguardando a mão de 11 ou não for a vez
+		// Se o jogo estiver fianlizado, a mesa nÃ£o estiver completa, jÃ¡ houver
+		// alguÃ©m trucando, estivermos aguardando a mÃ£o de 11 ou nÃ£o for a vez
 		// do cara, recusa
 		if ((jogoFinalizado) || (numJogadores < 4)
 				|| (jogadorPedindoAumento != null)
@@ -358,20 +358,20 @@ public class JogoLocal extends Jogo {
 			recusouAumento[i] = false;
 		int valor = calcValorAumento();
 
-		// O código abaixo notifica primeiro os jogadores que não forem
+		// O cÃ³digo abaixo notifica primeiro os jogadores que nÃ£o forem
 		// JogadorCPU, e depois estes.
 		//
 		// Motivo: o JogadorCPU responde imediatamente ao aumento, assim,
-		// se eu não fizer isso, um celular-cliente Bluetooth que esteja numa
-		// posição maior vai mostrar o balão de resposta antes do da pergunta
-		// (pois a notificação de resposta será gerada imediatamente).
+		// se eu nÃ£o fizer isso, um celular-cliente Bluetooth que esteja numa
+		// posiÃ§Ã£o maior vai mostrar o balÃ£o de resposta antes do da pergunta
+		// (pois a notificaÃ§Ã£o de resposta serÃ¡ gerada imediatamente).
 		// 
-		// Isso, em termos OO, é uma quebra de contrato (até então, instâncias
-		// de Jogo tratavam instâncias de Jogador de forma indiscriminada).
+		// Isso, em termos OO, Ã© uma quebra de contrato (atÃ© entÃ£o, instÃ¢ncias
+		// de Jogo tratavam instÃ¢ncias de Jogador de forma indiscriminada).
 		//
-		// A solução "correta" seria fazer o JogadorCPU segurar a sua resposta,
-		// mas isso implica em mais uma inner class/thread (e a aplicação já
-		// está beirando os limites de tamanho), então vou cercar com as tags
+		// A soluÃ§Ã£o "correta" seria fazer o JogadorCPU segurar a sua resposta,
+		// mas isso implica em mais uma inner class/thread (e a aplicaÃ§Ã£o jÃ¡
+		// estÃ¡ beirando os limites de tamanho), entÃ£o vou cercar com as tags
 		// <gambiarra> e </gambiarra>, apenas para me martirzar.
 
 		// <gambiarra>
@@ -398,7 +398,7 @@ public class JogoLocal extends Jogo {
 	 * @see mt.JogoGenerico#respondeAumento(mt.Jogador, boolean)
 	 */
 	public synchronized void respondeAumento(Jogador j, boolean aceitou) {
-		// Apenas os adversários de quem trucou respondem
+		// Apenas os adversÃ¡rios de quem trucou respondem
 		if (jogadorPedindoAumento == null
 				|| jogadorPedindoAumento.getEquipeAdversaria() != j.getEquipe()) {
 			return;
@@ -409,7 +409,7 @@ public class JogoLocal extends Jogo {
 
 		if (aceitou) {
 			// Se o jogador aceitou, seta o novo valor, notifica a galera e tira
-			// o jogo da situtação de truco
+			// o jogo da situtaÃ§Ã£o de truco
 			valorMao = calcValorAumento();
 			jogadorPedindoAumento = null;
 			for (int i = 1; i <= 4; i++) {
@@ -422,21 +422,21 @@ public class JogoLocal extends Jogo {
 			}
 			int posParceiro = (j.getPosicao() + 1) % 4 + 1;
 			if (recusouAumento[posParceiro - 1]) {
-				// Se o parceiro também recusou, derrota da dupla
+				// Se o parceiro tambÃ©m recusou, derrota da dupla
 				pontosEquipe[jogadorPedindoAumento.getEquipe() - 1] += valorMao;
 				fechaMao();
 			} else {
-				// Sinaliza a recusa, deixando a decisão na mão do parceiro
+				// Sinaliza a recusa, deixando a decisÃ£o na mÃ£o do parceiro
 				recusouAumento[j.getPosicao() - 1] = true;
 			}
 		}
 	}
 
 	/**
-	 * Conclui a mão atual, e, se o jogo não acabou, inicia uma nova.
+	 * Conclui a mÃ£o atual, e, se o jogo nÃ£o acabou, inicia uma nova.
 	 * 
 	 * @param jogadorQueTorna
-	 *            Jogador que irá abrir a próxima mão, se houver
+	 *            Jogador que irÃ¡ abrir a prÃ³xima mÃ£o, se houver
 	 */
 	private void fechaMao() {
 
@@ -446,7 +446,7 @@ public class JogoLocal extends Jogo {
 		boolean acabou = false;
 		
 		// Notifica os jogadores que a rodada acabou, e, se for o caso, que o
-		// jogo acabou também
+		// jogo acabou tambÃ©m
 		if(modoCE) {
 			if(pontosEquipe[0]>11) {
 				vaquinhasNoPasto[0]++;
@@ -460,7 +460,7 @@ public class JogoLocal extends Jogo {
 			}
 			for (int i = 1; i <= 4; i++) {
 				getJogador(i).maoFechada(pontosEquipe, vaquinhasNoPasto);
-				// Checa se ainda temos que jogar mais partidas ou já está tudo decidido
+				// Checa se ainda temos que jogar mais partidas ou jÃ¡ estÃ¡ tudo decidido
 				if(((nPartidasModoCE-vaquinhasNoPasto[0]) < vaquinhasNoPasto[0]) ||
 						((nPartidasModoCE-vaquinhasNoPasto[1]) < vaquinhasNoPasto[1])){
 					// acabou...
@@ -493,7 +493,7 @@ public class JogoLocal extends Jogo {
 	}
 
 	/**
-	 * Inicia uma mão (i.e., uma distribuição de cartas)
+	 * Inicia uma mÃ£o (i.e., uma distribuiÃ§Ã£o de cartas)
 	 * 
 	 * @param jogadorQueAbre
 	 *            Jogador que abre a rodada
@@ -518,7 +518,7 @@ public class JogoLocal extends Jogo {
 		cartaDaMesa = baralho.sorteiaCarta();
 		setManilha(cartaDaMesa);
 
-		// Inicializa a mão
+		// Inicializa a mÃ£o
 		valorMao = 1;
 		jogadorPedindoAumento = null;
 		numRodadaAtual = 1;
@@ -547,7 +547,7 @@ public class JogoLocal extends Jogo {
 				getJogador(4).informaMao11(getJogador(2).getCartas());
 			}
 		} else {
-			// Se for uma mão normal, passa a vez para o jogador que abre
+			// Se for uma mÃ£o normal, passa a vez para o jogador que abre
 			setEquipeAguardandoMao11(0);
 			notificaVez();
 		}
@@ -555,10 +555,10 @@ public class JogoLocal extends Jogo {
 	}
 
 	/**
-	 * Determina qual a equipe que está aguardando mão de 11
+	 * Determina qual a equipe que estÃ¡ aguardando mÃ£o de 11
 	 * 
 	 * @param i
-	 *            1 ou 2 para a respectiva equipe, 0 para ninguém aguardando mão
+	 *            1 ou 2 para a respectiva equipe, 0 para ninguÃ©m aguardando mÃ£o
 	 *            de 11 (jogo normal)
 	 */
 	private void setEquipeAguardandoMao11(int i) {
@@ -570,7 +570,7 @@ public class JogoLocal extends Jogo {
 	 * Calcula para quanto vai a rodada se for pedido aumento de aposta (truco,
 	 * seis, etc.)
 	 * 
-	 * @return valor numérico da rodada se for aceito o pedido
+	 * @return valor numÃ©rico da rodada se for aceito o pedido
 	 */
 	private int calcValorAumento() {
 		switch (valorMao) {
@@ -595,7 +595,7 @@ public class JogoLocal extends Jogo {
 	}
 
 	/**
-	 * Informa aos jogadores participantes que é a vez de um deles.
+	 * Informa aos jogadores participantes que Ã© a vez de um deles.
 	 * <p>
 	 * Faz isso em threads distintas, para que eles joguem sem se preocupar
 	 */
@@ -615,18 +615,18 @@ public class JogoLocal extends Jogo {
 			}
 		}
 
-		// Esses dados têm que ser coletados *antes* de chamar as Threads.
-		// Motivo: se uma delas resolver jogar, a informação para as outras pode
+		// Esses dados tÃªm que ser coletados *antes* de chamar as Threads.
+		// Motivo: se uma delas resolver jogar, a informaÃ§Ã£o para as outras pode
 		// ficar destaualizada. Isso causou um/ bug *muito* hardcore de
 		// encontrar nos Nokia Series 40, que provavelmente possuem uma
-		// implementação minimalista de Threads
+		// implementaÃ§Ã£o minimalista de Threads
 		Jogador j = getJogadorDaVez();
 		boolean pf = isPodeFechada();
 
 		for (int i = 1; i <= 4; i++) {
-			// Isso é uma otimização: os JogadorCPU ignoram notificação de vez
-			// que não sejam da sua própria, então podemos pular essas, evitando
-			// abrir uma thread à toa.
+			// Isso Ã© uma otimizaÃ§Ã£o: os JogadorCPU ignoram notificaÃ§Ã£o de vez
+			// que nÃ£o sejam da sua prÃ³pria, entÃ£o podemos pular essas, evitando
+			// abrir uma thread Ã  toa.
 			if ((getJogador(i) instanceof JogadorCPU) && (i != j.getPosicao())) {
 				continue;
 			}
@@ -643,8 +643,8 @@ public class JogoLocal extends Jogo {
 	 * Informa se o jogador da vez pode jogar carta fechada (se mudar a regra,
 	 * basta alterar aqui).
 	 * <p>
-	 * Regra atual: só vale carta fechada se não for a 1a. rodada e se o
-	 * parceiro não tiver jogado fechada também
+	 * Regra atual: sÃ³ vale carta fechada se nÃ£o for a 1a. rodada e se o
+	 * parceiro nÃ£o tiver jogado fechada tambÃ©m
 	 * 
 	 * @return
 	 */
@@ -656,7 +656,7 @@ public class JogoLocal extends Jogo {
 	}
 
 	/**
-	 * Recupera o jogador cuja vez é a atual
+	 * Recupera o jogador cuja vez Ã© a atual
 	 * 
 	 * @return
 	 */
@@ -703,8 +703,8 @@ public class JogoLocal extends Jogo {
 					s.cartasJogadas[i][k].setLetra(c.getLetra());
 					s.cartasJogadas[i][k].setNaipe(c.getNaipe());
 				}
-				// Se for uma carta fechada, limpa letra/naipe na cópia (pra
-				// evitar que uma estratégia maligna tente espiar uma carta
+				// Se for uma carta fechada, limpa letra/naipe na cÃ³pia (pra
+				// evitar que uma estratÃ©gia maligna tente espiar uma carta
 				// fechada)
 				if (c != null && c.isFechada()) {
 					s.cartasJogadas[i][k].setFechada(true);

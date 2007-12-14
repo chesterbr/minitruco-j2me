@@ -1,4 +1,4 @@
-Este texto descreve os comandos enviados pelos clientes e as notificaÁıes
+ÔªøEste texto descreve os comandos enviados pelos clientes e as notifica√ß√µes
 dadas pelo servidor, tanto para o jogo BlueTooth (classes *BT) quanto para
 o jogo via GPRS (classes *TCP e pasta miniTrucoServer)
 
@@ -8,60 +8,60 @@ Comandos
 E numsala - Entra numa sala
 L - Lista salas
 Q - Quero Jogar
-I numero - ObtÈm info da sala (se omitido numero, da sala em que estou)
+I numero - Obt√©m info da sala (se omitido numero, da sala em que estou)
 J carta _ - Joga uma carta na mesa (se _ = T, tenta jogar fechada)
 S - Sai da sala (e do jogo)
 N nome - Define o nome do jogador
 T - Pede aumento de aposta
 D - Desce (aceita aumento de aposta)
 C - Corre (recusa aumento de aposta)
-H _ - decide se aceita ou recusa jogar em m„o de 11 (_ = T para aceita e F para recusa)
+H _ - decide se aceita ou recusa jogar em m√£o de 11 (_ = T para aceita e F para recusa)
 
-Comandos do gerente da sala (usu·rio mais antigo)
-R __ - Define regras da sala. Os dois _ s„o T e F, indicam, na ordem, baralho limpo e manilha velha (se T)
+Comandos do gerente da sala (usu√°rio mais antigo)
+R __ - Define regras da sala. Os dois _ s√£o T e F, indicam, na ordem, baralho limpo e manilha velha (se T)
 O - Troca o parceiro
 
 
 Comandos a implementar
 ----------------------
 
-K posicao - Chuta alg˙em para fora da sala
-V = Inverte os advers·rios
+K posicao - Chuta alg√∫em para fora da sala
+V = Inverte os advers√°rios
 
 
 
 Comandos do jogo
 
 
-NotificaÁıes
+Notifica√ß√µes
 
-X CI - Comando inv·lido
-X JE sala - VocÍ j· est· na sala de n˙mero "sala"
+X CI - Comando inv√°lido
+X JE sala - Voc√™ j√° est√° na sala de n√∫mero "sala"
 X CH - Sala cheia, escolha outra
-X SI - Sala inv·lida
-X FS - VocÍ n„o est· numa sala
-X NI - Nome inv·lido
-X NE - Nome j· est· em uso
-X JO - VocÍ est· em jogo, n„o pode fazer isso
+X SI - Sala inv√°lida
+X FS - Voc√™ n√£o est√° numa sala
+X NI - Nome inv√°lido
+X NE - Nome j√° est√° em uso
+X JO - Voc√™ est√° em jogo, n√£o pode fazer isso
 X JI - Jogador (posicao) invalida (deve ser de 1 a 4)
-X NO - … preciso atribuir um nome para entrar na sala
-N nome - Nome do jogador agora È nome
+X NO - √â preciso atribuir um nome para entrar na sala
+N nome - Nome do jogador agora √© nome
 L numero[|numero|numero...] - Listagem de salas (# de jogadores separado por pipe)
-E sala - Informa que o jogador entrou na sala com este n˙mero (um I vem logo em seguida)
+E sala - Informa que o jogador entrou na sala com este n√∫mero (um I vem logo em seguida)
 S - Informa que o jogador saiu da sala
 I sala nome1|nome2|nome3|nome4 ____ posicao __ - Info da sala
       (numero, nomes dos jogadores, T/F "quer jogar" dos jogadores, posicao do gerente, T/F baralho limpo, T/F manilha velha)
-Y posicao - Jogador foi aceito no jogo nesta posiÁ„o
-P posicao - InÌcio da partida, sua posiÁ„o È essa
-M Ln Ln Ln Ln - InÌcio da m„o. Suas cartas s„o Ln, Ln e Ln (Letra naipe), a ˙ltima, se houver, È o vira
-V posicao _ - vez da pessoa na posiÁ„o indicada. _ = T se pode jogar fechada, false se n„o pode
-J posicao Ln - Carta Ln foi jogada pela pessoa na posiÁ„o indicada (se Ln omitido, foi jogada carta fechada)
+Y posicao - Jogador foi aceito no jogo nesta posi√ß√£o
+P posicao - In√≠cio da partida, sua posi√ß√£o √© essa
+M Ln Ln Ln Ln - In√≠cio da m√£o. Suas cartas s√£o Ln, Ln e Ln (Letra naipe), a √∫ltima, se houver, √© o vira
+V posicao _ - vez da pessoa na posi√ß√£o indicada. _ = T se pode jogar fechada, false se n√£o pode
+J posicao Ln - Carta Ln foi jogada pela pessoa na posi√ß√£o indicada (se Ln omitido, foi jogada carta fechada)
 R resultado posicao - Fim de rodada, seguido de resultado (equipe vencedora) e no. do jogador que torna
-O pontosEquipe1 pontosEquipe2 - Fim de m„o, seguido do placar atual do jogo
+O pontosEquipe1 pontosEquipe2 - Fim de m√£o, seguido do placar atual do jogo
 G numEquipeVencedora - Fim de jogo
-A posicao - Jogo abortado pelo jogador nesta posiÁ„o
-T jogador valor - Jogador pediu aumento. valor È 3 para truco, 6 para seis, etc.
+A posicao - Jogo abortado pelo jogador nesta posi√ß√£o
+T jogador valor - Jogador pediu aumento. valor √© 3 para truco, 6 para seis, etc.
 D jogador valor - Jogador mandou descer (aceitou aumento) no valor indicado
 C jogador - Jogador correu do pedido de aumento
-F Ln Ln Ln - Informa que estamos em m„o de 11 e o advers·rio tem essas cartas
-H posicao _ - Informa que o jogador na posiÁ„o acusou/recusou (_=T/F) m„o de 11
+F Ln Ln Ln - Informa que estamos em m√£o de 11 e o advers√°rio tem essas cartas
+H posicao _ - Informa que o jogador na posi√ß√£o acusou/recusou (_=T/F) m√£o de 11
