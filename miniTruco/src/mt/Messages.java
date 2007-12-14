@@ -52,14 +52,18 @@ public class Messages {
 	 * @param idioma
 	 *            Código do idioma
 	 * @throws IOException
+	 * @throws ClassNotFoundException 
 	 */
-	public static void carregaIdioma(String idioma) throws IOException {
+	public static void carregaIdioma(String idioma) throws IOException, ClassNotFoundException {
 		localStrings.clear();
 		InputStream inputStreamTxt = null;
-		inputStreamTxt = localStrings.getClass().getResourceAsStream(
-				"/mensagens." + idioma.substring(0, 3) + ".properties");//$NON-NLS-1$$NON-NLS-2$
+		String languageResName = "/mensagens." + idioma.substring(0, 3)
+				+ ".properties";
+		inputStreamTxt = Class.forName("mt.MiniTruco").getResourceAsStream(
+				languageResName);//$NON-NLS-1$$NON-NLS-2$
 		if (inputStreamTxt == null) {
-			throw new IOException("Internal error: language not found"); //$NON-NLS-1$
+			throw new IOException(
+					"Internal error: language not found: " + languageResName); //$NON-NLS-1$
 		}
 		StringBuffer buf = new StringBuffer();
 		int c;
