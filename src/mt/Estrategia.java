@@ -1,51 +1,48 @@
 package mt;
 
 /*
- * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright ¬© 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Este programa È um software livre; vocÍ pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da LicenÁa P˙blica Geral GNU como 
- * publicada pela FundaÁ„o do Software Livre (FSF); na vers„o 3 da 
- * LicenÁa, ou (na sua opni„o) qualquer vers„o.
+ * Este programa √© um software livre; voc√™ pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da Licen√ßa P√∫blica Geral GNU como 
+ * publicada pela Funda√ß√£o do Software Livre (FSF); na vers√£o 3 da 
+ * Licen√ßa, ou (na sua opni√£o) qualquer vers√£o.
  *
- * Este programa È distribuido na esperanÁa que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA«¬O
- * a qualquer MERCADO ou APLICA«√O EM PARTICULAR. Veja a LicenÁa
- * P˙blica Geral GNU para maiores detalhes.
+ * Este programa √© distribuido na esperan√ßa que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA√á√ÇO
+ * a qualquer MERCADO ou APLICA√á√ÉO EM PARTICULAR. Veja a Licen√ßa
+ * P√∫blica Geral GNU para maiores detalhes.
  *
- * VocÍ deve ter recebido uma cÛpia da LicenÁa P˙blica Geral GNU
- * junto com este programa, se n„o, escreva para a FundaÁ„o do Software
+ * Voc√™ deve ter recebido uma c√≥pia da Licen√ßa P√∫blica Geral GNU
+ * junto com este programa, se n√£o, escreva para a Funda√ß√£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 /**
- * Base para as estratÈgias "plug·veis" que um jogador CPU pode utilizar.
+ * Base para as estrat√©gias "plug√°veis" que um jogador CPU pode utilizar.
  * <p>
- * Para criar uma nova estratÈgia, basta criar uma classe que implemente os
- * mÈtodos definidos aqui (que o jogo chamar· quando for a hora).
+ * Uma estrat√©gia √© uma classe que implementa os m√©todos <code>joga</code>,
+ * <code>aceitaTruco</code> e <code>aceitaMao11</code>, que s√£o chamados
+ * pelo jogo quando for a vez do jogador, quando pedirem aumento para a dupla
+ * dele e quando a dupla for decidir uma m√£o de 11, respectivamente.
  * <p>
- * Eses mÈtodos recebem uma "fotografia" do jogo (SituacaoJogo) no momento em
- * que a aÁ„o deles (jogar, decidir se aceita um truco, etc). È demandada. Se
- * for desejado guardar estado, o tempo de vida do objeto È o mesmo de
- * <code>Jogo</code>, ou seja, o estado (n„o-<code>static</code>)
- * persistir· ao longo de uma partida, mas n„o entre partidas.
+ * Eses m√©todos recebem uma "fotografia" do jogo (SituacaoJogo) no momento em
+ * que a a√ß√£o deles √© demandada. Esta fotografia inclui todo o hist√≥rico da
+ * m√£o/rodada, placares, etc. Se for desejado guardar estado, o tempo de vida de
+ * uma estrat√©gia √© o mesmo de <code>Jogo</code>, ou seja, o estado (n√£o-<code>static</code>)
+ * persistir√° ao longo de uma partida, mas n√£o entre partidas.
  * <p>
- * Para testar, adicione sua estratÈgia ao array OPCOES_ESTRATEGIAS (e o null
- * corespondente no IMAGENS_ESTRATEGIAS) dentro da classe MiniTruco
+ * Para que a estrat√©gia apare√ßa no jogo, adicione uma inst√¢ncia dela ao array
+ * ESTRATEGIAS da classe Jogador.
  * <p>
- * Aviso do Chester: se o seu jogador ficar bom, eu ficaria agradecido se vocÍ
- * me mandasse ele no cd@pobox.com. Assim que eu tiver mais de uma Estrategia (o
- * EstrategiaJohnnyWalker n„o conta :-) ), vou incluÌ-las (randomicamente ou de
- * forma selecion·vel) no jogo.
- * <p>
- * Aviso do Chester II: esse projeto ter· uma fase futura, que eu apelido de
- * TrucoCode: na linha do RoboCode, estou pensando num esquema para botar as
- * melhores estratÈgias para competir online. Achou interessante? Vamos
- * conversar...
+ * O modo Confronto de Estrat√©gias permite testar a sua estrat√©gia contra as j√°
+ * existentes. Quando ela estiver boa, voc√™ pode contribui-la para o jogo (desde
+ * que concorde em licenci√°-la atrav√©s da GPLv3). Voc√™ ser√° creditado e manter√°
+ * seus direitos autorais.
  * 
  * @author Chester
- * @see JogadorCPU#OPCOES_ESTRATEGIAS
+ * @see Jogador#ESTRATEGIAS
  */
 public interface Estrategia {
 
@@ -55,24 +52,24 @@ public interface Estrategia {
 	public abstract String getNomeEstrategia();
 
 	/**
-	 * Retorna informaÁıes de copyright e afins
+	 * Retorna informa√ß√µes de copyright e afins
 	 */
 	public abstract String getInfoEstrategia();
 
 	/**
 	 * Executa uma jogada.
 	 * <p>
-	 * Observe que, ao pedir aumento, o sistema ir· interagir com a outra dupla.
-	 * Se a partida seguir, o mÈtodo ser· chamado novamente para efetivar a real
+	 * Observe que, ao pedir aumento, o sistema ir√° interagir com a outra dupla.
+	 * Se a partida seguir, o m√©todo ser√° chamado novamente para efetivar a real
 	 * jogada.
 	 * <p>
-	 * A estratÈgia È respons·vel por checar se o valor da prÛxima aposta È
-	 * diferente de 0 e sÛ pedir aumento nesta situaÁ„o.
+	 * A estrat√©gia √© respons√°vel por checar se o valor da pr√≥xima aposta √©
+	 * diferente de 0 e s√≥ pedir aumento nesta situa√ß√£o.
 	 * <p>
 	 * 
 	 * @param s
-	 *            SituaÁ„o do jogo no momento
-	 * @return posiÁ„o da carta na m„o a jogar (em letrasCartasJogador), ou -1
+	 *            Situa√ß√£o do jogo no momento
+	 * @return posi√ß√£o da carta na m√£o a jogar (em letrasCartasJogador), ou -1
 	 *         para pedir truco
 	 */
 	public abstract int joga(SituacaoJogo s);
@@ -81,16 +78,16 @@ public interface Estrategia {
 	 * Decide se aceita um pedido de aumento.
 	 * <p>
 	 * O valor do aumento pode ser determinado verificando o valor atual da
-	 * partida (que ainda n„o foi aumentado)
+	 * partida (que ainda n√£o foi aumentado)
 	 * 
 	 * @param s
-	 *            SituaÁ„o do jogo no momento
+	 *            Situa√ß√£o do jogo no momento
 	 * @return true para aceitar, false para desistir
 	 */
 	public abstract boolean aceitaTruco(SituacaoJogo s);
 
 	/**
-	 * Decide se aceita iniciar uma "m„o de 11"
+	 * Decide se aceita iniciar uma "m√£o de 11"
 	 * 
 	 * @param cartasParceiro
 	 *            cartas que o parceiro possui
@@ -100,12 +97,12 @@ public interface Estrategia {
 	public abstract boolean aceitaMao11(Carta[] cartasParceiro, SituacaoJogo s);
 
 	/**
-	 * Notifica que uma partida est· comeÁando.
+	 * Notifica que uma partida est√° come√ßando.
 	 */
 	public abstract void inicioPartida();
 
 	/**
-	 * Notifica que uma m„o est· comeÁando
+	 * Notifica que uma m√£o est√° come√ßando
 	 */
 	public abstract void inicioMao();
 
@@ -115,7 +112,7 @@ public interface Estrategia {
 	 * @param posJogador
 	 *            Jogador que pediu o aumento
 	 * @param valor
-	 *            Quanto a rodada passar· a valar se algum advers·rio aceitar
+	 *            Quanto a rodada passar√° a valar se algum advers√°rio aceitar
 	 */
 	public abstract void pediuAumentoAposta(int posJogador, int valor);
 
@@ -125,16 +122,16 @@ public interface Estrategia {
 	 * @param posJogador
 	 *            Jogador que aceitou o aumento
 	 * @param valor
-	 *            Quanto a rodada est· valendo agora
+	 *            Quanto a rodada est√° valendo agora
 	 */
 	public abstract void aceitouAumentoAposta(int posJogador, int valor);
 
 	/**
 	 * Informa que o jogador recusou um pedido de aumento de aposta.
 	 * <p>
-	 * Obs.: isso n„o impede que o outro jogador da dupla aceite o pedido, È
-	 * apenas para notificaÁ„o visual. Se o segundo jogdor recusar o pedido, a
-	 * mensagem de derrota da dupla ser· enviada logo em seguida.
+	 * Obs.: isso n√£o impede que o outro jogador da dupla aceite o pedido, √©
+	 * apenas para notifica√ß√£o visual. Se o segundo jogdor recusar o pedido, a
+	 * mensagem de derrota da dupla ser√° enviada logo em seguida.
 	 * 
 	 * @param posJogador
 	 *            Jogador que recusou o pedido.

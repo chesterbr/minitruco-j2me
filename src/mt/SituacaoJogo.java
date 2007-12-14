@@ -1,33 +1,33 @@
 package mt;
 
 /*
- * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright ¬© 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Copyright © 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
- * (modo confronto de estratÈgias)
+ * Copyright ¬© 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * (modo confronto de estrat√©gias)
  * 
- * Este programa È um software livre; vocÍ pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da LicenÁa P˙blica Geral GNU como 
- * publicada pela FundaÁ„o do Software Livre (FSF); na vers„o 3 da 
- * LicenÁa, ou (na sua opni„o) qualquer vers„o.
+ * Este programa √© um software livre; voc√™ pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da Licen√ßa P√∫blica Geral GNU como 
+ * publicada pela Funda√ß√£o do Software Livre (FSF); na vers√£o 3 da 
+ * Licen√ßa, ou (na sua opni√£o) qualquer vers√£o.
  *
- * Este programa È distribuido na esperanÁa que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA«¬O
- * a qualquer MERCADO ou APLICA«√O EM PARTICULAR. Veja a LicenÁa
- * P˙blica Geral GNU para maiores detalhes.
+ * Este programa √© distribuido na esperan√ßa que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA√á√ÇO
+ * a qualquer MERCADO ou APLICA√á√ÉO EM PARTICULAR. Veja a Licen√ßa
+ * P√∫blica Geral GNU para maiores detalhes.
  *
- * VocÍ deve ter recebido uma cÛpia da LicenÁa P˙blica Geral GNU
- * junto com este programa, se n„o, escreva para a FundaÁ„o do Software
+ * Voc√™ deve ter recebido uma c√≥pia da Licen√ßa P√∫blica Geral GNU
+ * junto com este programa, se n√£o, escreva para a Funda√ß√£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 /**
- * Fotografia da situaÁ„o atual do jogo.
+ * Fotografia da situa√ß√£o atual do jogo.
  * <p>
- * Foi isolada da classe Jogo para poder passar ‡s <code>Estrategia</code>s a
- * situaÁ„o do jogo de forma a facilitar sua implementaÁ„o e, ao mesmo tempo,
- * impedir que elas trapaceiem (n„o dando acesso ao <code>Jogo</code>.
+ * Foi isolada da classe Jogo para poder passar √†s <code>Estrategia</code>s a
+ * situa√ß√£o do jogo de forma a facilitar sua implementa√ß√£o e, ao mesmo tempo,
+ * impedir que elas trapaceiem (n√£o dando acesso ao <code>Jogo</code>.
  * 
  * @author Chester
  * 
@@ -35,8 +35,8 @@ package mt;
 public class SituacaoJogo {
 
 	/**
-	 * PosiÁ„o do jogador. 1 e 3 s„o parceiros entre si, assim como 2 e 4, e
-	 * jogam na ordem numÈrica.
+	 * Posi√ß√£o do jogador. 1 e 3 s√£o parceiros entre si, assim como 2 e 4, e
+	 * jogam na ordem num√©rica.
 	 */
 	int posJogador;
 
@@ -46,45 +46,45 @@ public class SituacaoJogo {
 	int numRodadaAtual;
 
 	/**
-	 * Resultados de cada rodada (1 para vitÛria da equipe 1/3, 2 para vitÛria
+	 * Resultados de cada rodada (1 para vit√≥ria da equipe 1/3, 2 para vit√≥ria
 	 * da equipe 2/4 e 3 para empate)
 	 */
 	int resultadoRodada[] = new int[3];
 
 	/**
-	 * Valor atual da m„o (1, 3, 6, 9 ou 12)
+	 * Valor atual da m√£o (1, 3, 6, 9 ou 12)
 	 */
 	int valorMao;
 
 	/**
-	 * Valor da m„o caso o jogador peÁa aumento de aposta (se for 0, significa
-	 * que n„o pode ser pedido aumento)
+	 * Valor da m√£o caso o jogador pe√ßa aumento de aposta (se for 0, significa
+	 * que n√£o pode ser pedido aumento)
 	 */
 	int valorProximaAposta;
 
 	/**
-	 * Jogador que est· pedindo aumento de aposta (pedindo truco, 6, 9 ou 12).
-	 * Se for null, ninguÈm est· pedindo
+	 * Jogador que est√° pedindo aumento de aposta (pedindo truco, 6, 9 ou 12).
+	 * Se for null, ningu√©m est√° pedindo
 	 */
 	int posJogadorPedindoAumento;
 
 	/**
-	 * PosiÁ„o (1 a 4) do do jogador que abriu a rodada
+	 * Posi√ß√£o (1 a 4) do do jogador que abriu a rodada
 	 */
 	int posJogadorQueAbriuRodada;
 
 	/**
-	 * Letra da manilha (quando aplic·vel).
+	 * Letra da manilha (quando aplic√°vel).
 	 * <p>
-	 * Esta propriedade deve ser usada APENAS para chamar o mÈtodo
+	 * Esta propriedade deve ser usada APENAS para chamar o m√©todo
 	 * Jogo.getValorTruco(), pois, no caso de jogo com manilha velha, seu valor
-	 * n„o È o de uma carta
+	 * n√£o √© o de uma carta
 	 */
 	char manilha;
 
 	/**
 	 * Valor que a proprieade manilha assume quando estamos jogando com manilha
-	 * velha (n„o-fixa)
+	 * velha (n√£o-fixa)
 	 */
 	static char MANILHA_INDETERMINADA = 'X';
 
@@ -94,22 +94,22 @@ public class SituacaoJogo {
 	int[] pontosEquipe = new int[2];
 
 	/**
-	 * N˙mero de vaquinhas no pasto de cada equipe
+	 * N√∫mero de vaquinhas no pasto de cada equipe
 	 */
 	int[] vaquinhasNoPasto = new int[2];
 	
 	/**
-	 * Para cada rodada (0-2) d· as cartas jogadas pelas 4 posicıes (0-3)
+	 * Para cada rodada (0-2) d√° as cartas jogadas pelas 4 posic√µes (0-3)
 	 */
 	Carta[][] cartasJogadas = new Carta[3][4];
 
 	/**
-	 * Cartas que ainda est„o na m„o do jogador
+	 * Cartas que ainda est√£o na m√£o do jogador
 	 */
 	Carta[] cartasJogador;
 
 	/**
-	 * Determina se o baralho inclui as cartas 4, 5, 6 e 7 (true) ou n„o
+	 * Determina se o baralho inclui as cartas 4, 5, 6 e 7 (true) ou n√£o
 	 * (false).
 	 * <p>
 	 */

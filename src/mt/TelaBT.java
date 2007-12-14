@@ -1,21 +1,21 @@
 package mt;
 
 /*
- * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright Â© 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Este programa é um software livre; você pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
- * Licença, ou (na sua opnião) qualquer versão.
+ * Este programa Ã© um software livre; vocÃª pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da LicenÃ§a PÃºblica Geral GNU como 
+ * publicada pela FundaÃ§Ã£o do Software Livre (FSF); na versÃ£o 3 da 
+ * LicenÃ§a, ou (na sua opniÃ£o) qualquer versÃ£o.
  *
- * Este programa é distribuido na esperança que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÇÂO
- * a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença
- * Pública Geral GNU para maiores detalhes.
+ * Este programa Ã© distribuido na esperanÃ§a que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÃ‡Ã‚O
+ * a qualquer MERCADO ou APLICAÃ‡ÃƒO EM PARTICULAR. Veja a LicenÃ§a
+ * PÃºblica Geral GNU para maiores detalhes.
  *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU
- * junto com este programa, se não, escreva para a Fundação do Software
+ * VocÃª deve ter recebido uma cÃ³pia da LicenÃ§a PÃºblica Geral GNU
+ * junto com este programa, se nÃ£o, escreva para a FundaÃ§Ã£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
@@ -34,10 +34,10 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.TextField;
 
 /**
- * Decorator para o servidor e o cliente BlueTooth código para exibição dos
+ * Decorator para o servidor e o cliente BlueTooth cÃ³digo para exibiÃ§Ã£o dos
  * jogadores conectados, constantes e outros elementos comnus aos dois lados.
  * <p>
- * A procura/oferta do serviço de jogo é feita pelas classes descendentes.
+ * A procura/oferta do serviÃ§o de jogo Ã© feita pelas classes descendentes.
  * 
  * @author Chester
  * 
@@ -45,18 +45,18 @@ import javax.microedition.lcdui.TextField;
 public abstract class TelaBT extends Canvas implements CommandListener,
 		Runnable {
 
-	protected static final Command okApelidoCommand = new Command("Ok",
+	protected static final Command okApelidoCommand = new Command(Messages.getString("ok"), //$NON-NLS-1$
 			Command.SCREEN, 1);
 
-	protected static final Command voltarCommand = new Command("Voltar",
+	protected static final Command voltarCommand = new Command(Messages.getString("voltar"), //$NON-NLS-1$
 			Command.STOP, 999);
 
 	/**
 	 * Separador de linha enviado (tanto no sentido client-server quanto no
 	 * server-client).
 	 * <p>
-	 * É propositalmente um conjunto de SEPARADOR_REC, para garantir que o
-	 * recebimento seja detectado (linhas em branco são ignoradas de qualquer
+	 * Ã‰ propositalmente um conjunto de SEPARADOR_REC, para garantir que o
+	 * recebimento seja detectado (linhas em branco sÃ£o ignoradas de qualquer
 	 * forma).
 	 */
 	public static final byte[] SEPARADOR_ENV = "**".getBytes();
@@ -79,26 +79,26 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 			Font.STYLE_PLAIN, Font.SIZE_SMALL);
 
 	/**
-	 * Fonte para o quadro de informações da sala
+	 * Fonte para o quadro de informaÃ§Ãµes da sala
 	 */
 	private static final Font fonteInfo = Font.getFont(Font.FACE_PROPORTIONAL,
 			Font.STYLE_ITALIC, Font.SIZE_SMALL);
 
 	/**
-	 * Identificador único Bluetooth do "serviço miniTruco"
+	 * Identificador Ãºnico Bluetooth do "serviÃ§o miniTruco"
 	 */
 	public static final UUID UUID_BT = new UUID(
 			"3B175368ABB411DBA508C2B155D89593", false);
 
-	protected static final String[] APELIDOS_CPU = { "CPU1", "CPU2", "CPU3" };
+	protected static final String[] APELIDOS_CPU = { Messages.getString("cpu1"), Messages.getString("cpu2"), Messages.getString("cpu3") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 	/**
-	 * Referência ao jogo em execução
+	 * ReferÃªncia ao jogo em execuÃ§Ã£o
 	 */
 	protected MiniTruco midlet;
 
 	/**
-	 * Referência à tela do jogo em execução
+	 * ReferÃªncia Ã  tela do jogo em execuÃ§Ã£o
 	 */
 	protected Display display;
 
@@ -113,7 +113,7 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	LocalDevice localDevice;
 
 	/**
-	 * Apelidos dos jogadores nas quatro posições da mesa.
+	 * Apelidos dos jogadores nas quatro posiÃ§Ãµes da mesa.
 	 */
 	protected String[] apelidos = new String[4];
 
@@ -124,15 +124,15 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	public String regras;
 
 	/**
-	 * Mensagem exibida quando ainda não temos mesa (ou null para exibir a mesa)
+	 * Mensagem exibida quando ainda nÃ£o temos mesa (ou null para exibir a mesa)
 	 */
 	private String msgDisplay = "";
 
 	/**
-	 * Define o que será mostrado na tela (pode ser uma mensagem ou os jogadores
+	 * Define o que serÃ¡ mostrado na tela (pode ser uma mensagem ou os jogadores
 	 * conectados) e a atualiza.
 	 * <p>
-	 * Caso haja outro Displayable em exibição, solicita a mudança para este.
+	 * Caso haja outro Displayable em exibiÃ§Ã£o, solicita a mudanÃ§a para este.
 	 * 
 	 * @param msg
 	 *            Mensagem a ser exibida. Se for <code>null</code>, exibe a
@@ -148,7 +148,7 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 
 	/**
 	 * Faz o log de uma mensagem, garantindo que ela seja exibida (caso esta
-	 * opção esteja ativada)
+	 * opÃ§Ã£o esteja ativada)
 	 * 
 	 * @param msg
 	 */
@@ -163,40 +163,40 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	public TelaBT(MiniTruco midlet) {
 
 		// Guarda o display da MIDlet (vamos precisar dele pra mostrar forms e
-		// alerts) e uma referência a ela.
+		// alerts) e uma referÃªncia a ela.
 		this.display = Display.getDisplay(midlet);
 		this.midlet = midlet;
 
-		// Recupera o dispositivo local (que é o ponto de entrada para as
-		// comunicações bluetooth
+		// Recupera o dispositivo local (que Ã© o ponto de entrada para as
+		// comunicaÃ§Ãµes bluetooth
 		try {
 			localDevice = LocalDevice.getLocalDevice();
 		} catch (BluetoothStateException e) {
 			Jogo.log(e.toString());
-			alerta("Erro Bluetooth", e.getMessage());
+			alerta(Messages.getString("erro_bt"), e.getMessage()); //$NON-NLS-1$
 			return;
 		} catch (RuntimeException re) {
-			// Esse catch é um pouco abrangente, mas é a primeira chamada a
-			// classes bt, assim, se for dar algum erro bizarro, é aqui
+			// Esse catch Ã© um pouco abrangente, mas Ã© a primeira chamada a
+			// classes bt, assim, se for dar algum erro bizarro, Ã© aqui
 			Jogo.log("erro runtime bt");
 			Jogo.log(re.toString());
-			alerta("Erro Runtime", re.getMessage());
+			alerta(Messages.getString("erro_runtime"), re.getMessage()); //$NON-NLS-1$
 			return;
 		}
 
-		// Inicia e mostra a tela básica (comando voltar)
+		// Inicia e mostra a tela bÃ¡sica (comando voltar)
 		addCommand(voltarCommand);
 		setCommandListener(this);
 		display.setCurrent(this);
 
-		// Inicia o oferecimento/procura do serviço (conforme o caso)
+		// Inicia o oferecimento/procura do serviÃ§o (conforme o caso)
 		(new Thread(this)).start();
 
 	}
 
 	public void commandAction(Command cmd, Displayable arg1) {
 		if (cmd.equals(voltarCommand)) {
-			// Sinaliza a finalização para a thread, encerra qualquer partida
+			// Sinaliza a finalizaÃ§Ã£o para a thread, encerra qualquer partida
 			// pendente e volta ao menu
 			encerraSessaoBT();
 			midlet.telaBT = null;
@@ -205,7 +205,7 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	}
 
 	/**
-	 * Encerra a sessão (cliente ou servidor), liberando quaisquer recursos que
+	 * Encerra a sessÃ£o (cliente ou servidor), liberando quaisquer recursos que
 	 * estejam em uso.
 	 */
 	public abstract void encerraSessaoBT();
@@ -214,7 +214,7 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	 * Exibe um alerta e aguarda o "ok"
 	 * 
 	 * @param titulo
-	 *            Título da janela
+	 *            TÃ­tulo da janela
 	 * @param texto
 	 *            Texto do alerta
 	 */
@@ -226,11 +226,11 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	 * Exibe um alerta
 	 * 
 	 * @param titulo
-	 *            Título da janela
+	 *            TÃ­tulo da janela
 	 * @param texto
 	 *            Texto do alerta
 	 * @param bloqueia
-	 *            true para bloquear até o usuário dar o "ok", false para exibir
+	 *            true para bloquear atÃ© o usuÃ¡rio dar o "ok", false para exibir
 	 *            e continuar rodando
 	 */
 	public void alerta(String titulo, String texto, boolean bloqueia) {
@@ -304,9 +304,9 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 			g.fillRect(0, 0, getWidth(), topoNomes);
 
 			// String linha1 = "SALA " + numSala;
-			String linha2 = (regras.charAt(0) == 'T' ? "b.limpo / "
-					: "b.sujo /")
-					+ (regras.charAt(1) == 'T' ? "m.velha " : "m.nova");
+			String linha2 = (regras.charAt(0) == 'T' ? Messages.getString("b_limpo") //$NON-NLS-1$
+					: Messages.getString("b_sujo")) //$NON-NLS-1$
+					+ (regras.charAt(1) == 'T' ? Messages.getString("m_velha") : Messages.getString("m_nova")); //$NON-NLS-1$ //$NON-NLS-2$
 
 			g.setColor(0x00000000);
 			g.setFont(fonteInfo);
@@ -315,7 +315,7 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 					| Graphics.RIGHT);
 
 		} else {
-			// Se não tiver nada pra mostrar, manda a mensagem de aguarde
+			// Se nÃ£o tiver nada pra mostrar, manda a mensagem de aguarde
 			g.setColor(0x0000FF00);
 			g.fillRect(0, 0, getWidth(), getHeight());
 			g.setColor(0x00FF0000);
@@ -342,17 +342,17 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	}
 
 	/**
-	 * Recupera a posição na mesa para o jogador conectado na posição i.
+	 * Recupera a posiÃ§Ã£o na mesa para o jogador conectado na posiÃ§Ã£o i.
 	 * <p>
-	 * Este método permite que cliente e servidor compartilhem o código de
-	 * desenho da tela (pois o que muda de um para outro é o "ponto de vista"
-	 * mesmo - ambos têm que ter o jogador humano na posição 1)
+	 * Este mÃ©todo permite que cliente e servidor compartilhem o cÃ³digo de
+	 * desenho da tela (pois o que muda de um para outro Ã© o "ponto de vista"
+	 * mesmo - ambos tÃªm que ter o jogador humano na posiÃ§Ã£o 1)
 	 * 
 	 * @param i
-	 *            posição (1 a 4) na conexão (no cliente é a posição na lista
-	 *            recebida; no servidor é a posição de jogo mesmo)
-	 * @return posição em que este jogador deve ser desenhado na mesa (e
-	 *         adicionado no jogo), na mesma convenção da classe Mesa
+	 *            posiÃ§Ã£o (1 a 4) na conexÃ£o (no cliente Ã© a posiÃ§Ã£o na lista
+	 *            recebida; no servidor Ã© a posiÃ§Ã£o de jogo mesmo)
+	 * @return posiÃ§Ã£o em que este jogador deve ser desenhado na mesa (e
+	 *         adicionado no jogo), na mesma convenÃ§Ã£o da classe Mesa
 	 *         (1=inferior, 2=direita, 3=superior, 4=esquerda)
 	 */
 	public abstract int getPosicaoMesa(int i);
@@ -361,8 +361,8 @@ public abstract class TelaBT extends Canvas implements CommandListener,
 	 * Divide uma string com base em um separador (como o <code>split()</code>)
 	 * da classe <code>String</code> do J2SE.
 	 * <p>
-	 * Ele efetua a operação em dois passos, mas esta abordagem tem a vantagem
-	 * de não alocar nenhum objeto além das strings não-nulas do array.
+	 * Ele efetua a operaÃ§Ã£o em dois passos, mas esta abordagem tem a vantagem
+	 * de nÃ£o alocar nenhum objeto alÃ©m das strings nÃ£o-nulas do array.
 	 */
 	public static String[] split(String original, char separador) {
 		// Fase 1: Contagem dos tokens (para dimensionar o array)

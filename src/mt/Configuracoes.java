@@ -1,24 +1,24 @@
 package mt;
 
 /*
- * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright Â© 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Copyright © 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
- * (modo confronto de estratégias)
+ * Copyright Â© 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * (modo confronto de estratÃ©gias)
  * 
- * Este programa é um software livre; você pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
- * Licença, ou (na sua opnião) qualquer versão.
+ * Este programa Ã© um software livre; vocÃª pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da LicenÃ§a PÃºblica Geral GNU como 
+ * publicada pela FundaÃ§Ã£o do Software Livre (FSF); na versÃ£o 3 da 
+ * LicenÃ§a, ou (na sua opniÃ£o) qualquer versÃ£o.
  *
- * Este programa é distribuido na esperança que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÇÂO
- * a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença
- * Pública Geral GNU para maiores detalhes.
+ * Este programa Ã© distribuido na esperanÃ§a que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÃ‡Ã‚O
+ * a qualquer MERCADO ou APLICAÃ‡ÃƒO EM PARTICULAR. Veja a LicenÃ§a
+ * PÃºblica Geral GNU para maiores detalhes.
  *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU
- * junto com este programa, se não, escreva para a Fundação do Software
+ * VocÃª deve ter recebido uma cÃ³pia da LicenÃ§a PÃºblica Geral GNU
+ * junto com este programa, se nÃ£o, escreva para a FundaÃ§Ã£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
@@ -35,7 +35,7 @@ import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 
 /**
- * Recupera e salva as opções do usuário (regras, aspectos visuais, nome do
+ * Recupera e salva as opÃ§Ãµes do usuÃ¡rio (regras, aspectos visuais, nome do
  * multiplayer, servidor default, etc.)
  * 
  * @author Chester
@@ -44,32 +44,35 @@ import javax.microedition.rms.RecordStoreException;
 public class Configuracoes {
 
 	/**
-	 * Marcador para saber quando não há registro no recordstore.
+	 * Marcador para saber quando nÃ£o hÃ¡ registro no recordstore.
 	 * <p>
-	 * A especificação MIDP diz que os números começam no 1, vou acreditar
+	 * A especificaÃ§Ã£o MIDP diz que os nÃºmeros comeÃ§am no 1, vou acreditar
 	 */
 	private static final int REGISTRO_INEXISTENTE = -1;
 
 	/**
-	 * Identifica a versão da configuração. Quando novas versões do miniTruco
-	 * quebrarem a compatibilidade, basta incrementar este número para garantir
+	 * Identifica a versÃ£o da configuraÃ§Ã£o. Quando novas versÃµes do miniTruco
+	 * quebrarem a compatibilidade, basta incrementar este nÃºmero para garantir
 	 * que antigos registros sejam descartados
 	 */
-	private static final int VERSAO_ID = 107;
-	private static final int VERSAO_ID_MODOCE = 10110;
-	
+	private static final int VERSAO_ID = 109;
+	private static final int VERSAO_ID_MODOCE = 10112;
+
 	/**
-	 * Identificador do registro das configurações no RecordStore
+	 * Identificador do registro das configuraÃ§Ãµes no RecordStore
 	 */
 	private int recordId = REGISTRO_INEXISTENTE;
 
 	/*
-	 * Configurações do menu opções, nos seus valores default (vide MiniTruco
-	 * para detalhes)
+	 * ConfiguraÃ§Ãµes do menu opÃ§Ãµes, nos seus valores default. <p> A classe
+	 * <code>miniTruco</code> interpreta estes valores.
 	 */
-	public String[] estrategias = { "Sortear", "Sortear", "Sortear" };
+	public int[] estrategias = { Jogador.opcoesEstrategia.length - 1,
+			Jogador.opcoesEstrategia.length - 1,
+			Jogador.opcoesEstrategia.length - 1 };
 
-	public String[] estrategiasModoCE = { "Sortear", "Sortear" };
+	public int[] estrategiasModoCE = { Jogador.opcoesEstrategia.length - 1,
+			Jogador.opcoesEstrategia.length - 1 };
 
 	public boolean cartasGrandes = isTelaGrande();
 
@@ -82,26 +85,42 @@ public class Configuracoes {
 	public int nPartidasModoCE = 1;
 
 	public String servidor = SERVIDOR_DEFAULT;
-	
-	public String nomeJogador;	
-	
+
+	public String idioma = null;
+
+	public String nomeJogador;
+
 	public static final String PORTA_DEFAULT = "6912";
 
 	public static final String SERVIDOR_DEFAULT = "chester.servegame.org:"
-		+ PORTA_DEFAULT;
+			+ PORTA_DEFAULT;
 
-
-	
 	/**
-	 * Carrega as configurações da memória do celular
+	 * Cria uma instÃ¢ncia com os valores default (incluindo auto-detecÃ§Ã£o de
+	 * idioma)
+	 */
+	private Configuracoes() {
+		idioma = "PortuguÃªs";
+
+		// [IF_FULL]
+		String locale = System.getProperty("microedition.locale");
+		if (locale != null && locale.toLowerCase().startsWith("en")) {
+			idioma = "English";
+		}
+		;
+		// [ENDIF_FULL]
+	}
+
+	/**
+	 * Carrega as configuraÃ§Ãµes da memÃ³ria do celular
 	 * 
-	 * @return Objeto contendo as configurações salvas (ou configurações default
+	 * @return Objeto contendo as configuraÃ§Ãµes salvas (ou configuraÃ§Ãµes default
 	 *         se houverem problemas)
 	 */
 	public static Configuracoes getConfiguracoes() {
 		RecordStore rs = null;
 		try {
-			// As configurações ficam num único record do RecordStore, basta
+			// As configuraÃ§Ãµes ficam num Ãºnico record do RecordStore, basta
 			// abrir, pegar o ID e trasnformar os dados
 			rs = RecordStore.openRecordStore("miniTruco", true);
 			Configuracoes c = new Configuracoes();
@@ -110,28 +129,29 @@ public class Configuracoes {
 				// Guarda o ID (e usa ele pra puxar o registro)
 				c.recordId = recEnum.nextRecordId();
 				byte registro[] = rs.getRecord(c.recordId);
-				// Decompõe o registro em propriedades de configuração
+				// DecompÃµe o registro em propriedades de configuraÃ§Ã£o
 				DataInputStream disDados = new DataInputStream(
 						new ByteArrayInputStream(registro));
 				try {
 					if (disDados.readInt() != VERSAO_ID) {
-						// Configuração velha, manda pro lixo
+						// ConfiguraÃ§Ã£o velha, manda pro lixo
 						throw new IOException();
 					}
-					c.estrategias[0] = disDados.readUTF();
-					c.estrategias[1] = disDados.readUTF();
-					c.estrategias[2] = disDados.readUTF();
-					c.estrategiasModoCE[0] = disDados.readUTF();
-					c.estrategiasModoCE[1] = disDados.readUTF();
+					c.estrategias[0] = disDados.readInt();
+					c.estrategias[1] = disDados.readInt();
+					c.estrategias[2] = disDados.readInt();
+					c.estrategiasModoCE[0] = disDados.readInt();
+					c.estrategiasModoCE[1] = disDados.readInt();
 					c.cartasGrandes = disDados.readBoolean();
 					c.animacaoLigada = disDados.readBoolean();
 					c.baralhoLimpo = disDados.readBoolean();
 					c.manilhaVelha = disDados.readBoolean();
 					c.nomeJogador = disDados.readUTF();
 					c.servidor = disDados.readUTF();
+					c.idioma = disDados.readUTF();
 				} catch (IOException e) {
 					// Se der erro na leitura, retorna um objeto default, mas
-					// com o ID deste (para que a próxima gravação o
+					// com o ID deste (para que a prÃ³xima gravaÃ§Ã£o o
 					// sobrescreva).
 					Configuracoes cNovo = new Configuracoes();
 					cNovo.recordId = c.recordId;
@@ -149,26 +169,26 @@ public class Configuracoes {
 				try {
 					rs.closeRecordStore();
 				} catch (RecordStoreException re) {
-					// Ai jisuis, por que um close declara exceção?
-					Jogo.log("Erro ao fechar rs:" + re.getMessage());
+					// Ai jisuis, por que um close declara exceÃ§Ã£o?
+					// Jogo.log("Erro ao fechar rs:" + re.getMessage());
 				}
 		}
 
 	}
 
 	/**
-	 * Carrega as configurações do modo confronto de estratégias da memória do celular
-	 * Criei este método somente para o modo CE de forma a deixá-lo
-	 * mais independente do resto do código, pois poderemos implementar
-	 * dados exclusivos para este modo no futuro...
+	 * Carrega as configuraÃ§Ãµes do modo confronto de estratÃ©gias da memÃ³ria do
+	 * celular Criei este mÃ©todo somente para o modo CE de forma a deixÃ¡-lo mais
+	 * independente do resto do cÃ³digo, pois poderemos implementar dados
+	 * exclusivos para este modo no futuro...
 	 * 
-	 * @return Objeto contendo as configurações salvas (ou configurações default
+	 * @return Objeto contendo as configuraÃ§Ãµes salvas (ou configuraÃ§Ãµes default
 	 *         se houverem problemas)
 	 */
 	public static Configuracoes getConfiguracoesModoCE() {
 		RecordStore rs = null;
 		try {
-			// As configurações ficam num único record do RecordStore, basta
+			// As configuraÃ§Ãµes ficam num Ãºnico record do RecordStore, basta
 			// abrir, pegar o ID e trasnformar os dados
 			rs = RecordStore.openRecordStore("miniTrucoModoCE", true);
 			Configuracoes c = new Configuracoes();
@@ -177,20 +197,20 @@ public class Configuracoes {
 				// Guarda o ID (e usa ele pra puxar o registro)
 				c.recordId = recEnum.nextRecordId();
 				byte registro[] = rs.getRecord(c.recordId);
-				// Decompõe o registro em propriedades de configuração
+				// DecompÃµe o registro em propriedades de configuraÃ§Ã£o
 				DataInputStream disDados = new DataInputStream(
 						new ByteArrayInputStream(registro));
 				try {
 					if (disDados.readInt() != VERSAO_ID_MODOCE) {
-						// Configuração velha, manda pro lixo
+						// ConfiguraÃ§Ã£o velha, manda pro lixo
 						throw new IOException();
 					}
-					c.estrategiasModoCE[0] = disDados.readUTF();
-					c.estrategiasModoCE[1] = disDados.readUTF();
+					c.estrategiasModoCE[0] = disDados.readInt();
+					c.estrategiasModoCE[1] = disDados.readInt();
 					c.nPartidasModoCE = disDados.readInt();
 				} catch (IOException e) {
 					// Se der erro na leitura, retorna um objeto default, mas
-					// com o ID deste (para que a próxima gravação o
+					// com o ID deste (para que a prÃ³xima gravaÃ§Ã£o o
 					// sobrescreva).
 					Configuracoes cNovo = new Configuracoes();
 					cNovo.recordId = c.recordId;
@@ -208,7 +228,7 @@ public class Configuracoes {
 				try {
 					rs.closeRecordStore();
 				} catch (RecordStoreException re) {
-					// Ai jisuis, por que um close declara exceção?
+					// Ai jisuis, por que um close declara exceÃ§Ã£o?
 					Jogo.log("Erro ao fechar rs:" + re.getMessage());
 				}
 		}
@@ -216,11 +236,11 @@ public class Configuracoes {
 	}
 
 	/**
-	 * Salva as configurações do objeto na memória do celular.
+	 * Salva as configuraÃ§Ãµes do objeto na memÃ³ria do celular.
 	 * 
 	 * @throws RecordStoreException
-	 *             caso hajam problemas (para notificar o usuário que a
-	 *             configuração não foi salva)
+	 *             caso hajam problemas (para notificar o usuÃ¡rio que a
+	 *             configuraÃ§Ã£o nÃ£o foi salva)
 	 */
 	public void salva() {
 		RecordStore rs = null;
@@ -229,20 +249,21 @@ public class Configuracoes {
 			ByteArrayOutputStream baosDados = new ByteArrayOutputStream();
 			DataOutputStream dosDados = new DataOutputStream(baosDados);
 
-			// Compõe o registro com as propriedades de configuração
+			// CompÃµe o registro com as propriedades de configuraÃ§Ã£o
 			dosDados.writeInt(VERSAO_ID);
-			dosDados.writeUTF(estrategias[0]);
-			dosDados.writeUTF(estrategias[1]);
-			dosDados.writeUTF(estrategias[2]);
-			dosDados.writeUTF(estrategiasModoCE[0]);
-			dosDados.writeUTF(estrategiasModoCE[1]);
+			dosDados.writeInt(estrategias[0]);
+			dosDados.writeInt(estrategias[1]);
+			dosDados.writeInt(estrategias[2]);
+			dosDados.writeInt(estrategiasModoCE[0]);
+			dosDados.writeInt(estrategiasModoCE[1]);
 			dosDados.writeBoolean(cartasGrandes);
 			dosDados.writeBoolean(animacaoLigada);
 			dosDados.writeBoolean(baralhoLimpo);
 			dosDados.writeBoolean(manilhaVelha);
 			dosDados.writeUTF(nomeJogador == null ? "" : nomeJogador);
 			dosDados.writeUTF(servidor == null ? "" : servidor);
-			
+			dosDados.writeUTF(idioma == null ? "" : idioma);
+
 			// Atualiza o recordstore
 			byte[] dados = baosDados.toByteArray();
 			if (this.recordId == REGISTRO_INEXISTENTE) {
@@ -252,7 +273,7 @@ public class Configuracoes {
 			}
 			rs.closeRecordStore();
 		} catch (RecordStoreException e) {
-			// Se der erro, desencana (dificilmente o usuário poderá fazer algo
+			// Se der erro, desencana (dificilmente o usuÃ¡rio poderÃ¡ fazer algo
 			// a respeito mesmo)
 			Jogo.log(e.getMessage());
 		} catch (IOException e) {
@@ -263,7 +284,7 @@ public class Configuracoes {
 				try {
 					rs.closeRecordStore();
 				} catch (RecordStoreException re) {
-					// Ai jisuis, por que um close declara exceção?
+					// Ai jisuis, por que um close declara exceÃ§Ã£o?
 					Jogo.log("Erro ao fechar rs:" + re.getMessage());
 				}
 		}
@@ -271,14 +292,14 @@ public class Configuracoes {
 	}
 
 	/**
-	 * Salva as configurações do objeto na memória do celular.
-	 * Criei este método somente para o modo CR de forma a deixá-lo
-	 * mais independente do resto do código, pois poderemos implementar
-	 * dados exclusivos para este modo no futuro...
+	 * Salva as configuraÃ§Ãµes do objeto na memÃ³ria do celular. Criei este mÃ©todo
+	 * somente para o modo CR de forma a deixÃ¡-lo mais independente do resto do
+	 * cÃ³digo, pois poderemos implementar dados exclusivos para este modo no
+	 * futuro...
 	 * 
 	 * @throws RecordStoreException
-	 *             caso hajam problemas (para notificar o usuário que a
-	 *             configuração não foi salva)
+	 *             caso hajam problemas (para notificar o usuÃ¡rio que a
+	 *             configuraÃ§Ã£o nÃ£o foi salva)
 	 */
 	public void salvaModoCE() {
 		RecordStore rs = null;
@@ -287,10 +308,10 @@ public class Configuracoes {
 			ByteArrayOutputStream baosDados = new ByteArrayOutputStream();
 			DataOutputStream dosDados = new DataOutputStream(baosDados);
 
-			// Compõe o registro com as propriedades de configuração
+			// CompÃµe o registro com as propriedades de configuraÃ§Ã£o
 			dosDados.writeInt(VERSAO_ID_MODOCE);
-			dosDados.writeUTF(estrategiasModoCE[0]);
-			dosDados.writeUTF(estrategiasModoCE[1]);
+			dosDados.writeInt(estrategiasModoCE[0]);
+			dosDados.writeInt(estrategiasModoCE[1]);
 			dosDados.writeInt(nPartidasModoCE);
 
 			// Atualiza o recordstore
@@ -302,7 +323,7 @@ public class Configuracoes {
 			}
 			rs.closeRecordStore();
 		} catch (RecordStoreException e) {
-			// Se der erro, desencana (dificilmente o usuário poderá fazer algo
+			// Se der erro, desencana (dificilmente o usuÃ¡rio poderÃ¡ fazer algo
 			// a respeito mesmo)
 			Jogo.log(e.getMessage());
 		} catch (IOException e) {
@@ -313,19 +334,19 @@ public class Configuracoes {
 				try {
 					rs.closeRecordStore();
 				} catch (RecordStoreException re) {
-					// Ai jisuis, por que um close declara exceção?
+					// Ai jisuis, por que um close declara exceÃ§Ã£o?
 					Jogo.log("Erro ao fechar rs:" + re.getMessage());
 				}
 		}
 
 	}
-	
+
 	/**
-	 * Indica se as configurações do objeto foram recuperadas do celular ou se
-	 * são as default para primeira execução (ou para dispostivos que não
+	 * Indica se as configuraÃ§Ãµes do objeto foram recuperadas do celular ou se
+	 * sÃ£o as default para primeira execuÃ§Ã£o (ou para dispostivos que nÃ£o
 	 * suportam RecordStore)
 	 * 
-	 * @return true para configurações default, false para configurações
+	 * @return true para configuraÃ§Ãµes default, false para configuraÃ§Ãµes
 	 *         carregadas do celular.
 	 */
 	public boolean isDefault() {
@@ -346,13 +367,13 @@ public class Configuracoes {
 			protected void paint(Graphics arg0) {
 			}
 		}
-		// Se ainda não fez, mede a tela e toma a decisão (fiz assim por não
+		// Se ainda nÃ£o fez, mede a tela e toma a decisÃ£o (fiz assim por nÃ£o
 		// saber o custo de instanciar um Canvas a cada chamada)
 		if (telaGrande == null) {
 			Canvas c = new CanvasParaMedir();
 			telaGrande = new Boolean(c.getWidth() >= 99 && c.getHeight() >= 140);
 		}
 		return telaGrande.booleanValue();
-		}
+	}
 
 }

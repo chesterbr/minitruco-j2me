@@ -1,38 +1,38 @@
 package mt;
 
 /*
- * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright ¬© 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  *
- * Copyright © 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
- * (modo confronto de estratÈgias)
+ * Copyright ¬© 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * (modo confronto de estrat√©gias)
  * 
- * Este programa È um software livre; vocÍ pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da LicenÁa P˙blica Geral GNU como 
- * publicada pela FundaÁ„o do Software Livre (FSF); na vers„o 3 da 
- * LicenÁa, ou (na sua opni„o) qualquer vers„o.
+ * Este programa √© um software livre; voc√™ pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da Licen√ßa P√∫blica Geral GNU como 
+ * publicada pela Funda√ß√£o do Software Livre (FSF); na vers√£o 3 da 
+ * Licen√ßa, ou (na sua opni√£o) qualquer vers√£o.
  *
- * Este programa È distribuido na esperanÁa que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA«¬O
- * a qualquer MERCADO ou APLICA«√O EM PARTICULAR. Veja a LicenÁa
- * P˙blica Geral GNU para maiores detalhes.
+ * Este programa √© distribuido na esperan√ßa que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA√á√ÇO
+ * a qualquer MERCADO ou APLICA√á√ÉO EM PARTICULAR. Veja a Licen√ßa
+ * P√∫blica Geral GNU para maiores detalhes.
  *
- * VocÍ deve ter recebido uma cÛpia da LicenÁa P˙blica Geral GNU
- * junto com este programa, se n„o, escreva para a FundaÁ„o do Software
+ * Voc√™ deve ter recebido uma c√≥pia da Licen√ßa P√∫blica Geral GNU
+ * junto com este programa, se n√£o, escreva para a Funda√ß√£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 /**
  * Jogo em andamento (independente de estar rodando local ou remotamente).
  * <p>
- * As implementaÁıes desta classe ir„o cuidar de executar o jogo (no caso de
- * <code>JogoLocal</code>) ou manter a comunicaÁ„o com um jogo em execuÁ„o
+ * As implementa√ß√µes desta classe ir√£o cuidar de executar o jogo (no caso de
+ * <code>JogoLocal</code>) ou manter a comunica√ß√£o com um jogo em execu√ß√£o
  * remota (<code>JogoRemoto</code>). Em qualquer caso, os objetos Jogador
- * n„o ter„o ciÍncia de onde o jogo est· se passando.
+ * n√£o ter√£o ci√™ncia de onde o jogo est√° se passando.
  * <p>
- * A classe tambÈm faz o log (para fins de debug). Idealmente haveria uma classe
- * para isso, mas economizamos uns Ks deixando aqui (n„o pode ser na classe
- * principal porque esta depende das classes MIDP, que o servidor n„o tem).
+ * A classe tamb√©m faz o log (para fins de debug). Idealmente haveria uma classe
+ * para isso, mas economizamos uns Ks deixando aqui (n√£o pode ser na classe
+ * principal porque esta depende das classes MIDP, que o servidor n√£o tem).
  * 
  * @see JogoLocal
  * @author Chester
@@ -41,23 +41,23 @@ package mt;
 public abstract class Jogo implements Runnable {
 
 	/**
-	 * ReferÍncia para determinar a ordem das cartas no truco
+	 * Refer√™ncia para determinar a ordem das cartas no truco
 	 */
 	protected static final String letrasOrdenadas = "4567QJKA23";
 
 	/**
 	 * Rodada que estamos jogando (de 1 a 3).
 	 * <p>
-	 * (as implementaÁıes devem manter atualizado)
+	 * (as implementa√ß√µes devem manter atualizado)
 	 */
 	int numRodadaAtual;
 
 	/**
 	 * Recupera um valor relativo para a carta, considerando as manilhas em jogo
 	 * <p>
-	 * Este mÈtodo est· na superclasse porque, no inÌcio da rodada, toda a
-	 * informaÁ„o necess·ria consiste na manilha e em sua regra, e essas j·
-	 * foram transmitidas, evitando assim, d˙zias de comandos.
+	 * Este m√©todo est√° na superclasse porque, no in√≠cio da rodada, toda a
+	 * informa√ß√£o necess√°ria consiste na manilha e em sua regra, e essas j√°
+	 * foram transmitidas, evitando assim, d√∫zias de comandos.
 	 * 
 	 * @param c
 	 *            Carta cujo valor desejamos
@@ -65,7 +65,7 @@ public abstract class Jogo implements Runnable {
 	public static int getValorTruco(Carta c, char letraManilha) {
 
 		if (c.isFechada()) {
-			// Cartas fechadas sempre tÍm valor 0
+			// Cartas fechadas sempre t√™m valor 0
 			return 0;
 		}
 
@@ -108,14 +108,14 @@ public abstract class Jogo implements Runnable {
 	private Jogador[] jogadores = new Jogador[4];
 
 	/**
-	 * N˙mero de jogadores adicionados atÈ agora
+	 * N√∫mero de jogadores adicionados at√© agora
 	 */
 	protected int numJogadores = 0;
 
 	/**
 	 * Guarda quais cartas foram jogadas em cada rodada.
 	 * <p>
-	 * (as implementaÁıes devem alimentar este array)
+	 * (as implementa√ß√µes devem alimentar este array)
 	 */
 	protected Carta[][] cartasJogadasPorRodada;
 
@@ -123,18 +123,18 @@ public abstract class Jogo implements Runnable {
 	 * Inicia o jogo.
 	 * <p>
 	 * O jogo deve ser inicializado numa thread separada da principal, desta
-	 * forma È mais conveniente que ele seja o Runnable desta thread, daÌ o nome
-	 * do mÈtodo.
+	 * forma √© mais conveniente que ele seja o Runnable desta thread, da√≠ o nome
+	 * do m√©todo.
 	 */
 	public abstract void run();
 
 	/**
 	 * Informa que o jogador vai descartar aquela carta.
 	 * <p>
-	 * Tem que ser a vez dele e n„o pode haver ninguÈm trucando.
+	 * Tem que ser a vez dele e n√£o pode haver ningu√©m trucando.
 	 * <p>
-	 * A rotina n„o verifica se o jogador realmente possuÌa aquela carta -
-	 * assume-se que as inst‚ncias de Jogador s„o honestas e se protegem de
+	 * A rotina n√£o verifica se o jogador realmente possu√≠a aquela carta -
+	 * assume-se que as inst√¢ncias de Jogador s√£o honestas e se protegem de
 	 * clientes remotos desonestos
 	 * 
 	 * @param j
@@ -143,10 +143,10 @@ public abstract class Jogo implements Runnable {
 	public abstract void jogaCarta(Jogador j, Carta c);
 
 	/**
-	 * Informa ao jogo o resultado de aceite daquela m„o de 11
+	 * Informa ao jogo o resultado de aceite daquela m√£o de 11
 	 * 
 	 * @param j
-	 *            Jogador que est· respondendo
+	 *            Jogador que est√° respondendo
 	 * @param aceita
 	 *            true se o jogador topa jogar, false se deixar para o parceiro
 	 *            decidir
@@ -157,15 +157,15 @@ public abstract class Jogo implements Runnable {
 	 * Informa que o jogador solicitou um aumento de aposta ("truco", "seis",
 	 * etc.).
 	 * <p>
-	 * Os jogadores s„o notificados, e a aposta ser· efetivamente aumentada se
-	 * um dos advers·rios responder positivamente.
+	 * Os jogadores s√£o notificados, e a aposta ser√° efetivamente aumentada se
+	 * um dos advers√°rios responder positivamente.
 	 * <p>
-	 * Observe-se que a vez do jogador fica "suspensa", j· que lanÁamentos de
-	 * cartas sÛ s„o aceitos se n„o houver ninguÈm trucando. Como o jogador
-	 * atualmente sÛ pode trucar na sua vez, isso n„o È problema.
+	 * Observe-se que a vez do jogador fica "suspensa", j√° que lan√ßamentos de
+	 * cartas s√≥ s√£o aceitos se n√£o houver ningu√©m trucando. Como o jogador
+	 * atualmente s√≥ pode trucar na sua vez, isso n√£o √© problema.
 	 * 
 	 * @param j
-	 *            Jogador que est· solicitando o aumento
+	 *            Jogador que est√° solicitando o aumento
 	 */
 	public abstract void aumentaAposta(Jogador j);
 
@@ -184,26 +184,26 @@ public abstract class Jogo implements Runnable {
 	 * Retorna as cartas jogadas por cada jogador naquela rodada
 	 * 
 	 * @param rodada
-	 *            n˙mero de 1 a 3
-	 * @return cartas jogadas naquela rodada (Ìndice = posiÁ„o do Jogador-1)
+	 *            n√∫mero de 1 a 3
+	 * @return cartas jogadas naquela rodada (√≠ndice = posi√ß√£o do Jogador-1)
 	 */
 	public Carta[] getCartasDaRodada(int rodada) {
 		return cartasJogadasPorRodada[rodada - 1];
 	}
 
 	/**
-	 * Carta que determina a manilha (em jogo que n„o usa manilha velha)
+	 * Carta que determina a manilha (em jogo que n√£o usa manilha velha)
 	 */
 	public Carta cartaDaMesa;
 
 	/**
-	 * Atualiza um objeto que contÈm a situaÁ„o do jogo (exceto pelas cartas do
+	 * Atualiza um objeto que cont√©m a situa√ß√£o do jogo (exceto pelas cartas do
 	 * jogador)
 	 * 
 	 * @param s
 	 *            objeto a atualizar
 	 * @param j
-	 *            Jogador que receber· a situaÁ„o
+	 *            Jogador que receber√° a situa√ß√£o
 	 */
 	public abstract void atualizaSituacao(SituacaoJogo s, Jogador j);
 
@@ -222,11 +222,11 @@ public abstract class Jogo implements Runnable {
 	}
 
 	/**
-	 * Adiiciona um jogador na prÛxima posiÁ„o disponÌvel
+	 * Adiiciona um jogador na pr√≥xima posi√ß√£o dispon√≠vel
 	 * 
 	 * @param j
 	 *            Jogador a adicionar
-	 * @return true se adicionou o jogador, false se n„o conseguiu
+	 * @return true se adicionou o jogador, false se n√£o conseguiu
 	 */
 	public synchronized boolean adiciona(Jogador j) {
 
@@ -235,7 +235,7 @@ public abstract class Jogo implements Runnable {
 			return false;
 		}
 
-		// Coloca o jogador na prÛxima vaga e vincula ao jogo
+		// Coloca o jogador na pr√≥xima vaga e vincula ao jogo
 		jogadores[numJogadores] = j;
 		numJogadores++;
 		j.setPosicao(numJogadores);
@@ -249,7 +249,7 @@ public abstract class Jogo implements Runnable {
 	 * 
 	 * @param posicao
 	 *            valor de 1 a 4
-	 * @return Objeto correspondente ‡quela posiÁ„o
+	 * @return Objeto correspondente √†quela posi√ß√£o
 	 */
 	protected Jogador getJogador(int posicao) {
 		return jogadores[posicao - 1];
@@ -260,18 +260,18 @@ public abstract class Jogo implements Runnable {
 	/**
 	 * Pontos de cada equipe na partida.
 	 * <p>
-	 * As implementaÁıes devem atualizar (para se saber quando È m„o de 11)
+	 * As implementa√ß√µes devem atualizar (para se saber quando √© m√£o de 11)
 	 */
 	protected int[] pontosEquipe = new int[2];
 
 	/**
-	 * N˙mero de vaquinhas no pasto de cada equipe.
+	 * N√∫mero de vaquinhas no pasto de cada equipe.
 	 * 
 	 */
 	protected int[] vaquinhasNoPasto = new int[2];
 
 	/**
-	 * Sinalizador do modo confronto de estratÈgias
+	 * Sinalizador do modo confronto de estrat√©gias
 	 * 
 	 */
 	protected boolean modoCE;
@@ -283,7 +283,7 @@ public abstract class Jogo implements Runnable {
 	protected boolean jogoFinalizado = false;
 
 	/**
-	 * @return Letra correspondente ‡ manilha, ou constante em caso de manilha
+	 * @return Letra correspondente √† manilha, ou constante em caso de manilha
 	 *         fixa
 	 * @see SituacaoJogo#MANILHA_INDETERMINADA
 	 */
@@ -294,7 +294,7 @@ public abstract class Jogo implements Runnable {
 	/**
 	 * Determina a letra da manilha, baseado na carta virada (o "vira").
 	 * <p>
-	 * Deve ser chamado a cada inicializaÁ„o de m„o.
+	 * Deve ser chamado a cada inicializa√ß√£o de m√£o.
 	 * 
 	 * @param c
 	 *            Carta virada. Ignorado se for jogo com manilha velha
@@ -314,7 +314,7 @@ public abstract class Jogo implements Runnable {
 		}
 		manilha = letrasOrdenadas.charAt(posManilha);
 
-		// Detalhe: no baralho limpo, a manilha do vira 3 È o valete (e n„o o 4)
+		// Detalhe: no baralho limpo, a manilha do vira 3 √© o valete (e n√£o o 4)
 		if (isBaralhoLimpo() && c.getLetra() == '3') {
 			manilha = 'Q';
 		}
@@ -325,8 +325,8 @@ public abstract class Jogo implements Runnable {
 	 * Informa se alguma das equipes tem 11 pontos (para fins de permitir
 	 * trucar)
 	 * <p>
-	 * Isso n„o tem a ver com a "m„o de 11" - aquela em que uma das equipes
-	 * apenas tem 11. Toda m„o de 11 retorna true aqui, mas o 11x11 tambÈm.
+	 * Isso n√£o tem a ver com a "m√£o de 11" - aquela em que uma das equipes
+	 * apenas tem 11. Toda m√£o de 11 retorna true aqui, mas o 11x11 tamb√©m.
 	 */
 	public boolean isAlguemTem11Pontos() {
 		return pontosEquipe[0] == 11 || pontosEquipe[1] == 11;
@@ -334,14 +334,14 @@ public abstract class Jogo implements Runnable {
 
 	/**
 	 * Indica que o jogo foi finalizado por iniciativa do jogador naquela
-	 * posiÁ„o.
+	 * posi√ß√£o.
 	 * <p>
-	 * ImplementaÁıes podem sobrescrever (ex.: para notificar o servidor) mas
+	 * Implementa√ß√µes podem sobrescrever (ex.: para notificar o servidor) mas
 	 * devem chamar o super()
 	 * <p>
 	 * 
 	 * @param posicao
-	 *            posiÁ„o (1 a 4) do jogador que motivou o abort
+	 *            posi√ß√£o (1 a 4) do jogador que motivou o abort
 	 */
 	public void abortaJogo(int posicao) {
 		jogoFinalizado = true;
@@ -357,7 +357,7 @@ public abstract class Jogo implements Runnable {
 	public static String[] log = null;
 
 	/**
-	 * MÈtodo usado para debug (permite acompanhar o jogo no console)
+	 * M√©todo usado para debug (permite acompanhar o jogo no console)
 	 * 
 	 * @param string
 	 *            Mensagem informativa

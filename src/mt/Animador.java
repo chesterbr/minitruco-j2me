@@ -1,34 +1,34 @@
 package mt;
 
 /*
- * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright Â© 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Copyright © 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
- * (modo confronto de estratégias)
+ * Copyright Â© 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * (modo confronto de estratÃ©gias)
  * 
- * Este programa é um software livre; você pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
- * Licença, ou (na sua opnião) qualquer versão.
+ * Este programa Ã© um software livre; vocÃª pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da LicenÃ§a PÃºblica Geral GNU como 
+ * publicada pela FundaÃ§Ã£o do Software Livre (FSF); na versÃ£o 3 da 
+ * LicenÃ§a, ou (na sua opniÃ£o) qualquer versÃ£o.
  *
- * Este programa é distribuido na esperança que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÇÂO
- * a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença
- * Pública Geral GNU para maiores detalhes.
+ * Este programa Ã© distribuido na esperanÃ§a que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÃ‡Ã‚O
+ * a qualquer MERCADO ou APLICAÃ‡ÃƒO EM PARTICULAR. Veja a LicenÃ§a
+ * PÃºblica Geral GNU para maiores detalhes.
  *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU
- * junto com este programa, se não, escreva para a Fundação do Software
+ * VocÃª deve ter recebido uma cÃ³pia da LicenÃ§a PÃºblica Geral GNU
+ * junto com este programa, se nÃ£o, escreva para a FundaÃ§Ã£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 import javax.microedition.lcdui.Image;
 
 /**
- * Cuida de todas as animações feitas sobre a mesa.
+ * Cuida de todas as animaÃ§Ãµes feitas sobre a mesa.
  * <p>
- * A princípio poderia estar na classe <code>Mesa</code>, mas separando ajuda
- * a despoluir aquele código um pouco.
+ * A princÃ­pio poderia estar na classe <code>Mesa</code>, mas separando ajuda
+ * a despoluir aquele cÃ³digo um pouco.
  * 
  * @author Chester
  * 
@@ -44,7 +44,7 @@ public class Animador extends Thread {
 	}
 
 	/**
-	 * Quantidade de frames por segundo que desejamos nas animações
+	 * Quantidade de frames por segundo que desejamos nas animaÃ§Ãµes
 	 */
 	private static final int FPS = 30;
 
@@ -55,10 +55,10 @@ public class Animador extends Thread {
 	static final int ALTURA_SAS_FINAL = 3;
 
 	/**
-	 * Chama o frame de animação de tempos em tempos, de forma a atingir a
+	 * Chama o frame de animaÃ§Ã£o de tempos em tempos, de forma a atingir a
 	 * quantidade de frames por segundo desejada.
 	 * <p>
-	 * Inspiração: http://tinyurl.com/bdlza
+	 * InspiraÃ§Ã£o: http://tinyurl.com/bdlza
 	 */
 	public void run() {
 		long timestampInicio, timestampFim;
@@ -75,7 +75,7 @@ public class Animador extends Thread {
 				try {
 					sleep(tempoDesejado - tempoDecorrido);
 				} catch (InterruptedException e) {
-					// Não faz nada, é só controle de timing
+					// NÃ£o faz nada, Ã© sÃ³ controle de timing
 				}
 			}
 		}
@@ -83,16 +83,16 @@ public class Animador extends Thread {
 	}
 
 	/**
-	 * Executa um frame da animação que está acontecendo
+	 * Executa um frame da animaÃ§Ã£o que estÃ¡ acontecendo
 	 */
 	public void frame() {
 
-		// Como os Nokia Series 40 dão pau aqui, vamos guardar os erros
-		// (o que não afeta o andamento do jogo, geralmente falando)
-		// animacaoAtual guarda o estágio em que ocorreu o erro, para debug
+		// Como os Nokia Series 40 dÃ£o pau aqui, vamos guardar os erros
+		// (o que nÃ£o afeta o andamento do jogo, geralmente falando)
+		// animacaoAtual guarda o estÃ¡gio em que ocorreu o erro, para debug
 		String animacaoAtual = null;
 		try {
-			// Animação da abertura
+			// AnimaÃ§Ã£o da abertura
 			if (aberturaAnimando) {
 				animacaoAtual = "abertura";
 				frameAtual++;
@@ -120,7 +120,7 @@ public class Animador extends Thread {
 				mesa.serviceRepaints();
 			}
 
-			// Animação de cartas se movendo
+			// AnimaÃ§Ã£o de cartas se movendo
 			if (cartaAnimada != null) {
 				animacaoAtual = "cartas";
 				frameAtual++;
@@ -135,7 +135,7 @@ public class Animador extends Thread {
 				mesa.serviceRepaints();
 			}
 
-			// ícone da rodada piscando
+			// Ã­cone da rodada piscando
 			if (numRodadaPiscando != 0) {
 				animacaoAtual = "icone da rodada";
 				if (frameAtual < numFrames) {
@@ -177,7 +177,7 @@ public class Animador extends Thread {
 				}
 			}
 
-			// Balão sendo exibido
+			// BalÃ£o sendo exibido
 			if (isMostrandoBalao) {
 				animacaoAtual = "balao";
 				if (frameAtual == 0) {
@@ -211,15 +211,15 @@ public class Animador extends Thread {
 
 	}
 
-	// Contadores genéricos
+	// Contadores genÃ©ricos
 	private int frameAtual, numFrames;
 
-	// Variáveis de placar
+	// VariÃ¡veis de placar
 	private String stringPlacarAtual;
 
 	private int numPlacarPiscando = 0;
 
-	// Constantes/Variáveis de ícones de rodada
+	// Constantes/VariÃ¡veis de Ã­cones de rodada
 	private static final int NUM_PISCADAS_ICONE_RODADA = 3;
 
 	private static final Image iconeRodadaApagado = Mesa.getIconeRodada(0);
@@ -230,29 +230,29 @@ public class Animador extends Thread {
 
 	private Image iconeRodadaAceso;
 
-	// Variáveis de cartas animadas
+	// VariÃ¡veis de cartas animadas
 	private Carta cartaAnimada = null;
 
 	private int topInicial, leftInicial, topFinal, leftFinal;
 
-	// Variáveis de texto piscando
+	// VariÃ¡veis de texto piscando
 	private boolean isTextoPiscando = false;
 
 	private int numFramesPiscaTexto, numFramesPassados;
 
-	// Variáveis da abertura
+	// VariÃ¡veis da abertura
 	public boolean aberturaAnimando = false;
 
 	public int framesCartaAtual = 0;
 
 	/**
-	 * Espera outras animações finalizarem (para evitar concorrência entre
+	 * Espera outras animaÃ§Ãµes finalizarem (para evitar concorrÃªncia entre
 	 * threads e outras doideiras)
 	 * 
 	 */
 	private void aguardaFimAnimacoes() {
-		// No caso particular da animação da abertura, ao invés de aguardar,
-		// mata ela (afinal, ela é perfumaria)
+		// No caso particular da animaÃ§Ã£o da abertura, ao invÃ©s de aguardar,
+		// mata ela (afinal, ela Ã© perfumaria)
 		if (aberturaAnimando) {
 			aberturaAnimando = false;
 			mesa.mostraFinalAbertura();
@@ -264,7 +264,7 @@ public class Animador extends Thread {
 			try {
 				sleep(10);
 			} catch (InterruptedException e) {
-				// Não faz nada, é só controle de timing
+				// NÃ£o faz nada, Ã© sÃ³ controle de timing
 			}
 		}
 	}
@@ -272,7 +272,7 @@ public class Animador extends Thread {
 	private boolean isMostrandoBalao = false;
 
 	/**
-	 * Anima uma carta até o seu destino
+	 * Anima uma carta atÃ© o seu destino
 	 * 
 	 * @param c
 	 * @param topFinal
@@ -281,10 +281,10 @@ public class Animador extends Thread {
 	 */
 	public void moveCarta(Carta c, int topFinal, int leftFinal, int tempoMs) {
 
-		// Aguarda a finalização de outras animações
+		// Aguarda a finalizaÃ§Ã£o de outras animaÃ§Ãµes
 		aguardaFimAnimacoes();
 
-		// Se as animações estiverem desligadas, move a carta e pronto
+		// Se as animaÃ§Ãµes estiverem desligadas, move a carta e pronto
 		if (!animacaoLigada) {
 			c.setTop(topFinal);
 			c.setLeft(leftFinal);
@@ -293,7 +293,7 @@ public class Animador extends Thread {
 			return;
 		}
 
-		// Determina quantos frames vai durar essa animação
+		// Determina quantos frames vai durar essa animaÃ§Ã£o
 		this.numFrames = Math.max(1, FPS * tempoMs / 1000);
 
 		// Guarda as coordenadas de origem e destino da carta
@@ -302,16 +302,16 @@ public class Animador extends Thread {
 		this.topFinal = topFinal;
 		this.leftFinal = leftFinal;
 
-		// Inicia a animação (a thread monitora a propriedade cartaAnimada)
+		// Inicia a animaÃ§Ã£o (a thread monitora a propriedade cartaAnimada)
 		this.frameAtual = 0;
 		cartaAnimada = c;
 
-		// Aguarda o final da animação
+		// Aguarda o final da animaÃ§Ã£o
 		while (mesa.isAppRodando && cartaAnimada != null) {
 			try {
 				sleep(1);
 			} catch (InterruptedException e) {
-				// Não faz nada, é só controle de timing
+				// NÃ£o faz nada, Ã© sÃ³ controle de timing
 			}
 		}
 
@@ -319,11 +319,11 @@ public class Animador extends Thread {
 
 	public void animaAbertura() {
 
-		// Aguarda a finalização de outras animações
-		// (impossível, mas o futuro a Deus pertence)
+		// Aguarda a finalizaÃ§Ã£o de outras animaÃ§Ãµes
+		// (impossÃ­vel, mas o futuro a Deus pertence)
 		aguardaFimAnimacoes();
 
-		// Se as animações estiverem desligadas, seta os valores finais
+		// Se as animaÃ§Ãµes estiverem desligadas, seta os valores finais
 		if (!animacaoLigada) {
 			mesa.mostraFinalAbertura();
 			mesa.repaint();
@@ -331,22 +331,22 @@ public class Animador extends Thread {
 			return;
 		}
 
-		// Inicializa as variáveis
+		// Inicializa as variÃ¡veis
 		
 		mesa.aberturaAlturaSas = mesa.getHeight();
 		mesa.aberturaNumCartas = 0;
 		mesa.aberturaUrlVisivel = false;
 
-		// Inicia a animação (a thread monitora a propriedade aberturaAnimando)
+		// Inicia a animaÃ§Ã£o (a thread monitora a propriedade aberturaAnimando)
 		this.frameAtual = 0;
 		aberturaAnimando = true;
 
-		// Aguarda o final da animação
+		// Aguarda o final da animaÃ§Ã£o
 		while (mesa.isAppRodando && aberturaAnimando) {
 			try {
 				sleep(1);
 			} catch (InterruptedException e) {
-				// Não faz nada, é só controle de timing
+				// NÃ£o faz nada, Ã© sÃ³ controle de timing
 			}
 		}
 
@@ -354,25 +354,25 @@ public class Animador extends Thread {
 
 	public void mostraBalao(int posicao, String texto, int tempoMs) {
 
-		// Aguarda a finalização de outras animações
+		// Aguarda a finalizaÃ§Ã£o de outras animaÃ§Ãµes
 		aguardaFimAnimacoes();
 
-		// Calcula a quantidade de frames em que o balão aparece
+		// Calcula a quantidade de frames em que o balÃ£o aparece
 		frameAtual = 0;
 		numFrames = Math.max(1, FPS * tempoMs / 1000);
 
-		// Mostra o balão
+		// Mostra o balÃ£o
 		mesa.textoBalao = texto;
 		mesa.posicaoBalao = posicao;
 
 		isMostrandoBalao = true;
 
-		// Aguarda o final da animação
+		// Aguarda o final da animaÃ§Ã£o
 		while (mesa.isAppRodando && isMostrandoBalao) {
 			try {
 				sleep(1);
 			} catch (InterruptedException e) {
-				// Não faz nada, é só controle de timing
+				// NÃ£o faz nada, Ã© sÃ³ controle de timing
 			}
 		}
 
@@ -380,10 +380,10 @@ public class Animador extends Thread {
 
 	public void piscaPlacar(int numPlacar, int pontos) {
 
-		// Aguarda a finalização de outras animações
+		// Aguarda a finalizaÃ§Ã£o de outras animaÃ§Ãµes
 		aguardaFimAnimacoes();
 
-		// Inicializa os parâmetros e acende o ícone
+		// Inicializa os parÃ¢metros e acende o Ã­cone
 		frameAtual = 0;
 		numFrames = FPS / 8; // 1/8 de segundo por "meia-piscada"
 		stringPlacarAtual = (numPlacar == 1 ? Mesa.STRING_NOS
@@ -391,7 +391,7 @@ public class Animador extends Thread {
 				+ pontos;
 		piscadaAtual = 0;
 
-		// Inicia a animação
+		// Inicia a animaÃ§Ã£o
 		numPlacarPiscando = numPlacar;
 
 		// Aguarda o final
@@ -399,7 +399,7 @@ public class Animador extends Thread {
 			try {
 				sleep(1);
 			} catch (InterruptedException e) {
-				// Não faz nada, é só controle de timing
+				// NÃ£o faz nada, Ã© sÃ³ controle de timing
 			}
 		}
 
@@ -407,10 +407,10 @@ public class Animador extends Thread {
 
 	public void piscaPlacarComVaquinhasInfo(int numPlacar, int ptsA, int ptsB, int partidasA, int partidasB, boolean modoCE) {
 
-		// Aguarda a finalização de outras animações
+		// Aguarda a finalizaÃ§Ã£o de outras animaÃ§Ãµes
 		aguardaFimAnimacoes();
 
-		// Inicializa os parâmetros e acende o ícone
+		// Inicializa os parÃ¢metros e acende o Ã­cone
 		frameAtual = 0;
 		numFrames = FPS / 8; // 1/8 de segundo por "meia-piscada"
 		if(modoCE)
@@ -424,7 +424,7 @@ public class Animador extends Thread {
 				+ "-" + (numPlacar == 1 ? ptsA : ptsB);
 		piscadaAtual = 0;
 
-		// Inicia a animação
+		// Inicia a animaÃ§Ã£o
 		numPlacarPiscando = numPlacar;
 
 		// Aguarda o final
@@ -432,13 +432,13 @@ public class Animador extends Thread {
 			try {
 				sleep(1);
 			} catch (InterruptedException e) {
-				// Não faz nada, é só controle de timing
+				// NÃ£o faz nada, Ã© sÃ³ controle de timing
 			}
 		}
 
-		// Atualiza o outro placar agora (para não complicar
+		// Atualiza o outro placar agora (para nÃ£o complicar
 		// atualizo os dois placares mesmo...)
-		// Necessário para início de partidas após uma
+		// NecessÃ¡rio para inÃ­cio de partidas apÃ³s uma
 		// das duplas colocar uma vaquinha no pasto
 		if(modoCE) {
 			mesa.stringPlacar[0] = Mesa.STRING_DA + partidasA + "-" + ptsA;
@@ -453,26 +453,26 @@ public class Animador extends Thread {
 	}
 	
 	/**
-	 * Acende o ícone de status da rodada (dando umas piscadinhas antes)
+	 * Acende o Ã­cone de status da rodada (dando umas piscadinhas antes)
 	 * 
 	 * @param numRodada
-	 *            Rodada (1-3) cujo ícone queremos acender
+	 *            Rodada (1-3) cujo Ã­cone queremos acender
 	 * @param status
-	 *            Resultado da rodada (vitória, empate ou derrota)
+	 *            Resultado da rodada (vitÃ³ria, empate ou derrota)
 	 */
 	public void acendeIconeRodada(int numRodada, int status) {
 
-		// Aguarda a finalização de outras animações
+		// Aguarda a finalizaÃ§Ã£o de outras animaÃ§Ãµes
 		aguardaFimAnimacoes();
 
-		// Inicializa os parâmetros e acende o ícone
+		// Inicializa os parÃ¢metros e acende o Ã­cone
 		frameAtual = 0;
 		numFrames = FPS / 4; // 1/4 de segundo por "meia-piscada"
 		iconeRodadaAceso = Mesa.getIconeRodada(status);
 		piscadaAtual = 0;
 		mesa.iconesRodadas[numRodada - 1] = iconeRodadaAceso;
 
-		// Inicia a animação
+		// Inicia a animaÃ§Ã£o
 		numRodadaPiscando = numRodada;
 
 		// Aguarda o final
@@ -480,7 +480,7 @@ public class Animador extends Thread {
 			try {
 				sleep(1);
 			} catch (InterruptedException e) {
-				// Não faz nada, é só controle de timing
+				// NÃ£o faz nada, Ã© sÃ³ controle de timing
 			}
 		}
 	}
@@ -493,10 +493,10 @@ public class Animador extends Thread {
 	 */
 	public void piscaTexto(boolean status) {
 
-		// Esta animação é assíncrona em relação às outras, logo não vamos
+		// Esta animaÃ§Ã£o Ã© assÃ­ncrona em relaÃ§Ã£o Ã s outras, logo nÃ£o vamos
 		// aguardar nenhum final, nem ficar esperando no final dela.
 		//
-		// Tudo o que faremos é ajustar o status, o contador de frames e o
+		// Tudo o que faremos Ã© ajustar o status, o contador de frames e o
 		// indicador de quando deve piscar.
 
 		isTextoPiscando = status;

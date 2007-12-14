@@ -1,24 +1,24 @@
 package mt;
 
 /*
- * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright Â© 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Copyright © 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
- * (frases aleatórias para balões)
+ * Copyright Â© 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * (frases aleatÃ³rias para balÃµes)
  * 
- * Este programa é um software livre; você pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
- * Licença, ou (na sua opnião) qualquer versão.
+ * Este programa Ã© um software livre; vocÃª pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da LicenÃ§a PÃºblica Geral GNU como 
+ * publicada pela FundaÃ§Ã£o do Software Livre (FSF); na versÃ£o 3 da 
+ * LicenÃ§a, ou (na sua opniÃ£o) qualquer versÃ£o.
  *
- * Este programa é distribuido na esperança que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÇÂO
- * a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença
- * Pública Geral GNU para maiores detalhes.
+ * Este programa Ã© distribuido na esperanÃ§a que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÃ‡Ã‚O
+ * a qualquer MERCADO ou APLICAÃ‡ÃƒO EM PARTICULAR. Veja a LicenÃ§a
+ * PÃºblica Geral GNU para maiores detalhes.
  *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU
- * junto com este programa, se não, escreva para a Fundação do Software
+ * VocÃª deve ter recebido uma cÃ³pia da LicenÃ§a PÃºblica Geral GNU
+ * junto com este programa, se nÃ£o, escreva para a FundaÃ§Ã£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
@@ -42,7 +42,7 @@ public class JogadorHumano extends Jogador implements Runnable {
 
 	private Display display;
 
-	// Sorteia um número inteiro entre 1 e o argumento do método
+	// Sorteia um nÃºmero inteiro entre 1 e o argumento do mÃ©todo
 	private int sorteio(int maxNumero)
 	{
 		return (Math.abs(rand.nextInt())%maxNumero + 1);		
@@ -56,12 +56,12 @@ public class JogadorHumano extends Jogador implements Runnable {
 	}
 
 	/**
-	 * Retorna a posição do jogador na tela (assumindo que o jogador humano está
-	 * na posição inferior, i.e., 1).
+	 * Retorna a posiÃ§Ã£o do jogador na tela (assumindo que o jogador humano estÃ¡
+	 * na posiÃ§Ã£o inferior, i.e., 1).
 	 * <p>
 	 * 
 	 * @param j
-	 * @return 1 para a posição inferior, 2 para a direita, 3 para cima, 4 para
+	 * @return 1 para a posiÃ§Ã£o inferior, 2 para a direita, 3 para cima, 4 para
 	 *         esquerda
 	 */
 	private int posicaoNaTela(Jogador j) {
@@ -73,8 +73,8 @@ public class JogadorHumano extends Jogador implements Runnable {
 	}
 
 	public void cartaJogada(Jogador j, Carta c) {
-		// Se a carta não for uma das minhas, troca a primeira carta não-jogada
-		// do jogador na tela (que era um dummy, já que não sabíamos ainda o
+		// Se a carta nÃ£o for uma das minhas, troca a primeira carta nÃ£o-jogada
+		// do jogador na tela (que era um dummy, jÃ¡ que nÃ£o sabÃ­amos ainda o
 		// valor) por ela
 		if (!this.equals(j)) {
 			int posPrimeira = (posicaoNaTela(j) - 1) * 3;
@@ -91,17 +91,17 @@ public class JogadorHumano extends Jogador implements Runnable {
 				}
 			}
 			// Desliga o indicador de "vez" e anima a carta sendo jogada
-			// para a mesa (a animação vai virar a carta e setar como jogada)
+			// para a mesa (a animaÃ§Ã£o vai virar a carta e setar como jogada)
 			mesa.descarta(c, posicaoNaTela(j));
 			mesa.setPosicaoDaVez(0);
 		}
 		// Obs.: para as "minhas" cartas o descarte foi feito na hora (para
-		// evitar o delay no multiplayer) e não havia um marcador para desligar
-		// Em resumo: não faço nada!
+		// evitar o delay no multiplayer) e nÃ£o havia um marcador para desligar
+		// Em resumo: nÃ£o faÃ§o nada!
 	}
 
 	/**
-	 * Habilita (ou desliga) a escolha de cartas, dependendo de ser ou não a vez
+	 * Habilita (ou desliga) a escolha de cartas, dependendo de ser ou nÃ£o a vez
 	 * do jogador
 	 */
 	public void vez(Jogador j, boolean podeFechada) {
@@ -110,7 +110,7 @@ public class JogadorHumano extends Jogador implements Runnable {
 		mesa.setPosicaoDaVez(posicaoNaTela(j));
 
 		if (this.equals(j)) {
-			// Minha vez: Monta a lista de cartas selecionáveis
+			// Minha vez: Monta a lista de cartas selecionÃ¡veis
 			Vector cs = new Vector(3);
 			for (int i = 0; i <= 2; i++) {
 				Carta c = this.getCartas()[i];
@@ -118,23 +118,23 @@ public class JogadorHumano extends Jogador implements Runnable {
 					cs.addElement(c);
 				}
 			}
-			// Atribui a lista à mesa e seleciona a primeira carta
+			// Atribui a lista Ã  mesa e seleciona a primeira carta
 			mesa.setCartasSelecionaveis(cs);
 			mesa.setCartaSelecionada((Carta) cs.elementAt(0));
 
 			if (!jogo.isAlguemTem11Pontos()) {
 				// Adiciona o comando de aposta (truco, seis, etc.), conforme a
-				// situação
+				// situaÃ§Ã£o
 				mesa.adicionaComandoAposta(valorProximaAposta);
 			}
 			mesa.setPodeFechada(podeFechada);
 
 		} else {
-			// Não é minha vez, remove cursor de seleção
+			// NÃ£o Ã© minha vez, remove cursor de seleÃ§Ã£o
 			mesa.setCartasSelecionaveis(null);
 			mesa.setCartaSelecionada(null);
 
-			// Impede que o jogador peça truco, 6, etc., fora da vez
+			// Impede que o jogador peÃ§a truco, 6, etc., fora da vez
 			mesa.removeComandoAposta();
 
 		}
@@ -144,28 +144,28 @@ public class JogadorHumano extends Jogador implements Runnable {
 
 	public void pediuAumentoAposta(Jogador j, int valor) {
 
-		// Se tem alguém trucando, eu é que não posso trucar
+		// Se tem alguÃ©m trucando, eu Ã© que nÃ£o posso trucar
 		mesa.removeComandoAposta();
 
-		// Se for a equipe adversária, tenho que poder responder
+		// Se for a equipe adversÃ¡ria, tenho que poder responder
 		if (j.getEquipe() != this.getEquipe()) {
 			mesa.adicionaOpcoesAceite();
 		}
 
-		// Mostra o balãozinho com o pedido
+		// Mostra o balÃ£ozinho com o pedido
 		String texto = "";
 		switch (valor) {
 		case 3:
-			texto = BALAO_TEXTOS_TRUCO[sorteio(BALAO_TEXTOS_TRUCO.length)-1];
+			texto = MiniTruco.BALAO_TEXTOS_TRUCO[sorteio(MiniTruco.BALAO_TEXTOS_TRUCO.length)-1];
 			break;
 		case 6:
-			texto = BALAO_TEXTOS_SEIS[sorteio(BALAO_TEXTOS_SEIS.length)-1];
+			texto = MiniTruco.BALAO_TEXTOS_SEIS[sorteio(MiniTruco.BALAO_TEXTOS_SEIS.length)-1];
 			break;
 		case 9:
-			texto = BALAO_TEXTOS_NOVE[sorteio(BALAO_TEXTOS_NOVE.length)-1];
+			texto = MiniTruco.BALAO_TEXTOS_NOVE[sorteio(MiniTruco.BALAO_TEXTOS_NOVE.length)-1];
 			break;
 		default:
-			texto = BALAO_TEXTOS_DOZE[sorteio(BALAO_TEXTOS_DOZE.length)-1];
+			texto = MiniTruco.BALAO_TEXTOS_DOZE[sorteio(MiniTruco.BALAO_TEXTOS_DOZE.length)-1];
 			break;
 		}
 		mesa.balao(posicaoNaTela(j), texto, 1000 + 200 * (valor / 3));
@@ -178,9 +178,9 @@ public class JogadorHumano extends Jogador implements Runnable {
 
 	public void aceitouAumentoAposta(Jogador j, int valor) {
 		if (j.getEquipe() == this.getEquipe()) {
-			// Nós aceitamos um truco, então podemos aumentar
+			// NÃ³s aceitamos um truco, entÃ£o podemos aumentar
 			// (i.e., se foi truco, podemos pedir 6, se for 6, podemos pedir 9,
-			// etc.) até o limite de 12
+			// etc.) atÃ© o limite de 12
 			if (valor != 12) {
 				valorProximaAposta = valor + 3;
 			}
@@ -193,9 +193,9 @@ public class JogadorHumano extends Jogador implements Runnable {
 		// e se era a minha o parceiro aceitou, tanto faz o que eu escolher)
 		mesa.removeOpcoesAceite();
 
-		// Balãozinho
+		// BalÃ£ozinho
 		String texto = "";
-		texto = BALAO_TEXTOS_DESCE[sorteio(BALAO_TEXTOS_DESCE.length)-1];
+		texto = MiniTruco.BALAO_TEXTOS_DESCE[sorteio(MiniTruco.BALAO_TEXTOS_DESCE.length)-1];
 		mesa.balao(posicaoNaTela(j), texto, 800);
 		
 		// Caso tenha sido eu quem pediu o truco, retoma a vez
@@ -205,22 +205,22 @@ public class JogadorHumano extends Jogador implements Runnable {
 
 	public void recusouAumentoAposta(Jogador j) {
 
-		// Balãozinho
+		// BalÃ£ozinho
 		String texto = "";
-		texto = BALAO_TEXTOS_RECUSA[sorteio(BALAO_TEXTOS_RECUSA.length)-1];
+		texto = MiniTruco.BALAO_TEXTOS_RECUSA[sorteio(MiniTruco.BALAO_TEXTOS_RECUSA.length)-1];
 		mesa.balao(posicaoNaTela(j), texto, 500);
 
 	}
 
 	public void inicioMao() {
 
-		// Melhor não sair enquanto estiver distriubindo...
+		// Melhor nÃ£o sair enquanto estiver distriubindo...
 		mesa.removeCommand(MiniTruco.sairPartidaCommand);
 
 		// Limpa a mesa
 		mesa.limpa();
 
-		// Distribui as cartas em círculo
+		// Distribui as cartas em cÃ­rculo
 		for (int i = 0; i <= 2; i++) {
 			for (int j = 1; j <= 4; j++) {
 				if (j == 1) {
@@ -242,7 +242,7 @@ public class JogadorHumano extends Jogador implements Runnable {
 		// Libera o jogador para pedir truco
 		valorProximaAposta = 3;
 
-		// Informa que ninguém aceitou mão de 11 (para não duplicar o balão)
+		// Informa que ninguÃ©m aceitou mÃ£o de 11 (para nÃ£o duplicar o balÃ£o)
 		jaAceitou = false;
 
 		// Permite sair novamente
@@ -254,7 +254,7 @@ public class JogadorHumano extends Jogador implements Runnable {
 	 * Cria a thread que efetua a jogada para esta carta
 	 * 
 	 * @param c
-	 *            Carta que o usuário selecionou
+	 *            Carta que o usuÃ¡rio selecionou
 	 */
 	public void cartaClicada(Carta c) {
 		mesa.removeComandoAposta();
@@ -269,16 +269,16 @@ public class JogadorHumano extends Jogador implements Runnable {
 	private Carta cartaClicada;
 
 	/**
-	 * Efetua a jogada quando uma carta é clicada (para que as animações
-	 * funcionem, é necessário que as jogadas sejam feitas em uma thread
+	 * Efetua a jogada quando uma carta Ã© clicada (para que as animaÃ§Ãµes
+	 * funcionem, Ã© necessÃ¡rio que as jogadas sejam feitas em uma thread
 	 * separada)
 	 */
 	public void run() {
-		// Originalmente, nós esperávamos um retorno do jogo para
-		// liberar a carta na mesa. No entanto, isso dá um certo
+		// Originalmente, nÃ³s esperÃ¡vamos um retorno do jogo para
+		// liberar a carta na mesa. No entanto, isso dÃ¡ um certo
 		// atraso no multiplayer.
-		// Para evitar isso, vamos assumir que a interface humana só faz
-		// jogadas permitidas e já descartar
+		// Para evitar isso, vamos assumir que a interface humana sÃ³ faz
+		// jogadas permitidas e jÃ¡ descartar
 		mesa.descarta(cartaClicada, 1);
 		jogo.jogaCarta(this, cartaClicada);
 	}
@@ -303,11 +303,11 @@ public class JogadorHumano extends Jogador implements Runnable {
 					.getPosicao() - 1];
 		}
 
-		// Atualiza o placar (considerando as equipes do jogo, não a posição na
+		// Atualiza o placar (considerando as equipes do jogo, nÃ£o a posiÃ§Ã£o na
 		// mesa)
 		int icone;
 		if (resultado == getEquipe()) {
-			icone = 1; // Vitória
+			icone = 1; // VitÃ³ria
 		} else if (resultado == 3) {
 			icone = 3; // Empate
 		} else {
@@ -315,7 +315,7 @@ public class JogadorHumano extends Jogador implements Runnable {
 		}
 		mesa.setStatusMao(numRodada, icone);
 
-		// Uma vez atualizado o placar (e concluída a animação), escurece as
+		// Uma vez atualizado o placar (e concluÃ­da a animaÃ§Ã£o), escurece as
 		// cartas jogadas, deixando a tela "limpa"
 		mesa.cartaVencedora = null;
 
@@ -349,9 +349,9 @@ public class JogadorHumano extends Jogador implements Runnable {
 		if (numEquipeVencedora == this.getEquipe()) {
 			t = new Thread() {
 				public void run() {
-					// Balãozinho
+					// BalÃ£ozinho
 					String texto = "";
-					texto = BALAO_TEXTOS_VENCEDOR[sorteio(BALAO_TEXTOS_VENCEDOR.length)-1];
+					texto = MiniTruco.BALAO_TEXTOS_VENCEDOR[sorteio(MiniTruco.BALAO_TEXTOS_VENCEDOR.length)-1];
 					mesa.balao(1, texto, 5000);
 				}
 			};
@@ -359,9 +359,9 @@ public class JogadorHumano extends Jogador implements Runnable {
 		else {
 			t = new Thread() {
 				public void run() {
-					// Balãozinho
+					// BalÃ£ozinho
 					String texto = "";
-					texto = BALAO_TEXTOS_DERROTADO[sorteio(BALAO_TEXTOS_DERROTADO.length)-1];
+					texto = MiniTruco.BALAO_TEXTOS_DERROTADO[sorteio(MiniTruco.BALAO_TEXTOS_DERROTADO.length)-1];
 					mesa.balao(1, texto, 5000);
 				}
 			};
@@ -382,25 +382,25 @@ public class JogadorHumano extends Jogador implements Runnable {
 			mesa.removeOpcoesMao11();
 		}
 
-		// Mostra o balão (no caso do balão de aceitar, apenas se for o 1o.
+		// Mostra o balÃ£o (no caso do balÃ£o de aceitar, apenas se for o 1o.
 		// aceite)
 		if (!aceita || (aceita && !jaAceitou)) {
 			String texto = "";
 			if(aceita)
-				texto = BALAO_TEXTOS_ACEITAMAO11[sorteio(BALAO_TEXTOS_ACEITAMAO11.length)-1];
+				texto = MiniTruco.BALAO_TEXTOS_ACEITAMAO11[sorteio(MiniTruco.BALAO_TEXTOS_ACEITAMAO11.length)-1];
 			else
-				texto = BALAO_TEXTOS_RECUSAMAO11[sorteio(BALAO_TEXTOS_RECUSAMAO11.length)-1];
+				texto = MiniTruco.BALAO_TEXTOS_RECUSAMAO11[sorteio(MiniTruco.BALAO_TEXTOS_RECUSAMAO11.length)-1];
 			mesa.balao(posicaoNaTela(j), texto, 1000);
 		}
 
 		if (aceita) {
-			// Se foi o parceiro que aceitou, dá um tempinho (pra dar tempo de
+			// Se foi o parceiro que aceitou, dÃ¡ um tempinho (pra dar tempo de
 			// ver as cartas dele)
 			if (j != this && j.getEquipe() == this.getEquipe()) {
 				try {
 					Thread.sleep(2000);
 				} catch (Exception e) {
-					// Timing, não faz nada
+					// Timing, nÃ£o faz nada
 				}
 			}
 			// Se foi a nossa equipe que topou, esconde as cartas do parceiro
@@ -417,7 +417,7 @@ public class JogadorHumano extends Jogador implements Runnable {
 		// Exibe as cartas do parceiro
 		mesa.mostraCartasParceiro(cartasParceiro);
 
-		// Adiciona opções de menu
+		// Adiciona opÃ§Ãµes de menu
 		mesa.adicionaOpcoesMao11();
 
 	}

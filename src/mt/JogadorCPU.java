@@ -1,21 +1,21 @@
 package mt;
 
 /*
- * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright Â© 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Este programa é um software livre; você pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
- * Licença, ou (na sua opnião) qualquer versão.
+ * Este programa Ã© um software livre; vocÃª pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da LicenÃ§a PÃºblica Geral GNU como 
+ * publicada pela FundaÃ§Ã£o do Software Livre (FSF); na versÃ£o 3 da 
+ * LicenÃ§a, ou (na sua opniÃ£o) qualquer versÃ£o.
  *
- * Este programa é distribuido na esperança que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÇÂO
- * a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença
- * Pública Geral GNU para maiores detalhes.
+ * Este programa Ã© distribuido na esperanÃ§a que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÃ‡Ã‚O
+ * a qualquer MERCADO ou APLICAÃ‡ÃƒO EM PARTICULAR. Veja a LicenÃ§a
+ * PÃºblica Geral GNU para maiores detalhes.
  *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU
- * junto com este programa, se não, escreva para a Fundação do Software
+ * VocÃª deve ter recebido uma cÃ³pia da LicenÃ§a PÃºblica Geral GNU
+ * junto com este programa, se nÃ£o, escreva para a FundaÃ§Ã£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
@@ -25,7 +25,7 @@ import java.util.Vector;
 /**
  * Jogador controlado pelo celular ou pelo servidor.
  * <p>
- * É preciso "plugar" uma estratégia para que o jogador funcione.
+ * Ã‰ preciso "plugar" uma estratÃ©gia para que o jogador funcione.
  * 
  * @author Chester
  * @see Estrategia
@@ -34,50 +34,41 @@ import java.util.Vector;
 public class JogadorCPU extends Jogador implements Runnable {
 
 	/**
-	 * Estrategia que está controlando este jogador
+	 * Estrategia que estÃ¡ controlando este jogador
 	 */
 	private Estrategia estrategia;
 
 	/**
-	 * Situação atual do jogo (para o estrategia)
+	 * SituaÃ§Ã£o atual do jogo (para o estrategia)
 	 */
 	SituacaoJogo situacaoJogo = new SituacaoJogo();
 
 	/**
-	 * Cria um novo jogador CPU, usando a estratégia fornecida.
+	 * Cria um novo jogador CPU, usando a estratÃ©gia fornecida.
 	 * 
 	 * @param estrategia
-	 *            Estratégia a ser adotada por este jogador
+	 *            EstratÃ©gia a ser adotada por este jogador
 	 */
 	public JogadorCPU(Estrategia estrategia) {
 		this.estrategia = estrategia;
 	}
 
 	/**
-	 * Cria um novo jogador CPU, buscando a estratégia pelo nome.
+	 * Cria um novo jogador CPU, buscando a estratÃ©gia pelo nome.
 	 * <p>
-	 * Se o nome for "Sortear", escolhe ao acaso uma estratégia dentre as
-	 * disponíveis
 	 * 
 	 * @param nomeEstrategia
-	 *            Nome da estratégia (ex.: "Willian") ou "Sortear" para uma
-	 *            aleatória
+	 *            Nome da estratÃ©gia (ex.: "Willian")
 	 */
 	public JogadorCPU(String nomeEstrategia) {
-		Random r = new Random();
-		while (nomeEstrategia.equals("Sortear")) {
-			nomeEstrategia = JogadorCPU.OPCOES_ESTRATEGIAS[(r.nextInt() >>> 1)
-					% (JogadorCPU.OPCOES_ESTRATEGIAS.length)];
-		}
-		if (nomeEstrategia.equals("Sellani")) {
-			this.estrategia = new EstrategiaSellani();
-		} else if (nomeEstrategia.equals("Willian")) {
-			this.estrategia = new EstrategiaWillian();
-		} else if (nomeEstrategia.equals("Gasparotto v1.1")) {
-			this.estrategia = new EstrategiaGasparotto();
-		} else {
-			Jogo.log("estrategia invalida:" + nomeEstrategia);
-		}
+		this.estrategia = criaEstrategiaPeloNome(nomeEstrategia);
+	}
+
+	/**
+	 * Cria um novo jogador CPU, com uma estratÃ©gia aleatÃ³ria
+	 */
+	public JogadorCPU() {
+		this.estrategia = criaEstrategiaPeloNome("x");
 	}
 
 	/**
@@ -87,7 +78,7 @@ public class JogadorCPU extends Jogador implements Runnable {
 	private int numRespostasAguardando = 0;
 
 	/**
-	 * Sinaliza se os adversários aceitaram um pedido de truco
+	 * Sinaliza se os adversÃ¡rios aceitaram um pedido de truco
 	 */
 	private boolean aceitaramTruco;
 
@@ -97,25 +88,25 @@ public class JogadorCPU extends Jogador implements Runnable {
 
 		if (this.equals(j)) {
 
-			// Dá um tempinho, pra fingir que está "pensando"
+			// DÃ¡ um tempinho, pra fingir que estÃ¡ "pensando"
 			try {
 				Thread.sleep(Math.abs(random.nextInt()) % 250 + 200);
 			} catch (InterruptedException e) {
 				// Nada, apenas timing...
 			}
 
-			// Atualiza a situação do jogo (incluindo as cartas na mão)
+			// Atualiza a situaÃ§Ã£o do jogo (incluindo as cartas na mÃ£o)
 			atualizaSituacaoJogo();
 			situacaoJogo.podeFechada = podeFechada;
 
 			// Solicita que o estrategia jogue
 			int posCarta = estrategia.joga(situacaoJogo);
 
-			// Se houve truco, processa, e, após tudo resolvido, repete a jogada
+			// Se houve truco, processa, e, apÃ³s tudo resolvido, repete a jogada
 			if (posCarta == -1) {
 
-				// Faz a solicitação de truco numa nova thread
-				// (usando o próprio JogadorCPU como Runnable - era uma inner
+				// Faz a solicitaÃ§Ã£o de truco numa nova thread
+				// (usando o prÃ³prio JogadorCPU como Runnable - era uma inner
 				// class, mas otimizei para reduzir o .jar)
 				aceitaramTruco = false;
 				numRespostasAguardando = 2;
@@ -125,16 +116,16 @@ public class JogadorCPU extends Jogador implements Runnable {
 				while (numRespostasAguardando > 0) {
 					Thread.yield();
 				}
-				// Se não aceitaram, desencana...
+				// Se nÃ£o aceitaram, desencana...
 				if (!aceitaramTruco)
 					return;
-				// ...caso contrário, vamos seguir o jogo
+				// ...caso contrÃ¡rio, vamos seguir o jogo
 				// atualizaSituacaoJogo();
 				situacaoJogo.valorProximaAposta = 0;
 				posCarta = estrategia.joga(situacaoJogo);
 			}
 
-			// Joga a carta selecionada e remove ela da mão
+			// Joga a carta selecionada e remove ela da mÃ£o
 			boolean isFechada = posCarta >= 10;
 			if (isFechada) {
 				posCarta -= 10;
@@ -149,9 +140,9 @@ public class JogadorCPU extends Jogador implements Runnable {
 	}
 
 	/**
-	 * Envia a notificação de aumento de aposta.
+	 * Envia a notificaÃ§Ã£o de aumento de aposta.
 	 * <p>
-	 * É feito em thread separada para que o vez() aguarde as respostas sem se
+	 * Ã‰ feito em thread separada para que o vez() aguarde as respostas sem se
 	 * perder.
 	 */
 	public void run() {
@@ -167,7 +158,7 @@ public class JogadorCPU extends Jogador implements Runnable {
 		if (j.getEquipe() == this.getEquipeAdversaria()) {
 			atualizaSituacaoJogo();
 			// O if e o synchronzied garantem que, se um jogador aceitar o
-			// truco, o estrategia do outro não é consultado (caso o fosse, ele
+			// truco, o estrategia do outro nÃ£o Ã© consultado (caso o fosse, ele
 			// receberia informacoes posteriores ao aceite)
 			synchronized (jogo) {
 				if (situacaoJogo.posJogadorPedindoAumento != 0) {
@@ -181,7 +172,7 @@ public class JogadorCPU extends Jogador implements Runnable {
 	}
 
 	/**
-	 * Atualiza a situação do jogo (para as estratégias)
+	 * Atualiza a situaÃ§Ã£o do jogo (para as estratÃ©gias)
 	 */
 	private void atualizaSituacaoJogo() {
 		jogo.atualizaSituacao(situacaoJogo, this);
@@ -213,9 +204,9 @@ public class JogadorCPU extends Jogador implements Runnable {
 		}
 
 		if (j.getEquipe() == this.getEquipe()) {
-			// Nós aceitamos um truco, então podemos aumentar
+			// NÃ³s aceitamos um truco, entÃ£o podemos aumentar
 			// (i.e., se foi truco, podemos pedir 6, se for 6, podemos pedir 9,
-			// etc.) até o limite de 12
+			// etc.) atÃ© o limite de 12
 			if (valor != 12) {
 				valorProximaAposta = valor + 3;
 			}
@@ -231,7 +222,7 @@ public class JogadorCPU extends Jogador implements Runnable {
 		// Notifica o estrategia
 		estrategia.recusouAumentoAposta(j.getPosicao());
 
-		// Se estivermos aguardando resposta, contabiliza (e deixa o adversário
+		// Se estivermos aguardando resposta, contabiliza (e deixa o adversÃ¡rio
 		// perceber)
 		if (numRespostasAguardando > 0) {
 			numRespostasAguardando--;
@@ -242,23 +233,23 @@ public class JogadorCPU extends Jogador implements Runnable {
 
 	public void jogadaRecusada(int numJogadores, int equipeTrucando,
 			Jogador jogadorDaVez) {
-		// Não faz nada
+		// NÃ£o faz nada
 	}
 
 	public void rodadaFechada(int numMao, int resultado, Jogador jogadorQueTorna) {
-		// Não faz nada
+		// NÃ£o faz nada
 	}
 
 	public void maoFechada(int[] pontosEquipe, int[] vaquinhasNoPasto) {
-		// Não faz nada
+		// NÃ£o faz nada
 	}
 
 	public void jogoFechado(int numEquipeVencedora, int[] vaquinhasNoPasto) {
-		// Não faz nada
+		// NÃ£o faz nada
 	}
 
 	public void cartaJogada(Jogador j, Carta c) {
-		// Não faz nada
+		// NÃ£o faz nada
 	}
 
 	public void inicioMao() {
@@ -266,7 +257,7 @@ public class JogadorCPU extends Jogador implements Runnable {
 		// Notifica o estrategia
 		estrategia.inicioMao();
 
-		// Guarda as cartas que estão na mão do jogador
+		// Guarda as cartas que estÃ£o na mÃ£o do jogador
 		cartasRestantes.removeAllElements();
 		for (int i = 0; i <= 2; i++) {
 			cartasRestantes.addElement(this.getCartas()[i]);
@@ -278,12 +269,9 @@ public class JogadorCPU extends Jogador implements Runnable {
 	}
 
 	/**
-	 * Cartas que ainda não foram jogadas
+	 * Cartas que ainda nÃ£o foram jogadas
 	 */
 	private Vector cartasRestantes = new Vector(3);
-
-	static final String[] OPCOES_ESTRATEGIAS = { "Sellani", "Willian",
-	"Gasparotto v1.1", "Sortear" };
 
 	public void inicioPartida() {
 		// Avisa o estrategia
@@ -291,11 +279,11 @@ public class JogadorCPU extends Jogador implements Runnable {
 	}
 
 	public void decidiuMao11(Jogador j, boolean aceita) {
-		// Por ora não faz nada
+		// Por ora nÃ£o faz nada
 	}
 
 	public void informaMao11(Carta[] cartasParceiro) {
-		// Pergunta ao estrategia se ele topa a mão de 11, devolvendo
+		// Pergunta ao estrategia se ele topa a mÃ£o de 11, devolvendo
 		// a resposta para o jogo
 		atualizaSituacaoJogo();
 		Jogo.log("J" + getPosicao() + " decidindo mao 11, com cartas "
@@ -310,7 +298,7 @@ public class JogadorCPU extends Jogador implements Runnable {
 	}
 
 	public void jogoAbortado(int posicao) {
-		// Não precisa tratar
+		// NÃ£o precisa tratar
 	}
 
 }

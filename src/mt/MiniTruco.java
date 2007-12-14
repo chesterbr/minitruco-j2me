@@ -1,24 +1,24 @@
 package mt;
 
 /*
- * Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright ¬© 2005-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  *
- * Copyright © 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
- * (modo confronto de estratÈgias)
+ * Copyright ¬© 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * (modo confronto de estrat√©gias)
  * 
- * Este programa È um software livre; vocÍ pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da LicenÁa P˙blica Geral GNU como 
- * publicada pela FundaÁ„o do Software Livre (FSF); na vers„o 3 da 
- * LicenÁa, ou (na sua opni„o) qualquer vers„o.
+ * Este programa √© um software livre; voc√™ pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da Licen√ßa P√∫blica Geral GNU como 
+ * publicada pela Funda√ß√£o do Software Livre (FSF); na vers√£o 3 da 
+ * Licen√ßa, ou (na sua opni√£o) qualquer vers√£o.
  *
- * Este programa È distribuido na esperanÁa que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA«¬O
- * a qualquer MERCADO ou APLICA«√O EM PARTICULAR. Veja a LicenÁa
- * P˙blica Geral GNU para maiores detalhes.
+ * Este programa √© distribuido na esperan√ßa que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA√á√ÇO
+ * a qualquer MERCADO ou APLICA√á√ÉO EM PARTICULAR. Veja a Licen√ßa
+ * P√∫blica Geral GNU para maiores detalhes.
  *
- * VocÍ deve ter recebido uma cÛpia da LicenÁa P˙blica Geral GNU
- * junto com este programa, se n„o, escreva para a FundaÁ„o do Software
+ * Voc√™ deve ter recebido uma c√≥pia da Licen√ßa P√∫blica Geral GNU
+ * junto com este programa, se n√£o, escreva para a Funda√ß√£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
@@ -42,10 +42,10 @@ import javax.microedition.lcdui.TextField;
 import javax.microedition.midlet.MIDlet;
 
 /**
- * Ponto de entrada da aplicaÁ„o no celular (MIDLet).
+ * Ponto de entrada da aplica√ß√£o no celular (MIDLet).
  * <p>
- * Os coment·rios de linha simples [IF_FULL] e [ENDIF_FULL] denotam seÁıes de
- * cÛdigo que sÛ ser„o compiladas na vers„o "full" do jogo (e n„o na vers„o
+ * Os coment√°rios de linha simples [IF_FULL] e [ENDIF_FULL] denotam se√ß√µes de
+ * c√≥digo que s√≥ ser√£o compiladas na vers√£o "full" do jogo (e n√£o na vers√£o
  * "light", que visa um .jar menor). O build.xml garante isto.
  * 
  * @author Chester
@@ -53,44 +53,62 @@ import javax.microedition.midlet.MIDlet;
  */
 public class MiniTruco extends MIDlet implements CommandListener {
 
+	static {
+		// Carrega as configura√ß√µes de idioma
+		// (tem que ser feito no inicializador est√°tico porque v√°rios elementos
+		// de forms dependem disso)
+		try {
+			Messages.carregaIdioma(Configuracoes.getConfiguracoes().idioma);
+		} catch (IOException e) {
+			// Se n√£o der certo, desencana;
+			e.printStackTrace();
+		}
+		// Agora que temos o idioma, podemos completar este array
+		// (os outros elementos est√£o na inicializa√ß√£o static de
+		// Jogador)
+		Jogador.opcoesEstrategia[Jogador.ESTRATEGIAS.length] = Messages
+				.getString("sortear"); //$NON-NLS-1$
+
+	}
+
 	/**
-	 * Jogo (caso haja um) que est· sendo jogado no momento
+	 * Jogo (caso haja um) que est√° sendo jogado no momento
 	 */
 	Jogo jogoEmAndamento;
 
 	/**
-	 * Mesa onde est· sendo exibido o jogo atual (caso haja um em andamento) ou
-	 * a animaÁ„o/tela de abertura
+	 * Mesa onde est√° sendo exibido o jogo atual (caso haja um em andamento) ou
+	 * a anima√ß√£o/tela de abertura
 	 */
 	public Mesa mesa;
 
 	/**
-	 * Jogador que est· interagindo com o celular
+	 * Jogador que est√° interagindo com o celular
 	 */
 	JogadorHumano jogadorHumano;
 
 	/**
-	 * Jogador que est· substituindo o jogador humano no modo confronto de
-	 * estratÈgias
+	 * Jogador que est√° substituindo o jogador humano no modo confronto de
+	 * estrat√©gias
 	 */
 	// [IF_FULL]
 	JogadorBot jogadorBot;
 	// [ENDIF_FULL]
 
 	/**
-	 * Formul·rio de configuraÁ„o do jogo
+	 * Formul√°rio de configura√ß√£o do jogo
 	 */
 	private Form formOpcoes;
 
 	/**
-	 * Tela Bluetooth (cliente ou servidor) em exibiÁ„o no momento
+	 * Tela Bluetooth (cliente ou servidor) em exibi√ß√£o no momento
 	 */
 	// [IF_FULL]
 	public TelaBT telaBT;
 	// [ENDIF_FULL]
 
 	/**
-	 * Tela do jogo TCP/IP em exibiÁ„o no momento
+	 * Tela do jogo TCP/IP em exibi√ß√£o no momento
 	 */
 	// [IF_FULL]
 	public ServidorTCP servidor;
@@ -107,197 +125,255 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	private List listBluetooth;
 
 	/**
-	 * EstratÈgias escolhidas para os jogadores CPU. Os Ìndices de 0 a 3
-	 * correspondem aos jogadores de 2 a 4 (o jogador 1 È humano, n„o entra
-	 * aqui).
-	 */
-	private String[] estrategias;
-
-	/**
-	 * EstratÈgias escolhidas para os jogadores CPU no modo confronto de
-	 * estratÈgias. O Ìndice 0 corresponde ‡ dupla B (horizontal na mesa) e o
-	 * Ìndice 1 corresponde ‡ dupla A (vertical na mesa).
-	 */
-	private String[] estrategiasModoCE;
-
-	/**
-	 * Vari·vel indicativa de modo confronto de estratÈgias
+	 * Estrat√©gias escolhidas para os jogadores CPU.
+	 * <p>
+	 * Os √≠ndices de 0 a 2 correspondem aos jogadores de 2 a 4 (o jogador 1 √©
+	 * humano, n√£o entra aqui).
+	 * <p>
+	 * Os valores s√£o √≠ndices do array de op√ß√µes de estrat√©gia.
 	 * 
+	 * @see Jogador#opcoesEstrategia
+	 */
+	private int[] estrategias;
+
+	/**
+	 * Estrat√©gias escolhidas para os jogadores CPU no modo confronto de
+	 * estrat√©gias. O √≠ndice 0 corresponde √† dupla B (horizontal na mesa) e o
+	 * √≠ndice 1 corresponde √† dupla A (vertical na mesa).
+	 */
+	// [IF_FULL]
+	private int[] estrategiasModoCE;
+	// [ENDIF_FULL]
+
+	/**
+	 * Vari√°vel indicativa de modo confronto de estrat√©gias
 	 */
 	boolean modoCE = false;
 
 	/**
-	 * Vari·vel indicativa do n˙mero m·ximo de partidas a serem jogadas no modo
-	 * confronto de estratÈgias
+	 * Vari√°vel indicativa do n√∫mero m√°ximo de partidas a serem jogadas no modo
+	 * confronto de estrat√©gias
 	 * 
 	 */
+	// [IF_FULL]
 	int nPartidasModoCE = 1;
+	// [ENDIF_FULL]
 
 	/**
-	 * Formul·rio de configuraÁ„o do modo confronto de estratÈgias
+	 * Formul√°rio de configura√ß√£o do modo confronto de estrat√©gias
 	 */
+	// [IF_FULL]
 	private Form formModoCE;
+	// [ENDIF_FULL]
 
-	// Listas de opÁıes para menus de ajuda e bluetooth
+	// Listas de op√ß√µes para menus de ajuda e bluetooth
 
-	private static final String[] OPCOES_AJUDA = { "Instru\u00E7\u00F5es",
-	// [IF_FULL]
-			"Regras do Truco",
+	private static final String[] OPCOES_AJUDA = {
+			Messages.getString("instrucoes"), //$NON-NLS-1$
+			// [IF_FULL]
+			Messages.getString("regrasTruco"), //$NON-NLS-1$
 			// [ENDIF_FULL]
-			"Sobre o miniTruco", "Voltar" };
+			Messages.getString("sobre"), Messages.getString("voltar") }; //$NON-NLS-1$ //$NON-NLS-2$
 
-	private static final String[] ARQUIVOS_AJUDA = { "/instrucoes.txt",
-	// [IF_FULL]
-			"/regras.txt",
+	private static final String[] ARQUIVOS_AJUDA = {
+			Messages.getString("Path.instrucoes.txt"), //$NON-NLS-1$
+			// [IF_FULL]
+			Messages.getString("Path.regras.txt"), //$NON-NLS-1$
 			// [ENDIF_FULL]
-			"/sobre.txt" };
+			Messages.getString("Path.sobre.txt") }; //$NON-NLS-1$
 
-	private static final String[] OPCOES_BLUETOOTH = { "Criar jogo",
-			"Procurar jogo", "Voltar" };
+	private static final String[] OPCOES_BLUETOOTH = {
+			Messages.getString("criarjogo"), //$NON-NLS-1$
+			Messages.getString("procurarjogo"), Messages.getString("voltar") }; //$NON-NLS-1$ //$NON-NLS-2$
 
 	// Menu principal
 
-	public static Command iniciarCommand = new Command("Iniciar",
+	public static Command iniciarCommand = new Command(Messages
+			.getString("iniciar"), //$NON-NLS-1$
 			Command.SCREEN, 1);
 
-	public static Command bluetoothComand = new Command("Bluetooth",
+	public static Command bluetoothComand = new Command(Messages
+			.getString("bluetooth"), //$NON-NLS-1$
 			Command.SCREEN, 2);
 
-	public static Command tcpCommand = new Command("Internet", Command.SCREEN,
+	public static Command tcpCommand = new Command(Messages
+			.getString("internet"), Command.SCREEN, //$NON-NLS-1$
 			3);
 
-	public static Command ajudaCommand = new Command("Ajuda", Command.SCREEN, 4);
+	public static Command idiomaCommand = new Command(Messages
+			.getString("outro_idioma"), Command.SCREEN, //$NON-NLS-1$
+			3);
 
-	public static Command opcoesCommand = new Command("Op\u00E7\u00F5es",
-			Command.SCREEN, 5);
+	public static Command ajudaCommand = new Command(Messages
+			.getString("ajuda"), Command.SCREEN, 5); //$NON-NLS-1$
 
-	public static Command modoCECommand = new Command(
-			"Op\u00E7\u00F5es modo CE", Command.SCREEN, 6);
+	public static Command opcoesCommand = new Command(Messages
+			.getString("opcoes"), //$NON-NLS-1$
+			Command.SCREEN, 6);
 
-	public static Command sairProgramaCommand = new Command("Sair",
-			Command.EXIT, 7);
+	public static Command modoCECommand = new Command(Messages
+			.getString("opcoesCE"), Command.SCREEN, 7); //$NON-NLS-1$
+
+	public static Command sairProgramaCommand = new Command(Messages
+			.getString("sair"), //$NON-NLS-1$
+			Command.EXIT, 8);
 
 	// Menus ajuda / bluetooth / alerta
 
-	public static Command okBluetoothCommand = new Command("Ok",
+	public static Command okBluetoothCommand = new Command(Messages
+			.getString("ok"), //$NON-NLS-1$
 			Command.SCREEN, 1);
 
-	public static Command okItemAjudaCommand = new Command("Ok",
+	public static Command okItemAjudaCommand = new Command(Messages
+			.getString("ok"), //$NON-NLS-1$
 			Command.SCREEN, 1);
 
-	public static Command voltarMenuCommand = new Command("Voltar",
+	public static Command voltarMenuCommand = new Command(Messages
+			.getString("Menu.Voltar"), //$NON-NLS-1$
 			Command.CANCEL, 5);
 
-	public static Command okTexto = new Command("Ok", Command.OK, 1);
+	public static Command okTexto = new Command(
+			Messages.getString("ok"), Command.OK, 1); //$NON-NLS-1$
 
-	public static Command okOpcoesCommand = new Command("Ok", Command.OK, 1);
+	public static Command okOpcoesCommand = new Command(Messages
+			.getString("ok"), Command.OK, 1); //$NON-NLS-1$
 
-	public static Command okModoCECommand = new Command("Ok", Command.OK, 1);
+	public static Command okModoCECommand = new Command(Messages
+			.getString("ok"), Command.OK, 1); //$NON-NLS-1$
 
-	public static Command okAvisoBTmodoCECommand = new Command("Ok",
+	public static Command okAvisoBTmodoCECommand = new Command(Messages
+			.getString("ok"), //$NON-NLS-1$
 			Command.OK, 1);
 
 	// Menus in-game
 
-	public static Command sairPartidaCommand = new Command("Encerrar",
+	public static Command sairPartidaCommand = new Command(Messages
+			.getString("encerrar"), //$NON-NLS-1$
 			Command.STOP, 4);
 
-	public static Command sairPartidaSemPerguntarCommand = new Command("Fim",
+	public static Command sairPartidaSemPerguntarCommand = new Command(Messages
+			.getString("fim"), //$NON-NLS-1$
 			Command.STOP, 4);
 
-	public static Command aceitaCommand = new Command("Desce", Command.OK, 1);
+	public static Command aceitaCommand = new Command(Messages
+			.getString("desce"), Command.OK, 1); //$NON-NLS-1$
 
-	public static Command recusaCommand = new Command("Corre", Command.CANCEL,
+	public static Command recusaCommand = new Command(Messages
+			.getString("corre"), Command.CANCEL, //$NON-NLS-1$
 			1);
 
-	public static Command aceitaMao11Command = new Command("Joga", Command.OK,
+	public static Command aceitaMao11Command = new Command(Messages
+			.getString("joga"), Command.OK, //$NON-NLS-1$
 			1);
 
-	public static Command recusaMao11Command = new Command("Desiste",
+	public static Command recusaMao11Command = new Command(Messages
+			.getString("desiste"), //$NON-NLS-1$
 			Command.CANCEL, 1);
 
-	public static Command trucoCommand = new Command(Mesa.TEXTO_TRUCO,
+	public static Command trucoCommand = new Command(Messages
+			.getString("cmdTruco"), //$NON-NLS-1$
 			Command.OK, 1);
 
-	public static Command seisCommand = new Command(Mesa.TEXTO_SEIS,
+	public static Command seisCommand = new Command(Messages
+			.getString("cmdSeis"), //$NON-NLS-1$
 			Command.OK, 1);
 
-	public static Command noveCommand = new Command(Mesa.TEXTO_NOVE,
+	public static Command noveCommand = new Command(Messages
+			.getString("cmdNove"), //$NON-NLS-1$
 			Command.OK, 1);
 
-	public static Command dozeCommand = new Command(Mesa.TEXTO_DOZE,
+	public static Command dozeCommand = new Command(Messages
+			.getString("cmdDoze"), //$NON-NLS-1$
 			Command.OK, 1);
 
-	public static Command simSairPartidaCommand = new Command("Sim",
+	public static Command simSairPartidaCommand = new Command(Messages
+			.getString("sim"), //$NON-NLS-1$
 			Command.OK, 1);
 
-	public static Command naoSairPartidaCommand = new Command("N\u00E3o",
+	public static Command naoSairPartidaCommand = new Command(Messages
+			.getString("nao"), //$NON-NLS-1$
 			Command.CANCEL, 2);
 
-	// Elementos do formulario de opÁıes
+	// Elementos do formulario de op√ß√µes
 
-	private static final String[] OPCOES_VISUAL = { "cartas grandes",
-			"cartas animadas" };
+	private static final String[] OPCOES_VISUAL = {
+			Messages.getString("cartasgrandes"), //$NON-NLS-1$
+			Messages.getString("cartasanimadas") }; //$NON-NLS-1$
 
-	private static final String[] OPCOES_REGRAS = { "baralho limpo",
-			"manilha velha" };
+	private static final String[] OPCOES_REGRAS = {
+			Messages.getString("baralholimpo"), //$NON-NLS-1$
+			Messages.getString("manilhavelha") }; //$NON-NLS-1$
 
-	private static final String[] OPCOES_DEBUG = { "exibir log",
-			"confronto de estrat\u00E9gias" };
+	private static final String[] OPCOES_DEBUG = {
+			Messages.getString("exibirlog"), //$NON-NLS-1$
+			// [IF_FULL]
+			Messages.getString("confronto") //$NON-NLS-1$
+	// [ENDIF_FULL]
+	};
 
 	private static final Image[] IMAGENS_VISUAL = { null, null };
 
 	private static final Image[] IMAGENS_REGRAS = { null, null };
 
-	// ** aumentar array aqui para cada nova estratÈgia incluÌda**
-	// ** no momento: Willian, Sellani, Gasparotto v1.1 **
+	// ** aumentar array aqui para cada nova estrat√©gia inclu√≠da**
+	// ** no momento: Willian, Sellani, Gasparotto v1.2 **
 	private static final Image[] IMAGENS_ESTRATEGIAS = { null, null, null, null };
 
-	ChoiceGroup cgParceiro = new ChoiceGroup("Parceiro", Choice.EXCLUSIVE,
-			JogadorCPU.OPCOES_ESTRATEGIAS, IMAGENS_ESTRATEGIAS);
+	ChoiceGroup cgParceiro = new ChoiceGroup(
+			Messages.getString("parceiro"), Choice.EXCLUSIVE, //$NON-NLS-1$
+			Jogador.opcoesEstrategia, IMAGENS_ESTRATEGIAS);
 
 	ChoiceGroup cgAdversarioEsq = new ChoiceGroup(
-			"Advers\u00E1rio \u00E0 esquerda", Choice.EXCLUSIVE,
-			JogadorCPU.OPCOES_ESTRATEGIAS, IMAGENS_ESTRATEGIAS);
+			Messages.getString("advesq"), Choice.EXCLUSIVE, //$NON-NLS-1$
+			Jogador.opcoesEstrategia, IMAGENS_ESTRATEGIAS);
 
 	ChoiceGroup cgAdversarioDir = new ChoiceGroup(
-			"Advers\u00E1rio \u00E0 direita", Choice.EXCLUSIVE,
-			JogadorCPU.OPCOES_ESTRATEGIAS, IMAGENS_ESTRATEGIAS);
+			Messages.getString("advdir"), Choice.EXCLUSIVE, //$NON-NLS-1$
+			Jogador.opcoesEstrategia, IMAGENS_ESTRATEGIAS);
 
-	ChoiceGroup cgVisual = new ChoiceGroup("Visual", Choice.MULTIPLE,
+	ChoiceGroup cgVisual = new ChoiceGroup(
+			Messages.getString("visual"), Choice.MULTIPLE, //$NON-NLS-1$
 			OPCOES_VISUAL, IMAGENS_VISUAL);
 
-	ChoiceGroup cgRegras = new ChoiceGroup("Regras", Choice.MULTIPLE,
+	ChoiceGroup cgRegras = new ChoiceGroup(
+			Messages.getString("regras"), Choice.MULTIPLE, //$NON-NLS-1$
 			OPCOES_REGRAS, IMAGENS_REGRAS);
 
-	ChoiceGroup cgDebug = new ChoiceGroup("Debug", Choice.MULTIPLE,
+	ChoiceGroup cgDebug = new ChoiceGroup(
+			Messages.getString("debug"), Choice.MULTIPLE, //$NON-NLS-1$
 			OPCOES_DEBUG, IMAGENS_DEBUG);
 
 	// [IF_FULL]
-	TextField tfServidor = new TextField("Servidor (host:porta)", null, 80,
+	TextField tfServidor = new TextField(
+			Messages.getString("servidor"), null, 80, //$NON-NLS-1$
 			TextField.URL);
 	// [ENDIF_FULL]
 
-	// Elementos exclusivos do formul·rio de opÁıes do modo confronto de
-	// estratÈgias
+	// Elementos exclusivos do formul√°rio de op√ß√µes do modo confronto de
+	// estrat√©gias
 
 	private static final String[] OPCOES_NPARTIDAS = { "1", "3", "11", "35" };
 
 	private static final Image[] IMAGENS_NPARTIDAS = { null, null, null, null };
 
-	private static final Image[] IMAGENS_DEBUG = { null, null };
+	private static final Image[] IMAGENS_DEBUG = { null
+	// [IF_FULL]
+			, null
+	// [ENDIF_FULL]
+	};
 
-	ChoiceGroup cgModoCEDuplaA = new ChoiceGroup("Dupla A (vertical)",
-			Choice.EXCLUSIVE, JogadorCPU.OPCOES_ESTRATEGIAS,
-			IMAGENS_ESTRATEGIAS);
+	// [IF_FULL]
+	ChoiceGroup cgModoCEDuplaA = new ChoiceGroup(Messages.getString("duplaA"), //$NON-NLS-1$
+			Choice.EXCLUSIVE, Jogador.opcoesEstrategia, IMAGENS_ESTRATEGIAS);
 
-	ChoiceGroup cgModoCEDuplaB = new ChoiceGroup("Dupla B (horizontal)",
-			Choice.EXCLUSIVE, JogadorCPU.OPCOES_ESTRATEGIAS,
-			IMAGENS_ESTRATEGIAS);
+	ChoiceGroup cgModoCEDuplaB = new ChoiceGroup(Messages.getString("duplaB"), //$NON-NLS-1$
+			Choice.EXCLUSIVE, Jogador.opcoesEstrategia, IMAGENS_ESTRATEGIAS);
 
-	ChoiceGroup cgModoCEnPartidas = new ChoiceGroup(
-			"N\u00famero m\u00e1ximo de partidas", Choice.EXCLUSIVE,
+	ChoiceGroup cgModoCEnPartidas = new ChoiceGroup(Messages
+			.getString("maxpart"), Choice.EXCLUSIVE, //$NON-NLS-1$
 			OPCOES_NPARTIDAS, IMAGENS_NPARTIDAS);
+
+	// [ENDIF_FULL]
 
 	// PONTO DE ENTRADA DA MIDLET
 
@@ -306,11 +382,13 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		// Cria uma nova mesa, pronta pra animar
 		novaMesa(true);
 
-		// Carrega as configuraÁıes da memÛria do celular
-		// (ou as default, se n„o houver nada na memÛria)
+		// Carrega as configura√ß√µes da mem√≥ria do celular
+		// (ou as default, se n√£o houver nada na mem√≥ria)
+		// [IF_FULL]
 		Configuracoes confModoCE = Configuracoes.getConfiguracoesModoCE();
 		estrategiasModoCE = confModoCE.estrategiasModoCE;
 		nPartidasModoCE = confModoCE.nPartidasModoCE;
+		// [ENDIF_FULL]
 		Configuracoes conf = Configuracoes.getConfiguracoes();
 		estrategias = conf.estrategias;
 		Animador.setAnimacaoLigada(conf.animacaoLigada);
@@ -322,26 +400,26 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		Carta.setCartasGrandes(conf.cartasGrandes);
 		mesa.montaBaralhoCenario();
 
-		// Inicializa os "displayables" da aplicaÁ„o (menos os do
-		// multiplayer, que s„o responsabilidade da classe Servidor)
-		formModoCE = new Form("Op\u00E7\u00F5es do Confronto");
+		// Inicializa os "displayables" da aplica√ß√£o (menos os do
+		// multiplayer, que s√£o responsabilidade da classe Servidor)
+		// [IF_FULL]
+		formModoCE = new Form(Messages.getString("opcoes_confronto")); //$NON-NLS-1$
 		formModoCE.append(cgModoCEDuplaA);
 		formModoCE.append(cgModoCEDuplaB);
 		formModoCE.append(cgModoCEnPartidas);
 		formModoCE.addCommand(okModoCECommand);
 		formModoCE.setCommandListener(this);
-		for (int i = 0; i < JogadorCPU.OPCOES_ESTRATEGIAS.length; i++) {
-			cgModoCEDuplaA.setSelectedIndex(i, JogadorCPU.OPCOES_ESTRATEGIAS[i]
-					.equals(estrategiasModoCE[1]));
-			cgModoCEDuplaB.setSelectedIndex(i, JogadorCPU.OPCOES_ESTRATEGIAS[i]
-					.equals(estrategiasModoCE[0]));
+		for (int i = 0; i < Jogador.opcoesEstrategia.length; i++) {
+			cgModoCEDuplaA.setSelectedIndex(i, i == estrategiasModoCE[1]);
+			cgModoCEDuplaB.setSelectedIndex(i, i == estrategiasModoCE[0]);
 		}
 		for (int i = 0; i < OPCOES_NPARTIDAS.length; i++) {
 			cgModoCEnPartidas.setSelectedIndex(i, OPCOES_NPARTIDAS[i]
 					.equals(Integer.toString(nPartidasModoCE)));
 		}
+		// [ENDIF_FULL]
 
-		formOpcoes = new Form("Op\u00E7\u00F5es");
+		formOpcoes = new Form(Messages.getString("opcoes")); //$NON-NLS-1$
 		formOpcoes.append(cgVisual);
 		formOpcoes.append(cgRegras);
 		formOpcoes.append(cgParceiro);
@@ -353,24 +431,23 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		// [ENDIF_FULL]
 		formOpcoes.addCommand(okOpcoesCommand);
 		formOpcoes.setCommandListener(this);
-		for (int i = 0; i < JogadorCPU.OPCOES_ESTRATEGIAS.length; i++) {
-			cgAdversarioDir.setSelectedIndex(i,
-					JogadorCPU.OPCOES_ESTRATEGIAS[i].equals(estrategias[0]));
-			cgParceiro.setSelectedIndex(i, JogadorCPU.OPCOES_ESTRATEGIAS[i]
-					.equals(estrategias[1]));
-			cgAdversarioEsq.setSelectedIndex(i,
-					JogadorCPU.OPCOES_ESTRATEGIAS[i].equals(estrategias[2]));
+		for (int i = 0; i < Jogador.opcoesEstrategia.length; i++) {
+			cgAdversarioDir.setSelectedIndex(i, i == estrategias[0]);
+			cgParceiro.setSelectedIndex(i, i == estrategias[1]);
+			cgAdversarioEsq.setSelectedIndex(i, i == estrategias[2]);
 		}
 		cgVisual.setSelectedIndex(0, Carta.isCartasGrandes());
 		cgVisual.setSelectedIndex(1, Animador.isAnimacaoLigada());
 
-		listAjuda = new List("Ajuda", List.IMPLICIT, OPCOES_AJUDA, null);
+		listAjuda = new List(
+				Messages.getString("ajuda"), List.IMPLICIT, OPCOES_AJUDA, null); //$NON-NLS-1$
 		listAjuda.addCommand(okItemAjudaCommand);
 		listAjuda.addCommand(voltarMenuCommand);
 		listAjuda.setCommandListener(this);
 
 		if (isSuportaBluetooth()) {
-			listBluetooth = new List("Jogo via Bluetooth", List.IMPLICIT,
+			listBluetooth = new List(
+					Messages.getString("jogoviabluetooth"), List.IMPLICIT, //$NON-NLS-1$
 					OPCOES_BLUETOOTH, null);
 			listBluetooth.addCommand(okBluetoothCommand);
 			listBluetooth.addCommand(voltarMenuCommand);
@@ -384,10 +461,10 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	}
 
 	/**
-	 * Cria uma nova mesa (que ser· a base de uma nova partida)
+	 * Cria uma nova mesa (que ser√° a base de uma nova partida)
 	 * 
 	 * @param vaiAnimar
-	 *            Diz se vamos ter animaÁ„o na mesa (false j· mostra os
+	 *            Diz se vamos ter anima√ß√£o na mesa (false j√° mostra os
 	 *            elementos no lugar)
 	 */
 	public void novaMesa(boolean vaiAnimar) {
@@ -397,19 +474,19 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	}
 
 	/**
-	 * Vers„o da midlet (È usada no "about...")
+	 * Vers√£o da midlet (√© usada no "about...")
 	 */
 	public static String versaoMidlet;
 
 	/**
-	 * Mostra uma tela com o conte˙do de um arquivo-texto (salvo com o encoding
-	 * ISO8859-1, que È o ˙nico obrigatÛrio em J2ME), e um bot„o ok.
+	 * Mostra uma tela com o conte√∫do de um arquivo-texto (salvo com o encoding
+	 * ISO8859-1, que √© o √∫nico obrigat√≥rio em J2ME), e um bot√£o ok.
 	 * <p>
-	 * Se o arquivo-texto for o "/sobre.txt", precede com a vers„o da midlet
+	 * Se o arquivo-texto for o "/sobre.txt", precede com a vers√£o da midlet
 	 * (desde que estejamos rodando o pacote inteiro, enxergando o .jad)
 	 * 
 	 * @param titulo
-	 *            TÌtulo da tela
+	 *            T√≠tulo da tela
 	 * @param arqTexto
 	 *            Nome do arquivo (preceder com "/")
 	 */
@@ -426,12 +503,13 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			if (isr != null)
 				isr.close();
 		} catch (IOException e) {
-			alerta("Erro", e.toString());
+			alerta(Messages.getString("Erro"), e.toString()); //$NON-NLS-1$
 			return;
 		}
-		if (arqTexto.equals("/sobre.txt")) {
+		if (arqTexto.equals(Messages.getString("Path.sobre.txt"))) { //$NON-NLS-1$
 			if (versaoMidlet != null) {
-				formTexto.append(new StringItem(null, "Vers\u00E3o: "
+				formTexto.append(new StringItem(null, Messages
+						.getString("versao_prefixo") //$NON-NLS-1$
 						+ versaoMidlet + "\n\n"));
 			}
 		}
@@ -458,14 +536,17 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				mesa.removeCommand(bluetoothComand);
 			}
 			mesa.addCommand(tcpCommand);
+			mesa.addCommand(idiomaCommand);
 			// [ENDIF_FULL]
 			mesa.addCommand(ajudaCommand);
 			mesa.addCommand(opcoesCommand);
+			// [IF_FULL]
 			if (modoCE) {
 				mesa.addCommand(modoCECommand);
 			} else {
 				mesa.removeCommand(modoCECommand);
 			}
+			// [ENDIF_FULL]
 			mesa.addCommand(sairProgramaCommand);
 			mesa.removeComandoAposta();
 			mesa.removeOpcoesAceite();
@@ -479,6 +560,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			mesa.removeCommand(ajudaCommand);
 			mesa.removeCommand(opcoesCommand);
 			mesa.removeCommand(modoCECommand);
+			mesa.removeCommand(idiomaCommand);
 		}
 
 	}
@@ -493,7 +575,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	protected void destroyApp(boolean bool) {
 		mesa.isAppRodando = false;
 		// [IF_FULL]
-		if (servidor!=null) {
+		if (servidor != null) {
 			servidor.finalizaServidor();
 		}
 		// [ENDIF_FULL]
@@ -501,30 +583,34 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 	/**
 	 * Processa os comandos de menu (principal, in-game, ajuda, bluetooth e
-	 * opÁıes).
+	 * op√ß√µes).
 	 * <p>
-	 * (È, ficou um certo balaio-de-gato, mas pelo menos economizou umas
+	 * (√©, ficou um certo balaio-de-gato, mas pelo menos economizou umas
 	 * classes)
 	 */
 	public void commandAction(Command cmd, Displayable disp) {
 		if (cmd == iniciarCommand) {
-			// Checa se estamos no modo confronto de estratÈgias
+			// Checa se estamos no modo confronto de estrat√©gias
 			if (this.modoCE) {
 				// [IF_FULL]
 				// Inicializa novo jogo com 4 jogadores CPU com
-				// as devidas estratÈgias escolhidas para dupla A e B
+				// as devidas estrat√©gias escolhidas para dupla A e B
 				Jogo jogo = new JogoLocal(cgRegras.isSelected(0), cgRegras
 						.isSelected(1), this.nPartidasModoCE);
 				// Dupla A jogador de baixo
-				jogadorBot = new JogadorBot(estrategiasModoCE[1], Display
-						.getDisplay(this), (Mesa) mesa);
+				jogadorBot = new JogadorBot(
+						Jogador.opcoesEstrategia[estrategiasModoCE[1]], Display
+								.getDisplay(this), (Mesa) mesa);
 				jogo.adiciona(jogadorBot);
-				// Dupla B jogador ‡ direita
-				jogo.adiciona(new JogadorCPU(estrategiasModoCE[0]));
+				// Dupla B jogador √† direita
+				jogo.adiciona(new JogadorCPU(
+						Jogador.opcoesEstrategia[estrategiasModoCE[0]]));
 				// Dupla A jogador de cima
-				jogo.adiciona(new JogadorCPU(estrategiasModoCE[1]));
-				// Dupla B jogador ‡ esquerda
-				jogo.adiciona(new JogadorCPU(estrategiasModoCE[0]));
+				jogo.adiciona(new JogadorCPU(
+						Jogador.opcoesEstrategia[estrategiasModoCE[1]]));
+				// Dupla B jogador √† esquerda
+				jogo.adiciona(new JogadorCPU(
+						Jogador.opcoesEstrategia[estrategiasModoCE[0]]));
 				iniciaJogo(jogo);
 				// [ENDIF_FULL]
 			} else {
@@ -534,23 +620,36 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				jogadorHumano = new JogadorHumano(Display.getDisplay(this),
 						(Mesa) mesa);
 				jogo.adiciona(jogadorHumano);
-				// Adiciona os jogadores CPU com as estratÈgias escolhidas
+				// Adiciona os jogadores CPU com as estrat√©gias escolhidas
 				for (int i = 0; i <= 2; i++) {
-					jogo.adiciona(new JogadorCPU(estrategias[i]));
+					jogo.adiciona(new JogadorCPU(
+							Jogador.opcoesEstrategia[estrategias[i]]));
 				}
 				iniciaJogo(jogo);
 			}
 			// [IF_FULL]
-			// (os menus abaixo n„o existem sem bluetooth/TCP)
+			// (os menus abaixo n√£o existem sem bluetooth/TCP)
 
 		} else if (cmd == bluetoothComand) {
 			// Mostra o menu para o jogador escolher cliente ou servidor
 			mostraMenuAbertura(false);
 			Display.getDisplay(this).setCurrent(listBluetooth);
 		} else if (cmd == tcpCommand) {
-			// Inicia a conex„o no servidor
+			// Inicia a conex√£o no servidor
 			mostraMenuAbertura(false);
 			servidor = new ServidorTCP(tfServidor.getString(), this);
+		} else if (cmd == idiomaCommand) {
+			// Troca o idioma atual, salva e sai do programa
+			Configuracoes conf = Configuracoes.getConfiguracoes();
+			if (conf.idioma.equals("English")) //$NON-NLS-1$
+				conf.idioma = "Portugu√™s"; //$NON-NLS-1$
+			else
+				conf.idioma = "English"; //$NON-NLS-1$
+			conf.salva();
+			mostraMenuAbertura(false);
+			mesa.addCommand(sairProgramaCommand);
+			alerta(Messages.getString("language_changed"), //$NON-NLS-1$
+					Messages.getString("language_changed_msg")); //$NON-NLS-1$
 
 			// [ENDIF_FULL]
 		} else if (cmd == okAvisoBTmodoCECommand) {
@@ -569,7 +668,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			case 1:
 				telaBT = new ClienteBT(this);
 				break;
-			default:			
+			default:
 				Display.getDisplay(this).setCurrent(mesa);
 				mostraMenuAbertura(true);
 			}
@@ -603,7 +702,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 					// Servidor abortou a partida, notifica
 					((ServidorBT) telaBT).desconecta(-1);
 				} else {
-					// Fim de jogo normal, n„o notifica
+					// Fim de jogo normal, n√£o notifica
 					((ServidorBT) telaBT).desconecta(-2);
 				}
 				return;
@@ -618,10 +717,10 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				|| cmd == noveCommand || cmd == dozeCommand
 				|| cmd == aceitaCommand || cmd == recusaCommand
 				|| cmd == aceitaMao11Command || cmd == recusaMao11Command) {
-			// Encaminha as aÁıes in-game para a mesa.
-			// (È, quando eu fiz esse jogo, o conceito de commandListener n„o
-			// estava claro - a mesadeveria ser o listener de suas aÁıes, agora
-			// j· foi).
+			// Encaminha as a√ß√µes in-game para a mesa.
+			// (√©, quando eu fiz esse jogo, o conceito de commandListener n√£o
+			// estava claro - a mesadeveria ser o listener de suas a√ß√µes, agora
+			// j√° foi).
 			mesa.executaComando(cmd);
 		} else if (cmd == sairProgramaCommand) {
 			destroyApp(true);
@@ -641,17 +740,33 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			}
 		} else if (cmd == opcoesCommand) {
 			Display.getDisplay(this).setCurrent(formOpcoes);
+			// [IF_FULL]
 		} else if (cmd == modoCECommand) {
 			Display.getDisplay(this).setCurrent(formModoCE);
+		} else if (cmd == okModoCECommand) {
+			estrategiasModoCE[0] = cgModoCEDuplaB.getSelectedIndex();
+			estrategiasModoCE[1] = cgModoCEDuplaA.getSelectedIndex();
+			nPartidasModoCE = Integer
+					.parseInt(OPCOES_NPARTIDAS[cgModoCEnPartidas
+							.getSelectedIndex()]);
+
+			// Guarda as op√ß√µes na mem√≥ria do celular
+			Configuracoes confModoCE = Configuracoes.getConfiguracoesModoCE();
+			confModoCE.estrategiasModoCE = estrategiasModoCE;
+			confModoCE.nPartidasModoCE = nPartidasModoCE;
+			confModoCE.salvaModoCE();
+
+			// Volta pra tela anterior
+			Display.getDisplay(this).setCurrent(mesa);
+			mesa.montaBaralhoCenario();
+			mesa.repaint();
+			// [ENDIF_FULL]
 		} else if (cmd == okOpcoesCommand) {
-			// Seta as opÁıes escolhidas no form (menos as regras,
+			// Seta as op√ß√µes escolhidas no form (menos as regras,
 			// que ficam guardadas no choiceGroup mesmo)
-			estrategias[0] = JogadorCPU.OPCOES_ESTRATEGIAS[cgAdversarioDir
-					.getSelectedIndex()];
-			estrategias[1] = JogadorCPU.OPCOES_ESTRATEGIAS[cgParceiro
-					.getSelectedIndex()];
-			estrategias[2] = JogadorCPU.OPCOES_ESTRATEGIAS[cgAdversarioEsq
-					.getSelectedIndex()];
+			estrategias[0] = cgAdversarioDir.getSelectedIndex();
+			estrategias[1] = cgParceiro.getSelectedIndex();
+			estrategias[2] = cgAdversarioEsq.getSelectedIndex();
 			Carta.setCartasGrandes(cgVisual.isSelected(0));
 			Animador.setAnimacaoLigada(cgVisual.isSelected(1));
 			if (cgDebug.isSelected(0)) {
@@ -659,13 +774,16 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			} else {
 				Jogo.log = null;
 			}
+			// [IF_FULL]
 			this.modoCE = cgDebug.isSelected(1);
 			if (mesa != null) {
 				mesa.setModoCE(this.modoCE);
 			}
+			// [ENDIF_FULL]
 			if (cgRegras.isSelected(0) && cgRegras.isSelected(1)) {
-				// Se houver conflito, faz o ajuste e mantÈm o form
-				alerta("Conflito", "A manilha velha (fixa) exige baralho sujo.");
+				// Se houver conflito, faz o ajuste e mant√©m o form
+				alerta(
+						Messages.getString("conflito_man_bar"), Messages.getString("conflito_man_bar_txt")); //$NON-NLS-1$ //$NON-NLS-2$
 				cgRegras.setSelectedIndex(0, false);
 			} else {
 
@@ -677,7 +795,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 					tfServidor.setString(Configuracoes.SERVIDOR_DEFAULT);
 				}
 
-				// Corrige problemas comuns no servidor (prefixo inv·lido, falta
+				// Corrige problemas comuns no servidor (prefixo inv√°lido, falta
 				// de porta, case)
 				tfServidor.setString(tfServidor.getString().toLowerCase());
 				if (tfServidor.getString().startsWith("http://")) {
@@ -692,7 +810,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				}
 				// [ENDIF_FULL]
 
-				// Guarda as opÁıes na memÛria do celular
+				// Guarda as op√ß√µes na mem√≥ria do celular
 				Configuracoes conf = Configuracoes.getConfiguracoes();
 				conf.estrategias = estrategias;
 				conf.cartasGrandes = Carta.isCartasGrandes();
@@ -710,25 +828,6 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				mesa.montaBaralhoCenario();
 				mesa.repaint();
 			}
-		} else if (cmd == okModoCECommand) {
-			estrategiasModoCE[0] = JogadorCPU.OPCOES_ESTRATEGIAS[cgModoCEDuplaB
-					.getSelectedIndex()];
-			estrategiasModoCE[1] = JogadorCPU.OPCOES_ESTRATEGIAS[cgModoCEDuplaA
-					.getSelectedIndex()];
-			nPartidasModoCE = Integer
-					.parseInt(OPCOES_NPARTIDAS[cgModoCEnPartidas
-							.getSelectedIndex()]);
-
-			// Guarda as opÁıes na memÛria do celular
-			Configuracoes confModoCE = Configuracoes.getConfiguracoesModoCE();
-			confModoCE.estrategiasModoCE = estrategiasModoCE;
-			confModoCE.nPartidasModoCE = nPartidasModoCE;
-			confModoCE.salvaModoCE();
-
-			// Volta pra tela anterior
-			Display.getDisplay(this).setCurrent(mesa);
-			mesa.montaBaralhoCenario();
-			mesa.repaint();
 		}
 	}
 
@@ -736,7 +835,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	 * Inicia um jogo e o exibe.
 	 * 
 	 * @param jogo
-	 *            Objeto jogo (j· com os quatro jogadores)
+	 *            Objeto jogo (j√° com os quatro jogadores)
 	 */
 	public void iniciaJogo(Jogo jogo) {
 		jogoEmAndamento = jogo;
@@ -752,11 +851,11 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	 * Encerra o jogo em andamento (se houver um) e volta para o menu principal
 	 * 
 	 * @param posicao
-	 *            PosiÁ„o do jogador que motivou o encerramento do jogo (0 caso
-	 *            n„o haja jogo em andamento ou n„o se queira notificar nada)
+	 *            Posi√ß√£o do jogador que motivou o encerramento do jogo (0 caso
+	 *            n√£o haja jogo em andamento ou n√£o se queira notificar nada)
 	 * @param voltaAoMenu
-	 *            se True, exibe a tela principal, caso contr·rio, fica onde
-	 *            est·
+	 *            se True, exibe a tela principal, caso contr√°rio, fica onde
+	 *            est√°
 	 */
 	public void encerraJogo(int posicao, boolean voltaAoMenu) {
 		if (jogoEmAndamento != null) {
@@ -780,11 +879,11 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	/**
 	 * Exibe uma mensagem de alerta.
 	 * <p>
-	 * Este mÈtodo n„o bloqueia a execuÁ„o. Ao final do alerta, a mesa È
+	 * Este m√©todo n√£o bloqueia a execu√ß√£o. Ao final do alerta, a mesa √©
 	 * exibida.
 	 * 
 	 * @param titulo
-	 *            TÌtulo da tela
+	 *            T√≠tulo da tela
 	 * @param texto
 	 *            Texto da mensagem
 	 */
@@ -799,12 +898,12 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	private void confirmaSairPartida() {
 		Form f = new Form("miniTruco");
 		if (this.modoCE)
-			f
-					.append(new StringItem(null,
-							"Deseja mesmo abandonar modo confronto de estrat\u00e9gias?"));
+			f.append(new StringItem(null, Messages
+					.getString("abandonaConfronto"))); //$NON-NLS-1$
 		else
-			f.append(new StringItem(null,
-					"Deseja mesmo abandonar esta partida?"));
+			f
+					.append(new StringItem(null, Messages
+							.getString("abandonaPartida"))); //$NON-NLS-1$
 		f.addCommand(simSairPartidaCommand);
 		f.addCommand(naoSairPartidaCommand);
 		f.setCommandListener(this);
@@ -814,7 +913,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	/**
 	 * Cache do teste de suporte a bluetooth.
 	 * <p>
-	 * (parece bobo, mas È melhor evitar testar toda hora)
+	 * (parece bobo, mas √© melhor evitar testar toda hora)
 	 * 
 	 * @see MiniTruco#isSuportaBluetooth()
 	 */
@@ -823,8 +922,8 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	/**
 	 * Verifica se o dispostivo suporta bluetooth.
 	 * <p>
-	 * A resposta È cacheada na propriedade <code>suportaBluetooth</code>, e
-	 * isso pode ser usado para "forÁar" a exibiÁ„o do menu atravÈs das opÁıes
+	 * A resposta √© cacheada na propriedade <code>suportaBluetooth</code>, e
+	 * isso pode ser usado para "for√ßar" a exibi√ß√£o do menu atrav√©s das op√ß√µes
 	 * de debug.
 	 * 
 	 * @return true se encontrou a classe
@@ -838,11 +937,57 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				Class.forName("javax.bluetooth.LocalDevice");
 				suportaBluetooth = new Boolean(true);
 			} catch (ClassNotFoundException e) {
-				// Se der erro, o celular n„o suporta Bluetooth.
+				// Se der erro, o celular n√£o suporta Bluetooth.
 			}
 			// [ENDIF_FULL]
 		}
 		return suportaBluetooth.booleanValue();
 	}
+
+	//
+	// Textos para a gritaria Aqui pode-se incluir livremente novas op√ß√µes uma
+	// vez que o algoritmo checa o array todo
+	//
+
+	public static final String[] BALAO_TEXTOS_TRUCO = {
+			Messages.getString("frase.t1"), //$NON-NLS-1$
+			Messages.getString("frase.t2"), Messages.getString("frase.t3"), Messages.getString("frase.t4"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			Messages.getString("frase.t5"), Messages.getString("frase.t6") }; //$NON-NLS-1$ //$NON-NLS-2$
+
+	public static final String[] BALAO_TEXTOS_SEIS = {
+			Messages.getString("frase.s1"), Messages.getString("frase.s2"), //$NON-NLS-1$ //$NON-NLS-2$
+			Messages.getString("frase.s3"), Messages.getString("frase.s4"), Messages.getString("frase.s5"), Messages.getString("frase.s6") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+
+	public static final String[] BALAO_TEXTOS_NOVE = {
+			Messages.getString("frase.n1"), Messages.getString("frase.n2"), //$NON-NLS-1$ //$NON-NLS-2$
+			Messages.getString("frase.n3"), Messages.getString("frase.n4") }; //$NON-NLS-1$ //$NON-NLS-2$
+
+	public static final String[] BALAO_TEXTOS_DOZE = {
+			Messages.getString("frase.d1"), Messages.getString("frase.d2"), //$NON-NLS-1$ //$NON-NLS-2$
+			Messages.getString("frase.d3") }; //$NON-NLS-1$
+
+	public static final String[] BALAO_TEXTOS_DESCE = {
+			Messages.getString("frase.desce1"), //$NON-NLS-1$
+			Messages.getString("frase.desce2"), Messages.getString("frase.desce3"), Messages.getString("frase.desce4"), Messages.getString("frase.desce5"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			Messages.getString("frase.desce6") }; //$NON-NLS-1$
+
+	public static final String[] BALAO_TEXTOS_RECUSA = {
+			Messages.getString("frase.corre1"), //$NON-NLS-1$
+			Messages.getString("frase.corre2"), Messages.getString("frase.corre3"), Messages.getString("frase.corre4") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+	public static final String[] BALAO_TEXTOS_VENCEDOR = {
+			Messages.getString("frase.vitoria1"), Messages.getString("frase.vitoria2"), Messages.getString("frase.vitoria3") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+	public static final String[] BALAO_TEXTOS_DERROTADO = {
+			Messages.getString("frase.derrota1"), Messages.getString("frase.derrota2"), //$NON-NLS-1$ //$NON-NLS-2$
+			Messages.getString("frase.derrota3") }; //$NON-NLS-1$
+
+	public static final String[] BALAO_TEXTOS_ACEITAMAO11 = {
+			Messages.getString("frase.11aceita1"), //$NON-NLS-1$
+			Messages.getString("frase.11aceita2"), Messages.getString("frase.11aceita3") }; //$NON-NLS-1$ //$NON-NLS-2$
+
+	public static final String[] BALAO_TEXTOS_RECUSAMAO11 = {
+			Messages.getString("frase.11recusa1"), Messages.getString("frase.11recusa2"), Messages.getString("frase.11recusa3"), Messages.getString("frase.11recusa4"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			Messages.getString("frase.11recusa5") }; //$NON-NLS-1$
 
 }

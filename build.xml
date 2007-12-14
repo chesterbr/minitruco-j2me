@@ -85,6 +85,7 @@
 			</filterset>
 		</copy>
 		<property name="NOME_APP" value="miniTrucoLight" />
+		<property name="EXCLUDED_RES" value="regras.txt,mensagens.Eng.properties,logotipo2.png,instrucoes_en.txt,regras_en.txt,sobre_en.txt" />
 	</target>
 
 	<target name="prepara_full">
@@ -93,6 +94,7 @@
 			<fileset dir="src" />
 		</copy>
 		<property name="NOME_APP" value="miniTruco" />
+		<property name="EXCLUDED_RES" value="" />
 	</target>
 
 	<target name="compilar_sem_wtk">
@@ -112,7 +114,7 @@
 		<jar basedir="${BIN}" jarfile="${DEPLOY}/temp.jar" />
 		<delete dir="${BIN}" />
 		<mkdir dir="${BIN}" />
-		<proguard overloadaggressively="on" defaultpackage="" allowaccessmodification="on" printseeds="on" usemixedcaseclassnames="false">
+		<proguard verbose="1" overloadaggressively="on" defaultpackage="" allowaccessmodification="on" printseeds="on" usemixedcaseclassnames="false">
 			<!-- On Windows, you can't use mixed case class names,
 		                 for the sake of the preverify tool.
 		            usemixedcaseclassnames="false">
@@ -147,7 +149,7 @@
 		<mkdir dir="${DEPLOY}" />
 		<!-- .jar -->
 		<wtkpackage preverify="no" basedir="${BIN}" jarfile="${DEPLOY}/${NOME_APP}.jar" jadfile="${JAD_DIR}/${NOME_APP}.jad">
-			<fileset dir="${RES}" includes="*.png,*.txt" />
+			<fileset dir="${RES}" includes="*.png,*.txt,*.properties" excludes="${EXCLUDED_RES}" />
 		</wtkpackage>
 		<!-- .jad -->
 		<copy todir="${DEPLOY}" file="${JAD_DIR}/${NOME_APP}.jad" />
