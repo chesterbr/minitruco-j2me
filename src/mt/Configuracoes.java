@@ -103,11 +103,19 @@ public class Configuracoes {
 		idioma = "Português";
 
 		// [IF_FULL]
-		String locale = System.getProperty("microedition.locale");
+		String locale = null;
+		try {
+			locale = System.getProperty("microedition.locale");
+		} catch (Exception e) {
+			// Se der erro, provavelmente estamos rodando do servidor.
+			// Define o default pela presença ou não do arquivo
+			if (this.getClass().getResourceAsStream("/forceEnglishOnServer") != null) {
+				idioma = "English";
+			}
+		}
 		if (locale != null && locale.toLowerCase().startsWith("en")) {
 			idioma = "English";
 		}
-		;
 		// [ENDIF_FULL]
 	}
 

@@ -59,7 +59,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		// de forms dependem disso)
 		try {
 			Messages.carregaIdioma(Configuracoes.getConfiguracoes().idioma);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// Se não der certo, desencana;
 			e.printStackTrace();
 		}
