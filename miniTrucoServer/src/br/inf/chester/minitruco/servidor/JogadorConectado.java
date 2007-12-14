@@ -112,7 +112,7 @@ public class JogadorConectado extends Jogador implements Runnable {
 
 	private String[] ARQUIVOS_PERMITIDOS_HTTP = { "/applet.html",
 			"/miniTruco.jar", "/microemulator.jar", "/mtskin.jar",
-			"/favicon.ico" };
+			"/favicon.ico", "/english.jar", "/applet_en.html" };
 
 	/*
 	 * public void println(String mensagem) { if (out!=null) {

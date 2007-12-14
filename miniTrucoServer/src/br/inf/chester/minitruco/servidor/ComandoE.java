@@ -1,4 +1,4 @@
-﻿package br.inf.chester.minitruco.servidor;
+package br.inf.chester.minitruco.servidor;
 
 /*
  * Copyright © 2006-2007 Carlos Duarte do Nascimento (Chester)

@@ -1,4 +1,4 @@
-﻿package br.inf.chester.minitruco.servidor;
+package br.inf.chester.minitruco.servidor;
 
 import mt.Carta;
 
