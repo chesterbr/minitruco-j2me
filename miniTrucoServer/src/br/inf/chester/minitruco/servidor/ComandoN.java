@@ -1,34 +1,34 @@
-package br.inf.chester.minitruco.servidor;
+ï»¿package br.inf.chester.minitruco.servidor;
 
 /*
- * Copyright © 2006-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright Â© 2006-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Este programa é um software livre; você pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
- * Licença, ou (na sua opnião) qualquer versão.
+ * Este programa Ã© um software livre; vocÃª pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da LicenÃ§a PÃºblica Geral GNU como 
+ * publicada pela FundaÃ§Ã£o do Software Livre (FSF); na versÃ£o 3 da 
+ * LicenÃ§a, ou (na sua opniÃ£o) qualquer versÃ£o.
  *
- * Este programa é distribuido na esperança que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÇÂO
- * a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença
- * Pública Geral GNU para maiores detalhes.
+ * Este programa Ã© distribuido na esperanÃ§a que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÃ‡Ã‚O
+ * a qualquer MERCADO ou APLICAÃ‡ÃƒO EM PARTICULAR. Veja a LicenÃ§a
+ * PÃºblica Geral GNU para maiores detalhes.
  *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU
- * junto com este programa, se não, escreva para a Fundação do Software
+ * VocÃª deve ter recebido uma cÃ³pia da LicenÃ§a PÃºblica Geral GNU
+ * junto com este programa, se nÃ£o, escreva para a FundaÃ§Ã£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 /**
  * Atribui um nome ao jogador.
  * <p>
- * Parâmetro: Nome a atribuir
+ * ParÃ¢metro: Nome a atribuir
  * <p>
- * O nome deve ser único, e conter apenas letras, números e os caracteres em
- * CARACTERES_PERMITIDOS. Também não pode começar com "Robo_". 
+ * O nome deve ser Ãºnico, e conter apenas letras, nÃºmeros e os caracteres em
+ * CARACTERES_PERMITIDOS. TambÃ©m nÃ£o pode comeÃ§ar com "Robo_". 
  * <p>
- * O servidor guarda o upper/lowercase, mas o nome tem que ser único de forma case-insensitive.
- * Ex.: se o "Roberto" entrou, o "roberto" ou o "ROBERTO" não pdoem entrar.
+ * O servidor guarda o upper/lowercase, mas o nome tem que ser Ãºnico de forma case-insensitive.
+ * Ex.: se o "Roberto" entrou, o "roberto" ou o "ROBERTO" nÃ£o pdoem entrar.
  * 
  * @author Chester
  * 
@@ -58,12 +58,12 @@ public class ComandoN extends Comando {
 				}
 			}
 		}
-		// Tenta mudar o nome (o if é pro caso de o cara setar o nome que
-		// já tinha)
+		// Tenta mudar o nome (o if Ã© pro caso de o cara setar o nome que
+		// jÃ¡ tinha)
 		if (!nome.equals(j.getNome())) {
 			j.setNome(nome);
 		}
-		// Se o nome não mudou, é porque já estava em uso
+		// Se o nome nÃ£o mudou, Ã© porque jÃ¡ estava em uso
 		if (nome.equals(j.getNome())) {
 			j.println("N " + nome);
 			Sala s = j.getSala();

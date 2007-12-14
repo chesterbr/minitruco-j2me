@@ -1,21 +1,21 @@
-package br.inf.chester.minitruco.servidor;
+ï»¿package br.inf.chester.minitruco.servidor;
 
 /*
- * Copyright © 2006-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright Â© 2006-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Este programa é um software livre; você pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
- * Licença, ou (na sua opnião) qualquer versão.
+ * Este programa Ã© um software livre; vocÃª pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da LicenÃ§a PÃºblica Geral GNU como 
+ * publicada pela FundaÃ§Ã£o do Software Livre (FSF); na versÃ£o 3 da 
+ * LicenÃ§a, ou (na sua opniÃ£o) qualquer versÃ£o.
  *
- * Este programa é distribuido na esperança que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÇÂO
- * a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença
- * Pública Geral GNU para maiores detalhes.
+ * Este programa Ã© distribuido na esperanÃ§a que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÃ‡Ã‚O
+ * a qualquer MERCADO ou APLICAÃ‡ÃƒO EM PARTICULAR. Veja a LicenÃ§a
+ * PÃºblica Geral GNU para maiores detalhes.
  *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU
- * junto com este programa, se não, escreva para a Fundação do Software
+ * VocÃª deve ter recebido uma cÃ³pia da LicenÃ§a PÃºblica Geral GNU
+ * junto com este programa, se nÃ£o, escreva para a FundaÃ§Ã£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
@@ -29,8 +29,8 @@ import mt.Jogador;
 /**
  * Efetua o log dos eventos do servidor.
  * <p>
- * A implementação atual coloca estes eventos em stdout num formato padronizado,
- * o que funciona bem para quem tem o grep à mão. Implementações futuras podem
+ * A implementaÃ§Ã£o atual coloca estes eventos em stdout num formato padronizado,
+ * o que funciona bem para quem tem o grep Ã  mÃ£o. ImplementaÃ§Ãµes futuras podem
  * fazer logs por sala, por jogador, efetuar alertas baseados em log, whatever.
  * 
  * @author Chester
@@ -43,9 +43,9 @@ public class ServerLogger {
 	/**
 	 * Guarda um evento no log.
 	 * <p>
-	 * Obs.: Está como synchronized para evitar encavalamento de mensagens. Se
-	 * isso for ruim em termos de performance, uma idéia seria consolidar os
-	 * println com um StringBuilder e cuspir de uma vez só.
+	 * Obs.: EstÃ¡ como synchronized para evitar encavalamento de mensagens. Se
+	 * isso for ruim em termos de performance, uma idÃ©ia seria consolidar os
+	 * println com um StringBuilder e cuspir de uma vez sÃ³.
 	 * 
 	 * @param j
 	 *            Jogador com que ocorreu (opcional)
@@ -86,7 +86,7 @@ public class ServerLogger {
 	 * Guarda um erro no log
 	 * 
 	 * @param e
-	 *            Exceção associada ao erro (opcional)
+	 *            ExceÃ§Ã£o associada ao erro (opcional)
 	 * @param mensagem
 	 *            Mensagem do erro
 	 */
@@ -96,7 +96,7 @@ public class ServerLogger {
 	}
 
 	/**
-	 * Gera um evento não ligado a um jogador (startup, shtudown, etc.)
+	 * Gera um evento nÃ£o ligado a um jogador (startup, shtudown, etc.)
 	 * 
 	 * @param mensagem
 	 *            Mensagem do evento

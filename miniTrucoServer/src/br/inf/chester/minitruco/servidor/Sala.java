@@ -1,21 +1,21 @@
 package br.inf.chester.minitruco.servidor;
 
 /*
- * Copyright © 2006-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright Â© 2006-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Este programa é um software livre; você pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
- * Licença, ou (na sua opnião) qualquer versão.
+ * Este programa Ã© um software livre; vocÃª pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da LicenÃ§a PÃºblica Geral GNU como 
+ * publicada pela FundaÃ§Ã£o do Software Livre (FSF); na versÃ£o 3 da 
+ * LicenÃ§a, ou (na sua opniÃ£o) qualquer versÃ£o.
  *
- * Este programa é distribuido na esperança que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÇÂO
- * a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença
- * Pública Geral GNU para maiores detalhes.
+ * Este programa Ã© distribuido na esperanÃ§a que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÃ‡Ã‚O
+ * a qualquer MERCADO ou APLICAÃ‡ÃƒO EM PARTICULAR. Veja a LicenÃ§a
+ * PÃºblica Geral GNU para maiores detalhes.
  *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU
- * junto com este programa, se não, escreva para a Fundação do Software
+ * VocÃª deve ter recebido uma cÃ³pia da LicenÃ§a PÃºblica Geral GNU
+ * junto com este programa, se nÃ£o, escreva para a FundaÃ§Ã£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
@@ -55,10 +55,10 @@ public class Sala {
 	 * @param j
 	 *            Jogador a adicionar
 	 * @return true se tudo correr bem, false se a sala estiver lotada ou o
-	 *         jogador já estiver em outra sala
+	 *         jogador jÃ¡ estiver em outra sala
 	 */
 	public boolean adiciona(JogadorConectado j) {
-		// Se o jogador já está numa sala, não permite
+		// Se o jogador jÃ¡ estÃ¡ numa sala, nÃ£o permite
 		if (j.getSala() != null) {
 			return false;
 		}
@@ -80,7 +80,7 @@ public class Sala {
 	 * Recupera o gerente da sala, i.e., o <code>JogadorRemoto</code> mais
 	 * antigo nela
 	 * 
-	 * @return Jogador mais antigo, ou null se a sala não tiver jogadores
+	 * @return Jogador mais antigo, ou null se a sala nÃ£o tiver jogadores
 	 *         remotos
 	 */
 	public Jogador getGerente() {
@@ -103,7 +103,7 @@ public class Sala {
 	/**
 	 * Conta quantas pessoas tem na sala
 	 * 
-	 * @return Número de Pessoas
+	 * @return NÃºmero de Pessoas
 	 */
 	public int getNumPessoas() {
 		int numPessoas = 0;
@@ -122,7 +122,7 @@ public class Sala {
 	 * 
 	 * @param j
 	 *            Jogador a remover
-	 * @return true se removeu, false se ele não estava lá
+	 * @return true se removeu, false se ele nÃ£o estava lÃ¡
 	 */
 	public boolean remove(JogadorConectado j) {
 		for (int i = 0; i <= 3; i++) {
@@ -143,7 +143,7 @@ public class Sala {
 	}
 
 	/**
-	 * Jogo que está rodando nessa sala (se houver)
+	 * Jogo que estÃ¡ rodando nessa sala (se houver)
 	 */
 	private JogoLocal jogo = null;
 
@@ -158,7 +158,7 @@ public class Sala {
 	boolean manilhaVelha = false;
 
 	/**
-	 * Recupera o jogo que está rolando na sala (para dar comandos, etc.)
+	 * Recupera o jogo que estÃ¡ rolando na sala (para dar comandos, etc.)
 	 */
 	public Jogo getJogo() {
 		return jogo;
@@ -170,7 +170,7 @@ public class Sala {
 	private static List<Sala> salas;
 
 	/**
-	 * Envia uma notificação para todos os jogadores na sala
+	 * Envia uma notificaÃ§Ã£o para todos os jogadores na sala
 	 * 
 	 * @param mensagem
 	 *            linha de texto a ser enviada
@@ -184,8 +184,8 @@ public class Sala {
 	}
 
 	/**
-	 * Verifica se a mesa está completa, i.e., se a sala tem 4 jogadores
-	 * dispostos a jogar, e se já não tem um jogo rolando.
+	 * Verifica se a mesa estÃ¡ completa, i.e., se a sala tem 4 jogadores
+	 * dispostos a jogar, e se jÃ¡ nÃ£o tem um jogo rolando.
 	 * <p>
 	 * Se isto acontecer, inicia a partida.
 	 */
@@ -194,7 +194,7 @@ public class Sala {
 		if (jogo != null) {
 			return;
 		}
-		// Todos os remotos conectados têm que querer jogar
+		// Todos os remotos conectados tÃªm que querer jogar
 		for (int i = 0; i <= 3; i++) {
 			if ((jogadores[i] instanceof JogadorConectado)
 					&& !((JogadorConectado) jogadores[i]).querJogar) {
@@ -211,7 +211,7 @@ public class Sala {
 		if (numRemotos < 2) {
 			return;
 		}
-		// Completa as posições vazias com bots
+		// Completa as posiÃ§Ãµes vazias com bots
 		int n = 1;
 		for (int i = 0; i <= 3; i++) {
 			if (jogadores[i] == null) {
@@ -249,9 +249,9 @@ public class Sala {
 	 * Recupera uma sala de jogo.
 	 * 
 	 * @param numSala
-	 *            Numero da sala (de 1 até <code>getQtdeSalas(</code>)
-	 * @return sala correspondente ao número. Se as salas não tiverem sido
-	 *         inicializadas, ou se o número for inválido, retorna
+	 *            Numero da sala (de 1 atÃ© <code>getQtdeSalas(</code>)
+	 * @return sala correspondente ao nÃºmero. Se as salas nÃ£o tiverem sido
+	 *         inicializadas, ou se o nÃºmero for invÃ¡lido, retorna
 	 *         <code>null</code>
 	 */
 	public static Sala getSala(int numSala) {
@@ -263,27 +263,27 @@ public class Sala {
 	}
 
 	/**
-	 * @return quantidade de salas disponíveis no servidor
+	 * @return quantidade de salas disponÃ­veis no servidor
 	 */
 	public static int getQtdeSalas() {
 		return (salas == null ? 0 : salas.size());
 	}
 
 	/**
-	 * Recupera o número da sala
+	 * Recupera o nÃºmero da sala
 	 * 
-	 * @return Número de 1 a <code>getQtdeSalas()</code>
+	 * @return NÃºmero de 1 a <code>getQtdeSalas()</code>
 	 */
 	public int getNumSala() {
 		return salas.indexOf(this) + 1;
 	}
 
 	/**
-	 * Retorna a posição do jogador na sala
+	 * Retorna a posiÃ§Ã£o do jogador na sala
 	 * 
 	 * @param j
 	 *            Jogador consultado
-	 * @return posição de 1 a 4, ou 0 se o jogador não está na sala
+	 * @return posiÃ§Ã£o de 1 a 4, ou 0 se o jogador nÃ£o estÃ¡ na sala
 	 */
 	public int getPosicao(Jogador j) {
 		for (int i = 0; i <= 3; i++) {
@@ -295,12 +295,12 @@ public class Sala {
 	}
 
 	/**
-	 * Recupera o jogador em uma determinada posição
+	 * Recupera o jogador em uma determinada posiÃ§Ã£o
 	 * 
 	 * @param i
-	 *            posição do jogador (de 1 a 4)
-	 * @return objeto que representa o jogador, ou null se a posição for
-	 *         inválida ou não estiver ocupada
+	 *            posiÃ§Ã£o do jogador (de 1 a 4)
+	 * @return objeto que representa o jogador, ou null se a posiÃ§Ã£o for
+	 *         invÃ¡lida ou nÃ£o estiver ocupada
 	 */
 	public Jogador getJogador(int i) {
 		if (i >= 1 && i <= 4)
@@ -323,7 +323,7 @@ public class Sala {
 	}
 
 	/**
-	 * Recupera a string de informação da sala.
+	 * Recupera a string de informaÃ§Ã£o da sala.
 	 * 
 	 * @return String no formato "I sala nome1|nome2|nome3|nome4 vontade posicao
 	 *         regras"
@@ -332,15 +332,15 @@ public class Sala {
 		StringBuilder sb = new StringBuilder();
 		// I numsala
 		sb.append("I " + getNumSala());
-		// Nomes dos jogadores, separados por pipe (posições vazias são strings
+		// Nomes dos jogadores, separados por pipe (posiÃ§Ãµes vazias sÃ£o strings
 		// vazias)
 		for (int i = 0; i <= 3; i++) {
 			sb.append(i == 0 ? ' ' : '|');
 			sb.append(jogadores[i] == null ? "" : jogadores[i].getNome());
 		}
 		sb.append(' ');
-		// Status de "quer jogar" dos jogadores (posições vazias são T,
-		// indicando que serão preenchidas por robôs caso o jogo inicie)
+		// Status de "quer jogar" dos jogadores (posiÃ§Ãµes vazias sÃ£o T,
+		// indicando que serÃ£o preenchidas por robÃ´s caso o jogo inicie)
 		for (int i = 0; i <= 3; i++) {
 			if (jogadores[i] instanceof JogadorConectado) {
 				if (((JogadorConectado) jogadores[i]).querJogar) {
@@ -353,7 +353,7 @@ public class Sala {
 			}
 		}
 		sb.append(' ');
-		// Posição do gerente
+		// PosiÃ§Ã£o do gerente
 		sb.append(getPosicao(getGerente()));
 		sb.append(' ');
 		// Regras
@@ -363,7 +363,7 @@ public class Sala {
 	}
 
 	/**
-	 * Troca o parceiro do gerente da sala (fazendo um rodízio de todo mundo
+	 * Troca o parceiro do gerente da sala (fazendo um rodÃ­zio de todo mundo
 	 * menos o gerente)
 	 * 
 	 */
@@ -371,7 +371,7 @@ public class Sala {
 
 		Jogador gerente = getGerente();
 
-		// Cria uma lista das posições a trocar, duplicando a primeira no final
+		// Cria uma lista das posiÃ§Ãµes a trocar, duplicando a primeira no final
 		List<Integer> posicoes = new ArrayList<Integer>();
 		int posGerente = 0;
 		for (int i = 1; i <= 4; i++) {
@@ -383,8 +383,8 @@ public class Sala {
 		}
 		posicoes.add(posicoes.get(0));
 
-		// Cria novos arrays de jogadores/timestamps, rotacionando as posições
-		// com base na lista acima (jogando o próximo da lista no atual)
+		// Cria novos arrays de jogadores/timestamps, rotacionando as posiÃ§Ãµes
+		// com base na lista acima (jogando o prÃ³ximo da lista no atual)
 		Jogador[] novosJogadores = new Jogador[4];
 		Date[] novosTimestamps = new Date[4];
 		for (int i = 0; i <= 2; i++) {
@@ -412,7 +412,7 @@ public class Sala {
 				posGerente = i;
 			}
 		}
-		// Acha as posições dos adversários
+		// Acha as posiÃ§Ãµes dos adversÃ¡rios
 		int posAdv1 = posGerente + 1;
 		int posAdv2 = posGerente + 3;
 		if (posAdv1 > 4)

@@ -1,28 +1,28 @@
-package br.inf.chester.minitruco.servidor;
+ï»¿package br.inf.chester.minitruco.servidor;
 
 /*
- * Copyright © 2006-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright Â© 2006-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Este programa é um software livre; você pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da Licença Pública Geral GNU como 
- * publicada pela Fundação do Software Livre (FSF); na versão 3 da 
- * Licença, ou (na sua opnião) qualquer versão.
+ * Este programa Ã© um software livre; vocÃª pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da LicenÃ§a PÃºblica Geral GNU como 
+ * publicada pela FundaÃ§Ã£o do Software Livre (FSF); na versÃ£o 3 da 
+ * LicenÃ§a, ou (na sua opniÃ£o) qualquer versÃ£o.
  *
- * Este programa é distribuido na esperança que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÇÂO
- * a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença
- * Pública Geral GNU para maiores detalhes.
+ * Este programa Ã© distribuido na esperanÃ§a que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÃ‡Ã‚O
+ * a qualquer MERCADO ou APLICAÃ‡ÃƒO EM PARTICULAR. Veja a LicenÃ§a
+ * PÃºblica Geral GNU para maiores detalhes.
  *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU
- * junto com este programa, se não, escreva para a Fundação do Software
+ * VocÃª deve ter recebido uma cÃ³pia da LicenÃ§a PÃºblica Geral GNU
+ * junto com este programa, se nÃ£o, escreva para a FundaÃ§Ã£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 /**
  * Troca as regras da sala atual.
  * <p>
- * Recebe como parâmetro uma string de exatamente 2 caracteres T ou F,
+ * Recebe como parÃ¢metro uma string de exatamente 2 caracteres T ou F,
  * indicando, na ordem, baralho limpo e manilha velha.
  * <p>
  * Apenas o gerente pode dar esse comando.
@@ -38,7 +38,7 @@ public class ComandoR extends Comando {
 		if (s.getGerente().equals(j) && args.length == 2
 				&& args[1].length() == 2) {
 			if (args[1].equals("TT")) {
-				// Não dá pra jogar com baralho limpo e manilha velha
+				// NÃ£o dÃ¡ pra jogar com baralho limpo e manilha velha
 				j.println("X TT");
 			} else {
 				// Seta as novas regras e avisa a galera

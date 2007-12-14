@@ -1,21 +1,21 @@
 package br.inf.chester.minitruco.servidor;
 
 /*
- * Copyright © 2006-2007 Carlos Duarte do Nascimento (Chester)
+ * Copyright ¬© 2006-2007 Carlos Duarte do Nascimento (Chester)
  * cd@pobox.com
  * 
- * Este programa È um software livre; vocÍ pode redistribui-lo e/ou 
- * modifica-lo dentro dos termos da LicenÁa P˙blica Geral GNU como 
- * publicada pela FundaÁ„o do Software Livre (FSF); na vers„o 3 da 
- * LicenÁa, ou (na sua opni„o) qualquer vers„o.
+ * Este programa √© um software livre; voc√™ pode redistribui-lo e/ou 
+ * modifica-lo dentro dos termos da Licen√ßa P√∫blica Geral GNU como 
+ * publicada pela Funda√ß√£o do Software Livre (FSF); na vers√£o 3 da 
+ * Licen√ßa, ou (na sua opni√£o) qualquer vers√£o.
  *
- * Este programa È distribuido na esperanÁa que possa ser util, 
- * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA«¬O
- * a qualquer MERCADO ou APLICA«√O EM PARTICULAR. Veja a LicenÁa
- * P˙blica Geral GNU para maiores detalhes.
+ * Este programa √© distribuido na esperan√ßa que possa ser util, 
+ * mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUA√á√ÇO
+ * a qualquer MERCADO ou APLICA√á√ÉO EM PARTICULAR. Veja a Licen√ßa
+ * P√∫blica Geral GNU para maiores detalhes.
  *
- * VocÍ deve ter recebido uma cÛpia da LicenÁa P˙blica Geral GNU
- * junto com este programa, se n„o, escreva para a FundaÁ„o do Software
+ * Voc√™ deve ter recebido uma c√≥pia da Licen√ßa P√∫blica Geral GNU
+ * junto com este programa, se n√£o, escreva para a Funda√ß√£o do Software
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
@@ -35,16 +35,16 @@ import mt.Jogador;
 /**
  * Representa um cliente conectado, dentro ou fora de um jogo.
  * <p>
- * A classe È capaz de processar os comandos do jogador, e, uma vez associada ao
+ * A classe √© capaz de processar os comandos do jogador, e, uma vez associada ao
  * jogo, interagir com ele.
  * <p>
- * A classe tambÈm responde ao comando <code>GET /applet.html</code> (na
- * verdade, a qualquer tipo de <code>GET</code>, mas È melhor usar esse para
+ * A classe tamb√©m responde ao comando <code>GET /applet.html</code> (na
+ * verdade, a qualquer tipo de <code>GET</code>, mas √© melhor usar esse para
  * compatibilidade futura), retornando o HTML que abre a applet hospedada em
  * <code>chester.inf.br</code>
  * <p>
- * Isso È feito para permitir que esta applet se conecte no servidor, sem
- * restriÁıes de seguranÁa (vide http://java.sun.com/sfaq/#socket).
+ * Isso √© feito para permitir que esta applet se conecte no servidor, sem
+ * restri√ß√µes de seguran√ßa (vide http://java.sun.com/sfaq/#socket).
  * 
  * @author Chester
  * 
@@ -59,12 +59,12 @@ public class JogadorConectado extends Jogador implements Runnable {
 	private static Set<String> nomes = new HashSet<String>();
 
 	/**
-	 * Informa se o jogador est· participando de um jogo
+	 * Informa se o jogador est√° participando de um jogo
 	 */
 	public boolean jogando = false;
 
 	/**
-	 * Informa se o jogador autorizou o inÌcio da partida na sala
+	 * Informa se o jogador autorizou o in√≠cio da partida na sala
 	 */
 	public boolean querJogar = false;
 
@@ -72,7 +72,7 @@ public class JogadorConectado extends Jogador implements Runnable {
 
 	/**
 	 * Uso interno. Para consultar a sala atual, use <code>getSala()</code>,
-	 * e para adicionar/remover salas, use os mÈtodos<code>adicionar()</code>
+	 * e para adicionar/remover salas, use os m√©todos<code>adicionar()</code>
 	 * e <code>remover()</code> de Sala.
 	 * 
 	 * @see JogadorConectado#getSala()
@@ -85,14 +85,14 @@ public class JogadorConectado extends Jogador implements Runnable {
 	 * Cria um novo jogador
 	 * 
 	 * @param cliente
-	 *            socket-cliente atravÈs do qual o jogador se conectou
+	 *            socket-cliente atrav√©s do qual o jogador se conectou
 	 */
 	public JogadorConectado(Socket cliente) {
 		this.cliente = cliente;
 	}
 
 	/**
-	 * Buffer de saÌda do jogador (para onde devemos "printar" os resultados dos
+	 * Buffer de sa√≠da do jogador (para onde devemos "printar" os resultados dos
 	 * comandos)
 	 */
 	private PrintStream out;
@@ -125,17 +125,17 @@ public class JogadorConectado extends Jogador implements Runnable {
 	public void run() {
 		ServerLogger.evento(this, "conectou");
 		try {
-			// Prepara o buffer de saÌda
+			// Prepara o buffer de sa√≠da
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					cliente.getInputStream()));
 			out = new PrintStream(cliente.getOutputStream());
 			while (true) {
 				String s = in.readLine();
 				if (s == null) {
-					// Desconex„o
+					// Desconex√£o
 					return;
 				}
-				// Quebra a solicitaÁ„o em tokens
+				// Quebra a solicita√ß√£o em tokens
 				String[] args = s.split(" ");
 				if (args.length == 0 || args[0].length() == 0) {
 					continue;
@@ -148,8 +148,8 @@ public class JogadorConectado extends Jogador implements Runnable {
 					do {
 						ServerLogger.evento(this, "]" + s);
 						s = in.readLine();
-						/* TODO Arrumar esse cÛdigo, n„o funciona a contento
-						// Se o cliente tiver uma cÛpia no cache, tenta usar
+						/* TODO Arrumar esse c√≥digo, n√£o funciona a contento
+						// Se o cliente tiver uma c√≥pia no cache, tenta usar
 						if (s.startsWith(IF_MODIFIED_SINCE_HTTP_HEADER)) {
 							try {
 								Date dataMax = MiniTrucoServer.dfStartup
@@ -166,7 +166,7 @@ public class JogadorConectado extends Jogador implements Runnable {
 									return;									
 								}
 							} catch (ParseException e) {
-								// Se n„o conseguiu parsear, loga e desencana
+								// Se n√£o conseguiu parsear, loga e desencana
 								ServerLogger.evento(this,
 										"!Cabecalho invalido: " + s
 												+ ". Erro: " + e.getMessage());
@@ -174,7 +174,7 @@ public class JogadorConectado extends Jogador implements Runnable {
 						}
 						*/
 					} while ((s != null) && (!s.equals("")));
-					// Se livra dos par‚metros
+					// Se livra dos par√¢metros
 					String nomeArq = args[1];
 					int fimNome = nomeArq.indexOf('?');
 					if (fimNome != -1)
@@ -185,7 +185,7 @@ public class JogadorConectado extends Jogador implements Runnable {
 					return;
 				}
 
-				// Encontra a implementaÁ„o do comando solicitado e chama
+				// Encontra a implementa√ß√£o do comando solicitado e chama
 				if ((args[0] == null) || (args[0].length() != 1)) {
 					continue;
 				}
@@ -204,10 +204,10 @@ public class JogadorConectado extends Jogador implements Runnable {
 				}
 			}
 		} catch (IOException e) {
-			// Meio improv·vel de rolar, however...
+			// Meio improv√°vel de rolar, however...
 			ServerLogger.evento(e, "Erro de I/O no loop principal do jogador");
 		} finally {
-			// Ao final, remove o usu·rio de qualquer sala em que esteja,
+			// Ao final, remove o usu√°rio de qualquer sala em que esteja,
 			// remove seu nome da lista de nomes usados e loga
 			if (getSala() != null) {
 				(new ComandoS()).executa(null, this);
@@ -226,10 +226,10 @@ public class JogadorConectado extends Jogador implements Runnable {
 	 * 
 	 * @param nomeArq
 	 *            nome do arquivo a ser servido (precedido de "/"), que deve
-	 *            estar disponÌvel no classpath e na lista de arquivos
+	 *            estar dispon√≠vel no classpath e na lista de arquivos
 	 *            permitidos
 	 * @param out
-	 *            stream para onde o HTML ser· servido
+	 *            stream para onde o HTML ser√° servido
 	 */
 	private void serveArquivosApplet(String nomeArq, PrintStream out) {
 		try {
@@ -269,9 +269,9 @@ public class JogadorConectado extends Jogador implements Runnable {
 			}
 			out.println("Server: miniTrucoServer/"
 					+ MiniTrucoServer.VERSAO_SERVER);
-			// Como n„o temos como recuperar as datas dos arquivos no JAR, vamos
-			// usar a data de startup do servidor (que È razoavelmente est·vel e
-			// sÛ cresce nas CNTP)
+			// Como n√£o temos como recuperar as datas dos arquivos no JAR, vamos
+			// usar a data de startup do servidor (que √© razoavelmente est√°vel e
+			// s√≥ cresce nas CNTP)
 			out.println("Last-modified:" + MiniTrucoServer.strDataStartup);
 			out.println("Content-Length: " + bis.available());
 			out.println();
@@ -287,7 +287,7 @@ public class JogadorConectado extends Jogador implements Runnable {
 		}
 	}
 
-	// TODO: ver se n„o vai fazer falta
+	// TODO: ver se n√£o vai fazer falta
 	// @Override
 	// public void jogadorAceito(Jogador j, Jogo jogo) {
 	// println("Y " + j.getPosicao());
@@ -384,7 +384,7 @@ public class JogadorConectado extends Jogador implements Runnable {
 	}
 
 	/**
-	 * Desvincula o jogo do jogador, e, se necess·rio, da sala
+	 * Desvincula o jogo do jogador, e, se necess√°rio, da sala
 	 * 
 	 */
 	private synchronized void desvinculaJogo() {
@@ -396,7 +396,7 @@ public class JogadorConectado extends Jogador implements Runnable {
 	}
 
 	/**
-	 * Recupera a sala em que o jogado rest·
+	 * Recupera a sala em que o jogado rest√°
 	 * 
 	 * @return objeto representando a sala, ou null se estiver fora de uma sala
 	 */
@@ -406,14 +406,14 @@ public class JogadorConectado extends Jogador implements Runnable {
 
 	@Override
 	/**
-	 * Atribui um nome ao jogador (apenas se n„o houver outro com o mesmo nome)
+	 * Atribui um nome ao jogador (apenas se n√£o houver outro com o mesmo nome)
 	 */
 	public synchronized void setNome(String nome) {
-		// Se j· existir, desencana
+		// Se j√° existir, desencana
 		if (isNomeEmUso(nome)) {
 			return;
 		}
-		// Se j· tinha um nome, libera o seu uso
+		// Se j√° tinha um nome, libera o seu uso
 		if (this.getNome() != null) {
 			liberaNome(this.getNome());
 		}
@@ -423,11 +423,11 @@ public class JogadorConectado extends Jogador implements Runnable {
 	}
 
 	/**
-	 * Verifica se um nome est· em uso por algum jogador
+	 * Verifica se um nome est√° em uso por algum jogador
 	 * 
 	 * @param nome
 	 *            nome a verificar
-	 * @return true se j· est· em uso, false caso contr·rio
+	 * @return true se j√° est√° em uso, false caso contr√°rio
 	 */
 	public static boolean isNomeEmUso(String nome) {
 		return nomes.contains(nome.toUpperCase());
