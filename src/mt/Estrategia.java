@@ -47,10 +47,10 @@ package mt;
 public interface Estrategia {
 
 	/**
-	 * Retorna o nome "de tela" da Estrategia
+	 * Retorna o nome "copmpleto" da Estrategia
 	 */
 	public abstract String getNomeEstrategia();
-
+	
 	/**
 	 * Retorna informações de copyright e afins
 	 */

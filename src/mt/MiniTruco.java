@@ -294,6 +294,10 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			.getString("nao"), //$NON-NLS-1$
 			Command.CANCEL, 2);
 
+	public static Command mostraNomesJogadoresCommand = new Command(
+			"X", Command.HELP, //$NON-NLS-1$
+			999);
+
 	// Elementos do formulario de opções
 
 	private static final String[] OPCOES_VISUAL = {

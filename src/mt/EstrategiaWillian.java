@@ -42,14 +42,14 @@ public class EstrategiaWillian implements Estrategia {
 	 * Retorna uma string com o nome do Estrategia!
 	 */
 	public String getNomeEstrategia() {
-		return "Willian v1.01";
+		return "Willian";
 	}
 
 	/**
 	 * Retorna uma String com informacao minhas
 	 */
 	public String getInfoEstrategia() {
-		return "feito por Willian, Fev/2006";
+		return "v1.01, feito por Willian, Fev/2006";
 	}
 
 	/**

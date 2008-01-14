@@ -1,7 +1,7 @@
 package mt;
 
 /*
- * Copyright (c) 2007 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * Copyright (c) 2007-2008 Sandro Gasparotto (sandro.gasparoto@gmail.com)
  *
  * Nota 1: parte do código (métodos de suporte) adaptada
  * da Estratégia Sellani (Copyright (c) 2006 Leonardo Sellani)
@@ -62,14 +62,14 @@ public class EstrategiaGasparotto implements Estrategia {
 	 * Retorna o nome "de tela" da Estrategia
 	 */
 	public String getNomeEstrategia() {
-		return "Gasparotto v1.2";
+		return "Gasparotto";
 	}
 
 	/**
 	 * Retorna informações de copyright e afins
 	 */
 	public String getInfoEstrategia() {
-		return "Copyright (c) 2007 Sandro Gasparotto";
+		return "v1.5 (c) 2007 Sandro Gasparotto";
 	}
 
 	/**

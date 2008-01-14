@@ -364,7 +364,7 @@ public abstract class Jogo implements Runnable {
 	 */
 	public static synchronized void log(String string) {
 		// Envia para o console (descomente para debug)
-		// System.out.println(string);
+		 System.out.println(string);
 
 		// Guarda no log rotativo, se estiver habilitado
 		if (Jogo.log != null) {

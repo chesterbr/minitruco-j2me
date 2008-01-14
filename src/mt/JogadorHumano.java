@@ -37,17 +37,16 @@ import javax.microedition.lcdui.Display;
 public class JogadorHumano extends Jogador implements Runnable {
 
 	private static Random rand = new Random();
-	
+
 	private Mesa mesa;
 
 	private Display display;
 
 	// Sorteia um número inteiro entre 1 e o argumento do método
-	private int sorteio(int maxNumero)
-	{
-		return (Math.abs(rand.nextInt())%maxNumero + 1);		
+	private int sorteio(int maxNumero) {
+		return (Math.abs(rand.nextInt()) % maxNumero + 1);
 	}
-	
+
 	// Construtor
 	public JogadorHumano(Display display, Mesa mesa) {
 		this.setDisplay(display);
@@ -156,16 +155,16 @@ public class JogadorHumano extends Jogador implements Runnable {
 		String texto = "";
 		switch (valor) {
 		case 3:
-			texto = MiniTruco.BALAO_TEXTOS_TRUCO[sorteio(MiniTruco.BALAO_TEXTOS_TRUCO.length)-1];
+			texto = MiniTruco.BALAO_TEXTOS_TRUCO[sorteio(MiniTruco.BALAO_TEXTOS_TRUCO.length) - 1];
 			break;
 		case 6:
-			texto = MiniTruco.BALAO_TEXTOS_SEIS[sorteio(MiniTruco.BALAO_TEXTOS_SEIS.length)-1];
+			texto = MiniTruco.BALAO_TEXTOS_SEIS[sorteio(MiniTruco.BALAO_TEXTOS_SEIS.length) - 1];
 			break;
 		case 9:
-			texto = MiniTruco.BALAO_TEXTOS_NOVE[sorteio(MiniTruco.BALAO_TEXTOS_NOVE.length)-1];
+			texto = MiniTruco.BALAO_TEXTOS_NOVE[sorteio(MiniTruco.BALAO_TEXTOS_NOVE.length) - 1];
 			break;
 		default:
-			texto = MiniTruco.BALAO_TEXTOS_DOZE[sorteio(MiniTruco.BALAO_TEXTOS_DOZE.length)-1];
+			texto = MiniTruco.BALAO_TEXTOS_DOZE[sorteio(MiniTruco.BALAO_TEXTOS_DOZE.length) - 1];
 			break;
 		}
 		mesa.balao(posicaoNaTela(j), texto, 1000 + 200 * (valor / 3));
@@ -195,9 +194,9 @@ public class JogadorHumano extends Jogador implements Runnable {
 
 		// Balãozinho
 		String texto = "";
-		texto = MiniTruco.BALAO_TEXTOS_DESCE[sorteio(MiniTruco.BALAO_TEXTOS_DESCE.length)-1];
+		texto = MiniTruco.BALAO_TEXTOS_DESCE[sorteio(MiniTruco.BALAO_TEXTOS_DESCE.length) - 1];
 		mesa.balao(posicaoNaTela(j), texto, 800);
-		
+
 		// Caso tenha sido eu quem pediu o truco, retoma a vez
 		mesa.retomaVezDepoisDoAumento();
 
@@ -207,7 +206,7 @@ public class JogadorHumano extends Jogador implements Runnable {
 
 		// Balãozinho
 		String texto = "";
-		texto = MiniTruco.BALAO_TEXTOS_RECUSA[sorteio(MiniTruco.BALAO_TEXTOS_RECUSA.length)-1];
+		texto = MiniTruco.BALAO_TEXTOS_RECUSA[sorteio(MiniTruco.BALAO_TEXTOS_RECUSA.length) - 1];
 		mesa.balao(posicaoNaTela(j), texto, 500);
 
 	}
@@ -351,17 +350,16 @@ public class JogadorHumano extends Jogador implements Runnable {
 				public void run() {
 					// Balãozinho
 					String texto = "";
-					texto = MiniTruco.BALAO_TEXTOS_VENCEDOR[sorteio(MiniTruco.BALAO_TEXTOS_VENCEDOR.length)-1];
+					texto = MiniTruco.BALAO_TEXTOS_VENCEDOR[sorteio(MiniTruco.BALAO_TEXTOS_VENCEDOR.length) - 1];
 					mesa.balao(1, texto, 5000);
 				}
 			};
-		}
-		else {
+		} else {
 			t = new Thread() {
 				public void run() {
 					// Balãozinho
 					String texto = "";
-					texto = MiniTruco.BALAO_TEXTOS_DERROTADO[sorteio(MiniTruco.BALAO_TEXTOS_DERROTADO.length)-1];
+					texto = MiniTruco.BALAO_TEXTOS_DERROTADO[sorteio(MiniTruco.BALAO_TEXTOS_DERROTADO.length) - 1];
 					mesa.balao(1, texto, 5000);
 				}
 			};
@@ -386,10 +384,10 @@ public class JogadorHumano extends Jogador implements Runnable {
 		// aceite)
 		if (!aceita || (aceita && !jaAceitou)) {
 			String texto = "";
-			if(aceita)
-				texto = MiniTruco.BALAO_TEXTOS_ACEITAMAO11[sorteio(MiniTruco.BALAO_TEXTOS_ACEITAMAO11.length)-1];
+			if (aceita)
+				texto = MiniTruco.BALAO_TEXTOS_ACEITAMAO11[sorteio(MiniTruco.BALAO_TEXTOS_ACEITAMAO11.length) - 1];
 			else
-				texto = MiniTruco.BALAO_TEXTOS_RECUSAMAO11[sorteio(MiniTruco.BALAO_TEXTOS_RECUSAMAO11.length)-1];
+				texto = MiniTruco.BALAO_TEXTOS_RECUSAMAO11[sorteio(MiniTruco.BALAO_TEXTOS_RECUSAMAO11.length) - 1];
 			mesa.balao(posicaoNaTela(j), texto, 1000);
 		}
 
@@ -445,7 +443,10 @@ public class JogadorHumano extends Jogador implements Runnable {
 			mesa.removeComandoAposta();
 			mesa.suspendeVezParaAumento();
 			jogo.aumentaAposta(this);
+		} else if (cmd == MiniTruco.mostraNomesJogadoresCommand) {
+			mesa.mostraNomesJogadores(1000);	
 		}
+			
 
 	}
 
@@ -453,10 +454,9 @@ public class JogadorHumano extends Jogador implements Runnable {
 		int posTela = posicaoNaTela(jogo.getJogador(posicao));
 		if (posTela != 1) {
 			// Sacaneia quem abortou (apenas no multiplayer)
-			mesa.balao(posTela, "Fui...", 1200);		
+			mesa.balao(posTela, "Fui...", 1200);
 		}
 
 	}
 
-	
 }

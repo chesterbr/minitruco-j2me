@@ -62,6 +62,11 @@ public class JogadorCPU extends Jogador implements Runnable {
 	 */
 	public JogadorCPU(String nomeEstrategia) {
 		this.estrategia = criaEstrategiaPeloNome(nomeEstrategia);
+		// Coloca no jogador o nome da estratégia (parece bobo não
+		// usar a variável nomeEstrategia, mas ela pode ter sido
+		// sorteada)
+		this.setNome(estrategia.getNomeEstrategia());
+		Jogo.log("Estraegia: "+this.estrategia.getNomeEstrategia());
 	}
 
 	/**

@@ -216,6 +216,16 @@ public class Mesa extends Canvas implements Runnable {
 	private boolean modoCE = false;
 
 	/**
+	 * Mostra os nomes dos jogadores.
+	 * 
+	 * @param tempoMs
+	 *            Tempo em que eles serão exibidos (em milissegundos)
+	 */
+	public void mostraNomesJogadores(int tempoMs) {
+		animador.mostraNomesJogadores(tempoMs);
+	}
+
+	/**
 	 * Informa à mesa o bot que jogará nela (mudando o modo para Confronto de
 	 * Estratégias)
 	 * 
@@ -259,6 +269,8 @@ public class Mesa extends Canvas implements Runnable {
 			Font.STYLE_PLAIN, Font.SIZE_SMALL);
 
 	String[] stringPlacar = new String[2];
+
+	boolean mostraNomes = false;
 
 	int[] placar = new int[2];
 
@@ -419,236 +431,266 @@ public class Mesa extends Canvas implements Runnable {
 			g = offscreen.getGraphics();
 		}
 
-		// Fundo verde
-		g.setColor(0x0000FF00);
-		g.fillRect(0, 0, getWidth(), getHeight());
+		try {
 
-		// Se a abertura estiver visível, desenha sua fase atual (ela é uma
-		// animação, tem várias fases)
+			// Fundo verde
+			g.setColor(0x0000FF00);
+			g.fillRect(0, 0, getWidth(), getHeight());
 
-		if (aberturaVisivel) {
-			// Inicializa imagens
-			try {
-				if (imgLogoSas == null) {
-					imgLogoSas = Image.createImage("/logosas.png");
+			// Se a abertura estiver visível, desenha sua fase atual (ela é uma
+			// animação, tem várias fases)
+
+			if (aberturaVisivel) {
+				// Inicializa imagens
+				try {
+					if (imgLogoSas == null) {
+						imgLogoSas = Image.createImage("/logosas.png");
+					}
+					if (imgLogoCartas == null) {
+						imgLogoCartas = Image.createImage("/logotipo.png");
+					}
+					if (imgLogoCartas2 == null) {
+						imgLogoCartas2 = imgLogoCartas; // para versão light
+						// [IF_FULL]
+						imgLogoCartas2 = Image.createImage("/logotipo2.png");
+						// [ENDIF_FULL]
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-				if (imgLogoCartas == null) {
-					imgLogoCartas = Image.createImage("/logotipo.png");
+				// stone age scanners apresenta
+				g.drawImage(imgLogoSas, getWidth() / 2, aberturaAlturaSas,
+						Graphics.HCENTER | Graphics.TOP);
+				// miniTruco em cartinhas (com rects cobrindo as ocultas, e a
+				// troca
+				// de bitmap representando a 10a. carta)
+				if (aberturaNumCartas > 0) {
+					g.drawImage(aberturaNumCartas <= 9 ? imgLogoCartas
+							: imgLogoCartas2, getWidth() / 2, getHeight() / 2,
+							Graphics.HCENTER | Graphics.VCENTER);
+					int wCarta = (imgLogoCartas.getWidth() - 12) / 5;
+					int hCarta = (imgLogoCartas.getHeight() - 12) / 2;
+					g.fillRect(hCarta / 2 - 2
+							+ (getWidth() - imgLogoCartas.getWidth()) / 2,
+							getHeight() / 2 - hCarta, Math.max(0, (wCarta + 1)
+									* (5 - aberturaNumCartas)) - 10, hCarta);
+					g.fillRect(1
+							+ (getWidth() - imgLogoCartas.getWidth())
+							/ 2
+							+ Math.max(0, (wCarta + 1)
+									* (aberturaNumCartas - 4)) + 6,
+							getHeight() / 2 + 1, imgLogoCartas.getWidth(),
+							hCarta);
 				}
-				if (imgLogoCartas2 == null) {
-					imgLogoCartas2 = imgLogoCartas; // para versão light
-					// [IF_FULL]
-					imgLogoCartas2 = Image.createImage("/logotipo2.png");
-					// [ENDIF_FULL]
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			// stone age scanners apresenta
-			g.drawImage(imgLogoSas, getWidth() / 2, aberturaAlturaSas,
-					Graphics.HCENTER | Graphics.TOP);
-			// miniTruco em cartinhas (com rects cobrindo as ocultas, e a troca
-			// de bitmap representando a 10a. carta)
-			if (aberturaNumCartas > 0) {
-				g.drawImage(aberturaNumCartas <= 9 ? imgLogoCartas
-						: imgLogoCartas2, getWidth() / 2, getHeight() / 2,
-						Graphics.HCENTER | Graphics.VCENTER);
-				int wCarta = (imgLogoCartas.getWidth() - 12) / 5;
-				int hCarta = (imgLogoCartas.getHeight() - 12) / 2;
-				g.fillRect(hCarta / 2 - 2
-						+ (getWidth() - imgLogoCartas.getWidth()) / 2,
-						getHeight() / 2 - hCarta, Math.max(0, (wCarta + 1)
-								* (5 - aberturaNumCartas)) - 10, hCarta);
-				g.fillRect(1 + (getWidth() - imgLogoCartas.getWidth()) / 2
-						+ Math.max(0, (wCarta + 1) * (aberturaNumCartas - 4))
-						+ 6, getHeight() / 2 + 1, imgLogoCartas.getWidth(),
-						hCarta);
-			}
-			if (aberturaUrlVisivel) {
-				if (!this.modoCE) {
-					g.setColor(0x000000FF);
-					g.setFont(Font.getFont(Font.FACE_PROPORTIONAL,
-							Font.STYLE_UNDERLINED, Font.SIZE_SMALL));
-					g
-							.drawString("m.chester.blog.br", getWidth() / 2,
-									getHeight() - 2, Graphics.HCENTER
-											| Graphics.BOTTOM);
-				} else {
-					g.setColor(0x990033);
-					g.setFont(Font.getFont(Font.FACE_PROPORTIONAL,
-							Font.STYLE_BOLD, Font.SIZE_SMALL));
-					g
-							.drawString(
-									Messages.getString("modo_confronto"), getWidth() / 2, //$NON-NLS-1$
-									getHeight() - 12, Graphics.HCENTER
-											| Graphics.BOTTOM);
-					g
-							.drawString("<S. Gasparoto>", getWidth() / 2,
-									getHeight() - 2, Graphics.HCENTER
-											| Graphics.BOTTOM);
-				}
-			}
-		}
-
-		// Desenha o placar, se já houver
-		// (e antes do indicador de vez - em celulares pequenos eles encavalam,
-		// e este último é mais relevante quando se está aguardando)
-		if (stringPlacar[0] != null && !aberturaVisivel) {
-			// Pontuação
-			g.setFont(fontePlacar);
-			g.setColor(0x00000000);
-			if (stringPlacar[0] != null) {
-				g.drawString(stringPlacar[0], MARGEM, getHeight(),
-						Graphics.BOTTOM | Graphics.LEFT);
-			}
-			if (stringPlacar[1] != null) {
-				g.drawString(stringPlacar[1], getWidth(), MARGEM, Graphics.TOP
-						| Graphics.RIGHT);
-			}
-			// ícones das rodadas
-			for (int i = 0; i <= 2; i++) {
-				g.drawImage(iconesRodadas[i], MARGEM + i * LARG_ICONE, MARGEM,
-						Graphics.TOP | Graphics.LEFT);
-			}
-		}
-
-		// Desenha o indicador de "vez" (antes das cartas, para evitar
-		// sobrepô-las se a tela for pequena demais)
-		int leftVez, topVez;
-		g.setColor(0xFF0000);
-
-		switch (posicaoDaVez) {
-		case 1: // Baixo (somente no modo confronto de estratégias)
-			if (this.modoCE) {
-				// TO DO
-				// Chester: help here!
-			}
-			break;
-		case 2: // Direita
-			leftVez = getWidth() - (Carta.larguraCartas) / 2 - MARGEM - 2;
-			topVez = getHeight() / 2 - Carta.alturaCartas / 2 - 11;
-			g.fillRect(leftVez + 1, topVez, 3, 5);
-			g.drawLine(leftVez, topVez + 3, leftVez + 4, topVez + 3);
-			g.drawLine(leftVez + 2, topVez + 5, leftVez + 2, topVez + 5);
-			break;
-		case 3: // Cima
-			leftVez = getWidth() / 2 - Carta.larguraCartas - 7;
-			topVez = Carta.alturaCartas / 2 + MARGEM - 3;
-			g.fillRect(leftVez, topVez + 1, 5, 3);
-			g.drawLine(leftVez + 3, topVez, leftVez + 3, topVez + 4);
-			g.drawLine(leftVez + 5, topVez + 2, leftVez + 5, topVez + 2);
-			break;
-		case 4: // Esquerda
-			leftVez = (Carta.larguraCartas) / 2 + MARGEM - 2;
-			topVez = getHeight() / 2 + Carta.alturaCartas / 2 + 6;
-			g.fillRect(leftVez + 1, topVez + 1, 3, 5);
-			g.drawLine(leftVez, topVez + 2, leftVez + 4, topVez + 2);
-			g.drawLine(leftVez + 2, topVez, leftVez + 2, topVez);
-			break;
-		}
-
-		// Desenha o baralho e as cartas
-		if (!aberturaVisivel) {
-			if (baralhoPorCima) {
-				desenhaCartas(g);
-				desenhaBaralho(g);
-			} else {
-				desenhaBaralho(g);
-				desenhaCartas(g);
-			}
-		}
-
-		// Desenha o texto piscando, com sombra (mesma linha do balão)
-		if (textoPiscando != null && (System.currentTimeMillis() % 2000 > 1000)) {
-			g.setColor(0x00000000);
-			g.setFont(fontePlacar);
-			for (int i = -1; i <= 1; i++)
-				for (int j = -1; j <= 1; j++)
-					g.drawString(textoPiscando, i + getWidth() / 2, j
-							+ (getHeight() - fontePlacar.getHeight()) / 2,
-							Graphics.HCENTER | Graphics.TOP);
-
-			g.setColor(0x00FFFFFF);
-			g.drawString(textoPiscando, getWidth() / 2,
-					(getHeight() - fontePlacar.getHeight()) / 2,
-					Graphics.HCENTER | Graphics.TOP);
-		}
-
-		// Desenha, se houver, o balão de texto para um jogador
-		if (posicaoBalao != 0) {
-
-			// Determina o tamanho e a posição do balão e o quadrante da ponta
-			final int MARGEM_BALAO_LEFT = 10;
-			final int MARGEM_BALAO_TOP = 3;
-			int largBalao = fonteBalao.stringWidth(textoBalao) + 2
-					* MARGEM_BALAO_LEFT;
-			int altBalao = fonteBalao.getHeight() + 2 * MARGEM_BALAO_TOP;
-			int x = 0, y = 0;
-			int quadrantePonta = 0;
-			switch (posicaoBalao) {
-			case 1:
-				x = (getWidth() - largBalao) / 2 - Carta.larguraCartas;
-				y = getHeight() - altBalao - Carta.alturaCartas - MARGEM - 3;
-				quadrantePonta = 4;
-				break;
-			case 2:
-				x = getWidth() - largBalao - MARGEM - 3;
-				y = (getHeight() - altBalao) / 2 + Carta.alturaCartas;
-				quadrantePonta = 1;
-				break;
-			case 3:
-				x = (getWidth() - largBalao) / 2 + Carta.larguraCartas;
-				y = MARGEM + 3 + altBalao;
-				quadrantePonta = 2;
-				break;
-			case 4:
-				x = MARGEM + 3;
-				y = (getHeight() - altBalao) / 2 - Carta.alturaCartas;
-				quadrantePonta = 3;
-				break;
-			}
-
-			// O balão tem que ser branco, com uma borda preta. Como
-			// ele só aparece em um refresh, vamos pela força bruta,
-			// desenhando ele deslocado em torno da posição final em
-			// preto e em seguida desenhando ele em branco na posição
-			g.setColor(0x00000000);
-			for (int i = -1; i <= 1; i++) {
-				for (int j = -1; j <= 1; j++) {
-					if (i != 0 && j != 0) {
-						desenhaBalao(g, x + i, y + j, largBalao, altBalao,
-								quadrantePonta);
+				if (aberturaUrlVisivel) {
+					if (!this.modoCE) {
+						g.setColor(0x000000FF);
+						g.setFont(Font.getFont(Font.FACE_PROPORTIONAL,
+								Font.STYLE_UNDERLINED, Font.SIZE_SMALL));
+						g.drawString("m.chester.blog.br", getWidth() / 2,
+								getHeight() - 2, Graphics.HCENTER
+										| Graphics.BOTTOM);
+					} else {
+						g.setColor(0x990033);
+						g.setFont(Font.getFont(Font.FACE_PROPORTIONAL,
+								Font.STYLE_BOLD, Font.SIZE_SMALL));
+						g
+								.drawString(
+										Messages.getString("modo_confronto"), getWidth() / 2, //$NON-NLS-1$
+										getHeight() - 12, Graphics.HCENTER
+												| Graphics.BOTTOM);
+						g.drawString("<S. Gasparoto>", getWidth() / 2,
+								getHeight() - 2, Graphics.HCENTER
+										| Graphics.BOTTOM);
 					}
 				}
 			}
-			g.setColor(0x00FFFFFF);
-			desenhaBalao(g, x, y, largBalao, altBalao, quadrantePonta);
 
-			// Finalmente, escreve o texto do balão
-			g.setColor(0x00000000);
-			g.drawString(textoBalao, x + MARGEM_BALAO_LEFT, y
-					+ MARGEM_BALAO_TOP, Graphics.LEFT | Graphics.TOP);
+			// Desenha os nomes dos outros jogadores, se for o caso (ex.: no
+			// início
+			// da partida)
+			if (mostraNomes) {
+				g.setFont(fontePlacar);
+				g.setColor(0x00000000);
+				g.drawString(jogador.jogo.getJogador(2).getNome(), getWidth()
+						- MARGEM, getHeight() / 2, Graphics.RIGHT
+						| Graphics.VCENTER);
+				g
+						.drawString(jogador.jogo.getJogador(3).getNome(),
+								getWidth() / 2, MARGEM, Graphics.HCENTER
+										| Graphics.TOP);
+				g.drawString(jogador.jogo.getJogador(4).getNome(), MARGEM,
+						getHeight() / 2, Graphics.LEFT | Graphics.VCENTER);
+				return;
+			}
 
-		}
-
-		// Imprime, se necessario, o log de mensagens
-		if (Jogo.log != null) {
-			g.setFont(fontePlacar);
-			g.setColor(0x00000000);
-			int alturaLog = fontePlacar.getHeight();
-			int alturaCanvas = this.getHeight();
-			for (int i = 0; (i < Jogo.log.length)
-					&& ((i + 1) * alturaLog <= alturaCanvas); i++) {
-				if (Jogo.log[i] != null) {
-					g.drawString(Jogo.log[i], 0, i * alturaLog, Graphics.LEFT
-							| Graphics.TOP);
+			// Desenha o placar, se já houver
+			// (e antes do indicador de vez - em celulares pequenos eles
+			// encavalam,
+			// e este último é mais relevante quando se está aguardando)
+			if (stringPlacar[0] != null && !aberturaVisivel) {
+				// Pontuação
+				g.setFont(fontePlacar);
+				g.setColor(0x00000000);
+				if (stringPlacar[0] != null) {
+					g.drawString(stringPlacar[0], MARGEM, getHeight(),
+							Graphics.BOTTOM | Graphics.LEFT);
+				}
+				if (stringPlacar[1] != null) {
+					g.drawString(stringPlacar[1], getWidth(), MARGEM,
+							Graphics.TOP | Graphics.RIGHT);
+				}
+				// ícones das rodadas
+				for (int i = 0; i <= 2; i++) {
+					g.drawImage(iconesRodadas[i], MARGEM + i * LARG_ICONE,
+							MARGEM, Graphics.TOP | Graphics.LEFT);
 				}
 			}
-		}
 
-		// Descarrega, se necessário, o buffer
-		if (g != saved) {
-			saved.drawImage(offscreen, 0, 0, Graphics.LEFT | Graphics.TOP);
+			// Desenha o indicador de "vez" (antes das cartas, para evitar
+			// sobrepô-las se a tela for pequena demais)
+			int leftVez, topVez;
+			g.setColor(0xFF0000);
+
+			switch (posicaoDaVez) {
+			case 1: // Baixo (somente no modo confronto de estratégias)
+				if (this.modoCE) {
+					// TO DO
+					// Chester: help here!
+				}
+				break;
+			case 2: // Direita
+				leftVez = getWidth() - (Carta.larguraCartas) / 2 - MARGEM - 2;
+				topVez = getHeight() / 2 - Carta.alturaCartas / 2 - 11;
+				g.fillRect(leftVez + 1, topVez, 3, 5);
+				g.drawLine(leftVez, topVez + 3, leftVez + 4, topVez + 3);
+				g.drawLine(leftVez + 2, topVez + 5, leftVez + 2, topVez + 5);
+				break;
+			case 3: // Cima
+				leftVez = getWidth() / 2 - Carta.larguraCartas - 7;
+				topVez = Carta.alturaCartas / 2 + MARGEM - 3;
+				g.fillRect(leftVez, topVez + 1, 5, 3);
+				g.drawLine(leftVez + 3, topVez, leftVez + 3, topVez + 4);
+				g.drawLine(leftVez + 5, topVez + 2, leftVez + 5, topVez + 2);
+				break;
+			case 4: // Esquerda
+				leftVez = (Carta.larguraCartas) / 2 + MARGEM - 2;
+				topVez = getHeight() / 2 + Carta.alturaCartas / 2 + 6;
+				g.fillRect(leftVez + 1, topVez + 1, 3, 5);
+				g.drawLine(leftVez, topVez + 2, leftVez + 4, topVez + 2);
+				g.drawLine(leftVez + 2, topVez, leftVez + 2, topVez);
+				break;
+			}
+
+			// Desenha o baralho e as cartas
+			if (!aberturaVisivel) {
+				if (baralhoPorCima) {
+					desenhaCartas(g);
+					desenhaBaralho(g);
+				} else {
+					desenhaBaralho(g);
+					desenhaCartas(g);
+				}
+			}
+
+			// Desenha o texto piscando, com sombra (mesma linha do balão)
+			if (textoPiscando != null
+					&& (System.currentTimeMillis() % 2000 > 1000)) {
+				g.setColor(0x00000000);
+				g.setFont(fontePlacar);
+				for (int i = -1; i <= 1; i++)
+					for (int j = -1; j <= 1; j++)
+						g.drawString(textoPiscando, i + getWidth() / 2, j
+								+ (getHeight() - fontePlacar.getHeight()) / 2,
+								Graphics.HCENTER | Graphics.TOP);
+
+				g.setColor(0x00FFFFFF);
+				g.drawString(textoPiscando, getWidth() / 2,
+						(getHeight() - fontePlacar.getHeight()) / 2,
+						Graphics.HCENTER | Graphics.TOP);
+			}
+
+			// Desenha, se houver, o balão de texto para um jogador
+			if (posicaoBalao != 0) {
+
+				// Determina o tamanho e a posição do balão e o quadrante da
+				// ponta
+				final int MARGEM_BALAO_LEFT = 10;
+				final int MARGEM_BALAO_TOP = 3;
+				int largBalao = fonteBalao.stringWidth(textoBalao) + 2
+						* MARGEM_BALAO_LEFT;
+				int altBalao = fonteBalao.getHeight() + 2 * MARGEM_BALAO_TOP;
+				int x = 0, y = 0;
+				int quadrantePonta = 0;
+				switch (posicaoBalao) {
+				case 1:
+					x = (getWidth() - largBalao) / 2 - Carta.larguraCartas;
+					y = getHeight() - altBalao - Carta.alturaCartas - MARGEM
+							- 3;
+					quadrantePonta = 4;
+					break;
+				case 2:
+					x = getWidth() - largBalao - MARGEM - 3;
+					y = (getHeight() - altBalao) / 2 + Carta.alturaCartas;
+					quadrantePonta = 1;
+					break;
+				case 3:
+					x = (getWidth() - largBalao) / 2 + Carta.larguraCartas;
+					y = MARGEM + 3 + altBalao;
+					quadrantePonta = 2;
+					break;
+				case 4:
+					x = MARGEM + 3;
+					y = (getHeight() - altBalao) / 2 - Carta.alturaCartas;
+					quadrantePonta = 3;
+					break;
+				}
+
+				// O balão tem que ser branco, com uma borda preta. Como
+				// ele só aparece em um refresh, vamos pela força bruta,
+				// desenhando ele deslocado em torno da posição final em
+				// preto e em seguida desenhando ele em branco na posição
+				g.setColor(0x00000000);
+				for (int i = -1; i <= 1; i++) {
+					for (int j = -1; j <= 1; j++) {
+						if (i != 0 && j != 0) {
+							desenhaBalao(g, x + i, y + j, largBalao, altBalao,
+									quadrantePonta);
+						}
+					}
+				}
+				g.setColor(0x00FFFFFF);
+				desenhaBalao(g, x, y, largBalao, altBalao, quadrantePonta);
+
+				// Finalmente, escreve o texto do balão
+				g.setColor(0x00000000);
+				g.drawString(textoBalao, x + MARGEM_BALAO_LEFT, y
+						+ MARGEM_BALAO_TOP, Graphics.LEFT | Graphics.TOP);
+
+			}
+
+			// Imprime, se necessario, o log de mensagens
+			if (Jogo.log != null) {
+				g.setFont(fontePlacar);
+				g.setColor(0x00000000);
+				int alturaLog = fontePlacar.getHeight();
+				int alturaCanvas = this.getHeight();
+				for (int i = 0; (i < Jogo.log.length)
+						&& ((i + 1) * alturaLog <= alturaCanvas); i++) {
+					if (Jogo.log[i] != null) {
+						g.drawString(Jogo.log[i], 0, i * alturaLog,
+								Graphics.LEFT | Graphics.TOP);
+					}
+				}
+			}
+		} finally {
+
+			// Descarrega, se necessário, o buffer
+			// (no try... finally para permitir interromper o redraw no meio)
+			if (g != saved) {
+				saved.drawImage(offscreen, 0, 0, Graphics.LEFT | Graphics.TOP);
+			}
+
 		}
 
 	}
@@ -709,7 +751,6 @@ public class Mesa extends Canvas implements Runnable {
 		}
 
 		// Desenha as cartas restantes.
-
 		for (int i = 0; i < cartas.size(); i++) {
 			Carta c = ((Carta) cartas.elementAt(i));
 			if (c != null && !isJogada(c)) {
@@ -720,6 +761,7 @@ public class Mesa extends Canvas implements Runnable {
 				}
 			}
 		}
+
 		// Desenha a carta destacada por cima das outras, com uma firula
 		if (cartaVencedora != null) {
 			cartaVencedora.desenhaCarta(g);
@@ -787,6 +829,11 @@ public class Mesa extends Canvas implements Runnable {
 				} else if (isAguardandoMao11) {
 					executaComando(MiniTruco.recusaMao11Command);
 				}
+				break;
+			case KEY_NUM9:
+				if (jogador != null && jogador.jogo != null
+						&& !jogador.jogo.jogoFinalizado)
+					executaComando(MiniTruco.mostraNomesJogadoresCommand);
 				break;
 			}
 		}
