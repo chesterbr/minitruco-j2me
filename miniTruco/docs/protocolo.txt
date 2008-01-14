@@ -1,39 +1,40 @@
 ﻿Este texto descreve os comandos enviados pelos clientes e as notificações
 dadas pelo servidor, tanto para o jogo BlueTooth (classes *BT) quanto para
-o jogo via GPRS (classes *TCP e pasta miniTrucoServer)
+o jogo via GPRS (classes *TCP e pasta miniTrucoServer).
+
+Os detalhes de uso estão em COLOCAR URL DO POST
 
 Comandos
 --------
- 
-E numsala - Entra numa sala
-L - Lista salas
-Q - Quero Jogar
-I numero - Obtém info da sala (se omitido numero, da sala em que estou)
-J carta _ - Joga uma carta na mesa (se _ = T, tenta jogar fechada)
-S - Sai da sala (e do jogo)
+
+Iniciais (identificação):
+W - recupera número de versão 
 N nome - Define o nome do jogador
+
+Navegação:
+L - Lista salas
+I numero - Obtém info da sala (se omitido numero, da sala em que estou)
+E numsala - Entra numa sala
+S - Sai da sala (e do jogo)
+Q - Quero Jogar
+
+Comandos do gerente da sala (usuário mais antigo)
+R __ - Define regras da sala. Os dois _ são T e F, indicam, na ordem, baralho limpo e manilha velha (se T)
+O - Troca o parceiro
+K posicao - Chuta algúem para fora da sala
+V = Inverte os adversários
+
+Comandos do jogo:
+J carta _ - Joga uma carta na mesa (se _ = T, tenta jogar fechada)
 T - Pede aumento de aposta
 D - Desce (aceita aumento de aposta)
 C - Corre (recusa aumento de aposta)
 H _ - decide se aceita ou recusa jogar em mão de 11 (_ = T para aceita e F para recusa)
 
-Comandos do gerente da sala (usuário mais antigo)
-R __ - Define regras da sala. Os dois _ são T e F, indicam, na ordem, baralho limpo e manilha velha (se T)
-O - Troca o parceiro
-
-
-Comandos a implementar
-----------------------
-
-K posicao - Chuta algúem para fora da sala
-V = Inverte os adversários
-
-
-
-Comandos do jogo
 
 
 Notificações
+------------
 
 X CI - Comando inválido
 X JE sala - Você já está na sala de número "sala"
@@ -51,7 +52,6 @@ E sala - Informa que o jogador entrou na sala com este número (um I vem logo em
 S - Informa que o jogador saiu da sala
 I sala nome1|nome2|nome3|nome4 ____ posicao __ - Info da sala
       (numero, nomes dos jogadores, T/F "quer jogar" dos jogadores, posicao do gerente, T/F baralho limpo, T/F manilha velha)
-Y posicao - Jogador foi aceito no jogo nesta posição
 P posicao - Início da partida, sua posição é essa
 M Ln Ln Ln Ln - Início da mão. Suas cartas são Ln, Ln e Ln (Letra naipe), a última, se houver, é o vira
 V posicao _ - vez da pessoa na posição indicada. _ = T se pode jogar fechada, false se não pode

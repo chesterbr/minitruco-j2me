@@ -57,7 +57,7 @@ public abstract class Jogador {
 	 */
 	protected Jogo jogo;
 
-	private String nome;
+	private String nome = "unnamed";
 
 	/**
 	 * Nome do jogador (em jogos multiplayer)

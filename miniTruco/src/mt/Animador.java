@@ -193,6 +193,22 @@ public class Animador extends Thread {
 				}
 			}
 
+			// Nomes sendo exibidos
+			if (isMostrandoNomes) {
+				animacaoAtual = "nomes";
+				if (frameAtual == 0) {
+					mesa.repaint();
+					mesa.serviceRepaints();
+				}
+				frameAtual++;
+				if (frameAtual > numFrames) {
+					mesa.mostraNomes = false;
+					isMostrandoNomes = false;
+					mesa.repaint();
+					mesa.serviceRepaints();
+				}
+			}
+
 			// Texto piscando (atualiza a tela a cada n frames)
 			if (isTextoPiscando) {
 				animacaoAtual = "";
@@ -257,10 +273,10 @@ public class Animador extends Thread {
 			aberturaAnimando = false;
 			mesa.mostraFinalAbertura();
 		}
-		
+
 		while (mesa.isAppRodando
 				&& (numRodadaPiscando != 0 || numPlacarPiscando != 0
-						|| isMostrandoBalao || cartaAnimada != null)) {
+						|| isMostrandoBalao || isMostrandoNomes || cartaAnimada != null)) {
 			try {
 				sleep(10);
 			} catch (InterruptedException e) {
@@ -270,6 +286,8 @@ public class Animador extends Thread {
 	}
 
 	private boolean isMostrandoBalao = false;
+
+	private boolean isMostrandoNomes = false;
 
 	/**
 	 * Anima uma carta até o seu destino
@@ -332,7 +350,7 @@ public class Animador extends Thread {
 		}
 
 		// Inicializa as variáveis
-		
+
 		mesa.aberturaAlturaSas = mesa.getHeight();
 		mesa.aberturaNumCartas = 0;
 		mesa.aberturaUrlVisivel = false;
@@ -343,6 +361,31 @@ public class Animador extends Thread {
 
 		// Aguarda o final da animação
 		while (mesa.isAppRodando && aberturaAnimando) {
+			try {
+				sleep(1);
+			} catch (InterruptedException e) {
+				// Não faz nada, é só controle de timing
+			}
+		}
+
+	}
+
+	public void mostraNomesJogadores(int tempoMs) {
+
+		// Aguarda a finalização de outras animações
+		aguardaFimAnimacoes();
+
+		// Calcula a quantidade de frames em que o balão aparece
+		frameAtual = 0;
+		numFrames = Math.max(1, FPS * tempoMs / 1000);
+
+		// Mostra o balão
+		mesa.mostraNomes = true;
+
+		isMostrandoNomes = true;
+
+		// Aguarda o final da animação
+		while (mesa.isAppRodando && isMostrandoNomes) {
 			try {
 				sleep(1);
 			} catch (InterruptedException e) {
@@ -405,7 +448,8 @@ public class Animador extends Thread {
 
 	}
 
-	public void piscaPlacarComVaquinhasInfo(int numPlacar, int ptsA, int ptsB, int partidasA, int partidasB, boolean modoCE) {
+	public void piscaPlacarComVaquinhasInfo(int numPlacar, int ptsA, int ptsB,
+			int partidasA, int partidasB, boolean modoCE) {
 
 		// Aguarda a finalização de outras animações
 		aguardaFimAnimacoes();
@@ -413,15 +457,18 @@ public class Animador extends Thread {
 		// Inicializa os parâmetros e acende o ícone
 		frameAtual = 0;
 		numFrames = FPS / 8; // 1/8 de segundo por "meia-piscada"
-		if(modoCE)
-			 stringPlacarAtual = (numPlacar == 1 ? Mesa.STRING_DA
+		if (modoCE)
+			stringPlacarAtual = (numPlacar == 1 ? Mesa.STRING_DA
 					: Mesa.STRING_DB)
 					+ (numPlacar == 1 ? partidasA : partidasB)
-					+ "-" + (numPlacar == 1 ? ptsA : ptsB);	
-		else stringPlacarAtual = (numPlacar == 1 ? Mesa.STRING_NOS
-				: Mesa.STRING_ELES)
-				+ (numPlacar == 1 ? partidasA : partidasB)
-				+ "-" + (numPlacar == 1 ? ptsA : ptsB);
+					+ "-"
+					+ (numPlacar == 1 ? ptsA : ptsB);
+		else
+			stringPlacarAtual = (numPlacar == 1 ? Mesa.STRING_NOS
+					: Mesa.STRING_ELES)
+					+ (numPlacar == 1 ? partidasA : partidasB)
+					+ "-"
+					+ (numPlacar == 1 ? ptsA : ptsB);
 		piscadaAtual = 0;
 
 		// Inicia a animação
@@ -440,7 +487,7 @@ public class Animador extends Thread {
 		// atualizo os dois placares mesmo...)
 		// Necessário para início de partidas após uma
 		// das duplas colocar uma vaquinha no pasto
-		if(modoCE) {
+		if (modoCE) {
 			mesa.stringPlacar[0] = Mesa.STRING_DA + partidasA + "-" + ptsA;
 			mesa.stringPlacar[1] = Mesa.STRING_DB + partidasB + "-" + ptsB;
 		} else {
@@ -451,7 +498,7 @@ public class Animador extends Thread {
 		mesa.serviceRepaints();
 
 	}
-	
+
 	/**
 	 * Acende o ícone de status da rodada (dando umas piscadinhas antes)
 	 * 
