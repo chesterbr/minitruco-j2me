@@ -510,17 +510,18 @@ public class Mesa extends Canvas implements Runnable {
 			// início
 			// da partida)
 			if (mostraNomes) {
+				int topoNomes = fontePlacar.getHeight();
+				int alturaNomes = getHeight() - topoNomes;
 				g.setFont(fontePlacar);
 				g.setColor(0x00000000);
-				g.drawString(jogador.jogo.getJogador(2).getNome(), getWidth()
-						- MARGEM, getHeight() / 2, Graphics.RIGHT
-						| Graphics.VCENTER);
-				g
-						.drawString(jogador.jogo.getJogador(3).getNome(),
-								getWidth() / 2, MARGEM, Graphics.HCENTER
-										| Graphics.TOP);
-				g.drawString(jogador.jogo.getJogador(4).getNome(), MARGEM,
-						getHeight() / 2, Graphics.LEFT | Graphics.VCENTER);
+				g.drawString(jogador.jogo.getJogador(2).getNome(),
+						getWidth() - 1, topoNomes + alturaNomes / 2,
+						Graphics.RIGHT | Graphics.TOP);
+				g.drawString(jogador.jogo.getJogador(3).getNome(),
+						getWidth() / 2, 0, Graphics.HCENTER
+								| Graphics.TOP);
+				g.drawString(jogador.jogo.getJogador(4).getNome(), 0, topoNomes
+						+ alturaNomes / 2, Graphics.LEFT | Graphics.TOP);
 				return;
 			}
 
