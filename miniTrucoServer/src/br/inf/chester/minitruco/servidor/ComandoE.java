@@ -41,7 +41,7 @@ public class ComandoE extends Comando {
 				Sala s = Sala.getSala(Integer.parseInt(args[1]));
 				if (s == null) {
 					j.println("X SI");
-				} else if (j.getNome() == null) {
+				} else if (j.getNome().equals("unnamed")) {
 					j.println("X NO");
 				} else if (s.adiciona(j)) {
 					j.querJogar = false;

@@ -43,7 +43,7 @@ public class ComandoN extends Comando {
 			j.println("X NS");
 		}
 		String nome;
-		if (args == null || args.length < 2 || args[1].equals("")) {
+		if (args == null || args.length < 2 || args[1].equals("") || args[1].equals("unnamed")) {
 			j.println("X NI");
 			return;
 		} else {

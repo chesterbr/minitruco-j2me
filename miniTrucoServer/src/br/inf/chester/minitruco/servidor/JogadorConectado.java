@@ -212,7 +212,7 @@ public class JogadorConectado extends Jogador implements Runnable {
 			if (getSala() != null) {
 				(new ComandoS()).executa(null, this);
 			}
-			if (getNome() != null) {
+			if (!getNome().equals("unnamed")) {
 				liberaNome(getNome());
 			}
 			ServerLogger.evento(this, "desconectou");
@@ -414,7 +414,7 @@ public class JogadorConectado extends Jogador implements Runnable {
 			return;
 		}
 		// Se já tinha um nome, libera o seu uso
-		if (this.getNome() != null) {
+		if (!this.getNome().equals("unnamed")) {
 			liberaNome(this.getNome());
 		}
 		// Seta o novo nome e evita novos usos

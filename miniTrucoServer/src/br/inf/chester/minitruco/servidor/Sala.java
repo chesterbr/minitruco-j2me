@@ -201,16 +201,6 @@ public class Sala {
 				return;
 			}
 		}
-		// Tem que ter pelo menos dois remotos na sala
-		int numRemotos = 0;
-		for (int i = 0; i <= 3; i++) {
-			if (jogadores[i] instanceof JogadorConectado) {
-				numRemotos++;
-			}
-		}
-		if (numRemotos < 2) {
-			return;
-		}
 		// Completa as posições vazias com bots
 		int n = 1;
 		for (int i = 0; i <= 3; i++) {

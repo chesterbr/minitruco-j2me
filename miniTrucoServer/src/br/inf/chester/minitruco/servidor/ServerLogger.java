@@ -70,7 +70,7 @@ public class ServerLogger {
 			System.out.print("[sem_sala] ");
 		}
 		if (j != null) {
-			System.out.print(j.getNome() != null ? j.getNome() : "[sem_nome]");
+			System.out.print(!j.getNome().equals("unnamed") ? j.getNome() : "[sem_nome]");
 			if (j instanceof JogadorConectado) {
 				System.out.print('@');
 				System.out.print(((JogadorConectado) j).getIp());
