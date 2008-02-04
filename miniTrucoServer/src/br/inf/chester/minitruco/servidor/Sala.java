@@ -130,7 +130,7 @@ public class Sala {
 				// Finaliza jogo em andamento, se houver.
 				if (jogo != null) {
 					jogo.abortaJogo(j.getPosicao());
-					jogo = null;
+					liberaJogo();
 				}
 				// Desfaz link sala->jogador
 				jogadores[i] = null;
