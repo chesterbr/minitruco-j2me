@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -125,12 +126,28 @@ public class JogadorConectado extends Jogador implements Runnable {
 	public void run() {
 		ServerLogger.evento(this, "conectou");
 		try {
+			// Configura um timeout para evitar conexões presas
+			ServerLogger.evento(this, "timeout antes:" + cliente.getSoTimeout());
+			cliente.setSoTimeout(5000);
+			ServerLogger.evento(this, "timeout depois:" + cliente.getSoTimeout());
 			// Prepara o buffer de saída
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					cliente.getInputStream()));
 			out = new PrintStream(cliente.getOutputStream());
 			while (true) {
-				String s = in.readLine();
+				String s = null;
+				try {
+					s = in.readLine();
+				} catch (SocketTimeoutException e) {
+					// A linha é só pra garantir que, no caso de uma conexão presa
+					// o teste abaixo dela dê erro (seja no if, seja exception)
+					println(""); 
+					if (!cliente.isConnected()) {
+						ServerLogger.evento("Desconexao detectada durante timeout");
+						return;						
+					}
+					continue;
+				}
 				if (s == null) {
 					// Desconexão
 					return;
@@ -148,31 +165,23 @@ public class JogadorConectado extends Jogador implements Runnable {
 					do {
 						ServerLogger.evento(this, "]" + s);
 						s = in.readLine();
-						/* TODO Arrumar esse código, não funciona a contento
-						// Se o cliente tiver uma cópia no cache, tenta usar
-						if (s.startsWith(IF_MODIFIED_SINCE_HTTP_HEADER)) {
-							try {
-								Date dataMax = MiniTrucoServer.dfStartup
-										.parse(s
-												.substring(IF_MODIFIED_SINCE_HTTP_HEADER
-														.length()));
-								System.out.println(MiniTrucoServer.dataStartup);
-								System.out.println(dataMax);
-								if (!MiniTrucoServer.dataStartup.after(dataMax)) {
-									ServerLogger.evento("304 Not Modified");
-									out.println("HTTP/1.0 304 Not Modified");
-									out.flush();
-									cliente.close();
-									return;									
-								}
-							} catch (ParseException e) {
-								// Se não conseguiu parsear, loga e desencana
-								ServerLogger.evento(this,
-										"!Cabecalho invalido: " + s
-												+ ". Erro: " + e.getMessage());
-							}
-						}
-						*/
+						/*
+						 * TODO Arrumar esse código, não funciona a contento //
+						 * Se o cliente tiver uma cópia no cache, tenta usar if
+						 * (s.startsWith(IF_MODIFIED_SINCE_HTTP_HEADER)) { try {
+						 * Date dataMax = MiniTrucoServer.dfStartup .parse(s
+						 * .substring(IF_MODIFIED_SINCE_HTTP_HEADER .length()));
+						 * System.out.println(MiniTrucoServer.dataStartup);
+						 * System.out.println(dataMax); if
+						 * (!MiniTrucoServer.dataStartup.after(dataMax)) {
+						 * ServerLogger.evento("304 Not Modified");
+						 * out.println("HTTP/1.0 304 Not Modified");
+						 * out.flush(); cliente.close(); return; } } catch
+						 * (ParseException e) { // Se não conseguiu parsear,
+						 * loga e desencana ServerLogger.evento(this,
+						 * "!Cabecalho invalido: " + s + ". Erro: " +
+						 * e.getMessage()); } }
+						 */
 					} while ((s != null) && (!s.equals("")));
 					// Se livra dos parâmetros
 					String nomeArq = args[1];
