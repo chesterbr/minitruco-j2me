@@ -1,0 +1,41 @@
+* Introduction *
+
+Brazilian Truco is played by 4 players which are divided into 2 teams with partners facing each other. Cards are dealt at the beginning of each "hand". Each player gets three cards that are to be played in each of the 3 rounds of the "hand".
+
+A player starts the round by necessarily playing a face-up card. Then the turn goes to the next player to his right (anticlockwise) until all players have played their first card.
+
+At this moment the round ends, and the winner team is the one which player has played the strongest card. This player starts the next round then.
+
+The team that wins two rounds wins the "hand". If the first round gets tied, the winner of the "hand" is the team that wins the second round. If the second round also gets tied, the winner is the team that wins the third round. If all three rounds get tied, no team wins the "hand". If only the second or third rounds get tied, the team that has won the first round is the winner of the "hand".
+
+The next "hand" is started by the player left to the player that has started the "hand" before (clockwise).
+
+A winning "hand" scores 1 point to the winning team. The team that scores 12 points first wins the game.
+
+* "Truco" *
+
+If a player gets good cards (or want to bluff), he can bid on to score his team more points by calling "truco". If one of the opponents accepts the call, the team that wins this "hand" will score 3 points. If both opponents decline the call, the "hand" is finished, and the team that called "truco" scores 1 point.
+
+Any player of the team that has accepted the "truco" call may, in turn, call "six", which works the same way: if the other team accepts this call, the team that wins this "hand" will score 6 points, otherwise, the team that called "six" wins the "hand" and scores 3 points.
+
+This process can be repeated with teams calling "nine" and "twelve", always by the team that has accepted the previous call.
+
+* "Hand" of 11 *
+
+If only one of the teams scores 11 points, there is a slight change to the rules: the "hand" will always enforce 3 points and no one can call "six", helping the team that is loosing the game.
+
+In contrast, players of the leading team are able to see the cards of each other and decide if they want to play the "hand" or not. If they decide not to play, the opposite team scores only 1 point.
+
+If both teams are tied 11-11, the "hand" is normally played (but with nobody calling "truco" because this "hand" will decide the game in any way).
+
+* Cards ranking / "manilhas" *
+
+A major difference of "truco" compared to other games is the cards ranking: the 4 is the lowest ranked card, followed by the 5, 6, 7, Q, J, K, A, 2, and 3. The 8, 9, 10 and Jokers are not used.
+
+This set of cards is called "dirty deck." Some players prefer to play with a "clean deck" which has only the Q, J, K, A, 2 and 3.
+
+At the beginning of each "hand", an extra card is drawn and kept resting next to the deck. The straight next up-ranked cards to this one are called "manilhas" ("trump cards"); e.g. when the drawn card is a "5", the "manilhas" are all the four "6" of the deck.
+
+During the "hand", the "manilhas" are ranked higher than all other cards. If two manilhas are played, there can be no tie as well: the one with the highest suit wins. Clubs is the one with the highest rank, followed by hearts, spades and diamonds. Veterans call the "manilha" of clubs by "zap", the "manilha" of copas by "escopeta", the "manilha" of spades by "espadilha", and the "manilha" of diamonds by "pica-fumo".
+
+This way of choosing the "manilhas" is called "new manilha". Some people prefer the "old manilha" style; in this variant there are no turns, and the "manilhas" are always the same: the "zap" is the 4 of clubs, the "escopeta" is the 7 of hearts, the "espadilha" is the A of spades and the "pica-fumo" is the 7 of diamonds.

@@ -1,0 +1,11 @@
+MIDlet-1: miniTruco, /minitrucoicone.png, mt.MiniTruco
+MIDlet-Name: miniTruco
+MIDlet-Version: 3.13.00
+MIDlet-Vendor: Stone Age Scanners
+MIDlet-Icon: /minitrucoicone.png
+MIDlet-Info-URL: http://chester.blog.br/
+MicroEdition-Configuration: CLDC-1.0
+MicroEdition-Profile: MIDP-1.0
+MIDlet-Jar-URL: miniTruco.jar
+MIDlet-Jar-Size: 88861
+MIDlet-Description: (c) Chester et al, licenciado pela GPL.
