@@ -696,6 +696,9 @@ public class MiniTruco extends MIDlet implements CommandListener {
 					// Jogador abortou espontaneamente
 					servidor.abortaJogoAtual();
 				}
+				// Em qualquer caso, encerra o jogo sem sair e não segue
+				encerraJogo(jogadorHumano.getPosicao(), false);
+				return;
 			} else if (telaBT instanceof ClienteBT) {
 				// Se for um jogo cliente, derruba
 				telaBT.encerraSessaoBT();

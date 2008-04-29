@@ -19,7 +19,6 @@ package mt;
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-import java.util.Random;
 import java.util.Vector;
 
 /**
@@ -86,8 +85,6 @@ public class JogadorCPU extends Jogador implements Runnable {
 	 * Sinaliza se os adversários aceitaram um pedido de truco
 	 */
 	private boolean aceitaramTruco;
-
-	private static Random random = new Random();
 
 	public void vez(Jogador j, boolean podeFechada) {
 

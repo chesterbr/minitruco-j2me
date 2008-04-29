@@ -47,6 +47,8 @@ import java.util.Random;
 public abstract class Jogador {
 
 	// Variáveis / Métodos úteis
+	
+	protected static Random random = new Random();
 
 	private int posicao = 0;
 
@@ -306,7 +308,7 @@ public abstract class Jogador {
 		}
 		// Se não houver nenhuma, sorteia
 		if (numEstrategia == -1) {
-			numEstrategia = ((new Random()).nextInt() >>> 1)
+			numEstrategia = (random.nextInt() >>> 1)
 					% ESTRATEGIAS.length;
 		}
 

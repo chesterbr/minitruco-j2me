@@ -22,7 +22,6 @@ package mt;
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-import java.util.Random;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Command;
@@ -36,15 +35,13 @@ import javax.microedition.lcdui.Display;
  */
 public class JogadorHumano extends Jogador implements Runnable {
 
-	private static Random rand = new Random();
-
 	private Mesa mesa;
 
 	private Display display;
 
 	// Sorteia um número inteiro entre 1 e o argumento do método
 	private int sorteio(int maxNumero) {
-		return (Math.abs(rand.nextInt()) % maxNumero + 1);
+		return (Math.abs(random.nextInt()) % maxNumero + 1);
 	}
 
 	// Construtor

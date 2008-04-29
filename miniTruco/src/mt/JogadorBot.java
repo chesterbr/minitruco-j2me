@@ -21,7 +21,6 @@ package mt;
  * Livre(FSF) Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-import java.util.Random;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Display;
@@ -44,7 +43,6 @@ import javax.microedition.lcdui.Display;
  */
 public class JogadorBot extends Jogador implements Runnable {
 
-	private static Random random = new Random();
 	private boolean jaAceitou;
 	int valorProximaAposta = 0;
 	

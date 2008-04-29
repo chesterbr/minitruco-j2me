@@ -331,6 +331,7 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 								Jogador j;
 								if (sala.jogadores[i].equals(apelido)) {
 									j = new JogadorHumano(display, midlet.mesa);
+									midlet.jogadorHumano = (JogadorHumano)j;
 								} else {
 									j = new JogadorDummy();
 								}
@@ -430,6 +431,7 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 		estaVivo = false;
 
 		// Volta para o menu principal
+		midlet.servidor = null;
 		midlet.novaMesa(false);
 		midlet.startApp();
 
