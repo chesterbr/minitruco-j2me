@@ -66,7 +66,7 @@ public class JogadorCPU extends Jogador implements Runnable {
 		// usar a variável nomeEstrategia, mas ela pode ter sido
 		// sorteada)
 		this.setNome(estrategia.getNomeEstrategia());
-		Jogo.log("Estraegia: "+this.estrategia.getNomeEstrategia());
+		Jogo.log("Estraegia: " + this.estrategia.getNomeEstrategia());
 	}
 
 	/**
@@ -108,8 +108,9 @@ public class JogadorCPU extends Jogador implements Runnable {
 			int posCarta = estrategia.joga(situacaoJogo);
 
 			// Se houve truco, processa, e, após tudo resolvido, repete a jogada
-			if (posCarta == -1) {
+			if ((posCarta == -1) && (situacaoJogo.valorProximaAposta != 0)) {
 
+				Jogo.log("Estrategia trucou em momento valido");
 				// Faz a solicitação de truco numa nova thread
 				// (usando o próprio JogadorCPU como Runnable - era uma inner
 				// class, mas otimizei para reduzir o .jar)
@@ -128,6 +129,19 @@ public class JogadorCPU extends Jogador implements Runnable {
 				// atualizaSituacaoJogo();
 				situacaoJogo.valorProximaAposta = 0;
 				posCarta = estrategia.joga(situacaoJogo);
+			}
+
+			// De vez em quando a EstrategiaWillian pede truco quando acabou
+			// de receber resposta disso. Pra evitar essa e outras respostas
+			// de truco inválidas, o if anterior também passou a checar se
+			// era permitido o truco quando ele aconteceu.
+			//
+			// Desta forma, se qualquer uma das chamadas de
+			// estrategia.joga() retornar truco quando não devia, a gente
+			// acerta por aqui (pegando a primeira carta do cara e logando.
+			if (posCarta == -1) {
+				Jogo.log("Erro (recuperado): Estrategia trucou e nao podia");
+				posCarta = 0;
 			}
 
 			// Joga a carta selecionada e remove ela da mão

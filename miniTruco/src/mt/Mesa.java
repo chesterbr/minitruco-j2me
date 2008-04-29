@@ -764,9 +764,10 @@ public class Mesa extends Canvas implements Runnable {
 		}
 
 		// Desenha a carta destacada por cima das outras, com uma firula
-		if (cartaVencedora != null) {
-			cartaVencedora.desenhaCarta(g);
-			cartaVencedora.destacaVitoriosa(g);
+		Carta cv = cartaVencedora;
+		if (cv != null) {
+			cv.desenhaCarta(g);
+			cv.destacaVitoriosa(g);
 		}
 
 	}
