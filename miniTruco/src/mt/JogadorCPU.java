@@ -116,8 +116,13 @@ public class JogadorCPU extends Jogador implements Runnable {
 				Thread t = new Thread(this);
 				t.start();
 				// Aguarda pelas respostas
-				while (numRespostasAguardando > 0) {
-					Thread.yield();
+				while ((numRespostasAguardando > 0) && (this.jogo != null)
+						&& !this.jogo.jogoFinalizado) {
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// Não precisa tratar, basta seguir
+					}
 				}
 				// Se não aceitaram, desencana...
 				if (!aceitaramTruco)
