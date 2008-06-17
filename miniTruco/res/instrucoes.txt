@@ -1,0 +1,17 @@
+Suas cartas aparecem na parte de baixo da tela, as do seu parceiro em cima, e os adversários nas laterais. O vira (carta que define a manilha) aparece ao lado do baralho.
+
+Os resultados das rodadas aparecem no canto superior esquerdo, acima dos pontos (tentos) da sua equipe ("nós") e da equipe adversária ("eles").
+
+Escolha a carta a jogar com as teclas esquerda/direita, e use a tecla cima para jogar aberta, ou baixo para jogar fechada. Alternativa: teclas 4/6 (escolha) e 2/8 (jogar normal/fechada).
+
+Só é permitida uma carta fechada por dupla, e a primeira rodada é obrigatoriamente aberta.
+
+Para pedir truco (apenas na sua vez), use o menu Truco. Quando a outra dupla pedir, siga as instruções na tela para aceitar/recusar. Basta um jogador aceitar para valer o truco.
+
+Quando for mão de 11, você verá as cartas do adversário por alguns segundos, e também poderá decidir se joga ou não. Novamente, basta que um membro da dupla aceite. 
+
+O menu Opções permite selecionar parceiros, ajustar o visual e mudar as regras de manilha e baralho. 
+
+Para o jogo Bluetooth, crie o jogo em um celular e procure-o nos outros. Quem cria o jogo configura as características dele.
+
+Para o jogo via Internet, conecte, informe o apelido e entre numa sala. O usuário mais antigo da sala (gerente) controla as características. Quando dois ou mais quiserem jogar, o jogo inicia.

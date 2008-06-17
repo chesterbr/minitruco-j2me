@@ -1,0 +1,17 @@
+Your cards are placed at the bottom of the screen, your partner's on the top, and the opponents' on the side. The card that defines the "manilha" (trump card) is placed next to the deck.
+
+The results of the rounds appear in the upper left corner above the score of your team ("We") and the opponent's team ("They").
+
+Choose a card to be played with the left / right keys, and use the up key to play it face-up, or the down key to play it face-down. Alternative keys: 4 / 6 (to choose) and 2 / 8 (to play face-up/down).
+
+It is only allowed one face-down card to be played by one's team in a round, and the first round must be necessarily played with all cards face-up.
+
+In order to call "truco" (only when it's your turn though), use the Truco menu. When an opponent does, follow the prompts to accept / decline. Only one player to accept the call is necessary to enforce the truco.
+
+When a team scores 11 points, you should be able to see your partner's cards for a few seconds, and you also may be able to decide whether to play or not. Again, only one player to accept it is necessary to go on playing.
+
+The Options menu lets you select partners, choose the look and change play variations for "manilha" and deck.
+
+For a Bluetooth game, create it in one mobile and search for it in the others. Whoever creates the game sets up its options and characteristics.
+
+For an Internet game, first you get connected, enter your nickname and join a room. The oldest user in the room (manager) controls its features. When two or more want to play, the game starts off.
