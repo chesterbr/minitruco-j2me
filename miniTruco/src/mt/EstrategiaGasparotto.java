@@ -23,6 +23,17 @@ package mt;
  */
 
 /** 
+ * versão 1.6:
+ * grave bug corrigido com relação aos parâmetros nas chamadas do método rodadaAmarrou
+ * pequena otimização no código e melhoria nos comentários
+ * implementação de "salva-partidas": caso adversário vá ficar com larga
+ *  vantagem no placar, trucar e aceitar truco como um último recurso
+ *  para evitar derrota...
+ * novo ajuste no sistema de avaliação da mão de 11, inclusive deixando mais "cool"
+ *  em caso de grande vantagem no placar
+ * ajustes nas probabilidades para aumento de aposta/aceites
+ * ajuste para aceitar truco na 2a rodada com a 1a feita
+ * 
  * versão 1.5:
  * melhoria nos comentários
  * pequenas correções e otimização no código em geral
@@ -92,7 +103,7 @@ public class EstrategiaGasparotto implements Estrategia {
 	 * Retorna informações de copyright e afins
 	 */
 	public String getInfoEstrategia() {
-		return "v1.5 (c) 2007 Sandro Gasparotto";
+		return "v1.6 (c) 2007 Sandro Gasparotto";
 	}
 
     /**
@@ -553,6 +564,7 @@ public class EstrategiaGasparotto implements Estrategia {
     /**
      * Retorna se compensa aceitar o aumento a aposta ou não, com input para o fator sorte.
      * Jogador fica mais agressivo/cauteloso caso estejamos perdendo/vencendo...
+     * Se adversário estiver com 10 e nós com 5 ou menos, aceitar! (ia ficar difícil ganhar mesmo...)
      */
     private boolean valeAPenaAceitar(SituacaoJogo s, int fatorF)
     {
@@ -561,6 +573,10 @@ public class EstrategiaGasparotto implements Estrategia {
             }
             if((s.pontosEquipe[eu(s)%2] - s.pontosEquipe [adversario1(s)%2]) >= 6) {
                     fatorF = fatorF - 25; //25% de diminuição na probabilidade...
+            }
+            if(s.pontosEquipe[adversario1(s)%2]==10 && s.pontosEquipe[eu(s)%2] <= 5 &&
+            		podeEValeAPenaAumentar(s,100,100,100,100)) {
+            			fatorF = 100;
             }
             if(fatorF>100) fatorF=100;
             return (Math.abs (rand.nextInt())%100 + 1 <= fatorF)?true:false;
@@ -577,7 +593,7 @@ public class EstrategiaGasparotto implements Estrategia {
     }
 
     /**
-     * Retorna se a rodada amarrou ou não
+     * Retorna se a rodada amarrou ou não; numRod = 0 para a 1a, 1 para a 2a
      */
     private boolean rodadaAmarrou(SituacaoJogo s, int numRod)
     {
@@ -797,12 +813,12 @@ public class EstrategiaGasparotto implements Estrategia {
                             qualidadeCarta(s.cartasJogador[C[1]],s)==TRES)
                                     // Jogar o três
                                     return C[1];
-                            // Vai que temos uma manilha também (C[1]) (ou mesmo outro três),
-                            // mesmo assim vamos jogar o três
-                            if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP &&
-                                            qualidadeCarta(s.cartasJogador[C[2]],s)==TRES)
-                                            // Jogar o três
-                                            return C[2];
+                    // Vai que temos uma manilha também (C[1]) (ou mesmo outro três),
+                    // mesmo assim vamos jogar o três
+                    if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP &&
+                       		qualidadeCarta(s.cartasJogador[C[2]],s)==TRES)
+                               		// Jogar o três
+                                    return C[2];
                     return C[2]; // retorna a menor então
             }
             return C[0]; // para satisfazer o corretor do método (Eclipse)...
@@ -1102,7 +1118,7 @@ public class EstrategiaGasparotto implements Estrategia {
             // Se estiver com dois lixos, jogo o lixo mais lixo encoberto (com baixa probabilidade).
 
             // Se a 1a amarrou, jogar a maior
-            if(rodadaAmarrou(s, 1)) {
+            if(rodadaAmarrou(s, 0)) {
                     if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && podeEValeAPenaAumentar(s,100,100,100,100))
                             return -1;
                     if(qualidadeCarta(s.cartasJogador[C[0]],s)>=PICAFUMO && podeEValeAPenaAumentar(s,30,10,3,1))
@@ -1157,7 +1173,7 @@ public class EstrategiaGasparotto implements Estrategia {
             // Vou deixar para o parceiro
 
             // Se a 1a amarrou, jogar a maior
-            if(rodadaAmarrou(s, 1)) {
+            if(rodadaAmarrou(s, 0)) {
                     if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && podeEValeAPenaAumentar(s,100,100,100,100))
                             return -1;
                     if(qualidadeCarta( s.cartasJogador[C[0]],s)>=PICAFUMO && qualidadeCarta(s.cartasJogador[C[0]],s)>qualidadeMaiorMesa(s) && podeEValeAPenaAumentar(s,50,15,5,1))
@@ -1180,7 +1196,7 @@ public class EstrategiaGasparotto implements Estrategia {
             // Se estiver com lixos, jogar aumentando a aposta (com baixa probabilidade - facão).
 
             // Se a 1a amarrou, jogar a maior
-            if(rodadaAmarrou(s, 1)) {
+            if(rodadaAmarrou(s, 0)) {
                     if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP && podeEValeAPenaAumentar(s,100,100,100,100))
                             return -1;
                     if(qualidadeCarta(s.cartasJogador[C[0]],s)>=PICAFUMO && qualidadeCarta(s.cartasJogador[C[0]],s)>qualidadeMaiorMesa(s) && podeEValeAPenaAumentar(s,50,15,5,1))
@@ -1228,7 +1244,7 @@ public class EstrategiaGasparotto implements Estrategia {
             }
 
             if(qualidadeCarta(s.cartasJogador[C[0]],s)==LIXO) {
-                    if(podeEValeAPenaAumentar(s,10,2,1,0) && !partidaGanhaParaAdversario(s))
+                    if(podeEValeAPenaAumentar(s,20,5,1,0) && !partidaGanhaParaAdversario(s))
                             return -1;
                     return C[0];
             }
@@ -1241,7 +1257,7 @@ public class EstrategiaGasparotto implements Estrategia {
             // Tenho que fazer de qualquer jeito
 
             // Se a 1a amarrou, jogar a maior
-            if(rodadaAmarrou(s, 1)) {
+            if(rodadaAmarrou(s, 0)) {
                     if(qualidadeCarta( s.cartasJogador[C[0]],s)>qualidadeMaiorMesa(s) && parceiro(s)!=maiorCartaMesa(s) && podeEValeAPenaAumentar(s,100,100,100,100))
                             return -1;
                     if(qualidadeCarta( s.cartasJogador[C[0]],s)>=qualidadeMaiorMesa(s) && parceiro(s)!=maiorCartaMesa(s))
@@ -1302,7 +1318,8 @@ public class EstrategiaGasparotto implements Estrategia {
             // Se puder com a que estiver vindo, e estiver com manilha, jogar aumentando a aposta (com média-alta probabilidade).
             // Se puder com a que estiver vindo, e estiver com três, jogar aumentando a aposta (com média-baixa probabilidade)
             // Se estiver com dois ou menos, jogar quieto.
-
+    		// Se adversário estiver com 10 e nós com 5 ou menos, aumentar aposta! (ia ficar difícil ganhar mesmo...)
+    	
             if(partidaGanha(s) && podeEValeAPenaAumentar(s,100,100,100,100))
                     return -1;
 
@@ -1325,7 +1342,12 @@ public class EstrategiaGasparotto implements Estrategia {
                                             return -1;
                     }
             }
-
+            
+            if(s.pontosEquipe[adversario1(s)%2]==10 && s.pontosEquipe[eu(s)%2] <= 5 &&
+            		podeEValeAPenaAumentar(s,100,100,100,100)) {
+            			return -1;
+            }
+            
             return C[0];
     }
 
@@ -1335,15 +1357,21 @@ public class EstrategiaGasparotto implements Estrategia {
             // Se estiver com a partida ganha, não tem o que pensar!
             // Se não puder com a que estiver vindo, jogar aumentando a aposta no facão (com média probabilidade).
             // Se puder com a que estiver vindo (pelo menos amarrar), arregaçar os caras!
-
+    		// Se adversário estiver com 10 e nós com 5 ou menos, aumentar aposta! (ia ficar difícil ganhar mesmo...)
+    	
             if(qualidadeCarta(s.cartasJogador[C[0]],s)<qualidadeMaiorMesa(s) &&
-                    podeEValeAPenaAumentar(s,20,5,1,0) && !partidaGanhaParaAdversario(s) && parceiro(s) != maiorCartaMesa(s))
+                    podeEValeAPenaAumentar(s,15,3,1,0) && !partidaGanhaParaAdversario(s) && parceiro(s) != maiorCartaMesa(s))
                             return -1; // esse é o espírito do jogo!!!!!
 
             if(qualidadeCarta(s.cartasJogador[C[0]],s)>=qualidadeMaiorMesa(s) &&
                     podeEValeAPenaAumentar(s,100,100,100,100) && parceiro(s) != maiorCartaMesa(s))
                             return -1;
-
+            
+            if(s.pontosEquipe[adversario1(s)%2]==10 && s.pontosEquipe[eu(s)%2] <= 5 &&
+            		podeEValeAPenaAumentar(s,100,100,100,100)) {
+            			return -1;
+            }
+            
             return C[0];
     }
 
@@ -1442,7 +1470,7 @@ public class EstrategiaGasparotto implements Estrategia {
             // Segunda rodada
             case 2:
                     //Checar se está tudo amarrado
-                    if(s.resultadoRodada[0]==3)
+                    if(rodadaAmarrou(s, 0))
                     {
                             if((partidaGanha(s) && podeEValeAPenaAumentar(s,100,100,100,100)) ||
                                     (matoAdversario(s,false) && (qualidadeMinhaMaior(s)==PICAFUMO || qualidadeMinhaMaior(s)==ESPADILHA || qualidadeMinhaMaior(s)==ESCOPETA) && podeEValeAPenaAumentar(s,45,5,1,0)) )
@@ -1453,7 +1481,7 @@ public class EstrategiaGasparotto implements Estrategia {
             // Terceira rodada
             case 3:
                     //Checar se está tudo amarrado
-                    if(s.resultadoRodada[1]==3)
+                    if(rodadaAmarrou(s, 1))
                     {
                             if((partidaGanha(s) && podeEValeAPenaAumentar(s,100,100,100,100)) ||
                                     (matoAdversario(s,false) && (qualidadeMinhaMaior(s)==PICAFUMO || qualidadeMinhaMaior(s)==ESPADILHA || qualidadeMinhaMaior(s)==ESCOPETA) && podeEValeAPenaAumentar(s,50,10,1,0)) )
@@ -1523,23 +1551,23 @@ public class EstrategiaGasparotto implements Estrategia {
                             if(maiorCartaENossa(s) &&
                                             qualidadeMaiorMesa(s)>=TRES)
                                             return true;
-                            //se eu tiver pelo menos um três, aceito
-                            if(qualidadeCarta(s.cartasJogador[C[0]],s)>=TRES)
+                            //se eu tiver pelo menos um dois, aceito
+                            if(qualidadeCarta(s.cartasJogador[C[0]],s)>=DOIS)
                                     return true;
                     } else {
                             //se a primeira NÃO for nossa:
                             // Se a 1a amarrou e tenho zap, aceito
-                            if(rodadaAmarrou(s, 1) &&
+                            if(rodadaAmarrou(s, 0) &&
                                     qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP)
                                             return true;
                             // Se a 1a amarrou e tenho manilha/três, aceito
-                            if(rodadaAmarrou(s, 1) &&
+                            if(rodadaAmarrou(s, 0) &&
                                     qualidadeCarta(s.cartasJogador [C[0]],s)>=TRES &&
                                     qualidadeCarta(s.cartasJogador[C[0]],s)>=qualidadeMaiorMesa(s) &&
                                     valeAPenaAceitar(s,70))
                                             return true;
                             // Se a 1a amarrou e na mesa já está vindo pelo menos um três nosso, aceito
-                            if(rodadaAmarrou(s, 1) &&
+                            if(rodadaAmarrou(s, 0) &&
                                     maiorCartaENossa(s) &&
                                     qualidadeMaiorMesa(s)>=TRES &&
                                     valeAPenaAceitar(s,50))
@@ -1609,7 +1637,7 @@ public class EstrategiaGasparotto implements Estrategia {
                                                     return true;
                                     //se eu tenho um dois, aceito com média-baixa prob.
                                     if(qualidadeCarta(s.cartasJogador[C[0]],s)==DOIS &&
-                                            valeAPenaAceitar(s,40))
+                                            valeAPenaAceitar(s,30))
                                                     return true;
                             }
                     } else {
@@ -1695,8 +1723,14 @@ public class EstrategiaGasparotto implements Estrategia {
                     || q3>=2
                     || (q3>=1 && q2>=2)
                     || (qManilhas>=1 && q3>=1)
-                    || (qManilhas>=1 && q2>=2))
+                    || (qManilhas>=1 && q2>=1))
                             return true;
+            if(s.pontosEquipe[adversario1(s)%2]<=6 &&
+            		(qManilhas>=1
+            				|| q3>= 1
+            				|| q2>=1)) {
+            					return true;
+            }
             return false;
     }
 
