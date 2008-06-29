@@ -1,7 +1,7 @@
 <project name="miniTruco" default="executa_microemulator2">
 
 	<!-- INFORMAR AQUI o diretório onde está instalado o J2ME SDK da Sun -->
-	<property name="wtk.home" value="C:\WTK2.5.1\" />
+	<property name="wtk.home" value="/Applications/mpp-sdk/" />
 
 	<!-- Definições das bibliotecas auxiliares -->
 	<taskdef resource="antenna.properties" classpath="lib/antenna-bin.jar" />
@@ -53,6 +53,7 @@
 		<delete dir="${BIN}" />
 		<mkdir dir="${BIN}" />
 		<javac target="1.5" classpath="${wtk.midpapi}:${btapi}" source="1.5" destdir="${BIN}" srcdir="${DEPLOY}/tmpsrc" debug="true" debuglevel="lines,vars,source" />
+		<unzip dest="${BIN}" src="${wtk.midpapi}"></unzip>
 		<jar basedir="${BIN}" destfile="${DEPLOY}/miniTrucoServer.jar">
 			<manifest>
 				<attribute name="Main-Class" value="br.inf.chester.minitruco.servidor.MiniTrucoServer" />
