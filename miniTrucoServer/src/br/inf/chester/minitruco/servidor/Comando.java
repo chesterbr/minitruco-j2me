@@ -48,4 +48,24 @@ public abstract class Comando {
 	 */
 	public abstract void executa(String[] args, JogadorConectado j);
 
+	/**
+	 * Transforma um array de argumentos em uma string (ex.: para recuperar a
+	 * mensagem em um comando M ou B)
+	 * 
+	 * @param args
+	 *            array de argumentos (recebido no método executa()
+	 * @offset argumento do array onde devemos começar (0 para todo o array, 1
+	 *         para pular o 1o. argumento, etc.)
+	 * @return string com o argumento, precedida de um espaço em branco
+	 * @see Comando#executa(String[], JogadorConectado)
+	 */
+	protected String getMensagem(String[] args, int offset) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = offset; i < args.length; i++) {
+			sb.append(' ');
+			sb.append(args[i]);
+		}
+		return sb.toString();
+	}
+
 }
