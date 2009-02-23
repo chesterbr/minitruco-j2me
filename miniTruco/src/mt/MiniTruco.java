@@ -320,7 +320,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	private static final Image[] IMAGENS_REGRAS = { null, null };
 
 	// ** aumentar array aqui para cada nova estratégia incluída**
-	// ** no momento: Willian, Sellani, Gasparotto v1.2 **
+	// ** no momento: Willian, Sellani, Gasparotto **
 	private static final Image[] IMAGENS_ESTRATEGIAS = { null, null, null, null };
 
 	ChoiceGroup cgParceiro = new ChoiceGroup(

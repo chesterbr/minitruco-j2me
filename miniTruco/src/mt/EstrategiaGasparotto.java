@@ -1,7 +1,7 @@
 package mt;
 
 /*
- * Copyright (c) 2007-2008 Sandro Gasparotto (sandro.gasparoto@gmail.com)
+ * Copyright (c) 2007-2009 Sandro Gasparotto (sandro.gasparoto@gmail.com)
  *
  * Nota 1: parte do código (métodos de suporte) adaptada
  * da Estratégia Sellani (Copyright (c) 2006 Leonardo Sellani)
@@ -10,7 +10,7 @@ package mt;
  * Este programa é um software livre; você pode redistribuí-lo e/ou
  * modificá-lo dentro dos termos da Licença Pública Geral GNU como
  * publicada pela Fundação do Software Livre (FSF); na versão 2 da
- * Licença, ou (na sua opnião) qualquer versão.
+ * Licença, ou (na sua opinião) qualquer versão.
  *
  * Este programa é distribuído na esperança que possa ser útil,
  * mas SEM NENHUMA GARANTIA; sem uma garantia implícita de ADEQUAÇÂO
@@ -23,6 +23,25 @@ package mt;
  */
 
 /** 
+ * versão 1.7:
+ * rebatizado para 'HAL';
+ * melhoria no sistema de aceito de truco na primeira e segunda.
+ * Acerto no método e mudança para um nome melhor: tenhoMaiorCartaSemContarRodadaAtual
+ * para correção de bug reincidente, e correção do algoritmo em PartidaGanha.
+ * correção em podeEValeAPenaAumentar.
+ * Correção na 2a rodada para-pé c/ inclusão do método partidaGanhaParaAdversario.
+ * Correção na 3a rodada para trucada e aceite, não estávamos considerando
+ * partidaGanhaParaAdversario.
+ * Criação de maiorCartaENossaMesmo para ajustar na análise considerando-se
+ * carta melada na mão ou não, e ajuste em maiorCartaMesa.
+ * Aproveitando, renomeei método maiorCartaEDoParceiro para 
+ * maiorCartaEDoParceiroMesmo para seguir o padrão.
+ * Reajuste total do algoritmo do método TaMelado.
+ * Correção em valeAPenaAceitar.
+ * Ajuste em 2a rodada - mão.
+ * Ajuste na rotina de aceite de truco da primeira rodada - estava concedendo
+ * muitos pontos sem luta...
+ *  
  * versão 1.6:
  * grave bug corrigido com relação aos parâmetros nas chamadas do método rodadaAmarrou
  * pequena otimização no código e melhoria nos comentários
@@ -96,14 +115,14 @@ public class EstrategiaGasparotto implements Estrategia {
 	 * Retorna o nome "de tela" da Estrategia
 	 */
 	public String getNomeEstrategia() {
-		return "Gasparotto";
+		return "HAL";
 	}
 
 	/**
 	 * Retorna informações de copyright e afins
 	 */
 	public String getInfoEstrategia() {
-		return "v1.6 (c) 2007 Sandro Gasparotto";
+		return "v1.7 (c) 2007-2009 Sandro Gasparotto";
 	}
 
     /**
@@ -212,7 +231,9 @@ public class EstrategiaGasparotto implements Estrategia {
     }
 
     /**
-     *  Retorna o índice da maior carta da mesa na rodada atual
+     *  Retorna o índice da maior carta da mesa na rodada atual, com
+     *  preferência para o índice (pos. do jogador) apontar para nós em
+     *  caso verdadeiro
      */
     private int maiorCartaMesa(SituacaoJogo s)
     {
@@ -227,16 +248,19 @@ public class EstrategiaGasparotto implements Estrategia {
                             maiorCarta=i;
                             continue;
                     }
-                    if( s.cartasJogadas[s.numRodadaAtual-1][i].getValorTruco(s.manilha) > s.cartasJogadas[s.numRodadaAtual-1][maiorCarta].getValorTruco(s.manilha))
+                    if( (eu(s) == i || parceiro(s) == i ) && s.cartasJogadas[s.numRodadaAtual-1][i].getValorTruco(s.manilha) >= s.cartasJogadas[s.numRodadaAtual-1][maiorCarta].getValorTruco(s.manilha))
                             maiorCarta=i;
+                    	else if (s.cartasJogadas[s.numRodadaAtual-1][i].getValorTruco(s.manilha) > s.cartasJogadas[s.numRodadaAtual-1][maiorCarta].getValorTruco(s.manilha))
+                    			maiorCarta=i;
             }
             return maiorCarta;
     }
 
     /**
-     * Retorna se a maior carta da mesa é a do meu parceiro ou não
+     * Retorna se a maior carta da mesa é a do meu parceiro ou não,
+     * sem considerar carta melada
      */
-    private boolean maiorCartaEDoParceiro(SituacaoJogo s)
+    private boolean maiorCartaEDoParceiroMesmo(SituacaoJogo s)
     {
             if(parceiro(s) == maiorCartaMesa(s) && !taMelado(s))
                     return true;
@@ -248,11 +272,22 @@ public class EstrategiaGasparotto implements Estrategia {
      */
     private boolean maiorCartaENossa(SituacaoJogo s)
     {
-            if((eu(s) == maiorCartaMesa(s) || parceiro(s) == maiorCartaMesa(s)) && !taMelado(s))
+            if(eu(s) == maiorCartaMesa(s) || parceiro(s) == maiorCartaMesa(s))
                     return true;
             return false;
     }
 
+    /**
+     * Retorna se a maior carta da mesa é minha ou do meu parceiro ou não, 
+     * sem considerar carta melada
+     */
+    private boolean maiorCartaENossaMesmo(SituacaoJogo s)
+    {
+            if((eu(s) == maiorCartaMesa(s) || parceiro(s) == maiorCartaMesa(s)) && !taMelado(s))
+                    return true;
+            return false;
+    }
+    
     /**
      * Retorna se eu tenho na mão alguma carta para matar a do adversário
      */
@@ -307,7 +342,7 @@ public class EstrategiaGasparotto implements Estrategia {
      * Verifica se eu tenho a maior carta do jogo na mão, (por exemplo, o 7 Copas já tendo saido o Zap),
      * considerando apenas as manilhas.
      */
-    private boolean tenhoMaiorCarta(SituacaoJogo s)
+    private boolean tenhoMaiorCartaSemContarRodadaAtual(SituacaoJogo s)
     {
             boolean m12=false,m13=false,m14=false;
 
@@ -325,10 +360,10 @@ public class EstrategiaGasparotto implements Estrategia {
                     return true;
 
             //procura pelas manilhas que já sairam nas rodadas anteriores
-            for(int rodada=0;rodada<=(s.numRodadaAtual-1);rodada++)
+            for(int rodada=0;rodada<(s.numRodadaAtual-1);rodada++)
                     for(int jogador=0;jogador<=3;jogador++)
                     {
-                            if(s.cartasJogadas [rodada][jogador]!=null)
+                            if(s.cartasJogadas[rodada][jogador]!=null)
                             {
                                     switch(s.cartasJogadas[rodada][jogador].getValorTruco(s.manilha))
                                     {
@@ -353,9 +388,9 @@ public class EstrategiaGasparotto implements Estrategia {
     {
             if(s.numRodadaAtual==1 && s.cartasJogador.length>=2 && s.cartasJogador[C[0]].getValorTruco(s.manilha)==14 && s.cartasJogador[C[1]].getValorTruco(s.manilha)==13)
                     return true;
-            if(s.numRodadaAtual==2 && primeiraENossa(s) && tenhoMaiorCarta(s))
+            if(s.numRodadaAtual==2 && primeiraENossa(s) && tenhoMaiorCartaSemContarRodadaAtual(s) && qualidadeMinhaMaior(s)>qualidadeMaiorMesa(s))
                     return true;
-            if(s.numRodadaAtual==3 && tenhoMaiorCarta(s))
+            if(s.numRodadaAtual==3 && tenhoMaiorCartaSemContarRodadaAtual(s) && qualidadeMinhaMaior(s)>qualidadeMaiorMesa(s))
                     return true;
             return false;
     }
@@ -429,11 +464,11 @@ public class EstrategiaGasparotto implements Estrategia {
     /**
      * Retorna se a rodada atual está empatada
      */
-    private boolean taMelado(SituacaoJogo s)
+    private boolean taMeladoOld(SituacaoJogo s)
     {
             if(s.cartasJogadas[s.numRodadaAtual-1 ][parceiro(s)]==null)
                     return false;
-            if(s.cartasJogadas[s.numRodadaAtual-1][adversario1(s)]!=null && s.cartasJogadas[s.numRodadaAtual-1][parceiro(s)].getValorTruco(s.manilha ) == s.cartasJogadas[s.numRodadaAtual-1][adversario1(s)].getValorTruco(s.manilha))
+            if(s.cartasJogadas[s.numRodadaAtual-1][adversario1(s)]!=null && s.cartasJogadas[s.numRodadaAtual-1][parceiro(s)].getValorTruco(s.manilha) == s.cartasJogadas[s.numRodadaAtual-1][adversario1(s)].getValorTruco(s.manilha))
                     return true;
             else
             if(s.cartasJogadas[s.numRodadaAtual-1][adversario2(s)]!=null && s.cartasJogadas[s.numRodadaAtual-1][parceiro(s)].getValorTruco(s.manilha) == s.cartasJogadas[s.numRodadaAtual-1][adversario2(s)].getValorTruco(s.manilha))
@@ -441,6 +476,28 @@ public class EstrategiaGasparotto implements Estrategia {
             return false;
     }
 
+    private boolean taMelado(SituacaoJogo s)
+    {
+    	if(s.cartasJogadas[s.numRodadaAtual-1][adversario1(s)]!=null &&
+    			s.cartasJogadas[s.numRodadaAtual-1][parceiro(s)]!=null && 
+    			s.cartasJogadas[s.numRodadaAtual-1][parceiro(s)].getValorTruco(s.manilha) == s.cartasJogadas[s.numRodadaAtual-1][adversario1(s)].getValorTruco(s.manilha))
+            		return true;
+    	if(s.cartasJogadas[s.numRodadaAtual-1][adversario2(s)]!=null && 
+    			s.cartasJogadas[s.numRodadaAtual-1][parceiro(s)]!=null &&
+    			s.cartasJogadas[s.numRodadaAtual-1][parceiro(s)].getValorTruco(s.manilha) == s.cartasJogadas[s.numRodadaAtual-1][adversario2(s)].getValorTruco(s.manilha))
+            		return true;
+       	if(s.cartasJogadas[s.numRodadaAtual-1][adversario1(s)]!=null &&
+    			s.cartasJogadas[s.numRodadaAtual-1][eu(s)]!=null && 
+    			s.cartasJogadas[s.numRodadaAtual-1][eu(s)].getValorTruco(s.manilha) == s.cartasJogadas[s.numRodadaAtual-1][adversario1(s)].getValorTruco(s.manilha))
+            		return true;
+    	if(s.cartasJogadas[s.numRodadaAtual-1][adversario2(s)]!=null && 
+    			s.cartasJogadas[s.numRodadaAtual-1][eu(s)]!=null &&
+    			s.cartasJogadas[s.numRodadaAtual-1][eu(s)].getValorTruco(s.manilha) == s.cartasJogadas[s.numRodadaAtual-1][adversario2(s)].getValorTruco(s.manilha))
+    				return true;
+    	return false;
+  
+    }
+    
     /**
      * Retorna a exata qualificação de uma carta
      * Talvez seja necessária alguma adaptação para o caso de "baralho limpo"
@@ -535,7 +592,7 @@ public class EstrategiaGasparotto implements Estrategia {
             }
 
             //aumenta agressividade em caso de grande desvantagem no placar
-            if((s.pontosEquipe[adversario1(s)%2] - s.pontosEquipe[eu(s)%2]) >= 6) {
+            if((s.pontosEquipe[adversario1(s)%2] - s.pontosEquipe[eu(s)%2]) >= 6 && fator3 != 100 && fator6 != 100 && fator9 != 100 && fator12 != 100) {
                     fator3 = fator3 + 25; //25% de aumento na probabilidade...
                     fator6 = fator6 + 25;
                     fator9 = fator9 + 15;
@@ -543,7 +600,7 @@ public class EstrategiaGasparotto implements Estrategia {
             }
 
             //diminui agressividade em caso de grande vantagem no placar
-            if((s.pontosEquipe[eu(s)%2] - s.pontosEquipe[adversario1(s)%2]) >= 6) {
+            if((s.pontosEquipe[eu(s)%2] - s.pontosEquipe[adversario1(s)%2]) >= 6 && fator3 != 100 && fator6 != 100 && fator9 != 100 && fator12 != 100) {
                     fator3 = fator3 - 25; //25% de diminuição na probabilidade...
                     fator6 = fator6 - 25;
                     fator9 = fator9 - 15;
@@ -568,7 +625,7 @@ public class EstrategiaGasparotto implements Estrategia {
      */
     private boolean valeAPenaAceitar(SituacaoJogo s, int fatorF)
     {
-            if((s.pontosEquipe [adversario1(s)%2] - s.pontosEquipe[eu(s)%2]) >= 6) {
+    		if((s.pontosEquipe [adversario1(s)%2] - s.pontosEquipe[eu(s)%2]) >= 6) {
                     fatorF = fatorF + 25; //25% de aumento na probabilidade...
             }
             if((s.pontosEquipe[eu(s)%2] - s.pontosEquipe [adversario1(s)%2]) >= 6) {
@@ -578,7 +635,14 @@ public class EstrategiaGasparotto implements Estrategia {
             		podeEValeAPenaAumentar(s,100,100,100,100)) {
             			fatorF = 100;
             }
-            if(fatorF>100) fatorF=100;
+            // o jogo já vai terminar de qualquer forma?
+        	if (s.valorProximaAposta == 6 && s.pontosEquipe[eu(s)%2] >= 9)
+        			fatorF = 100;
+        	if (s.valorProximaAposta == 9 && s.pontosEquipe[eu(s)%2] >= 6)
+    			fatorF = 100;
+        	if (s.valorProximaAposta == 12 && s.pontosEquipe[eu(s)%2] >= 3)
+    			fatorF = 100;
+        	if(fatorF>100) fatorF=100;
             return (Math.abs (rand.nextInt())%100 + 1 <= fatorF)?true:false;
     }
 
@@ -609,7 +673,7 @@ public class EstrategiaGasparotto implements Estrategia {
     {
             // Esta é a pior posição da mesa
             // E para piorar ainda mais, não temos como saber o que o parceiro tem...
-            // Temos que inventar um sistema de sinal cibernético! rsrsrs
+            // Temos que inventar um sistema de sinal cibernético...
             // Então, pelos ensinamentos de meu avô, vamos tentar garantir a primeira
             // Mas somente vale a pena se for o picafumo, espadilha ou escopeta
             // Um 3 morre fácil, e pode ferrar o jogo do parceiro,
@@ -852,9 +916,9 @@ public class EstrategiaGasparotto implements Estrategia {
             // Caso tenhamos zap e três, jogar o três
             // Senão tentar matar com a menor manilha, um três/dois/ás/... ou pelo menos amarrar
 
-            if(maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s) >= TRES)
+            if(maiorCartaEDoParceiroMesmo(s) && qualidadeMaiorMesa(s) >= TRES)
                     return C[2];
-            if(maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s) == DOIS) {
+            if(maiorCartaEDoParceiroMesmo(s) && qualidadeMaiorMesa(s) == DOIS) {
                     // Aqui vamos jogar a menor manilha (menos o zap)
                     if(qualidadeCarta(s.cartasJogador[C[0]],s)==PICAFUMO)
                             return C[0];
@@ -874,7 +938,7 @@ public class EstrategiaGasparotto implements Estrategia {
                             return C[0]; // hummmm... podemos jogar o zap para tentar enganar os adversários...
                     return C[2];
             }
-            if(maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s) == AS) {
+            if(maiorCartaEDoParceiroMesmo(s) && qualidadeMaiorMesa(s) == AS) {
                     // Checa se temos zap e três
                     if(qualidadeCarta( s.cartasJogador[C[0]],s)==ZAP &&
                             qualidadeCarta(s.cartasJogador[C[1]],s)==TRES)
@@ -911,7 +975,7 @@ public class EstrategiaGasparotto implements Estrategia {
                             return C[0];
                     return C[2];
             }
-            if(maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s) == LIXO) {
+            if(maiorCartaEDoParceiroMesmo(s) && qualidadeMaiorMesa(s) == LIXO) {
                     // Checa se temos zap e três
                     if(qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP &&
                             qualidadeCarta(s.cartasJogador[C[1]],s)==TRES)
@@ -1103,7 +1167,7 @@ public class EstrategiaGasparotto implements Estrategia {
             // Aqui é fácil...
             // Tudo que o pé tem a fazer é garantir a primeira!
 
-            if(maiorCartaEDoParceiro(s))
+            if(maiorCartaEDoParceiroMesmo(s))
                     return C[2]; //beleza parceiro!
             return menorCartaParaMatarOuAmarrar(s); //deixa comigo
     }
@@ -1114,7 +1178,7 @@ public class EstrategiaGasparotto implements Estrategia {
             // Se estiver com a partida ganha, vou encobrir a menor!
             // Se estiver com duas cartas acima ou igual a um três, jogar a menor aumentando a aposta (com alta probabilidade).
             // Se estiver com duas cartas acima ou igual a um ás, jogar a menor.
-            // Se estiver com uma carta acima ou igual a um ás e um lixo, jogo o lixo encoberto (com alta probabilidade).
+            // Se estiver com uma carta acima ou igual a um ás e um lixo, jogo o lixo encoberto (com média-baixa probabilidade).
             // Se estiver com dois lixos, jogo o lixo mais lixo encoberto (com baixa probabilidade).
 
             // Se a 1a amarrou, jogar a maior
@@ -1145,21 +1209,19 @@ public class EstrategiaGasparotto implements Estrategia {
 
             if(qualidadeCarta(s.cartasJogador [C[0]],s)>=AS &&
                             qualidadeCarta(s.cartasJogador[C[1]],s)>=AS) {
-                            if(mandaBala(75))
-                                    return C[1]+10;
-                            return C[1];
+            					return C[1];
             }
 
             if(qualidadeCarta(s.cartasJogador[C[0]],s)>=AS &&
                             qualidadeCarta(s.cartasJogador[C[1]],s)==LIXO) {
-                            if(mandaBala(75))
+                            if(mandaBala(25))
                                     return C[1]+10;
                             return C[1];
             }
 
             if(qualidadeCarta( s.cartasJogador[C[0]],s)==LIXO &&
                             qualidadeCarta(s.cartasJogador[C[1]],s)==LIXO) {
-                            if(mandaBala(75))
+                            if(mandaBala(10))
                                     return C[1]+10;
                             return C[1];
             }
@@ -1216,9 +1278,10 @@ public class EstrategiaGasparotto implements Estrategia {
                     return C[1];
             }
 
-            if(maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s)>=TRES)
+            if(maiorCartaEDoParceiroMesmo(s) && qualidadeMaiorMesa(s)>=TRES)
                     return C[1]+10;
-            if(qualidadeCarta( s.cartasJogador[C[0]],s)>=TRES) {
+
+            if(qualidadeCarta( s.cartasJogador[C[0]],s)>=TRES && qualidadeCarta( s.cartasJogador[C[0]],s)>=qualidadeMaiorMesa(s)) {
                             if(podeEValeAPenaAumentar(s,90,30,1,0) && !partidaGanhaParaAdversario(s))
                                     return -1;
                             // se tenho zap fazer "cama"...
@@ -1228,25 +1291,28 @@ public class EstrategiaGasparotto implements Estrategia {
                                     return C[0];
                             }
             }
-            if(maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s)==DOIS)
+            if(maiorCartaEDoParceiroMesmo(s) && qualidadeMaiorMesa(s)==DOIS)
                     return C[1]+10;
-            if(qualidadeCarta( s.cartasJogador[C[0]],s)==DOIS) {
+            if(qualidadeCarta( s.cartasJogador[C[0]],s)==DOIS && qualidadeCarta( s.cartasJogador[C[0]],s)>=qualidadeMaiorMesa(s)) {
                     if(podeEValeAPenaAumentar(s,75,20,1,0) && !partidaGanhaParaAdversario(s))
                             return -1;
                     return C[0];
             }
-            if(maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s)==AS)
+            if(maiorCartaEDoParceiroMesmo(s) && qualidadeMaiorMesa(s)==AS)
                     return C[1]+10;
-            if(qualidadeCarta(s.cartasJogador[C[0]],s)==AS) {
+            if(qualidadeCarta(s.cartasJogador[C[0]],s)==AS && qualidadeCarta( s.cartasJogador[C[0]],s)>=qualidadeMaiorMesa(s)) {
                     if(podeEValeAPenaAumentar(s,60,10,1,0)  && !partidaGanhaParaAdversario(s))
                             return -1;
                     return C[0];
             }
 
             if(qualidadeCarta(s.cartasJogador[C[0]],s)==LIXO) {
-                    if(podeEValeAPenaAumentar(s,20,5,1,0) && !partidaGanhaParaAdversario(s))
-                            return -1;
+                // facão    
+            	if(podeEValeAPenaAumentar(s,20,5,1,0) && !partidaGanhaParaAdversario(s))
+            		return -1;
+                if(qualidadeCarta( s.cartasJogador[C[0]],s)>=qualidadeMaiorMesa(s))
                     return C[0];
+                return C[1];
             }
             return C[0]; // para satisfazer o corretor do método (Eclipse)...
     }
@@ -1265,7 +1331,7 @@ public class EstrategiaGasparotto implements Estrategia {
                     return C[1];
             }
 
-            if(maiorCartaEDoParceiro(s))
+            if(maiorCartaEDoParceiroMesmo(s))
                     return C[1]+10; //é isso aí parceiro! Retornar encoberto, por quê revelar?...
             return menorCartaParaMatar(s); //deixa comigo
     }
@@ -1323,7 +1389,7 @@ public class EstrategiaGasparotto implements Estrategia {
             if(partidaGanha(s) && podeEValeAPenaAumentar(s,100,100,100,100))
                     return -1;
 
-            if(maiorCartaEDoParceiro(s) && qualidadeMaiorMesa(s)>=TRES) {
+            if(maiorCartaEDoParceiroMesmo(s) && qualidadeMaiorMesa(s)>=TRES) {
                     if(podeEValeAPenaAumentar(s,10,2,1,0))
                             return -1;
             } else {
@@ -1344,6 +1410,7 @@ public class EstrategiaGasparotto implements Estrategia {
             }
             
             if(s.pontosEquipe[adversario1(s)%2]==10 && s.pontosEquipe[eu(s)%2] <= 5 &&
+            		!partidaGanhaParaAdversario(s) &&
             		podeEValeAPenaAumentar(s,100,100,100,100)) {
             			return -1;
             }
@@ -1368,6 +1435,7 @@ public class EstrategiaGasparotto implements Estrategia {
                             return -1;
             
             if(s.pontosEquipe[adversario1(s)%2]==10 && s.pontosEquipe[eu(s)%2] <= 5 &&
+            		!partidaGanhaParaAdversario(s) &&
             		podeEValeAPenaAumentar(s,100,100,100,100)) {
             			return -1;
             }
@@ -1510,36 +1578,52 @@ public class EstrategiaGasparotto implements Estrategia {
 
             //primeira rodada
             case 1:
-
+            		
                     //se eu tenho uma manilha e na mesa já estiver pelo menos um 3 nosso, aceito
                     if(qualidadeCarta(s.cartasJogador[C[0]],s)>=TRES &&
-                            maiorCartaENossa(s) &&
+                            maiorCartaENossaMesmo(s) &&
                             qualidadeMaiorMesa(s)>=TRES)
                                     return true;
-                    //se eu tenho uma três e na mesa já estiver pelo menos um 3 nosso, aceito
+                    //se eu tenho um três e na mesa já estiver pelo menos um 3 nosso, aceito
                     if(qualidadeCarta(s.cartasJogador[C[0]],s)==TRES &&
-                            maiorCartaENossa(s) &&
+                            maiorCartaENossaMesmo(s) &&
                             qualidadeMaiorMesa(s)>=TRES)
+                                    return true;
+                    //se na mesa já estiver vindo uma manilha nossa, e eu tenho um 2
+                    if(qualidadeCarta(s.cartasJogador[C[0]],s)==DOIS &&
+                            maiorCartaENossaMesmo(s) &&
+                            qualidadeMaiorMesa(s)>TRES)
                                     return true;
                     //se eu tenho manilha e três pelo menos, aceito sem pensar
                     if(qualidadeCarta(s.cartasJogador[C[0]],s)>TRES &&
                             qualidadeCarta(s.cartasJogador[C[1]],s)>=TRES)
                                     return true;
+        			// se na mesa já estiver vindo uma manilha nossa, aceito com
+        			// media para alta prob.
+            		if(maiorCartaENossaMesmo(s) &&
+            			qualidadeMaiorMesa(s)>TRES &&
+                    	valeAPenaAceitar(s,70))
+                            return true; 
+            		// se na mesa já estiver vindo um tres nosso, aceito com
+            		// media para alta prob.
+                	if(maiorCartaENossaMesmo(s) &&
+                        qualidadeMaiorMesa(s)>=TRES &&
+                        valeAPenaAceitar(s,75))
+                                return true; 
                     //se eu tenho uma manilha seca, aceito (alta prob.)
                     if(qualidadeCarta(s.cartasJogador[C[0]],s)>TRES &&
-                            qualidadeCarta(s.cartasJogador[C[1]],s)<TRES &&
-                            valeAPenaAceitar(s,80))
+                            valeAPenaAceitar(s,90))
                                     return true;
                     //se eu tenho dois três, aceito (alta prob.)
                     if(qualidadeCarta(s.cartasJogador[C[0]],s)==TRES &&
                             qualidadeCarta( s.cartasJogador[C[1]],s)==TRES &&
                             valeAPenaAceitar(s,80))
                                     return true;
-                    //se eu tenho um três, aceito (média prob.)
+                    //se eu tenho um três, aceito (média p/ alta prob.)
                     if(qualidadeCarta(s.cartasJogador[C[0]],s)==TRES &&
-                            qualidadeCarta(s.cartasJogador[C[1]],s)<TRES &&
-                            valeAPenaAceitar(s,50))
+                            valeAPenaAceitar(s,60))
                                     return true;
+                    
                     return false;
 
             //segunda rodada
@@ -1551,12 +1635,20 @@ public class EstrategiaGasparotto implements Estrategia {
                             if(maiorCartaENossa(s) &&
                                             qualidadeMaiorMesa(s)>=TRES)
                                             return true;
+                            //se na mesa já estiver um 2 nosso, aceito com média probabilidade
+                            if(maiorCartaENossa(s) &&
+                                            qualidadeMaiorMesa(s)==DOIS &&
+                                            valeAPenaAceitar(s,50))
+                                            return true;
                             //se eu tiver pelo menos um dois, aceito
                             if(qualidadeCarta(s.cartasJogador[C[0]],s)>=DOIS)
                                     return true;
                     } else {
                             //se a primeira NÃO for nossa:
-                            // Se a 1a amarrou e tenho zap, aceito
+                        	//se já está tudo decidido, somente estão trucando de bobeira
+                        	if(partidaGanhaParaAdversario(s))
+                        		return false;
+                    		// Se a 1a amarrou e tenho zap, aceito
                             if(rodadaAmarrou(s, 0) &&
                                     qualidadeCarta(s.cartasJogador[C[0]],s)==ZAP)
                                             return true;
@@ -1568,14 +1660,14 @@ public class EstrategiaGasparotto implements Estrategia {
                                             return true;
                             // Se a 1a amarrou e na mesa já está vindo pelo menos um três nosso, aceito
                             if(rodadaAmarrou(s, 0) &&
-                                    maiorCartaENossa(s) &&
+                                    maiorCartaENossaMesmo(s) &&
                                     qualidadeMaiorMesa(s)>=TRES &&
                                     valeAPenaAceitar(s,50))
                                             return true;
 
                             //se eu tenho uma manilha e na mesa já estiver pelo menos um 3 nosso, aceito
                             if(qualidadeCarta(s.cartasJogador[C[0]],s)>=TRES &&
-                                            maiorCartaENossa(s) &&
+                                            maiorCartaENossaMesmo(s) &&
                                             qualidadeMaiorMesa(s)>=TRES)
                                             return true;
                             //se eu tenho manilha e três pelo menos, aceito
@@ -1607,7 +1699,11 @@ public class EstrategiaGasparotto implements Estrategia {
                     if((minhaVez(s)==0 && vezTrucador(s)==1) ||
                             (minhaVez(s)==1 && vezTrucador(s)==2))
                                     return false;
-
+                    
+                    //se já está tudo decidido, somente estão trucando de bobeira
+                    if(partidaGanhaParaAdversario(s))
+                    	return false;
+                    
                     //se a primeira for nossa:
                     if(primeiraENossa(s)) {
                             //se na mesa já estiver uma manilha nossa, aceito com alta prob.
@@ -1646,22 +1742,22 @@ public class EstrategiaGasparotto implements Estrategia {
                             if(rodadaAmarrou(s, 1)) //logicamente a 2a também amarrou, senão não estaríamos na 3a...
                                     return true;
                             //se na mesa já estiver uma manilha nossa, aceito com alta prob.
-                            if(maiorCartaENossa(s) &&
+                            if(maiorCartaENossaMesmo(s) &&
                                     qualidadeMaiorMesa(s)>TRES &&
                                     valeAPenaAceitar(s,75))
                                             return true;
                             //se na mesa já estiver um 3 nosso, aceito com média prob.
-                            if(maiorCartaENossa(s) &&
+                            if(maiorCartaENossaMesmo(s) &&
                                     qualidadeMaiorMesa(s)==TRES &&
                                     valeAPenaAceitar(s,50))
                                             return true;
                             //se na mesa já estiver um 2 nosso, aceito com média-baixa prob.
-                            if(maiorCartaENossa(s) &&
+                            if(maiorCartaENossaMesmo(s) &&
                                     qualidadeMaiorMesa(s)==DOIS &&
                                     valeAPenaAceitar(s,20))
                                             return true;
                             //se na mesa estiver um lixo nosso, aceito com baixa prob. - devem estar blefando...
-                            if(maiorCartaENossa(s) &&
+                            if(maiorCartaENossaMesmo(s) &&
                                     qualidadeMaiorMesa(s)<=AS &&
                                     valeAPenaAceitar(s,8))
                                             return true;

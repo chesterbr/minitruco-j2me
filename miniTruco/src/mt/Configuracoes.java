@@ -92,7 +92,7 @@ public class Configuracoes {
 
 	public static final String PORTA_DEFAULT = "6912";
 
-	public static final String SERVIDOR_DEFAULT = "chester.servegame.org:"
+	public static final String SERVIDOR_DEFAULT = "server.gtruco.com.br:"
 			+ PORTA_DEFAULT;
 
 	/**

@@ -31,8 +31,8 @@ package mt;
  * A classe notifica aos jogadores participantes os eventos relevantes (ex.:
  * início da partida, vez passando para um jogador, carta jogada, pedido de
  * truco), e os jogadores podem usar os métodos de entrada (ex.:
- * <code>jogaCarta()</code>, <code>aumentaAposta</code>, etc.) para
- * interagir com o jogo.
+ * <code>jogaCarta()</code>, <code>aumentaAposta</code>, etc.) para interagir
+ * com o jogo.
  * <p>
  * 
  * @author Chester
@@ -87,7 +87,7 @@ public class JogoLocal extends Jogo {
 	private boolean[] aguardandoRespostaMaoDe11 = new boolean[4];
 
 	private boolean manilhaVelha, baralhoLimpo;
-	
+
 	private int nPartidasModoCE;
 
 	/**
@@ -118,15 +118,16 @@ public class JogoLocal extends Jogo {
 	 *            true para baralho sem os 4, 5, 6, 7, false para baralho
 	 *            completo (sujo)
 	 */
-	public JogoLocal(boolean baralhoLimpo, boolean manilhaVelha, int nPartidasModoCE) {
+	public JogoLocal(boolean baralhoLimpo, boolean manilhaVelha,
+			int nPartidasModoCE) {
 		this.manilhaVelha = manilhaVelha;
 		this.baralhoLimpo = baralhoLimpo;
 		this.vaquinhasNoPasto[0] = 0;
-		this.vaquinhasNoPasto[1] = 0;		
+		this.vaquinhasNoPasto[1] = 0;
 		this.modoCE = true;
 		this.nPartidasModoCE = nPartidasModoCE;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -140,8 +141,8 @@ public class JogoLocal extends Jogo {
 		}
 
 		// Descomentar para debug da mão de 11, conforme o caso
-		// pontosEquipe[0] = 11;
-		// pontosEquipe[1] = 11;
+		// pontosEquipe[0] = 10;
+		// pontosEquipe[1] = 10;
 
 		// Inicia a primeira rodada, usando o jogador na posição 1
 		iniciaMao(getJogador(1));
@@ -236,6 +237,9 @@ public class JogoLocal extends Jogo {
 						getResultadoRodada(numRodadaAtual), jogadorQueTorna);
 			}
 
+			// 'sleep' below is for gTruco (notificação 'R')
+			pause(1500);
+
 			// Verifica se já temos vencedor na rodada
 			int resultadoRodada = 0;
 			if (numRodadaAtual == 2) {
@@ -308,11 +312,15 @@ public class JogoLocal extends Jogo {
 			// jogo, valendo 3
 			aguardandoRespostaMaoDe11[j.getParceiro() - 1] = false;
 			valorMao = 3;
+			// 'sleep' below is for gTruco (notificação 'H')
+			pause(2000);
 			notificaVez();
 		} else {
 			// Se recusou (e o parceiro também), a equipe perde um ponto e
 			// recomeça a mao
 			if (!aguardandoRespostaMaoDe11[j.getParceiro() - 1]) {
+				// 'sleep' below is for gTruco (notificação 'H')
+				pause(1500);
 				pontosEquipe[j.getEquipeAdversaria() - 1]++;
 				fechaMao();
 			}
@@ -381,6 +389,8 @@ public class JogoLocal extends Jogo {
 				ji.pediuAumentoAposta(j, valor);
 			}
 		}
+		// 'sleep' below is for gTruco (notificação 'T')
+		pause(750);
 		for (int i = 1; i <= 4; i++) {
 			Jogador ji = getJogador(i);
 			if (ji instanceof JogadorCPU) {
@@ -415,6 +425,8 @@ public class JogoLocal extends Jogo {
 			for (int i = 1; i <= 4; i++) {
 				getJogador(i).aceitouAumentoAposta(j, valorMao);
 			}
+			// 'sleep' below is for gTruco (notificação 'D')
+			pause(1500);
 		} else {
 			// Primeiro notifica todo mundo
 			for (int i = 1; i <= 4; i++) {
@@ -423,6 +435,8 @@ public class JogoLocal extends Jogo {
 			int posParceiro = (j.getPosicao() + 1) % 4 + 1;
 			if (recusouAumento[posParceiro - 1]) {
 				// Se o parceiro também recusou, derrota da dupla
+				// 'sleep' below is for gTruco (notificação 'C')
+				pause(1500);
 				pontosEquipe[jogadorPedindoAumento.getEquipe() - 1] += valorMao;
 				fechaMao();
 			} else {
@@ -444,30 +458,31 @@ public class JogoLocal extends Jogo {
 				+ pontosEquipe[1]);
 
 		boolean acabou = false;
-		
+
 		// Notifica os jogadores que a rodada acabou, e, se for o caso, que o
 		// jogo acabou também
-		if(modoCE) {
-			if(pontosEquipe[0]>11) {
+		if (modoCE) {
+			if (pontosEquipe[0] > 11) {
 				vaquinhasNoPasto[0]++;
-				pontosEquipe[0]=0;
-				pontosEquipe[1]=0;
+				pontosEquipe[0] = 0;
+				pontosEquipe[1] = 0;
 			}
-			if(pontosEquipe[1]>11) {
+			if (pontosEquipe[1] > 11) {
 				vaquinhasNoPasto[1]++;
-				pontosEquipe[0]=0;
-				pontosEquipe[1]=0;
+				pontosEquipe[0] = 0;
+				pontosEquipe[1] = 0;
 			}
 			for (int i = 1; i <= 4; i++) {
 				getJogador(i).maoFechada(pontosEquipe, vaquinhasNoPasto);
-				// Checa se ainda temos que jogar mais partidas ou já está tudo decidido
-				if(((nPartidasModoCE-vaquinhasNoPasto[0]) < vaquinhasNoPasto[0]) ||
-						((nPartidasModoCE-vaquinhasNoPasto[1]) < vaquinhasNoPasto[1])){
+				// Checa se ainda temos que jogar mais partidas ou já está tudo
+				// decidido
+				if (((nPartidasModoCE - vaquinhasNoPasto[0]) < vaquinhasNoPasto[0])
+						|| ((nPartidasModoCE - vaquinhasNoPasto[1]) < vaquinhasNoPasto[1])) {
 					// acabou...
 					acabou = true;
 					if (this.vaquinhasNoPasto[0] > vaquinhasNoPasto[1])
 						getJogador(i).jogoFechado(1, vaquinhasNoPasto);
-					else 
+					else
 						getJogador(i).jogoFechado(2, vaquinhasNoPasto);
 				}
 			}
@@ -479,16 +494,16 @@ public class JogoLocal extends Jogo {
 				} else if (pontosEquipe[1] > 11) {
 					getJogador(i).jogoFechado(2, vaquinhasNoPasto);
 				}
-			}			
+			}
 		}
 		// Se ainda estivermos em jogo, incia a nova mao
-		if (pontosEquipe[0] <= 11 && pontosEquipe[1] <= 11 && acabou==false) {
+		if (pontosEquipe[0] <= 11 && pontosEquipe[1] <= 11 && acabou == false) {
 			int posAbre = jogadorAbriuMao.getPosicao() + 1;
 			if (posAbre == 5)
 				posAbre = 1;
 			iniciaMao(getJogador(posAbre));
 		}
-		
+
 		return;
 	}
 
@@ -534,6 +549,9 @@ public class JogoLocal extends Jogo {
 			getJogador(i).inicioMao();
 		}
 
+		// 'sleep' below is for gTruco (notificação 'M')
+		pause(1250);
+
 		if (pontosEquipe[0] == 11 ^ pontosEquipe[1] == 11) {
 			// Se apenas uma das equipes tiver 11 pontos, verifica se eles
 			// querem realmente jogar (eles podem desistir);
@@ -546,6 +564,8 @@ public class JogoLocal extends Jogo {
 				getJogador(2).informaMao11(getJogador(4).getCartas());
 				getJogador(4).informaMao11(getJogador(2).getCartas());
 			}
+			// 'sleep' below is for gTruco (notificação 'F')
+			pause(1250);
 		} else {
 			// Se for uma mão normal, passa a vez para o jogador que abre
 			setEquipeAguardandoMao11(0);
@@ -727,6 +747,16 @@ public class JogoLocal extends Jogo {
 	 */
 	public boolean isManilhaVelha() {
 		return manilhaVelha;
+	}
+
+	/**
+	 * Não faz nada, mas permite que subclasses (como a JogoLocalServer) façam
+	 * pausas em momentos específicos do jogo.
+	 * 
+	 * @param ms Tempo em milissegundos da pausa.
+	 */
+	protected void pause(int ms) {
+		return;
 	}
 
 }
