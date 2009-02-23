@@ -128,7 +128,8 @@ public class JogadorConectado extends Jogador implements Runnable {
 		try {
 			// Configura um timeout para evitar conexões presas
 			ServerLogger.evento(this, "timeout antes:" + cliente.getSoTimeout());
-			cliente.setSoTimeout(5000);
+			//Timeout is set to 30secs
+			cliente.setSoTimeout(30000);
 			ServerLogger.evento(this, "timeout depois:" + cliente.getSoTimeout());
 			// Prepara o buffer de saída
 			BufferedReader in = new BufferedReader(new InputStreamReader(

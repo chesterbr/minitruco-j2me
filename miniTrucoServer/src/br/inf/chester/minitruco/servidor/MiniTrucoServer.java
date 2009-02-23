@@ -40,7 +40,7 @@ public class MiniTrucoServer {
 	/**
 	 * Versão do servidor
 	 */
-	public static final String VERSAO_SERVER = "2.0";
+	public static final String VERSAO_SERVER = "2.0 gT";
 
 	public static DateFormat dfStartup;
 
@@ -65,7 +65,7 @@ public class MiniTrucoServer {
 		try {
 
 			// Inicializa as salas
-			int numSalas = 10;
+			int numSalas = 30;
 			Sala.inicializaSalas(numSalas);
 
 			try {

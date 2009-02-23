@@ -42,6 +42,11 @@ public class ComandoS extends Comando {
 				s.baralhoLimpo = false;
 				s.manilhaVelha = false;
 			}
+			// gTruco (mas pode ser extendido ao trunk principal):
+			// Muda status de todos os jogadores para "not ready to play"
+			// todos tem que entrar comando "Q" novamente...
+			s.resetReadyToPlay();
+			
 			s.notificaJogadores(s.getInfo());
 		} else {
 			j.println("X FS");

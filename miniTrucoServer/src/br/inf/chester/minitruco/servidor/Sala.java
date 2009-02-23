@@ -205,13 +205,15 @@ public class Sala {
 		int n = 1;
 		for (int i = 0; i <= 3; i++) {
 			if (jogadores[i] == null) {
-				jogadores[i] = new JogadorCPU("Sortear");
-				jogadores[i].setNome("[ROBO_" + (n++) + "]");
+				//forces to play with a specific strategy
+				jogadores[i] = new JogadorCPU("HAL");
+				//jogadores[i].setNome("[ROBO_" + (n++) + "]");
+				jogadores[i].setNome(jogadores[i].getNome());
 			}
 		}
 		// Cria o jogo com as regras selecionadas, adiciona os jogadores na
 		// ordem e inicia
-		jogo = new JogoLocal(baralhoLimpo, manilhaVelha);
+		jogo = new JogoLocalServer(baralhoLimpo, manilhaVelha);
 		for (int i = 0; i <= 3; i++) {
 			jogo.adiciona(jogadores[i]);
 			if (jogadores[i] instanceof JogadorConectado) {
@@ -424,4 +426,13 @@ public class Sala {
 
 	}
 
+	// Muda status de todos os jogadores para "not ready to play"
+	// todos tem que entrar comando "Q" novamente...
+	public void resetReadyToPlay() {
+		for (int i = 0; i <= 3; i++) {
+			if (jogadores[i] instanceof JogadorConectado) {
+				((JogadorConectado) jogadores[i]).querJogar = false;
+			}
+		}
+	}
 }

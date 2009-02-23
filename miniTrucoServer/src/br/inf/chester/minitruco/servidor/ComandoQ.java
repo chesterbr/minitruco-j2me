@@ -22,7 +22,6 @@ package br.inf.chester.minitruco.servidor;
 /**
  * Informa ao servidor que o jogador deseja iniciar a partida na sala em que está.
  * <p>
- * Quando ao menos dois jogadores emitem este comando, a mesma se inicia
  * @author Chester
  *
  */
