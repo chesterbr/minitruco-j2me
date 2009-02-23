@@ -1,0 +1,13 @@
+Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester) - cd@pobox.com
+
+Estratégia da CPU (EstrategiaWillian):  Copyright © 2006 Willian Gigliotti - wgigliotti@gmail.com
+
+Estratégia da CPU (EstrategiaSellani):  Copyright © 2006 Leonardo Sellani
+
+Estratégia da CPU (EstrategiaGasparotto), Modo Confronto de Estratégias e outras melhorias e traduções:  Copyright © 2007 Sandro Gasparotto
+
+miniTruco é um software livre; você pode redistribui-lo e/ou modifica-lo dentro dos termos da Licença Pública Geral GNU como publicada pela Fundação do Software Livre (FSF); na versão 3 da Licença, ou (na sua opnião) qualquer versão.
+
+miniTruco é distribuido na esperança que possa ser útil, mas SEM NENHUMA GARANTIA; sem uma garantia implicita de ADEQUAÇÂO a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença Pública Geral GNU para maiores detalhes.
+
+Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com miniTruco. Se não, veja http://www.gnu.org/licenses/licenses.pt.html

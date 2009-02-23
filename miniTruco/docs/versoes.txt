@@ -1,0 +1,31 @@
+﻿Histórico de Versões (consulte o SVN para maiores detalhes)
+
+3.10.00: Recuperada a opção de jogo via internet (incluindo jogo através da applet), remo
+3.05.00: Pequeno conserto no Bluetooth (que agora também faz log e informa os celulares que consulta) e melhorias no ambiente de desenvolvimento.
+3.04.00: Estratégia Gasparotto aperfeiçoada. Introduzido modo "confronto de estratégias" (do mesmo autor) e criação das versões "light" e completa do jogo.
+3.03.00: Introduzida uma nova estratégia (Gasparotto v1.0), cujo autor também adicionou novas frases para os balões, animando mais o jogo.
+3.02.01: Criada opção de debug que força o menu "Bluetooth" a aparecer. Se o jogo não detecta Bluetooth e você acredita que deveria, selecione esta opção (ela só vale depois que você sair e entrar do programa).
+3.02.00: Nova alteração na comunicação Bluetooth. Desta vez resolveu para alguns celulares (ex.: Nokia 6600 x Motorola L6)
+3.01.00: Alteração na finalização das linhas (e no reconhecimento de final-de-linha) na comunicação Bluetooth, para minimizar problemas na  comunicação entre celulares diferentes
+3.00.00: Bluetooth (com várias enxugadas para compensar parcialmente o aumento do .jar causado por este feature) e uma documentação revigorada.
+2.05.00 (<a href="http://minitruco.googlecode.com/svn/tags/v2.05.00/deploy/miniTruco.jar">.jar</a>) (<a href="http://minitruco.googlecode.com/svn/tags/v2.05.00/deploy/miniTruco.jad">.jad</a>): Uma derivação da anterior, que contorna problema desviando-o para o log (no 6060 de outro amigo, o Sovi, funcionou 100%). Adicionada opção de exibir o log no celular (apenas para curiosidade e debug, o jogo fica uma lesma).
+2.04.00: Nova tentativa de resolver o problema dos Nokia Series 40 (ligeiramente tosca, mas <strike>parece que funcionou no 6060 do amigo Renan</strike> ainda dá erro :( ).
+2.03.00: Removido o suporte multiplayer.
+2.02.00: O Leonardo Sellani desenvolveu uma estratégia alternativa muito bacana, que foi incorporada ao programa. Aproveitei para incluir o suporte a múltiplas estratégias (permitindo sortear ou definir a estratégia para o parceiro e adversários).
+2.01.00: Corrigidos alguns problemas de sincronismo que (espero) resolverão os problemas nos Nokia Series 40
+2.00.00: Jogo online (multiplayer), opções agora ficam na memória do celular, otimização nos menus, início da hospedagem no Google Code.
+1.10: A estratégia da CPU foi melhorada (os últimos releases deixaram ela mais conservadora em termos de trucar). Este deve ser um dos últimos releases com features novos - fora bugfixes, todo o esforço agora é na direção do multiplayer.
+1.09.04: Alterada a maneira com que o encoding dos textos de instruções, ajuda e "sobre" era feita - alguns celulares não reconheciam como estava.
+1.09.03: Curiosamente, o mesmo bug que afetava o baralho limpo afetava a manilha velha, mas por motivo completamente diferente. Aproveitei para adicionar o número da versão no menu "sobre" (dessa forma, fica mais fácil saber que versão você está rodando)
+1.09.02: Outro bug: o baralho limpo não estava interpretando o vira corretamente (se virava o 3, o jogo considerava o 4 como manilha, deixando o jogo sem manilhas)
+1.09.01: Múltiplos oops no deploy anterior - se as instruções/regras não apareceram ou deram um erro de encoding (porque o Chester não <a href="http://www.vf.utwente.nl/~vriesajk/j2me/overview-summary.html" target="_blank">leu as letras miúdas</a>, vide último parágrafo), baixe este aqui que tudo ficará bem
+1.09: Agora é possível jogar com manilha velha ou baralho sujo (menu Opções), e o jogo permite carta fechada (joystick para baixo). Uma explicação dos comandos e as regras do truco estão disponíveis nos menus Instruções e Regras
+1.08: Pequenos ajustes
+1.07: Corrigido bug que às vezes fazia desconsiderar o aceite de um truco
+1.06: Habilitada a tecla "cima" para jogar a carta (alguns celulares impedem o uso da tecla "fire"); corrigida a confusão entre "mão" e "rodada" no código-fonte e outros pequenos ajustes visuais;
+1.05: Corrigido problema visual, onde uma carta "sumia" do terceiro jogador na mão de 11 em casos muito particulares;
+1.04: Outra alteração nos checks para evitar os mesmos problemas da 1.02;
+1.03: Corrigida a ordem dos naipes para manilhas (é, eu misturo isso na vida real, e consegui reproduzir meu erro no jogo... mau sapão, mau sapão);
+1.02: Melhorado o sincronismo entre as respostas de truco dos parceiros, para corrigir <i>NullPointerException</i> em celulares específicos;
+1.01: Corrigido bug que causava um <i>ArrayIndexOutOfBoundsException</i> quando os dois jogadores topavam a mão de 11;
+1.00: Versão inicial.
