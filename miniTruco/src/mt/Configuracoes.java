@@ -55,7 +55,7 @@ public class Configuracoes {
 	 * quebrarem a compatibilidade, basta incrementar este número para garantir
 	 * que antigos registros sejam descartados
 	 */
-	private static final int VERSAO_ID = 109;
+	private static final int VERSAO_ID = 110;
 	private static final int VERSAO_ID_MODOCE = 10112;
 
 	/**
