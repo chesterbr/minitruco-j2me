@@ -31,7 +31,7 @@ public class ComandoW extends Comando {
 	public void executa(String[] args, JogadorConectado j) {
 
 		// (por ora, apenas a versão mínima do cliente)
-		j.println("W 2.00.00 gT");
+		j.println("W 2.00.00");
 	}
 
 }
