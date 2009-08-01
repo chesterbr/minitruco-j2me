@@ -175,7 +175,7 @@ public class Sala {
 	 * @param mensagem
 	 *            linha de texto a ser enviada
 	 */
-	public void notificaJogadores(String mensagem) {
+	synchronized public void notificaJogadores(String mensagem) {
 		for (int i = 0; i <= 3; i++) {
 			if (jogadores[i] instanceof JogadorConectado) {
 				((JogadorConectado) jogadores[i]).println(mensagem);
@@ -202,18 +202,17 @@ public class Sala {
 			}
 		}
 		// Completa as posições vazias com bots
-		int n = 1;
 		for (int i = 0; i <= 3; i++) {
 			if (jogadores[i] == null) {
-				//forces to play with a specific strategy
-				jogadores[i] = new JogadorCPU("HAL");
+				//forces to always play with a specific strategy
+				jogadores[i] = new JogadorCPU(MiniTrucoServer.SERVER.get("STRATEGY"));
 				//jogadores[i].setNome("[ROBO_" + (n++) + "]");
 				jogadores[i].setNome(jogadores[i].getNome());
 			}
 		}
 		// Cria o jogo com as regras selecionadas, adiciona os jogadores na
 		// ordem e inicia
-		jogo = new JogoLocalServer(baralhoLimpo, manilhaVelha);
+		jogo = new JogoLocal(baralhoLimpo, manilhaVelha);
 		for (int i = 0; i <= 3; i++) {
 			jogo.adiciona(jogadores[i]);
 			if (jogadores[i] instanceof JogadorConectado) {
