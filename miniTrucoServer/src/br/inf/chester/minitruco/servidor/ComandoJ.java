@@ -39,6 +39,11 @@ public class ComandoJ extends Comando {
 
 	@Override
 	public void executa(String[] args, JogadorConectado j) {
+		if (j.getNome().equals("unnamed")) {
+			// can't execute this command until a nickname is set
+			j.println("X NO");
+			return;
+		}
 		// Verifica se estamos em jogo e se recebeu argumento
 		if ((!j.jogando) || (args.length<2))
 			return;

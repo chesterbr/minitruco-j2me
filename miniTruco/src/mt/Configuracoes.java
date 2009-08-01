@@ -88,7 +88,11 @@ public class Configuracoes {
 
 	public String idioma = null;
 
+	public boolean convidado = true;
+
 	public String nomeJogador;
+	
+	public String email;
 
 	public static final String PORTA_DEFAULT = "6912";
 
@@ -154,7 +158,9 @@ public class Configuracoes {
 					c.animacaoLigada = disDados.readBoolean();
 					c.baralhoLimpo = disDados.readBoolean();
 					c.manilhaVelha = disDados.readBoolean();
+					c.convidado = disDados.readBoolean();
 					c.nomeJogador = disDados.readUTF();
+					c.email = disDados.readUTF();
 					c.servidor = disDados.readUTF();
 					c.idioma = disDados.readUTF();
 				} catch (IOException e) {
@@ -268,7 +274,9 @@ public class Configuracoes {
 			dosDados.writeBoolean(animacaoLigada);
 			dosDados.writeBoolean(baralhoLimpo);
 			dosDados.writeBoolean(manilhaVelha);
+			dosDados.writeBoolean(convidado);
 			dosDados.writeUTF(nomeJogador == null ? "" : nomeJogador);
+			dosDados.writeUTF(email == null ? "" : email);
 			dosDados.writeUTF(servidor == null ? "" : servidor);
 			dosDados.writeUTF(idioma == null ? "" : idioma);
 

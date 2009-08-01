@@ -60,7 +60,9 @@ public abstract class Jogador {
 	protected Jogo jogo;
 
 	private String nome = "unnamed";
-
+	private boolean isGuest = true;
+	long loginTime = 0;
+	
 	/**
 	 * Nome do jogador (em jogos multiplayer)
 	 * 
@@ -74,6 +76,45 @@ public abstract class Jogador {
 		this.nome = nome;
 	}
 
+	public boolean getIsGuest() {
+		return isGuest;
+	}
+
+	public void setIsGuest(boolean isGuest) {
+		this.isGuest = isGuest;
+	}
+
+	public long getLoginTime() {
+		return loginTime;
+	}
+
+	public void setLoginTime(long loginTime) {
+		this.loginTime = loginTime;
+	}
+	
+	/**
+	 * List of voted people (control for multiplayer games using database)
+	 * 
+	 * @return
+	 */
+
+	private String[] votedCoolList = new String[100];
+	private int votedCoolListPointer = 0;
+	
+	public String getVotedCoolList(int pos) {
+		if (!(votedCoolList[pos]==null)) return votedCoolList[pos]; else return "";
+	}
+	
+	public int getVotedCoolListLength() {
+		return votedCoolList.length;
+	}
+	
+	public void addToVotedCoolList(String votedUser) {
+		this.votedCoolList[votedCoolListPointer] = votedUser;
+		votedCoolListPointer++;
+		if (votedCoolListPointer == 100) votedCoolListPointer = 0;
+	}
+	
 	/**
 	 * Recupera a posição do jogador no jogo
 	 * 

@@ -30,8 +30,8 @@ public class ComandoW extends Comando {
 	@Override
 	public void executa(String[] args, JogadorConectado j) {
 
-		// (por ora, apenas a versão mínima do cliente)
-		j.println("W 2.00.00");
+		String versaoServer = j.getVersaoServer();
+		j.println("W " + versaoServer);
 	}
 
 }

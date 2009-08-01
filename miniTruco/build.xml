@@ -1,8 +1,11 @@
 <project name="miniTruco" default="executa_microemulator2">
 
 	<!-- INFORMAR AQUI o diretório onde está instalado o J2ME SDK da Sun -->
-	<property name="wtk.home" value="/Applications/mpp-sdk/" />
+	<property name="wtk.home" value="E:/FTFS5341/DATA/eclipse/Java/jdk1.6.0_06/lib" />
 
+	<!-- Java mail library, deve ser baixado do site da Sun, e o dir informado aqui -->
+	<property name="mail" value="E:/FTFS5341/DATA/eclipse/Java/jdk1.6.0_06/lib/javamail-1.4.2/mail.jar" />
+	
 	<!-- Definições das bibliotecas auxiliares -->
 	<taskdef resource="antenna.properties" classpath="lib/antenna-bin.jar" />
 	<taskdef resource="proguard/ant/task.properties" classpath="lib/proguard.jar" />
@@ -11,6 +14,8 @@
 	<property name="wtk.midpapi" value="lib/midp.jar" />
 	<property name="btapi" value="lib/btapi.jar" />
 	<property name="jax" value="/lang/jax61" />
+	<!-- this is for mysql support -->
+	<property name="jdbc" value="lib/mysql-connector-java-5.1.7-bin.jar" />
 
 	<!-- Diretórios de trabalho -->
 	<property name="TMP_SRC" value="deploy/src" />
@@ -52,8 +57,10 @@
 		</copy>
 		<delete dir="${BIN}" />
 		<mkdir dir="${BIN}" />
-		<javac target="1.5" classpath="${wtk.midpapi}:${btapi}" source="1.5" destdir="${BIN}" srcdir="${DEPLOY}/tmpsrc" debug="true" debuglevel="lines,vars,source" />
+		<javac target="1.5" classpath="${wtk.midpapi}:${btapi}:${jdbc}:${mail}" source="1.5" destdir="${BIN}" srcdir="${DEPLOY}/tmpsrc" debug="true" debuglevel="lines,vars,source" />
 		<unzip dest="${BIN}" src="${wtk.midpapi}"></unzip>
+		<unzip dest="${BIN}" src="${jdbc}"></unzip>
+		<unzip dest="${BIN}" src="${mail}"></unzip>
 		<jar basedir="${BIN}" destfile="${DEPLOY}/miniTrucoServer.jar">
 			<manifest>
 				<attribute name="Main-Class" value="br.inf.chester.minitruco.servidor.MiniTrucoServer" />

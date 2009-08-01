@@ -38,7 +38,7 @@ import mt.Jogador;
  */
 public class ServerLogger {
 
-	private static DateFormat dataLog = new SimpleDateFormat("yyyyMMdd.HHmmss");
+	private static DateFormat dataLog = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	/**
 	 * Guarda um evento no log.
@@ -53,33 +53,37 @@ public class ServerLogger {
 	 *            Mensagem do evento
 	 */
 	public static synchronized void evento(Jogador j, String mensagem) {
-		// Formato:
-		// data thread [numsala|NA] jogador[@ip] mensagem
-		System.out.print(dataLog.format(new Date()));
-		System.out.print(' ');
-		System.out.print(Thread.currentThread().getName());
-		System.out.print(' ');
-		Sala s = null;
-		if (j instanceof JogadorConectado) {
-			s = ((JogadorConectado) j).getSala();
-		}
-		if (s != null) {
-			System.out.print(s.getNumSala());
-			System.out.print(' ');
-		} else {
-			System.out.print("[sem_sala] ");
-		}
-		if (j != null) {
-			System.out.print(!j.getNome().equals("unnamed") ? j.getNome() : "[sem_nome]");
-			if (j instanceof JogadorConectado) {
-				System.out.print('@');
-				System.out.print(((JogadorConectado) j).getIp());
+		if (MiniTrucoServer.SERVER.get("EVENTS_SHOW").equals("TRUE")) {
+			if (!(mensagem.equals(""))) { // se for somente um newline, why bother
+				// Formato:
+				// data thread [numsala|NA] jogador[@ip] mensagem
+				System.out.print(dataLog.format(new Date()));
+				System.out.print(' ');
+				System.out.print(Thread.currentThread().getName());
+				System.out.print(' ');
+				Sala s = null;
+				if (j instanceof JogadorConectado) {
+					s = ((JogadorConectado) j).getSala();
+				}
+				if (s != null) {
+					System.out.print(s.getNumSala());
+					System.out.print(' ');
+				} else {
+					System.out.print("[sem_sala] ");
+				}
+				if (j != null) {
+					System.out.print(!j.getNome().equals("unnamed") ? j.getNome() : "[sem_nome]");
+					if (j instanceof JogadorConectado) {
+						System.out.print('@');
+						System.out.print(((JogadorConectado) j).getIp());
+					}
+					System.out.print(' ');
+				} else {
+					System.out.print("[sem_jogador] ");
+				}
+				System.out.println(mensagem);
 			}
-			System.out.print(' ');
-		} else {
-			System.out.print("[sem_jogador] ");
 		}
-		System.out.println(mensagem);
 	}
 
 	/**
@@ -91,8 +95,8 @@ public class ServerLogger {
 	 *            Mensagem do erro
 	 */
 	public static void evento(Exception e, String mensagem) {
-		evento((Jogador) null, mensagem + ". Detalhe do erro:");
-		e.printStackTrace();
+		evento((Jogador) null, mensagem + ". Detalhe do erro: " + 
+		e.toString());
 	}
 
 	/**
@@ -103,5 +107,14 @@ public class ServerLogger {
 	 */
 	public static void evento(String mensagem) {
 		evento((Jogador) null, mensagem);
+	}
+	
+	// prints out relevant data for server statistics 
+	public static synchronized void stats(String mensagem) {
+		if (MiniTrucoServer.SERVER.get("STATS_SHOW").equals("TRUE")) {	
+			System.out.print(dataLog.format(new Date()));
+			System.out.print(' ');
+			System.out.println(mensagem);
+		}
 	}
 }

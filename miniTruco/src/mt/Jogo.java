@@ -98,7 +98,7 @@ public abstract class Jogo implements Runnable {
 			}
 		} else {
 			// Valor de 1 a 10 conforme a letra
-			return letrasOrdenadas.indexOf(c.getLetra());
+			return letrasOrdenadas.indexOf(c.getLetra()) + 1;
 		}
 	}
 
@@ -314,7 +314,7 @@ public abstract class Jogo implements Runnable {
 		}
 		manilha = letrasOrdenadas.charAt(posManilha);
 
-		// Detalhe: no baralho limpo, a manilha do vira 3 é o valete (e não o 4)
+		// Detalhe: no baralho limpo, a manilha do vira 3 é a dama (e não o 4)
 		if (isBaralhoLimpo() && c.getLetra() == '3') {
 			manilha = 'Q';
 		}

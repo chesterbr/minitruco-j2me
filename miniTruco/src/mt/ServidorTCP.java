@@ -27,6 +27,8 @@ import javax.microedition.io.StreamConnection;
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Choice;
+import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
@@ -34,6 +36,7 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.TextField;
 
@@ -63,14 +66,23 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 	private static final Command atualizarListaCommand = new Command(
 			Messages.getString("atualizar"), Command.SCREEN, 3); //$NON-NLS-1$
 
+	private static final Command okLoginCommand = new Command(Messages.getString("ok"), //$NON-NLS-1$
+			Command.SCREEN, 1);
+	
 	private static final Command apelidoCommand = new Command(Messages.getString("mudarapelido"), //$NON-NLS-1$
 			Command.SCREEN, 4);
 
 	private static final Command okApelidoCommand = new Command(Messages.getString("ok"), //$NON-NLS-1$
 			Command.SCREEN, 1);
+	
+	private static final Command okRegistradoCommand = new Command(Messages.getString("ok"), //$NON-NLS-1$
+			Command.SCREEN, 1);
 
 	private static final Command desconectarCommand = new Command(
 			Messages.getString("desconectar"), Command.STOP, 999); //$NON-NLS-1$
+
+	private static final Command voltarCommand = new Command(
+			Messages.getString("voltar"), Command.SCREEN, 1); //$NON-NLS-1$
 
 	/**
 	 * Conexão com o servidor remoto
@@ -96,7 +108,29 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 	 */
 	public String apelido;
 
+	/**
+	 * Email do usuário (registrado)
+	 */
+	public String email;
+	
+	/**
+	 * Infos adicionais de usuário (registrado)
+	 */
+	String cidade;
+	String estado;
+	String nascimento;
+	String sexo;
+	int avatar;
+	int vitorias;
+	int derrotas;
+	
 	private MiniTruco midlet;
+	
+	/**
+	 * Controle
+	 */
+	private boolean loggedIn = false;
+	private boolean registrado = false;
 
 	/**
 	 * Cria o objeto, iniciando a conexão com o servidor e botando uma thread
@@ -129,24 +163,64 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 
 	}
 
+	private static final Image[] IMAGENS_LOGIN = { null, null };
+	private static final String[] OPCOES_LOGIN = { Messages.getString("convidado"), Messages.getString("registrado") };
+	ChoiceGroup cgLogin;
 	TextField txtApelido;
+	TextField txtRegistradoEmail;
+	TextField txtRegistradoPass;
+	
+	public void mostraFormLogin() {
+		loggedIn = false;
+		Form formLogin = new Form(Messages.getString("login")); //$NON-NLS-1$
+		cgLogin = new ChoiceGroup(
+				Messages.getString("login_msg"), Choice.EXCLUSIVE, //$NON-NLS-1$
+				OPCOES_LOGIN, IMAGENS_LOGIN);
+		if (Configuracoes.getConfiguracoes().convidado==false) cgLogin.setSelectedIndex(1, true);
+		formLogin.append(cgLogin);
+		formLogin.setCommandListener(this);
+		formLogin.addCommand(okLoginCommand);
+		formLogin.addCommand(desconectarCommand);
+		display.setCurrent(formLogin);
+	}
 
 	public void mostraFormApelido() {
+		Configuracoes conf = Configuracoes.getConfiguracoes();
 		String sugestao = apelido;
 		if (sugestao == null) {
-			sugestao = Configuracoes.getConfiguracoes().nomeJogador;
-			sugestao = "";
+			sugestao = conf.nomeJogador;
+			if (sugestao == null ) sugestao="";
 		}
 		Form formApelido = new Form(Messages.getString("apelido")); //$NON-NLS-1$
-		txtApelido = new TextField(Messages.getString("apelido_msg"), sugestao, 15, //$NON-NLS-1$
+		txtApelido = new TextField(Messages.getString("apelido_msg"), sugestao, 20, //$NON-NLS-1$
 				TextField.ANY);
 		formApelido.append(txtApelido);
 		formApelido.setCommandListener(this);
 		formApelido.addCommand(okApelidoCommand);
-		formApelido.addCommand(desconectarCommand);
+		formApelido.addCommand(voltarCommand);
 		display.setCurrent(formApelido);
 	}
-
+	
+	public void mostraFormRegistrado() {
+		Configuracoes conf = Configuracoes.getConfiguracoes();
+		String sugestao = email;
+		if (email == null) {
+			sugestao = conf.email;
+			if (sugestao == null ) sugestao="";
+		}
+		Form formRegistrado = new Form(Messages.getString("registrado")); //$NON-NLS-1$
+		txtRegistradoEmail = new TextField(Messages.getString("registrado_email_msg"), sugestao, 50, //$NON-NLS-1$
+				TextField.ANY);
+		txtRegistradoPass = new TextField(Messages.getString("registrado_pass_msg"), "", 15, //$NON-NLS-1$
+				TextField.PASSWORD);
+		formRegistrado.append(txtRegistradoEmail);
+		formRegistrado.append(txtRegistradoPass);
+		formRegistrado.setCommandListener(this);
+		formRegistrado.addCommand(okRegistradoCommand);
+		formRegistrado.addCommand(voltarCommand);
+		display.setCurrent(formRegistrado);
+	}
+	
 	List listSalas;
 
 	/**
@@ -226,7 +300,7 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 			return;
 		}
 
-		// Recupera as informações do serivdor
+		// Recupera as informações do servidor
 		enviaComando("W");
 
 		// Loop principal: decodifica as notificações recebidas e as
@@ -244,32 +318,55 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 						case 'W':
 							// Se não tiver recuperado a versão, desencana
 							if (MiniTruco.versaoMidlet == null) {
-								mostraFormApelido();
+								mostraFormLogin();
 								break;
 							}
 							// Verifica se a versão é maior ou igual à exigida
 							// pelo servidor
-							String vMin = parametros;
-							if (MiniTruco.versaoMidlet.compareTo(vMin) < 0) {
-								alerta(
-										Messages.getString("erro_versao"), //$NON-NLS-1$
-										Messages.getString("erro_versao_msg"), //$NON-NLS-1$
-										true);
-								estaVivo = false;
-							} else {
+							// Achei melhor desabilitar, pois assim
+							// podemos colocar strings na versão
+							// sem comprometer aqui... [Sandro]
+							//String vMin = parametros;
+							//if (MiniTruco.versaoMidlet.compareTo(vMin) < 0) {
+								//alerta(
+										//Messages.getString("erro_versao"), //$NON-NLS-1$
+										//Messages.getString("erro_versao_msg"), //$NON-NLS-1$
+										//true);
+								//estaVivo = false;
+							//} else {
 								// Ok, aprovado, vamos perguntar o apelido ao
 								// jogador
-								mostraFormApelido();
-							}
+								mostraFormLogin();
+							//}
 							break;
 						case 'N':
 							// Setou o apelido, memoriza e vai pra lista de
 							// salas
-							apelido = parametros;
-							Configuracoes conf = Configuracoes
-									.getConfiguracoes();
-							conf.nomeJogador = apelido;
+							String[] Ntokens = split(parametros, '|');
+							apelido = Ntokens[0];
+							if (parametros.indexOf("|")>0) {
+								registrado = true;
+								email = Ntokens[1];
+								cidade = Ntokens[2];
+								estado = Ntokens[3];
+								nascimento = Ntokens[4];
+								sexo = Ntokens[5];
+								avatar = Integer.parseInt(Ntokens[6]);
+								vitorias = Integer.parseInt(Ntokens[7]);
+								derrotas = Integer.parseInt(Ntokens[8]);
+							}
+							Configuracoes conf = Configuracoes.getConfiguracoes();
+							if (!registrado) {
+								conf.nomeJogador = apelido;
+							} else {
+								// o correto seria checar se a notif. N recebida 
+								// é caso de mudança de nome (new nick) ou login,
+								// pois estamos sobreescrevendo no arquivo de configuração à toa...
+								// mas tudo bem, sem maiores impactos
+								conf.email = email;
+							}
 							conf.salva();
+							loggedIn = true;
 							enviaComando("L");
 							break;
 						case 'L':
@@ -286,11 +383,12 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 							// Saiu da sala: atualiza o número, mata qualquer
 							// jogo em andamento e vai para a lista de salas
 							sala.numSala = 0;
+							sala.jogadoresCounter = 1;
 							jogo = null;
 							enviaComando("L");
 							break;
 						case 'I':
-							// Recebeu info da sala. Enserra qualquer jogo em
+							// Recebeu info da sala. Encerra qualquer jogo em
 							// andamento e limpa totalmente a mesa (pra não dar
 							// sombra no jogo seuginte)
 							if (jogo != null) {
@@ -321,7 +419,21 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 							// atualizadas
 							display.setCurrent(this.sala);
 							sala.atualizaSala();
-
+							// controle de broadcast de mensagens
+							// para não sobrecarregar a rede com
+							// mensagens redundantes; somente enviar
+							// caso novos jogadores sentaram-se à mesa
+							int cntr = 0;
+							for (int i = 0; i <= 3; i++) {
+								if (!sala.jogadores[i].equals("")) cntr++;
+							}
+							if (cntr > sala.jogadoresCounter) {
+								enviaComando("B /AVT 99"); // specific avatar info for gTruco
+								if (registrado) enviaComando("B /DAT "+cidade+"|"+
+										estado+"|"+nascimento+"|"+sexo+"|"+avatar+"|"+
+										vitorias+"|"+derrotas); // registered data
+							}
+							sala.jogadoresCounter=cntr;
 							break;
 						case 'P':
 							// Início de partida, cria um jogo remoto e binda os
@@ -370,6 +482,9 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 							} else if (parametros.equals("NI")) {
 								mostraFormApelido();
 								alerta(Messages.getString("erro"), Messages.getString("erro_apelido_msg_invalido")); //$NON-NLS-1$ //$NON-NLS-2$
+							} else if (parametros.equals("NP")) {
+								mostraFormRegistrado();
+								alerta(Messages.getString("erro"), Messages.getString("erro_registrado_msg_invalido")); //$NON-NLS-1$ //$NON-NLS-2$
 							} else if (parametros.equals("NO")) {
 								display.setCurrent(this);
 								mostraFormApelido();
@@ -382,11 +497,22 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 										Messages.getString("conflito_man_bar_txt"), //$NON-NLS-1$
 										true);
 								enviaComando("I");
+							} else if (parametros.equals("DB")) {
+								// nothing to be done
 							} else {
 								// Em caso de erro não-esperado, aborta o jogo
 								alerta(Messages.getString("erro_inesperado"), sbLinha.toString(), //$NON-NLS-1$
 										true);
 								finalizaServidor();
+							}
+							break;
+						case 'U':
+							String[] Utokens = split(parametros, ' ');
+							if (Utokens[0].equals("UP")) {
+								String[] UUPtokens = split(Utokens[1], '|');
+								vitorias = Integer.parseInt(UUPtokens[0]);
+								derrotas = Integer.parseInt(UUPtokens[1]);
+								enviaComando("B /VIT "+vitorias+"|"+derrotas);
 							}
 							break;
 						}
@@ -484,7 +610,38 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 	public void commandAction(Command cmd, Displayable disp) {
 		mostraMsgAguarde();
 		if (cmd == okApelidoCommand) {
-			enviaComando("N " + txtApelido.getString());
+			if (loggedIn) {
+				if (!txtApelido.getString().equals(apelido))
+					enviaComando("N " + txtApelido.getString());
+				else
+					enviaComando("L");
+			}
+			else 
+				enviaComando("N " + txtApelido.getString());
+		} else if (cmd == okRegistradoCommand) {
+			email = txtRegistradoEmail.getString();
+			String pass = txtRegistradoPass.getString();
+			// MD5 hash
+			MD5 md5 = new MD5();
+			String hash = "";
+			try {
+				md5.Update(pass, null);
+				hash = md5.asHex();
+			} catch (Exception e) {}
+		   if (hash.length() == 31) hash = "0" + hash; // precaution as some implementations show this bug
+			enviaComando("N " + email + " " + hash);
+
+		} else if (cmd == okLoginCommand) {
+			Configuracoes conf = Configuracoes.getConfiguracoes();
+			if (cgLogin.getSelectedIndex()==0) {
+				conf.convidado = true;
+				conf.salva();
+				mostraFormApelido();
+			} else {
+				conf.convidado = false;
+				conf.salva();
+				mostraFormRegistrado();
+			}
 		} else if ((cmd == entrarSalaCommand) || (cmd == List.SELECT_COMMAND)) {
 			enviaComando("E " + (listSalas.getSelectedIndex() + 1));
 		} else if (cmd == atualizarListaCommand) {
@@ -495,6 +652,11 @@ public class ServidorTCP extends Canvas implements Runnable, CommandListener {
 			enviaComando("I " + (listSalas.getSelectedIndex() + 1));
 		} else if (cmd == desconectarCommand) {
 			finalizaServidor();
+		} else if (cmd == voltarCommand) {
+			if (loggedIn) 
+				enviaComando("L");
+			else 
+				mostraFormLogin();
 		}
 
 	}

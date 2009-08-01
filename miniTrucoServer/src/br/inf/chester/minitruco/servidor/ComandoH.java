@@ -30,6 +30,11 @@ public class ComandoH extends Comando {
 
 	@Override
 	public void executa(String[] args, JogadorConectado j) {
+		if (j.getNome().equals("unnamed")) {
+			// can't execute this command until a nickname is set
+			j.println("X NO");
+			return;
+		}
 		if (!j.jogando)
 			return;		
 		j.getSala().getJogo().decideMao11(j,args[1].equals("T"));

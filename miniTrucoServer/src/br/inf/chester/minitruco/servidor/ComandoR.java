@@ -34,6 +34,11 @@ public class ComandoR extends Comando {
 
 	@Override
 	public void executa(String[] args, JogadorConectado j) {
+		if (j.getNome().equals("unnamed")) {
+			// can't execute this command until a nickname is set
+			j.println("X NO");
+			return;
+		}
 		Sala s = j.getSala();
 		if (s.getGerente().equals(j) && args.length == 2
 				&& args[1].length() == 2) {

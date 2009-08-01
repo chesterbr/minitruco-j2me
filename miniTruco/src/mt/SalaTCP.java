@@ -120,6 +120,12 @@ public class SalaTCP extends Canvas implements CommandListener {
 	public String[] jogadores;
 
 	/**
+	 * Variável auxiliar para
+	 * controle de broadcast de B /AVT [gTruco])
+	 */
+	public int jogadoresCounter = 1;
+	
+	/**
 	 * Status de "quero jogar" dos jogadores que estão na sala (atual ou
 	 * espiada) (string de 4 caracteres "T" ou "F")
 	 */

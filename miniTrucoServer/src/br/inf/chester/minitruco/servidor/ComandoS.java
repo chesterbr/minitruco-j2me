@@ -33,6 +33,11 @@ public class ComandoS extends Comando {
 
 	@Override
 	public void executa(String[] args, JogadorConectado j) {
+		if (j.getNome().equals("unnamed")) {
+			// can't execute this command until a nickname is set
+			j.println("X NO");
+			return;
+		}
 		Sala s = j.getSala();
 		if (s != null) {
 			s.remove(j);
@@ -42,7 +47,6 @@ public class ComandoS extends Comando {
 				s.baralhoLimpo = false;
 				s.manilhaVelha = false;
 			}
-			// gTruco (mas pode ser extendido ao trunk principal):
 			// Muda status de todos os jogadores para "not ready to play"
 			// todos tem que entrar comando "Q" novamente...
 			s.resetReadyToPlay();
