@@ -1,7 +1,7 @@
 <project name="miniTruco" default="executa_microemulator2">
 
 	<!-- INFORMAR AQUI o diretório onde está instalado o J2ME SDK da Sun -->
-	<property name="wtk.home" value="E:/FTFS5341/DATA/eclipse/Java/jdk1.6.0_06/lib" />
+	<property name="wtk.home" value="/Applications/midp" />
 
 	<!-- Java mail library, deve ser baixado do site da Sun, e o dir informado aqui -->
 	<property name="mail" value="E:/FTFS5341/DATA/eclipse/Java/jdk1.6.0_06/lib/javamail-1.4.2/mail.jar" />
@@ -86,7 +86,7 @@
 		-->
 		<delete dir="${TMP_SRC}" />
 		<copy todir="${TMP_SRC}">
-			<fileset dir="src" excludes="**/*BT.java,**/JogadorBot.java,**/JogadorDummy.java,**/*TCP.java" />
+			<fileset dir="src" excludes="**/MD5*.java,**/*BT.java,**/JogadorBot.java,**/JogadorDummy.java,**/*TCP.java" />
 			<filterset begintoken="// [" endtoken="]">
 				<filter token="IF_FULL" value="/*" />
 				<filter token="ENDIF_FULL" value="*/" />

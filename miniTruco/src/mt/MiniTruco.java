@@ -166,6 +166,12 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	private Form formModoCE;
 	// [ENDIF_FULL]
 
+	/**
+	 * Margem inferior para a mesa (para consertar bugs de celulares que
+	 * sobrescrevem o Canvas com o menu inferior)
+	 */
+	int margemInferior = 0;
+
 	// Listas de opções para menus de ajuda e bluetooth
 
 	private static final String[] OPCOES_AJUDA = {
@@ -347,6 +353,10 @@ public class MiniTruco extends MIDlet implements CommandListener {
 			Messages.getString("debug"), Choice.MULTIPLE, //$NON-NLS-1$
 			OPCOES_DEBUG, IMAGENS_DEBUG);
 
+	TextField tfMargemInferior = new TextField(Messages
+			.getString("margem_inferior"), null, 80, //$NON-NLS-1$
+			TextField.NUMERIC);
+
 	// [IF_FULL]
 	TextField tfServidor = new TextField(
 			Messages.getString("servidor"), null, 80, //$NON-NLS-1$
@@ -398,6 +408,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		Animador.setAnimacaoLigada(conf.animacaoLigada);
 		cgRegras.setSelectedIndex(0, conf.baralhoLimpo);
 		cgRegras.setSelectedIndex(1, conf.manilhaVelha);
+		tfMargemInferior.setString(Integer.toString(conf.margemInferior));
 		// [IF_FULL]
 		tfServidor.setString(conf.servidor);
 		// [ENDIF_FULL]
@@ -426,6 +437,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 		formOpcoes = new Form(Messages.getString("opcoes")); //$NON-NLS-1$
 		formOpcoes.append(cgVisual);
 		formOpcoes.append(cgRegras);
+		formOpcoes.append(tfMargemInferior);
 		formOpcoes.append(cgParceiro);
 		formOpcoes.append(cgAdversarioEsq);
 		formOpcoes.append(cgAdversarioDir);
@@ -472,7 +484,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 	 *            elementos no lugar)
 	 */
 	public void novaMesa(boolean vaiAnimar) {
-		mesa = new Mesa(vaiAnimar);
+		mesa = new Mesa(vaiAnimar, margemInferior);
 		mostraMenuAbertura(true);
 		mesa.setCommandListener(this);
 	}
@@ -787,6 +799,12 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				mesa.setModoCE(this.modoCE);
 			}
 			// [ENDIF_FULL]
+			try {
+				margemInferior = Integer.parseInt(tfMargemInferior.getString());
+			} catch (NumberFormatException e) {
+				alerta(
+						Messages.getString("Erro"), Messages.getString("margem_inferior_invalida")); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 			if (cgRegras.isSelected(0) && cgRegras.isSelected(1)) {
 				// Se houver conflito, faz o ajuste e mantém o form
 				alerta(
@@ -824,6 +842,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 				conf.animacaoLigada = Animador.isAnimacaoLigada();
 				conf.baralhoLimpo = cgRegras.isSelected(0);
 				conf.manilhaVelha = cgRegras.isSelected(1);
+				conf.margemInferior = margemInferior;
 				// [IF_FULL]
 				conf.servidor = tfServidor.getString();
 				// [ENDIF_FULL]
@@ -831,6 +850,7 @@ public class MiniTruco extends MIDlet implements CommandListener {
 
 				// Volta pra tela anterior
 				mostraMenuAbertura(true);
+				novaMesa(false);
 				Display.getDisplay(this).setCurrent(mesa);
 				mesa.montaBaralhoCenario();
 				mesa.repaint();

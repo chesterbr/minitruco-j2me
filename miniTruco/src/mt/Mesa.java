@@ -37,14 +37,28 @@ import javax.microedition.lcdui.Image;
  * <p>
  * Obs.: O ideal seria que a abertura estivesse em uma classe separada - e que
  * ambas respondessem por seus eventos de menu (ao invés de deixar a classe
- * MiniTruco fazer isso). Só percebi isso quando fui adicionar uma terceira tela (<code>Sala</code>,
- * do multiplayer). Coisas do aprendizado - um dia desses eu separo.
+ * MiniTruco fazer isso). Só percebi isso quando fui adicionar uma terceira tela
+ * (<code>Sala</code>, do multiplayer). Coisas do aprendizado - um dia desses eu
+ * separo.
  * 
  * 
  * @author Chester
  * 
  */
 public class Mesa extends Canvas implements Runnable {
+
+	/**
+	 * Retorna a altura, descontando a margem artificial
+	 */
+	public int getHeight() {
+		return super.getHeight() - margemInferior;
+	}
+
+	/**
+	 * Margem inferior artificial (para celulares bugados que não levam em conta
+	 * o menu)
+	 */
+	private int margemInferior = 0;
 
 	/**
 	 * Margem entre a mesa e as cartas
@@ -112,10 +126,16 @@ public class Mesa extends Canvas implements Runnable {
 	 *            Se true, esconde a abertura (para mostrar na animação). Se
 	 *            false, já mostra a abertura finalizada.
 	 * 
+	 * @param margemInferior
+	 *            Fator de redução do tamanho da mesa (para celulares bugados
+	 *            que cobrem o canvas com o menu)
+	 * 
 	 * 
 	 */
-	public Mesa(boolean vaiAnimar) {
+	public Mesa(boolean vaiAnimar, int margemInferior) {
 
+		this.margemInferior = margemInferior;
+		
 		// Cria um animador para esta mesa
 		animador = new Animador(this);
 		animador.start();
@@ -518,8 +538,7 @@ public class Mesa extends Canvas implements Runnable {
 						getWidth() - 1, topoNomes + alturaNomes / 2,
 						Graphics.RIGHT | Graphics.TOP);
 				g.drawString(jogador.jogo.getJogador(3).getNome(),
-						getWidth() / 2, 0, Graphics.HCENTER
-								| Graphics.TOP);
+						getWidth() / 2, 0, Graphics.HCENTER | Graphics.TOP);
 				g.drawString(jogador.jogo.getJogador(4).getNome(), 0, topoNomes
 						+ alturaNomes / 2, Graphics.LEFT | Graphics.TOP);
 				return;

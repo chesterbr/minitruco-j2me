@@ -55,7 +55,7 @@ public class Configuracoes {
 	 * quebrarem a compatibilidade, basta incrementar este número para garantir
 	 * que antigos registros sejam descartados
 	 */
-	private static final int VERSAO_ID = 110;
+	private static final int VERSAO_ID = 111;
 	private static final int VERSAO_ID_MODOCE = 10112;
 
 	/**
@@ -77,6 +77,8 @@ public class Configuracoes {
 	public boolean cartasGrandes = isTelaGrande();
 
 	public boolean animacaoLigada = true;
+	
+	public int margemInferior = 0;
 
 	public boolean baralhoLimpo = false;
 
@@ -156,6 +158,7 @@ public class Configuracoes {
 					c.estrategiasModoCE[1] = disDados.readInt();
 					c.cartasGrandes = disDados.readBoolean();
 					c.animacaoLigada = disDados.readBoolean();
+					c.margemInferior = disDados.readInt();
 					c.baralhoLimpo = disDados.readBoolean();
 					c.manilhaVelha = disDados.readBoolean();
 					c.convidado = disDados.readBoolean();
@@ -272,6 +275,7 @@ public class Configuracoes {
 			dosDados.writeInt(estrategiasModoCE[1]);
 			dosDados.writeBoolean(cartasGrandes);
 			dosDados.writeBoolean(animacaoLigada);
+			dosDados.writeInt(margemInferior);
 			dosDados.writeBoolean(baralhoLimpo);
 			dosDados.writeBoolean(manilhaVelha);
 			dosDados.writeBoolean(convidado);
