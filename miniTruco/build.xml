@@ -4,7 +4,7 @@
 	<property name="wtk.home" value="/Applications/midp" />
 
 	<!-- Java mail library, deve ser baixado do site da Sun, e o dir informado aqui -->
-	<property name="mail" value="E:/FTFS5341/DATA/eclipse/Java/jdk1.6.0_06/lib/javamail-1.4.2/mail.jar" />
+	<property name="mail" value="/Applications/mail.jar" />
 	
 	<!-- Definições das bibliotecas auxiliares -->
 	<taskdef resource="antenna.properties" classpath="lib/antenna-bin.jar" />
