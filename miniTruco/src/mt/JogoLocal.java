@@ -526,21 +526,21 @@ public class JogoLocal extends Jogo {
 		//jogador.setCartas(cartas);
 		//jogador = getJogador(2);
 		//cartas = new Carta[3];
-		//cartas[0] = new Carta('7',1);
-		//cartas[1] = new Carta('7',2);
-		//cartas[2] = new Carta('7',3);
+		//cartas[0] = new Carta('K',1);
+		//cartas[1] = new Carta('K',2);
+		//cartas[2] = new Carta('K',3);
 		//jogador.setCartas(cartas);
 		//jogador = getJogador(3);
 		//cartas = new Carta[3];
-		//cartas[0] = new Carta('4',3);
-		//cartas[1] = new Carta('2',1);
-		//cartas[2] = new Carta('3',2);
+		//cartas[0] = new Carta('Q',3);
+		//cartas[1] = new Carta('Q',1);
+		//cartas[2] = new Carta('Q',2);
 		//jogador.setCartas(cartas);
 		//jogador = getJogador(4);
 		//cartas = new Carta[3];
-		//cartas[0] = new Carta('4',0);
-		//cartas[1] = new Carta('2',3);
-		//cartas[2] = new Carta('3',1);
+		//cartas[0] = new Carta('A',3);
+		//cartas[1] = new Carta('5',3);
+		//cartas[2] = new Carta('5',1);
 		//jogador.setCartas(cartas);
 		
 		// Vira a carta da mesa, determinando a manilha
