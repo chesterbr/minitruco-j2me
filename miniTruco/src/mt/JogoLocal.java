@@ -142,7 +142,7 @@ public class JogoLocal extends Jogo {
 		// Descomentar para debug da mão de 11, conforme o caso
 		//pontosEquipe[0] = 10;
 		//pontosEquipe[1] = 10;
-
+		
 		// Inicia a primeira rodada, usando o jogador na posição 1
 		iniciaMao(getJogador(1));
 	}
