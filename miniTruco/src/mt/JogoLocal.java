@@ -185,7 +185,7 @@ public class JogoLocal extends Jogo {
 		for (int i = 1; i <= 4; i++) {
 			getJogador(i).cartaJogada(j, c);
 		}
-
+		
 		// Passa a vez para o próximo jogador
 		posJogadorDaVez++;
 		if (posJogadorDaVez == 5) {
@@ -278,6 +278,15 @@ public class JogoLocal extends Jogo {
 			notificaVez();
 		}
 
+	}
+	
+	public void enviaMensagem(Jogador j, String s) {
+		// recupera mensagem da estratégia para notificação
+		for (int i = 1; i <= 4; i++) {
+			if (j instanceof JogadorCPU && i != j.getPosicao() && s!="") {
+				getJogador(i).mensagemEstrategia(j, s);
+			}
+		}
 	}
 
 	/*
@@ -388,6 +397,7 @@ public class JogoLocal extends Jogo {
 			}
 		}
 		// </gambiarra>
+		
 		return;
 
 	}
@@ -518,30 +528,31 @@ public class JogoLocal extends Jogo {
 		
 		// this is good for tests, here we can
 		// deal specific cards...
-		//Jogador jogador = getJogador(1);
-		//Carta[] cartas = new Carta[3];
-		//cartas[0] = new Carta('6',3);
-		//cartas[1] = new Carta('6',0);
-		//cartas[2] = new Carta('6',1);
-		//jogador.setCartas(cartas);
-		//jogador = getJogador(2);
-		//cartas = new Carta[3];
-		//cartas[0] = new Carta('K',1);
-		//cartas[1] = new Carta('K',2);
-		//cartas[2] = new Carta('K',3);
-		//jogador.setCartas(cartas);
-		//jogador = getJogador(3);
-		//cartas = new Carta[3];
-		//cartas[0] = new Carta('Q',3);
-		//cartas[1] = new Carta('Q',1);
-		//cartas[2] = new Carta('Q',2);
-		//jogador.setCartas(cartas);
-		//jogador = getJogador(4);
-		//cartas = new Carta[3];
-		//cartas[0] = new Carta('A',3);
-		//cartas[1] = new Carta('5',3);
-		//cartas[2] = new Carta('5',1);
-		//jogador.setCartas(cartas);
+		/*Jogador jogador = getJogador(1);
+		Carta[] cartas = new Carta[3];
+		cartas[0] = new Carta('A',3);
+		cartas[1] = new Carta('4',0);
+		cartas[2] = new Carta('4',1);
+		jogador.setCartas(cartas);
+		jogador = getJogador(2);
+		cartas = new Carta[3];
+		cartas[0] = new Carta('2',1);
+		cartas[1] = new Carta('2',2);
+		cartas[2] = new Carta('2',3);
+		jogador.setCartas(cartas);
+		jogador = getJogador(3);
+		cartas = new Carta[3];
+		cartas[0] = new Carta('3',1);
+		cartas[1] = new Carta('Q',1);
+		cartas[2] = new Carta('Q',2);
+		jogador.setCartas(cartas);
+		jogador = getJogador(4);
+		cartas = new Carta[3];
+		cartas[0] = new Carta('5',3);
+		cartas[1] = new Carta('A',2);
+		cartas[2] = new Carta('5',1);
+		jogador.setCartas(cartas);
+		*/
 		
 		// Vira a carta da mesa, determinando a manilha
 		cartaDaMesa = baralho.sorteiaCarta();
