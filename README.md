@@ -1,7 +1,7 @@
 minitruco-j2me
 ==============
 
-A popular [open-source][6] Java ME Brazilian card game.
+A popular open-source ([BSD][6]) Java ME Brazilian card game.
 
 This repository is mostly for archive purposes, since this version is not actively deployed anymore. Current focus is on the Android version (also [open-source][4] and [downloadable on Google Play][5]) and on an upcoming multiplatform version.
 
