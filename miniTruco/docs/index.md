@@ -8,7 +8,7 @@ _Carlos Duarte do Nascimento (Chester), 2005-2007_
 *Aviso: Documentação Descontinuada*
 -----------------------------------
 
-*Este arquivo documenta uma versão do miniTruco que **não é mais mantida**, para um [sistema operacional de celulares](https://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition) que não é mais utilizado.
+*Este arquivo documenta uma versão do miniTruco que **não é mais mantida**, para um [sistema operacional de celulares](https://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition) que não é mais utilizado.*
 
 *O jogo [agora funciona em Android](https://play.google.com/store/apps/details?id=me.chester.minitruco&hl=pt) e o código-fonte (e uma versão atualizada desta documentação) estão disponíveis em [`chesterbr/minitruco-android`](https://github.com/chesterbr/minitruco-android).*
 
