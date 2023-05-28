@@ -147,7 +147,9 @@ Avisos Legais
 -------------
 
 Copyright © 2005-2007 Carlos Duarte do Nascimento (Chester) - cd@pobox.com
+<br/>
 Estratégia da CPU (EstrategiaWillian): Copyright © 2006 Willian Gigliotti - wgigliotti@gmail.com
+<br/>
 Estratégia da CPU (EstrategiaSellani): Copyright © 2006 Leonardo Sellani
 
 Este programa é um software livre; você pode redistribui-lo e/ou modifica-lo dentro dos termos da Licença Pública Geral GNU como publicada pela Fundação do Software Livre (FSF); na versão 2 da Licença, ou (na sua opnião) qualquer versão.
