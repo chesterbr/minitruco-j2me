@@ -69,9 +69,10 @@ A classe [MiniTruco](javadoc/mt/MiniTruco.html) é o ponto de entrada. Ela cont�
 
 
 ![](figura1.png)
-Figura 1 - Diagrama de Classes (simplificado)
+<br/>
+*Figura 1 - Diagrama de Classes (simplificado)*
 
-
+<br/>
 
 A cada nova partida, um [Jogo](javadoc/mt/Jogo.html) é instanciado. Ele atua como controlador do jogo, conectado a quatro instâncias de [Jogador](javadoc/mt/Jogador.html). Ele informa a cada Jogador os eventos do jogo (início de partida, início de rodada, jogadas efetuadas, de quem é a vez, etc.) e recebe os comandos deles (jogar carta, pedir truco, etc.).
 
@@ -108,9 +109,10 @@ Na figura 2 vemos um exemplo com três celulares: um servidor e dois clientes. N
 
 
 ![](figura2.png)
-Figura 2 - Colaboração num jogo Bluetooth
 
+*Figura 2 - Colaboração num jogo Bluetooth*
 
+<br/>
 
 Esta hierarquia permite que um Jogo trate seus objetos Jogador independente do tipo deles (humano, cpu, etc.), e também que o Jogador interaja com um jogo sem importar se ele é local ou remoto.
 
