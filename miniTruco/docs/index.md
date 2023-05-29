@@ -120,20 +120,25 @@ Perguntas Freqüentes (FAQ)
 --------------------------
 
 _Cadê a versão multiplayer via GPRS?_
+
 Desencanei dela (é difícil achar um celular que consiga conectar direto num servidor não-http). No trunk você só vai encontrar o cliente. Optei por orientar o projeto na direção do Bluetooth.
 
 Se alguém quiser assumir essa bola (o desenvolvimento e manter um servidor no ar), basta pegar as tags serverV1.0 e v2.02.00 (último cliente com suporte a client-server via GPRS).
 
 _Qual versão do Java devo usar?_
+
 Eu usei Java 1.5 (Java 5), mas J2ME pressupõe 1.1, então não devem haver problemas em usar o 1.4 ou 1.6 (Java 6).
 
 _E o Eclipse 3.1?_
+
 Eu desenvolvi 99% do projeto no 3.1, mas atualizei para o 3.2 recentemente. O site do Eclipse diz que não rola abrir o workspace do 3.2 no 3.1, mas vale tentar se você não puder atualizar (mas os refactorings do 3.2 são muito bacanas). Resposta curta: não.
 
 _Porque você usa esse bando de tralha (Antenna, Proguard, etc.) se o J2ME Wireless Toolkit tem tudo isso?_
+
 Porque o kit em questão só roda em Win32/Linux (belo exemplo de aplicação 100% Pure Java, Sun), e eu uso Mac. Além disso, as ferramentas abertas em questão são, a meu ver, mais focadas e eficientes. E com a nova política de libs inclusas, quem usa Eclipse ou Ant pode baixar e sair usando, sem depender de instalar o WTK.
 
 _Freqüentes tem acento?_
+
 Sim, segundo o [Prof. Moreno](http://www.sualingua.com.br/03/03_trema.htm).
 
 Dicas e Observações
